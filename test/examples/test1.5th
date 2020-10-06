@@ -1,0 +1,3 @@
+use std ;
+
+main(int x) { return x * x; }
