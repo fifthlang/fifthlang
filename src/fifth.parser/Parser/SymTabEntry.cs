@@ -2,10 +2,6 @@ using Antlr4.Runtime;
 
 namespace fifth.Parser
 {
-    public enum SymbolKind
-    {
-        Function, Variable, FormalParameter
-    }
     public class SymTabEntry : ISymbolTableEntry
     {
         public string Name { get; set; }

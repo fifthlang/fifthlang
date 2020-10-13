@@ -25,9 +25,9 @@ Here's an example of Fifth in action:
 ```csharp
 use std, io, lob, env, string ;
 
-alias <"http://xmlns.com/foaf/0.1/"> as foaf;
-alias <"http://www.w3.org/1999/02/22-rdf-syntax-ns#"> as rdf;
-alias <"http://www.lob.org/users"> as loborg;
+alias <http://xmlns.com/foaf/0.1/> as foaf;
+alias <http://www.w3.org/1999/02/22-rdf-syntax-ns#> as rdf;
+alias <http://www.lob.org/users> as loborg;
 
 // get user token using IRI in environment varible
 user_id = io.get_user_token(env.get_var("LOB_USER_ID"));

@@ -12,10 +12,10 @@ alias:
     ALIAS iri AS packagename SEMICOLON;
 
 atom
-   : scientific
-   | var_name
-   | STRING
-   | OPENPAREN expression CLOSEPAREN
+   : scientific                         # ScientificNumber
+   | var_name                           # VarReference
+   | STRING                             # String
+   | OPENPAREN expression CLOSEPAREN    # ParenthesisedExp
    ;
 
 
@@ -93,9 +93,9 @@ q_type_name: type_name (DOT type_name)*
 ;
 
 relop
-   : EQ
-   | GT
-   | LT
+   : EQ # Equals
+   | GT # GreaterThan
+   | LT # LessThan
    ;
 
 
@@ -104,18 +104,20 @@ scientific
    ;
 
 signed_atom
-   : PLUS signed_atom
-   | MINUS signed_atom
-   | function_call
-   | atom
+   : PLUS signed_atom   # Plus
+   | MINUS signed_atom  # Minus
+   | function_call      # FunctionCall
+   | atom               # PlainAtom
    ;
 
-statement: qvarname ASSIGN expression SEMICOLON
-            | RETURN expression  SEMICOLON
-            | IF OPENPAREN expression CLOSEPAREN block
-            | IF OPENPAREN expression CLOSEPAREN block ELSE block
-            | WITH statement  SEMICOLON
-            | expression  SEMICOLON
+statement: 
+              q_type_name qvarname (ASSIGN expression)? SEMICOLON   # VarDeclStmt
+            | qvarname ASSIGN expression SEMICOLON                  # AssignmentStmt
+            | RETURN expression  SEMICOLON                          # ReturnStmt
+            | IF OPENPAREN expression CLOSEPAREN block              # IfStmt
+            | IF OPENPAREN expression CLOSEPAREN block ELSE block   # IfElseStmt
+            | WITH statement  SEMICOLON                             # WithStmt
+            | expression  SEMICOLON                                 # ExpnStmt
 ;
 
 type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE
