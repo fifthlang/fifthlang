@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using static FifthParser;
@@ -23,7 +24,8 @@ namespace fifth.Parser
         }
         public override bool VisitFunction_call([NotNull] Function_callContext context)
         {
-            Declare(context.Start.Text, SymbolKind.FunctionReference, context);
+            // var id = String.Join(".", context.children.Select(c => c.GetText()).ToArray());
+            // Declare(id, SymbolKind.FunctionReference, context);
             return base.VisitFunction_call(context);
         }
 

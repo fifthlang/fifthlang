@@ -16,6 +16,14 @@
             ],
             "group": "build",
             "problemMatcher": "$msCompile"
+        },{
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/test/fifth.test/fifth.test.csproj"
+            ]
         }
     ]
 }

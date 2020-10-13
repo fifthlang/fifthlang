@@ -59,62 +59,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAlias([NotNull] FifthParser.AliasContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>ScientificNumber</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScientificNumber([NotNull] FifthParser.ScientificNumberContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ScientificNumber</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScientificNumber([NotNull] FifthParser.ScientificNumberContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>VarReference</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterVarReference([NotNull] FifthParser.VarReferenceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>VarReference</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitVarReference([NotNull] FifthParser.VarReferenceContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>String</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterString([NotNull] FifthParser.StringContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>String</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitString([NotNull] FifthParser.StringContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ParenthesisedExp</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterParenthesisedExp([NotNull] FifthParser.ParenthesisedExpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ParenthesisedExp</c>
-	/// labeled alternative in <see cref="FifthParser.atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitParenthesisedExp([NotNull] FifthParser.ParenthesisedExpContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.block"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -127,29 +71,257 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBlock([NotNull] FifthParser.BlockContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.equation"/>.
+	/// Enter a parse tree produced by the <c>EFuncCall</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEquation([NotNull] FifthParser.EquationContext context) { }
+	public virtual void EnterEFuncCall([NotNull] FifthParser.EFuncCallContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.equation"/>.
+	/// Exit a parse tree produced by the <c>EFuncCall</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEquation([NotNull] FifthParser.EquationContext context) { }
+	public virtual void ExitEFuncCall([NotNull] FifthParser.EFuncCallContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.expression"/>.
+	/// Enter a parse tree produced by the <c>ETypeCreate</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpression([NotNull] FifthParser.ExpressionContext context) { }
+	public virtual void EnterETypeCreate([NotNull] FifthParser.ETypeCreateContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.expression"/>.
+	/// Exit a parse tree produced by the <c>ETypeCreate</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpression([NotNull] FifthParser.ExpressionContext context) { }
+	public virtual void ExitETypeCreate([NotNull] FifthParser.ETypeCreateContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EVarname</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEVarname([NotNull] FifthParser.EVarnameContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EVarname</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEVarname([NotNull] FifthParser.EVarnameContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EInt</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEInt([NotNull] FifthParser.EIntContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EInt</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEInt([NotNull] FifthParser.EIntContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EScientific</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEScientific([NotNull] FifthParser.EScientificContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EScientific</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEScientific([NotNull] FifthParser.EScientificContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ELT</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterELT([NotNull] FifthParser.ELTContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ELT</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitELT([NotNull] FifthParser.ELTContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EDiv</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEDiv([NotNull] FifthParser.EDivContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EDiv</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEDiv([NotNull] FifthParser.EDivContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EGEQ</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEGEQ([NotNull] FifthParser.EGEQContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EGEQ</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEGEQ([NotNull] FifthParser.EGEQContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EAnd</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEAnd([NotNull] FifthParser.EAndContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EAnd</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEAnd([NotNull] FifthParser.EAndContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EGT</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEGT([NotNull] FifthParser.EGTContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EGT</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEGT([NotNull] FifthParser.EGTContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ELEQ</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterELEQ([NotNull] FifthParser.ELEQContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ELEQ</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitELEQ([NotNull] FifthParser.ELEQContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ENegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterENegation([NotNull] FifthParser.ENegationContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ENegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitENegation([NotNull] FifthParser.ENegationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ESub</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterESub([NotNull] FifthParser.ESubContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ESub</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitESub([NotNull] FifthParser.ESubContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EDouble</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEDouble([NotNull] FifthParser.EDoubleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EDouble</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEDouble([NotNull] FifthParser.EDoubleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EFuncParen</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEFuncParen([NotNull] FifthParser.EFuncParenContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EFuncParen</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEFuncParen([NotNull] FifthParser.EFuncParenContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EAdd</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEAdd([NotNull] FifthParser.EAddContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EAdd</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEAdd([NotNull] FifthParser.EAddContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EString</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEString([NotNull] FifthParser.EStringContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EString</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEString([NotNull] FifthParser.EStringContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EMul</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEMul([NotNull] FifthParser.EMulContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EMul</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEMul([NotNull] FifthParser.EMulContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -259,18 +431,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitModule_name([NotNull] FifthParser.Module_nameContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.multiplying_expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMultiplying_expression([NotNull] FifthParser.Multiplying_expressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.multiplying_expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMultiplying_expression([NotNull] FifthParser.Multiplying_expressionContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.packagename"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -282,18 +442,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPackagename([NotNull] FifthParser.PackagenameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.pow_expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPow_expression([NotNull] FifthParser.Pow_expressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.pow_expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPow_expression([NotNull] FifthParser.Pow_expressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.parameter_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -367,48 +515,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitQ_type_name([NotNull] FifthParser.Q_type_nameContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>Equals</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEquals([NotNull] FifthParser.EqualsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Equals</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEquals([NotNull] FifthParser.EqualsContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>GreaterThan</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGreaterThan([NotNull] FifthParser.GreaterThanContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>GreaterThan</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGreaterThan([NotNull] FifthParser.GreaterThanContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>LessThan</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLessThan([NotNull] FifthParser.LessThanContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>LessThan</c>
-	/// labeled alternative in <see cref="FifthParser.relop"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLessThan([NotNull] FifthParser.LessThanContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.scientific"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -420,62 +526,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitScientific([NotNull] FifthParser.ScientificContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>Plus</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPlus([NotNull] FifthParser.PlusContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Plus</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPlus([NotNull] FifthParser.PlusContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>Minus</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterMinus([NotNull] FifthParser.MinusContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>Minus</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitMinus([NotNull] FifthParser.MinusContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>FunctionCall</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFunctionCall([NotNull] FifthParser.FunctionCallContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>FunctionCall</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFunctionCall([NotNull] FifthParser.FunctionCallContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>PlainAtom</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPlainAtom([NotNull] FifthParser.PlainAtomContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>PlainAtom</c>
-	/// labeled alternative in <see cref="FifthParser.signed_atom"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPlainAtom([NotNull] FifthParser.PlainAtomContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>VarDeclStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
@@ -561,19 +611,19 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWithStmt([NotNull] FifthParser.WithStmtContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>ExpnStmt</c>
+	/// Enter a parse tree produced by the <c>ExpStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpnStmt([NotNull] FifthParser.ExpnStmtContext context) { }
+	public virtual void EnterExpStmt([NotNull] FifthParser.ExpStmtContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>ExpnStmt</c>
+	/// Exit a parse tree produced by the <c>ExpStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpnStmt([NotNull] FifthParser.ExpnStmtContext context) { }
+	public virtual void ExitExpStmt([NotNull] FifthParser.ExpStmtContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// <para>The default implementation does nothing.</para>

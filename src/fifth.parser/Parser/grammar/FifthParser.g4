@@ -11,24 +11,29 @@ fifth:
 alias:
     ALIAS iri AS packagename SEMICOLON;
 
-atom
-   : scientific                         # ScientificNumber
-   | var_name                           # VarReference
-   | STRING                             # String
-   | OPENPAREN expression CLOSEPAREN    # ParenthesisedExp
-   ;
-
-
 block: OPENBRACE statement* CLOSEBRACE
 ;
 
-equation
-   : expression relop expression
-   ;
-
-expression
-   : multiplying_expression ((PLUS | MINUS) multiplying_expression)*
-   ;
+exp 
+    : exp LT exp               # ELT
+    | exp GT exp               # EGT
+    | exp LEQ exp               # ELEQ
+    | exp GEQ exp               # EGEQ
+    | exp AND exp               # EAnd
+    | exp PLUS exp              # EAdd
+    | exp MINUS exp             # ESub
+    | exp TIMES exp             # EMul
+    | exp DIVIDE exp            # EDiv
+    | INT                       # EInt
+    | FLOAT                     # EDouble
+    | STRING                    # EString
+    | scientific                # EScientific
+    | qvarname                  # EVarname
+    | q_function_name OPENPAREN (exp (COMMA exp)*)? CLOSEPAREN  # EFuncCall
+    | OPENPAREN exp CLOSEPAREN  # EFuncParen
+    | NOT exp                   # ENegation
+    | NEW type_initialiser      # ETypeCreate
+;
 
 formal_parameters:
     parameter_declaration (COMMA parameter_declaration)*
@@ -51,7 +56,7 @@ function_body:
 ;
 
 function_call
-   : q_function_name OPENPAREN expression (COMMA expression)* CLOSEPAREN
+   : q_function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
    ;
 
 function_name: IDENTIFIER ;
@@ -64,15 +69,7 @@ module_import: USE module_name (COMMA module_name)* SEMICOLON ;
 
 module_name: IDENTIFIER;
 
-multiplying_expression
-   : pow_expression ((TIMES | DIVIDE) pow_expression)*
-   ;
-
 packagename: IDENTIFIER ;
-
-pow_expression
-   : signed_atom (POWER signed_atom)*
-   ;
 
 parameter_declaration:
     q_type_name
@@ -89,35 +86,22 @@ q_function_name: function_name (DOT function_name)* ;
 
 qvarname: var_name (DOT var_name)*
 ;
+
 q_type_name: type_name (DOT type_name)*
 ;
-
-relop
-   : EQ # Equals
-   | GT # GreaterThan
-   | LT # LessThan
-   ;
-
 
 scientific
    : ScientificNumber
    ;
 
-signed_atom
-   : PLUS signed_atom   # Plus
-   | MINUS signed_atom  # Minus
-   | function_call      # FunctionCall
-   | atom               # PlainAtom
-   ;
-
 statement: 
-              q_type_name qvarname (ASSIGN expression)? SEMICOLON   # VarDeclStmt
-            | qvarname ASSIGN expression SEMICOLON                  # AssignmentStmt
-            | RETURN expression  SEMICOLON                          # ReturnStmt
-            | IF OPENPAREN expression CLOSEPAREN block              # IfStmt
-            | IF OPENPAREN expression CLOSEPAREN block ELSE block   # IfElseStmt
+              q_type_name qvarname (ASSIGN exp)? SEMICOLON   # VarDeclStmt
+            | qvarname ASSIGN exp SEMICOLON                  # AssignmentStmt
+            | RETURN exp SEMICOLON                          # ReturnStmt
+            | IF OPENPAREN exp CLOSEPAREN block              # IfStmt
+            | IF OPENPAREN exp CLOSEPAREN block ELSE block   # IfElseStmt
             | WITH statement  SEMICOLON                             # WithStmt
-            | expression  SEMICOLON                                 # ExpnStmt
+            | exp  SEMICOLON                                 # ExpStmt
 ;
 
 type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE
@@ -126,7 +110,7 @@ type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE
 type_name:  IDENTIFIER
 ;
 
-type_property_init: var_name ASSIGN expression
+type_property_init: var_name ASSIGN exp
 ;
 
 var_name: IDENTIFIER
@@ -354,7 +338,7 @@ gen_delims
    | AT
    ;
 
-/// sub-delims     = "!" / "$" / "&" / "'" / "(" / ")"///                / "*" / "+" / "," / ";" / "="
+/// sub-delims     = "!" / "$" / "&" / "'" / OPENPAREN / ")"///                / "*" / "+" / "," / ";" / "="
 sub_delims
    : NOT
    | DOLLAR

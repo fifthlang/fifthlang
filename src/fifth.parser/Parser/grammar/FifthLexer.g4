@@ -51,7 +51,7 @@ POSITIVEDIGIT: [1-9];
 NAT: POSITIVEDIGIT DIGIT*;
 STRING:'"' (~["])* '"'  | '\'' (~['])* '\'';
 FLOAT: '-'? INT ('.' DIGIT+ )? EXP?;
-INT: '0' | [1-9] [0-9]*;
+INT: '0' | POSITIVEDIGIT DIGIT*;
 EXP: [eE] [+\-]? INT;
 WS: [ \t\n\r]+ -> skip;
 

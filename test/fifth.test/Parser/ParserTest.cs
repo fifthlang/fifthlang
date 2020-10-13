@@ -5,7 +5,7 @@ using static FifthParser;
 namespace fifth.Parser.Tests
 {
     [TestFixture()]
-    public class ParserTests
+    public class ParserTests : ParserTestBase
     {
         private static string TestProgram => @"use std;
             main(int x, int y) {myprint(x + y);}
@@ -18,19 +18,6 @@ namespace fifth.Parser.Tests
             var symtab = new SymbolTable();
             var x = new SymbolTableBuilderVisitor(symtab).Visit(ctx);
             Assert.That(symtab.Count, Is.GreaterThan(0));
-        }
-
-        private static FifthContext ParseProgram(string program)
-        {
-         FifthLexer lexer = new FifthLexer(new AntlrInputStream(TestProgram));
-            lexer.RemoveErrorListeners();
-            lexer.AddErrorListener(new ThrowingErrorListener<int>());
-
-            FifthParser parser = new FifthParser(new CommonTokenStream(lexer));
-            parser.RemoveErrorListeners();
-            parser.AddErrorListener(new ThrowingErrorListener<IToken>());
-
-            return parser.fifth();
         }
     }
 }
