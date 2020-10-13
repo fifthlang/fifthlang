@@ -15,9 +15,6 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
             "problemMatcher": "$msCompile"
         }
     ]

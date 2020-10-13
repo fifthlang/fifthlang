@@ -1,7 +1,6 @@
-using FluentAssertions;
+using Antlr4.Runtime;
 using NUnit.Framework;
-using System.IO;
-using System.Text;
+using static FifthParser;
 
 namespace fifth.Parser.Tests
 {
@@ -9,30 +8,29 @@ namespace fifth.Parser.Tests
     public class ParserTests
     {
         private static string TestProgram => @"use std;
-            main(int x, int y) => myprint(x + y);
-            myprint(int x) => std.print(""the answer is "" + x);";
+            main(int x, int y) {myprint(x + y);}
+            myprint(int x) {std.print(""the answer is "" + x);}";
 
         [Test]
         public void TestCanParseFullProgram()
         {
-            string program = TestProgram;
-            var parser = ParseProgram(program);
-            var ast = parser.astBuilder.Build();
-            ast.Should().NotBeNull();
-            ast.FunctionDefinitions.Count.Should().Be(2);
+            var ctx = ParseProgram(TestProgram);
+            var symtab = new SymbolTable();
+            var x = new SymbolTableBuilderVisitor(symtab).Visit(ctx);
+            Assert.That(symtab.Count, Is.GreaterThan(0));
         }
 
-        private static Deleteme.Parser ParseProgram(string program)
+        private static FifthContext ParseProgram(string program)
         {
-            Deleteme.Parser parser;
-            // convert string to stream
-            byte[] byteArray = Encoding.UTF8.GetBytes(program);
-            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-            MemoryStream stream = new MemoryStream(byteArray);
-            Deleteme.Scanner scanner = new Deleteme.Scanner(stream);
-            parser = new Deleteme.Parser(scanner);
-            parser.Parse();
-            return parser;
+         FifthLexer lexer = new FifthLexer(new AntlrInputStream(TestProgram));
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(new ThrowingErrorListener<int>());
+
+            FifthParser parser = new FifthParser(new CommonTokenStream(lexer));
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(new ThrowingErrorListener<IToken>());
+
+            return parser.fifth();
         }
     }
 }
