@@ -1,6 +1,7 @@
 language: csharp
 mono: none
 dist: bionic
+sudo: required 
 dotnet: 3.1
 install:
   - dotnet restore
