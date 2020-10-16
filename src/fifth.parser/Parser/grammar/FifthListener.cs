@@ -253,6 +253,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEString([NotNull] FifthParser.EStringContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EStatement</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEStatement([NotNull] FifthParser.EStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EStatement</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEStatement([NotNull] FifthParser.EStatementContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EMul</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -451,18 +463,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitReturnStmt([NotNull] FifthParser.ReturnStmtContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IfStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIfStmt([NotNull] FifthParser.IfStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IfStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIfStmt([NotNull] FifthParser.IfStmtContext context);
-	/// <summary>
 	/// Enter a parse tree produced by the <c>IfElseStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
 	/// </summary>
@@ -486,18 +486,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitWithStmt([NotNull] FifthParser.WithStmtContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ExpStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterExpStmt([NotNull] FifthParser.ExpStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ExpStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitExpStmt([NotNull] FifthParser.ExpStmtContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>

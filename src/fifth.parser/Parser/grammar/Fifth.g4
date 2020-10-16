@@ -30,6 +30,7 @@ exp
     | OPENPAREN exp CLOSEPAREN  # EFuncParen
     | NOT exp                   # ENegation
     | NEW type_initialiser      # ETypeCreate
+    | statement                 #EStatement
 ;
 
 formal_parameters:
@@ -49,7 +50,7 @@ function_args:
 ;
 
 function_body:
-    block
+    LAMBDASEP exp (COMMA exp)* SEMICOLON
 ;
 
 function_call
@@ -83,13 +84,12 @@ parameter_name: IDENTIFIER
 ;
 
 statement: 
-      type_name var_name (ASSIGN exp)? SEMICOLON     # VarDeclStmt
-    | var_name ASSIGN exp SEMICOLON                  # AssignmentStmt
-    | RETURN exp SEMICOLON                           # ReturnStmt
-    | IF OPENPAREN exp CLOSEPAREN block              # IfStmt
+      type_name var_name (ASSIGN exp)?     # VarDeclStmt
+    | var_name ASSIGN exp                  # AssignmentStmt
+    | RETURN exp                           # ReturnStmt
+    // | IF OPENPAREN exp CLOSEPAREN block # IfStmt // not sure this is valid when using statements as a kind of expression
     | IF OPENPAREN exp CLOSEPAREN block ELSE block   # IfElseStmt
-    | WITH statement  SEMICOLON                             # WithStmt
-    | exp  SEMICOLON                                 # ExpStmt
+    | WITH statement  block                # WithStmt
 ;
 
 type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE

@@ -11,7 +11,7 @@ namespace fifth.parser.Parser.Tests
         [Test]
         public void TestCanGatherSingleFunctionDefinitions()
         {
-            string TestProgram = @"main() {myprint(""hello world"");}";
+            string TestProgram = @"main() => myprint(""hello world"");";
 
             var ctx = ParseProgram(TestProgram);
             var visitor = new SymbolTableBuilderVisitor();
@@ -23,9 +23,9 @@ namespace fifth.parser.Parser.Tests
                 [Test]
         public void TestCanGatherMultipleDefinitions()
         {
-            string TestProgram = @"main() {myprint(""hello world"");}
-            myprint(string x) {std.print(x);}
-            blah() {int result = 5; return result;}";
+            string TestProgram = @"main() => myprint(""hello world"");
+            myprint(string x) => std.print(x);
+            blah() => int result = 5, return result;";
 
             var ctx = ParseProgram(TestProgram);
             var visitor = new SymbolTableBuilderVisitor();
@@ -37,5 +37,20 @@ namespace fifth.parser.Parser.Tests
                 Assert.That(v.SymbolKind, Is.EqualTo(SymbolKind.FunctionDeclaration));
             }
         }
+
+                [Test]
+        public void TestCanParseFullProgram()
+        {
+         string TestProgram = @"use std;
+            main(int x, int y) => myprint(x + y);
+            myprint(int x) => std.print(""the answer is "" + x);";
+
+            var ctx = ParseProgram(TestProgram);
+            var visitor = new SymbolTableBuilderVisitor();
+            ParseTreeWalker.Default.Walk(visitor, ctx);
+            Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.GreaterThan(0));
+        }
+
+
     }
 }

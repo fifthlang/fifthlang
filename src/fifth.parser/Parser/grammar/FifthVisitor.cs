@@ -162,6 +162,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEString([NotNull] FifthParser.EStringContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>EStatement</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEStatement([NotNull] FifthParser.EStatementContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EMul</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -280,13 +287,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitReturnStmt([NotNull] FifthParser.ReturnStmtContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IfStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIfStmt([NotNull] FifthParser.IfStmtContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>IfElseStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
 	/// </summary>
@@ -300,13 +300,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWithStmt([NotNull] FifthParser.WithStmtContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ExpStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpStmt([NotNull] FifthParser.ExpStmtContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>

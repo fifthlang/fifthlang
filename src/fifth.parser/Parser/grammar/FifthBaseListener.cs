@@ -295,6 +295,20 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEString([NotNull] FifthParser.EStringContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EStatement</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEStatement([NotNull] FifthParser.EStatementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EStatement</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEStatement([NotNull] FifthParser.EStatementContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EMul</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -531,20 +545,6 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitReturnStmt([NotNull] FifthParser.ReturnStmtContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IfStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIfStmt([NotNull] FifthParser.IfStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>IfStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIfStmt([NotNull] FifthParser.IfStmtContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by the <c>IfElseStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -572,20 +572,6 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWithStmt([NotNull] FifthParser.WithStmtContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ExpStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterExpStmt([NotNull] FifthParser.ExpStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ExpStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitExpStmt([NotNull] FifthParser.ExpStmtContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// <para>The default implementation does nothing.</para>
