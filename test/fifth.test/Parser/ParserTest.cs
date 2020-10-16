@@ -21,6 +21,19 @@ namespace fifth.parser.Parser.Tests
             Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.GreaterThan(0));
         }
 
+
+        [TestCase("alias", "ALIAS")]
+        [TestCase("as", "AS")]
+        [TestCase("else", "ELSE")]
+        [TestCase("if", "IF")]
+        [TestCase("new", "NEW")]
+        [TestCase("with", "WITH")]
+        [TestCase("return", "RETURN")]
+        [TestCase("use", "USE")]
+        [TestCase("\"a\"", "STRING")]
+        [TestCase("'a'", "STRING")]
+        [TestCase("\"\"", "STRING")]
+        [TestCase("''", "STRING")]
         [TestCase("a", "IDENTIFIER")]
         [TestCase("abc", "IDENTIFIER")]
         [TestCase("aBc", "IDENTIFIER")]

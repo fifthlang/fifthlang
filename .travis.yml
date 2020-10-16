@@ -1,0 +1,10 @@
+language: csharp
+solution: fifthlang.sln
+mono: none
+dotnet: 3.1.402
+install:
+  - nuget restore solution-name.sln
+  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+script:
+  - msbuild /p:Configuration=Release fifthlang.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./test/fifth.test/bin/Release/fifth.test.dll
