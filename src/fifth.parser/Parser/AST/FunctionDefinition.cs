@@ -1,7 +1,7 @@
 ﻿using fifth.VirtualMachine;
 using System.Collections.Generic;
 
-namespace fifth.Parser.AST
+namespace fifth.parser.Parser.AST
 {
     public class FunctionDefinition : AstNode
     {

@@ -1,4 +1,4 @@
-namespace fifth.Parser
+namespace fifth.parser.Parser
 {
     public interface ISymbolTableEntry
     {

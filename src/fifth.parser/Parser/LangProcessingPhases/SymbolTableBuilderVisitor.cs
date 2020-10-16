@@ -4,39 +4,43 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using static FifthParser;
 
-namespace fifth.Parser
+namespace fifth.parser.Parser
 {
-    public class SymbolTableBuilderVisitor : FifthParserBaseVisitor<bool>
+    public class SymbolTableBuilderVisitor : FifthBaseListener
     {
-        private readonly ISymbolTable symtab;
+        public IScope GlobalScope { get; set; }
+        public IScope CurrentScope { get; set; }
 
-        public SymbolTableBuilderVisitor(ISymbolTable symtab)
-        {
-            this.symtab = symtab;
+        void LeaveNode(ParserRuleContext ctx){
+            CurrentScope = CurrentScope.EnclosingScope ?? GlobalScope;
         }
-        public override bool VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context) {
-            Declare(context.Start.Text, SymbolKind.FunctionDeclaration, context);
-            return base.VisitFunction_declaration(context);
-        }
-        public override bool VisitVarDeclStmt([NotNull] VarDeclStmtContext context)
+        public override void EnterFifth(FifthContext context)
         {
-            return base.VisitVarDeclStmt(context);
-        }
-        public override bool VisitFunction_call([NotNull] Function_callContext context)
-        {
-            // var id = String.Join(".", context.children.Select(c => c.GetText()).ToArray());
-            // Declare(id, SymbolKind.FunctionReference, context);
-            return base.VisitFunction_call(context);
+            // this is the top level entrypoint into the AST. So this is where root scopes etc get set up
+            CurrentScope = GlobalScope = new Scope(context);
         }
 
-        public void Declare(string name, SymbolKind kind, ParserRuleContext ctx){
-            symtab[name] = new SymTabEntry{
-                Name = name,
-                SymbolKind = kind,
-                Line = ctx.Start.Line,
-                Context = ctx
-            };
+        public override void ExitFifth([NotNull] FifthContext context)
+        {
+            LeaveNode(context);
+        }
 
+        public override void EnterFunction_declaration([NotNull] FifthParser.Function_declarationContext context) {
+            CurrentScope.Declare(context.Start.Text, SymbolKind.FunctionDeclaration, context);
+            CurrentScope = new Scope(context, CurrentScope);
+        }
+
+        public override void ExitFunction_declaration([NotNull] Function_declarationContext context)
+        {
+            LeaveNode(context);
+        }
+        public override void EnterVarDeclStmt([NotNull] VarDeclStmtContext context)
+        {
+            CurrentScope.Declare(context.Start.Text, SymbolKind.VariableDeclaration, context);
+        }
+        public override void ExitVarDeclStmt([NotNull] VarDeclStmtContext context)
+        {
+            LeaveNode(context);
         }
     }
 }

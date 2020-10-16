@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
 
-namespace fifth.Parser
+namespace fifth.parser.Parser
 {
     public class SymTabEntry : ISymbolTableEntry
     {

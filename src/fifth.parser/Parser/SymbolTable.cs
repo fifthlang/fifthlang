@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace fifth.Parser
+namespace fifth.parser.Parser
 {
     public class SymbolTable : Dictionary<string, ISymbolTableEntry>, ISymbolTable
     {
@@ -16,11 +16,5 @@ namespace fifth.Parser
             return null;
         }
         public IEnumerable<ISymbolTableEntry> All() => Values;
-    }
-
-    public interface ISymbolTable : IDictionary<string, ISymbolTableEntry>
-    {
-        IEnumerable<ISymbolTableEntry> All();
-        ISymbolTableEntry Resolve(string v);
     }
 }

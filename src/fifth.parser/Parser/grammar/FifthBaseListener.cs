@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from src/fifth.parser/Parser/grammar/FifthParser.g4 by ANTLR 4.8
+// Generated from src/fifth.parser/Parser/grammar/Fifth.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -27,13 +27,13 @@ using IToken = Antlr4.Runtime.IToken;
 using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
-/// This class provides an empty implementation of <see cref="IFifthParserListener"/>,
+/// This class provides an empty implementation of <see cref="IFifthListener"/>,
 /// which can be extended to create a listener which only needs to handle a subset
 /// of the available methods.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.8")]
 [System.CLSCompliant(false)]
-public partial class FifthParserBaseListener : IFifthParserListener {
+public partial class FifthBaseListener : IFifthListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.fifth"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -126,20 +126,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEInt([NotNull] FifthParser.EIntContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>EScientific</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEScientific([NotNull] FifthParser.EScientificContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>EScientific</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEScientific([NotNull] FifthParser.EScientificContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ELT</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -407,6 +393,30 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIri([NotNull] FifthParser.IriContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIri_query([NotNull] FifthParser.Iri_queryContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIri_query([NotNull] FifthParser.Iri_queryContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIri_query_param([NotNull] FifthParser.Iri_query_paramContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIri_query_param([NotNull] FifthParser.Iri_query_paramContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.module_import"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -478,54 +488,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParameter_name([NotNull] FifthParser.Parameter_nameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.q_function_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterQ_function_name([NotNull] FifthParser.Q_function_nameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.q_function_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitQ_function_name([NotNull] FifthParser.Q_function_nameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.qvarname"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterQvarname([NotNull] FifthParser.QvarnameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.qvarname"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitQvarname([NotNull] FifthParser.QvarnameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.q_type_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterQ_type_name([NotNull] FifthParser.Q_type_nameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.q_type_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitQ_type_name([NotNull] FifthParser.Q_type_nameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.scientific"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScientific([NotNull] FifthParser.ScientificContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.scientific"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScientific([NotNull] FifthParser.ScientificContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>VarDeclStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.
@@ -672,486 +634,6 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitVar_name([NotNull] FifthParser.Var_nameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ihier_part"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIhier_part([NotNull] FifthParser.Ihier_partContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ihier_part"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIhier_part([NotNull] FifthParser.Ihier_partContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iri_reference"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIri_reference([NotNull] FifthParser.Iri_referenceContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iri_reference"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIri_reference([NotNull] FifthParser.Iri_referenceContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.absolute_iri"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAbsolute_iri([NotNull] FifthParser.Absolute_iriContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.absolute_iri"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAbsolute_iri([NotNull] FifthParser.Absolute_iriContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.irelative_ref"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIrelative_ref([NotNull] FifthParser.Irelative_refContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.irelative_ref"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIrelative_ref([NotNull] FifthParser.Irelative_refContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.irelative_part"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIrelative_part([NotNull] FifthParser.Irelative_partContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.irelative_part"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIrelative_part([NotNull] FifthParser.Irelative_partContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iauthority"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIauthority([NotNull] FifthParser.IauthorityContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iauthority"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIauthority([NotNull] FifthParser.IauthorityContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iuserinfo"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIuserinfo([NotNull] FifthParser.IuserinfoContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iuserinfo"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIuserinfo([NotNull] FifthParser.IuserinfoContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ihost"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIhost([NotNull] FifthParser.IhostContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ihost"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIhost([NotNull] FifthParser.IhostContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ireg_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIreg_name([NotNull] FifthParser.Ireg_nameContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ireg_name"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIreg_name([NotNull] FifthParser.Ireg_nameContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath([NotNull] FifthParser.IpathContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath([NotNull] FifthParser.IpathContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath_abempty"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath_abempty([NotNull] FifthParser.Ipath_abemptyContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath_abempty"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath_abempty([NotNull] FifthParser.Ipath_abemptyContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath_absolute"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath_absolute([NotNull] FifthParser.Ipath_absoluteContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath_absolute"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath_absolute([NotNull] FifthParser.Ipath_absoluteContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath_noscheme"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath_noscheme([NotNull] FifthParser.Ipath_noschemeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath_noscheme"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath_noscheme([NotNull] FifthParser.Ipath_noschemeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath_rootless"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath_rootless([NotNull] FifthParser.Ipath_rootlessContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath_rootless"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath_rootless([NotNull] FifthParser.Ipath_rootlessContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipath_empty"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpath_empty([NotNull] FifthParser.Ipath_emptyContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipath_empty"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpath_empty([NotNull] FifthParser.Ipath_emptyContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.isegment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsegment([NotNull] FifthParser.IsegmentContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.isegment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsegment([NotNull] FifthParser.IsegmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.isegment_nz"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsegment_nz([NotNull] FifthParser.Isegment_nzContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.isegment_nz"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsegment_nz([NotNull] FifthParser.Isegment_nzContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.isegment_nz_nc"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIsegment_nz_nc([NotNull] FifthParser.Isegment_nz_ncContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.isegment_nz_nc"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIsegment_nz_nc([NotNull] FifthParser.Isegment_nz_ncContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ipchar"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIpchar([NotNull] FifthParser.IpcharContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ipchar"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIpchar([NotNull] FifthParser.IpcharContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iquery"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIquery([NotNull] FifthParser.IqueryContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iquery"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIquery([NotNull] FifthParser.IqueryContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ifragment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIfragment([NotNull] FifthParser.IfragmentContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ifragment"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIfragment([NotNull] FifthParser.IfragmentContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iunreserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIunreserved([NotNull] FifthParser.IunreservedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iunreserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIunreserved([NotNull] FifthParser.IunreservedContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.scheme"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterScheme([NotNull] FifthParser.SchemeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.scheme"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitScheme([NotNull] FifthParser.SchemeContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.port"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPort([NotNull] FifthParser.PortContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.port"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPort([NotNull] FifthParser.PortContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ip_literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIp_literal([NotNull] FifthParser.Ip_literalContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ip_literal"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIp_literal([NotNull] FifthParser.Ip_literalContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ip_v_future"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIp_v_future([NotNull] FifthParser.Ip_v_futureContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ip_v_future"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIp_v_future([NotNull] FifthParser.Ip_v_futureContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ip_v6_address"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIp_v6_address([NotNull] FifthParser.Ip_v6_addressContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ip_v6_address"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIp_v6_address([NotNull] FifthParser.Ip_v6_addressContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.h16"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterH16([NotNull] FifthParser.H16Context context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.h16"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitH16([NotNull] FifthParser.H16Context context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ls32"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterLs32([NotNull] FifthParser.Ls32Context context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ls32"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitLs32([NotNull] FifthParser.Ls32Context context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.ip_v4_address"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIp_v4_address([NotNull] FifthParser.Ip_v4_addressContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.ip_v4_address"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIp_v4_address([NotNull] FifthParser.Ip_v4_addressContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.dec_octet"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDec_octet([NotNull] FifthParser.Dec_octetContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.dec_octet"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDec_octet([NotNull] FifthParser.Dec_octetContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.pct_encoded"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterPct_encoded([NotNull] FifthParser.Pct_encodedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.pct_encoded"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitPct_encoded([NotNull] FifthParser.Pct_encodedContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.unreserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterUnreserved([NotNull] FifthParser.UnreservedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.unreserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitUnreserved([NotNull] FifthParser.UnreservedContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.reserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReserved([NotNull] FifthParser.ReservedContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.reserved"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReserved([NotNull] FifthParser.ReservedContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.gen_delims"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterGen_delims([NotNull] FifthParser.Gen_delimsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.gen_delims"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitGen_delims([NotNull] FifthParser.Gen_delimsContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.sub_delims"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterSub_delims([NotNull] FifthParser.Sub_delimsContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.sub_delims"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitSub_delims([NotNull] FifthParser.Sub_delimsContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.alpha"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAlpha([NotNull] FifthParser.AlphaContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.alpha"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAlpha([NotNull] FifthParser.AlphaContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.hexdig"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterHexdig([NotNull] FifthParser.HexdigContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.hexdig"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitHexdig([NotNull] FifthParser.HexdigContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.digit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterDigit([NotNull] FifthParser.DigitContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.digit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitDigit([NotNull] FifthParser.DigitContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.non_zero_digit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNon_zero_digit([NotNull] FifthParser.Non_zero_digitContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.non_zero_digit"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNon_zero_digit([NotNull] FifthParser.Non_zero_digitContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

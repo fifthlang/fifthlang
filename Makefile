@@ -27,7 +27,7 @@ grammar: $(DIR_GRAMMAR)/FifthLexer.cs $(DIR_GRAMMAR)/FifthParser.cs
 clean:
 	$(CC) clean
 
-$(DIR_GRAMMAR)/%.cs: $(DIR_GRAMMAR)/%.g4
+$(DIR_GRAMMAR)/FifthLexer.cs $(DIR_GRAMMAR)/FifthParser.cs: $(DIR_GRAMMAR)/Fifth.g4
 	$(JVM) -jar $(ANTLR) $(ANTLR_ARGS) $<
 
 $(BIN_PARSER): $(SRC_PARSER) grammar
@@ -35,5 +35,6 @@ $(BIN_PARSER): $(SRC_PARSER) grammar
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_PARSER)
 
+build: $(BIN_TEST)
 test: $(BIN_TEST)
 	$(CC) test

@@ -1,7 +1,7 @@
 ﻿using fifth.VirtualMachine;
 using System.Collections.Generic;
 
-namespace fifth.Parser.AST.Builders
+namespace fifth.parser.Parser.AST.Builders
 {
     public class ParameterDeclarationBuilder
     {

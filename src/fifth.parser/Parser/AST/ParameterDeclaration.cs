@@ -1,6 +1,6 @@
 ﻿using fifth.VirtualMachine;
 
-namespace fifth.Parser.AST
+namespace fifth.parser.Parser.AST
 {
     public class ParameterDeclaration
     {

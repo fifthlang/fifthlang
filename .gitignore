@@ -360,3 +360,33 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd.antlr
+.idea/.idea.fifthlang/.idea/workspace.xml
+.idea/.idea.fifthlang/.idea/codeStyles/codeStyleConfig.xml
+.idea/.idea.fifthlang/.idea/contentModel.xml
+.idea/.idea.fifthlang/.idea/encodings.xml
+.idea/.idea.fifthlang/.idea/indexLayout.xml
+.idea/.idea.fifthlang/.idea/modules.xml
+.idea/.idea.fifthlang/.idea/projectSettingsUpdater.xml
+.idea/.idea.fifthlang/.idea/vcs.xml
+.idea/.idea.fifthlang/riderModule.iml
+src/fifth.parser/Parser/grammar/.antlr/Fifth.interp
+src/fifth.parser/Parser/grammar/.antlr/fifth.tokens
+src/fifth.parser/Parser/grammar/.antlr/fifthLexer.interp
+src/fifth.parser/Parser/grammar/.antlr/fifthLexer.java
+src/fifth.parser/Parser/grammar/.antlr/fifthLexer.tokens
+src/fifth.parser/Parser/grammar/.antlr/FifthParser.interp
+src/fifth.parser/Parser/grammar/.antlr/fifthParser.java
+src/fifth.parser/Parser/grammar/.antlr/IRI.interp
+src/fifth.parser/Parser/grammar/.antlr/IRI.tokens
+src/fifth.parser/Parser/grammar/.antlr/IRILexer.interp
+src/fifth.parser/Parser/grammar/.antlr/IRILexer.java
+src/fifth.parser/Parser/grammar/.antlr/IRILexer.tokens
+src/fifth.parser/Parser/grammar/.antlr/IRIParser.java
+src/fifth.parser/Parser/grammar/old/FifthLexer.g4
+src/fifth.parser/Parser/grammar/old/FifthParser.g4
+src/fifth.parser/Parser/grammar/old/.antlr/fifthLexer.interp
+src/fifth.parser/Parser/grammar/old/.antlr/fifthLexer.java
+src/fifth.parser/Parser/grammar/old/.antlr/fifthLexer.tokens
+src/fifth.parser/Parser/grammar/old/.antlr/FifthParser.interp
+src/fifth.parser/Parser/grammar/old/.antlr/FifthParser.java
+src/fifth.parser/Parser/grammar/old/.antlr/FifthParser.tokens

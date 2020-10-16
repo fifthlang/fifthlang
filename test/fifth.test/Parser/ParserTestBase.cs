@@ -1,7 +1,7 @@
 using Antlr4.Runtime;
 using static FifthParser;
 
-namespace fifth.Parser.Tests
+namespace fifth.parser.Parser.Tests
 {
     public class ParserTestBase
     {

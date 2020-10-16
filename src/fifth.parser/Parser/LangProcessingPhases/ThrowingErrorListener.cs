@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Antlr4.Runtime;
 
-namespace fifth.Parser
+namespace fifth.parser.Parser
 {
     public class ThrowingErrorListener<TResult> : IAntlrErrorListener<TResult>
     {

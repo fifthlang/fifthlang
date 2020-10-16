@@ -1,4 +1,4 @@
-﻿namespace fifth.Parser.AST
+﻿namespace fifth.parser.Parser.AST
 {
     public abstract class AstNode { }
 
