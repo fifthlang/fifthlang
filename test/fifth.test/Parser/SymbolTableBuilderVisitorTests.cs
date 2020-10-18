@@ -14,7 +14,8 @@ namespace fifth.parser.Parser.Tests
             string TestProgram = @"main() => myprint(""hello world"");";
 
             var ctx = ParseProgram(TestProgram);
-            var visitor = new SymbolTableBuilderVisitor();
+            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ParseTreeWalker.Default.Walk(visitor, ctx);
             var symtab = visitor.GlobalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(1));
@@ -28,7 +29,8 @@ namespace fifth.parser.Parser.Tests
             blah() => int result = 5, return result;";
 
             var ctx = ParseProgram(TestProgram);
-            var visitor = new SymbolTableBuilderVisitor();
+            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ParseTreeWalker.Default.Walk(visitor, ctx);
             var symtab = visitor.GlobalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(3));
@@ -46,7 +48,8 @@ namespace fifth.parser.Parser.Tests
             myprint(int x) => std.print(""the answer is "" + x);";
 
             var ctx = ParseProgram(TestProgram);
-            var visitor = new SymbolTableBuilderVisitor();
+            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ParseTreeWalker.Default.Walk(visitor, ctx);
             Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.GreaterThan(0));
         }

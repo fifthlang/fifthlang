@@ -8,16 +8,22 @@ namespace fifth.parser.Parser
 {
     public class SymbolTableBuilderVisitor : FifthBaseListener
     {
+        public AnnotatedSyntaxTree Ast { get; set; }
+        public SymbolTableBuilderVisitor(AnnotatedSyntaxTree ast)
+        {
+            this.Ast = ast;
+        }
         public IScope GlobalScope { get; set; }
         public IScope CurrentScope { get; set; }
 
-        void LeaveNode(ParserRuleContext ctx){
+        void LeaveNode(ParserRuleContext ctx)
+        {
             CurrentScope = CurrentScope.EnclosingScope ?? GlobalScope;
         }
         public override void EnterFifth(FifthContext context)
         {
             // this is the top level entrypoint into the AST. So this is where root scopes etc get set up
-            CurrentScope = GlobalScope = new Scope(context);
+            CurrentScope = GlobalScope = Ast.CreateNewScope(context);
         }
 
         public override void ExitFifth([NotNull] FifthContext context)
@@ -25,7 +31,8 @@ namespace fifth.parser.Parser
             LeaveNode(context);
         }
 
-        public override void EnterFunction_declaration([NotNull] FifthParser.Function_declarationContext context) {
+        public override void EnterFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
+        {
             CurrentScope.Declare(context.Start.Text, SymbolKind.FunctionDeclaration, context);
             CurrentScope = new Scope(context, CurrentScope);
         }
