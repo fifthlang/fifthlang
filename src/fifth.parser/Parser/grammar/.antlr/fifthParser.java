@@ -1342,11 +1342,11 @@ public class FifthParser extends Parser {
 	}
 
 	public static class Parameter_declarationContext extends ParserRuleContext {
-		public Type_nameContext type_name() {
-			return getRuleContext(Type_nameContext.class,0);
+		public Parameter_typeContext parameter_type() {
+			return getRuleContext(Parameter_typeContext.class,0);
 		}
-		public Var_nameContext var_name() {
-			return getRuleContext(Var_nameContext.class,0);
+		public Parameter_nameContext parameter_name() {
+			return getRuleContext(Parameter_nameContext.class,0);
 		}
 		public Parameter_declarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1361,9 +1361,9 @@ public class FifthParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(230);
-			type_name();
+			parameter_type();
 			setState(231);
-			var_name();
+			parameter_name();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1861,9 +1861,9 @@ public class FifthParser extends Parser {
 		"\u00de\5\36\20\2\u00dd\u00db\3\2\2\2\u00de\u00e1\3\2\2\2\u00df\u00dd\3"+
 		"\2\2\2\u00df\u00e0\3\2\2\2\u00e0\u00e2\3\2\2\2\u00e1\u00df\3\2\2\2\u00e2"+
 		"\u00e3\7&\2\2\u00e3\35\3\2\2\2\u00e4\u00e5\7\'\2\2\u00e5\37\3\2\2\2\u00e6"+
-		"\u00e7\7\'\2\2\u00e7!\3\2\2\2\u00e8\u00e9\5,\27\2\u00e9\u00ea\5\60\31"+
-		"\2\u00ea#\3\2\2\2\u00eb\u00ec\7\'\2\2\u00ec%\3\2\2\2\u00ed\u00ee\7\'\2"+
-		"\2\u00ee\'\3\2\2\2\u00ef\u00f0\5,\27\2\u00f0\u00f3\5\60\31\2\u00f1\u00f2"+
+		"\u00e7\7\'\2\2\u00e7!\3\2\2\2\u00e8\u00e9\5$\23\2\u00e9\u00ea\5&\24\2"+
+		"\u00ea#\3\2\2\2\u00eb\u00ec\7\'\2\2\u00ec%\3\2\2\2\u00ed\u00ee\7\'\2\2"+
+		"\u00ee\'\3\2\2\2\u00ef\u00f0\5,\27\2\u00f0\u00f3\5\60\31\2\u00f1\u00f2"+
 		"\7\13\2\2\u00f2\u00f4\5\b\5\2\u00f3\u00f1\3\2\2\2\u00f3\u00f4\3\2\2\2"+
 		"\u00f4\u0108\3\2\2\2\u00f5\u00f6\5\60\31\2\u00f6\u00f7\7\13\2\2\u00f7"+
 		"\u00f8\5\b\5\2\u00f8\u0108\3\2\2\2\u00f9\u00fa\7\t\2\2\u00fa\u0108\5\b"+

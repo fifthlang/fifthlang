@@ -12,7 +12,7 @@ alias:
 block: OPENBRACE statement* CLOSEBRACE
 ;
 
-exp 
+exp
     : exp LT exp               # ELT
     | exp GT exp               # EGT
     | exp LEQ exp               # ELEQ
@@ -73,8 +73,8 @@ module_name: IDENTIFIER;
 packagename: IDENTIFIER ;
 
 parameter_declaration:
-    type_name
-    var_name
+    parameter_type
+    parameter_name
 ;
 
 parameter_type: IDENTIFIER
@@ -83,7 +83,7 @@ parameter_type: IDENTIFIER
 parameter_name: IDENTIFIER
 ;
 
-statement: 
+statement:
       type_name var_name (ASSIGN exp)?     # VarDeclStmt
     | var_name ASSIGN exp                  # AssignmentStmt
     | RETURN exp                           # ReturnStmt

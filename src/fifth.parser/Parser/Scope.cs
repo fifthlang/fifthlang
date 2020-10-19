@@ -1,3 +1,4 @@
+using System;
 using Antlr4.Runtime;
 
 namespace fifth.parser.Parser
@@ -17,14 +18,20 @@ namespace fifth.parser.Parser
         }
         public IScope EnclosingScope { get; set; }
         public ISymbolTable SymbolTable { get; set; }
-        public void Declare(string name, SymbolKind kind, ParserRuleContext ctx){
-            SymbolTable[name] = new SymTabEntry{
+        public void Declare(string name, SymbolKind kind, ParserRuleContext ctx, params (string, object)[] properties)
+        {
+            var symTabEntry = new SymTabEntry
+            {
                 Name = name,
                 SymbolKind = kind,
                 Line = ctx.Start.Line,
                 Context = ctx
             };
-            
+            foreach ((string x, object y) in properties)
+            {
+                symTabEntry.Annotations[x] = y;
+            }
+            this.SymbolTable[name] = symTabEntry;
         }
     }
 }

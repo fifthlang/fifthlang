@@ -1,3 +1,4 @@
+using System;
 using Antlr4.Runtime;
 
 namespace fifth.parser.Parser
@@ -7,6 +8,6 @@ namespace fifth.parser.Parser
         IScope EnclosingScope { get; set; }
         ISymbolTable SymbolTable { get; set; }
         ParserRuleContext AstNode { get; set; }
-        void Declare(string name, SymbolKind kind, ParserRuleContext ctx);
+        void Declare(string name, SymbolKind kind, ParserRuleContext ctx, params (string, object)[] properties);
     }
 }

@@ -51,8 +51,29 @@ namespace fifth.parser.Parser.Tests
             var annotatedAst = new AnnotatedSyntaxTree(ctx);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ParseTreeWalker.Default.Walk(visitor, ctx);
-            Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.GreaterThan(0));
+            Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
+            var mainfuncdecl = (ParserRuleContext)annotatedAst.AstRoot.GetChild(1).Payload;
+            Assert.That(annotatedAst.ScopeLookupTable.ContainsKey(mainfuncdecl), Is.True);
         }
+
+                [Test]
+        public void TestCanAccessScopeForMain()
+        {
+         string TestProgram = @"use std;
+            main(int x, int y) => myprint(x + y);
+            myprint(int x) => std.print(""the answer is "" + x);";
+
+            var ctx = ParseProgram(TestProgram);
+            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
+            ParseTreeWalker.Default.Walk(visitor, ctx);
+            Assert.That( visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
+            var mainfuncdecl = (ParserRuleContext)annotatedAst.AstRoot.GetChild(1).Payload;
+            var mainScope = annotatedAst.ScopeLookupTable[mainfuncdecl];
+            Assert.That(mainScope, Is.Not.Null);
+            Assert.That(mainScope.SymbolTable.Count, Is.EqualTo(2));
+        }
+
 
 
     }

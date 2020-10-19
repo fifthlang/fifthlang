@@ -5,22 +5,25 @@ using static FifthParser;
 
 public class AnnotatedSyntaxTree
 {
-    public AnnotatedSyntaxTree(ParserRuleContext astRoot)
+    private AnnotatedSyntaxTree()
+    {
+        ScopeLookupTable = new Dictionary<ParserRuleContext, IScope>();
+    }
+    public AnnotatedSyntaxTree(ParserRuleContext astRoot) : this()
     {
         AstRoot = astRoot;
     }
 
     /// A lookup table to get from the AST Nodes to the scopes defined for them
-    public Dictionary<ParserRuleContext, IScope> ScopeLookupTable
-        => new Dictionary<ParserRuleContext, IScope>();
+    public Dictionary<ParserRuleContext, IScope> ScopeLookupTable { get; private set; }
 
-        // keep a track of the root of the AST
+    // keep a track of the root of the AST
     public ParserRuleContext AstRoot { get; set; }
 
     public IScope CreateNewScope(ParserRuleContext ctx)
     {
         // check if this is we are creating a root/global scope for the outermost context
-        if (AstRoot == null && ctx is FifthContext)
+        if (AstRoot == null && ctx.Payload is FifthContext)
         {
             AstRoot = ctx;
         }
@@ -32,5 +35,11 @@ public class AnnotatedSyntaxTree
         }
         // create the scope, attach it to context and return
         return ScopeLookupTable[ctx] = new Scope(ctx);
+    }
+    public IScope CreateNewScope(ParserRuleContext ctx, IScope enclosingScope)
+    {
+        var result = CreateNewScope(ctx);
+        result.EnclosingScope = enclosingScope;
+        return result;
     }
 }

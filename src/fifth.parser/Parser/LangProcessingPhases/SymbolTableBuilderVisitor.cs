@@ -27,27 +27,29 @@ namespace fifth.parser.Parser
         }
 
         public override void ExitFifth([NotNull] FifthContext context)
-        {
-            LeaveNode(context);
-        }
+        => LeaveNode(context);
 
         public override void EnterFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
         {
             CurrentScope.Declare(context.Start.Text, SymbolKind.FunctionDeclaration, context);
-            CurrentScope = new Scope(context, CurrentScope);
+            CurrentScope = Ast.CreateNewScope(context, CurrentScope);
         }
 
         public override void ExitFunction_declaration([NotNull] Function_declarationContext context)
-        {
-            LeaveNode(context);
-        }
+        => LeaveNode(context);
         public override void EnterVarDeclStmt([NotNull] VarDeclStmtContext context)
         {
             CurrentScope.Declare(context.Start.Text, SymbolKind.VariableDeclaration, context);
         }
         public override void ExitVarDeclStmt([NotNull] VarDeclStmtContext context)
+        => LeaveNode(context);
+
+        public override void EnterParameter_declaration([NotNull] Parameter_declarationContext context)
         {
-            LeaveNode(context);
+            var varType = context.GetChild<Parameter_typeContext>(0);
+            var varName = context.children[1];
+            CurrentScope.Declare(varName.GetText(), SymbolKind.FormalParameter, context, ("type_name", (object)varType.GetText()));
+            base.EnterParameter_declaration(context);
         }
     }
 }
