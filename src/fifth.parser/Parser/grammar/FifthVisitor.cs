@@ -50,6 +50,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBlock([NotNull] FifthParser.BlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.explist"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitExplist([NotNull] FifthParser.ExplistContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EFuncCall</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>

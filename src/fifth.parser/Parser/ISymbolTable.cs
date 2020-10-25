@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
     public interface ISymbolTable : IDictionary<string, ISymbolTableEntry>
     {

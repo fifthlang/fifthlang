@@ -61,6 +61,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBlock([NotNull] FifthParser.BlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.explist"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExplist([NotNull] FifthParser.ExplistContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.explist"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExplist([NotNull] FifthParser.ExplistContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EFuncCall</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>

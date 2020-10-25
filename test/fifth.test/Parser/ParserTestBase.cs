@@ -1,14 +1,14 @@
 using Antlr4.Runtime;
+using Fifth.Parser;
 using static FifthParser;
 
-namespace fifth.parser.Parser.Tests
+namespace Fifth.Tests
 {
     public class ParserTestBase
     {
-
         protected static FifthContext ParseProgram(string fragment)
             => GetParserFor(fragment).fifth();
-        
+
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
             => GetParserFor(fragment).statement();
 

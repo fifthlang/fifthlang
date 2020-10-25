@@ -1,11 +1,13 @@
-﻿using fifth.VirtualMachine;
+﻿using Fifth.VirtualMachine;
+using System;
 using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST.Builders
+namespace Fifth.AST.Builders
 {
-    public class ParameterDeclarationBuilder
+    public class ParameterDeclarationBuilder : IBuilder<ParameterDeclaration>
     {
         public List<ParameterDeclaration> ParameterDeclarations { get; private set; }
+
         public string ParameterName { get; private set; }
         public IFifthType ParameterType { get; private set; }
         public string TypeName { get; private set; }
@@ -41,5 +43,7 @@ namespace fifth.parser.Parser.AST.Builders
             this.TypeName = name;
             return this;
         }
+
+        public bool IsValid() => throw new System.NotImplementedException();
     }
 }

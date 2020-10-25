@@ -1,4 +1,4 @@
-﻿namespace fifth.VirtualMachine.PrimitiveTypes
+﻿namespace Fifth.VirtualMachine.PrimitiveTypes
 {
     [TypeTraits(IsPrimitive = true, IsNumeric = true, Keyword = "double")]
     public class PrimitiveDouble : IFifthType

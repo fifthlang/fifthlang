@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST
+namespace Fifth.AST
 {
     public class ProgramDefinition : AstNode
     {

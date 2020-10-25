@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using fifth.VirtualMachine;
+using Fifth.VirtualMachine;
 using FluentAssertions;
-using fifth.VirtualMachine.PrimitiveTypes;
+using Fifth.VirtualMachine.PrimitiveTypes;
 using System;
 using System.Collections.Generic;
 
-namespace fifth.VirtualMachine.Tests
+namespace Fifth.VirtualMachine.Tests
 {
     [TestFixture()]
     public class EnvironmentTests
@@ -24,7 +24,7 @@ namespace fifth.VirtualMachine.Tests
         public void EnvironmentTest(Tuple<IFifthType, object> a)
         {
             (IFifthType t, object o) = a;
-            var sut = new fifth.VirtualMachine.Environment(null);
+            var sut = new Fifth.VirtualMachine.Environment(null);
             sut.Should().NotBeNull();
             sut.IsEmpty.Should().BeTrue();
             sut[new VariableReference("hello")] = new VariableAssignment(t, o);

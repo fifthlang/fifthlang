@@ -1,12 +1,13 @@
-﻿using fifth.VirtualMachine;
+﻿using Fifth.VirtualMachine;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace fifth.parser.Parser.AST.Builders
+namespace Fifth.AST.Builders
 {
     /// <summary>
     /// A fluent API for building the AST node definitions of Functions
     /// </summary>
-    public class ProgramBuilder
+    public class ProgramBuilder : IBuilder<ProgramDefinition>
     {
         public ProgramBuilder()
         {
@@ -22,10 +23,16 @@ namespace fifth.parser.Parser.AST.Builders
 
         public ProgramDefinition Build()
         {
+            if(!IsValid()) throw new System.Exception("Invalid program definition");
             return new ProgramDefinition
             {
                 FunctionDefinitions = FunctionDefinitions
             };
+        }
+
+        public bool IsValid() {
+            // there must be at least one function defined, called 'main'
+            return FunctionDefinitions.Any(fd => fd.Name == "main");
         }
 
         public ProgramBuilder WithFunction(FunctionDefinition functionDefinition)

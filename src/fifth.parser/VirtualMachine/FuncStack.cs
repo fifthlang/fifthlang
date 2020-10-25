@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace fifth
+namespace Fifth
 {
     /// <summary>
     /// A stack of functions

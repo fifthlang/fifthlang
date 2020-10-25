@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace fifth.VirtualMachine
+namespace Fifth.VirtualMachine
 {
     public class VariableReference : IVariableReference, IEquatable<VariableReference>
     {

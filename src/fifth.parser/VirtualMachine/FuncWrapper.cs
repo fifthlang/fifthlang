@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace fifth
+namespace Fifth
 {
     /// <summary>
     /// A wrapper around any sort of function, to make it easier to extract and perform type

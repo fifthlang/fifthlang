@@ -1,14 +1,13 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using NUnit.Framework;
-using static FifthParser;
-
-namespace fifth.parser.Parser.Tests
+namespace Fifth.Tests
 {
+    using Antlr4.Runtime;
+    using Fifth.Parser;
+    using NUnit.Framework;
+
     [TestFixture()]
     public class LexerTests : ParserTestBase
     {
-                [TestCase("alias", "ALIAS")]
+        [TestCase("alias", "ALIAS")]
         [TestCase("as", "AS")]
         [TestCase("else", "ELSE")]
         [TestCase("if", "IF")]
@@ -36,9 +35,10 @@ namespace fifth.parser.Parser.Tests
         [TestCase("55.0", "FLOAT")]
         [TestCase("55.5e12", "FLOAT")]
         [TestCase("55.5e-12", "FLOAT")]
-        [TestCase("55.5E-12", "FLOAT")]        
+        [TestCase("55.5E-12", "FLOAT")]
         [TestCase("55.05e12", "FLOAT")]
-        public void TestCanRecogniseIntegers(string sample, string expectedType){
+        public void TestCanRecogniseIntegers(string sample, string expectedType)
+        {
             FifthLexer lexer = new FifthLexer(new AntlrInputStream(sample));
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new ThrowingErrorListener<int>());

@@ -1,5 +1,5 @@
-﻿using fifth;
-using fifth.VirtualMachine;
+﻿using Fifth;
+using Fifth.VirtualMachine;
 using NUnit.Framework;
 
 namespace fifthlang_tests

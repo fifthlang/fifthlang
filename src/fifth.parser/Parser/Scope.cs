@@ -1,7 +1,7 @@
 using System;
 using Antlr4.Runtime;
 
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
     public class Scope : IScope
     {

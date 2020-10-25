@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST.Builders
+namespace Fifth.AST.Builders
 {
     public class ParameterListBuilder
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST.Builders
+namespace Fifth.AST
 {
-    public class ParameterDeclarationList : FunctionDefinition
+    public class ParameterDeclarationList : AstNode
     {
         public List<ParameterDeclaration> ParameterDeclarations { get; set; }
     }

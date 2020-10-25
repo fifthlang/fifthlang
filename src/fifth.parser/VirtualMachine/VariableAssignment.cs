@@ -1,4 +1,4 @@
-﻿namespace fifth.VirtualMachine
+﻿namespace Fifth.VirtualMachine
 {
     public class VariableAssignment : IVariableAssignment
     {

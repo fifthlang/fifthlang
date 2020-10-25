@@ -1,5 +1,5 @@
 ﻿using System;
-using fifth;
+using Fifth;
 using NUnit.Framework;
 
 namespace fifth_test

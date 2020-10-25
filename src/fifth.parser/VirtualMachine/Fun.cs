@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace fifth
+namespace Fifth
 {
     public static class Fun
     {

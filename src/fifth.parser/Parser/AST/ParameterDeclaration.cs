@@ -1,8 +1,8 @@
-﻿using fifth.VirtualMachine;
+﻿using Fifth.VirtualMachine;
 
-namespace fifth.parser.Parser.AST
+namespace Fifth.AST
 {
-    public class ParameterDeclaration
+    public class ParameterDeclaration :AstNode
     {
         public string ParameterName { get; set; }
         public IFifthType ParameterType { get; set; }

@@ -1,45 +1,49 @@
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using fifth.parser.Parser;
-using static FifthParser;
-
-public class AnnotatedSyntaxTree
+namespace Fifth
 {
-    private AnnotatedSyntaxTree()
-    {
-        ScopeLookupTable = new Dictionary<ParserRuleContext, IScope>();
-    }
-    public AnnotatedSyntaxTree(ParserRuleContext astRoot) : this()
-    {
-        AstRoot = astRoot;
-    }
+    using System.Collections.Generic;
+    using Antlr4.Runtime;
+    using Fifth.Parser;
+    using static FifthParser;
 
-    /// A lookup table to get from the AST Nodes to the scopes defined for them
-    public Dictionary<ParserRuleContext, IScope> ScopeLookupTable { get; private set; }
-
-    // keep a track of the root of the AST
-    public ParserRuleContext AstRoot { get; set; }
-
-    public IScope CreateNewScope(ParserRuleContext ctx)
+    public class AnnotatedSyntaxTree
     {
-        // check if this is we are creating a root/global scope for the outermost context
-        if (AstRoot == null && ctx.Payload is FifthContext)
+        private AnnotatedSyntaxTree()
         {
-            AstRoot = ctx;
+            ScopeLookupTable = new Dictionary<ParserRuleContext, IScope>();
+        }
+        public AnnotatedSyntaxTree(ParserRuleContext astRoot) : this()
+        {
+            AstRoot = astRoot;
         }
 
-        // if we've created a scope for this context before, reuse it
-        if (ScopeLookupTable.ContainsKey(ctx))
+        /// A lookup table to get from the AST Nodes to the scopes defined for them
+        public Dictionary<ParserRuleContext, IScope> ScopeLookupTable { get; private set; }
+
+        // keep a track of the root of the AST
+        public ParserRuleContext AstRoot { get; set; }
+
+        public IScope CreateNewScope(ParserRuleContext ctx)
         {
-            return ScopeLookupTable[ctx];
+            // check if this is we are creating a root/global scope for the outermost context
+            if (AstRoot == null && ctx.Payload is FifthContext)
+            {
+                AstRoot = ctx;
+            }
+
+            // if we've created a scope for this context before, reuse it
+            if (ScopeLookupTable.ContainsKey(ctx))
+            {
+                return ScopeLookupTable[ctx];
+            }
+            // create the scope, attach it to context and return
+            return ScopeLookupTable[ctx] = new Scope(ctx);
         }
-        // create the scope, attach it to context and return
-        return ScopeLookupTable[ctx] = new Scope(ctx);
+        public IScope CreateNewScope(ParserRuleContext ctx, IScope enclosingScope)
+        {
+            var result = CreateNewScope(ctx);
+            result.EnclosingScope = enclosingScope;
+            return result;
+        }
     }
-    public IScope CreateNewScope(ParserRuleContext ctx, IScope enclosingScope)
-    {
-        var result = CreateNewScope(ctx);
-        result.EnclosingScope = enclosingScope;
-        return result;
-    }
+
 }

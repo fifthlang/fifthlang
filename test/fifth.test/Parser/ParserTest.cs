@@ -3,7 +3,7 @@ using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using static FifthParser;
 
-namespace fifth.parser.Parser.Tests
+namespace Fifth.Tests
 {
     [TestFixture()]
     public class ParserTests : ParserTestBase

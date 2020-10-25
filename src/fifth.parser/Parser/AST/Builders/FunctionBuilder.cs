@@ -1,44 +1,15 @@
-﻿using fifth.VirtualMachine;
+﻿using Fifth.VirtualMachine;
 using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST.Builders
+namespace Fifth.AST.Builders
 {
-    /// <summary>
-    /// A fluent API for building the AST node definitions of Functions
-    /// </summary>
-    public class ExpressionListBuilder
-    {
-        public ExpressionListBuilder()
-        {
-            Expressions = new List<Expression>();
-        }
-
-        public List<Expression> Expressions { get; private set; }
-
-        public static ExpressionListBuilder Start()
-        {
-            return new ExpressionListBuilder();
-        }
-
-        public List<Expression> Build()
-        {
-            return Expressions;
-        }
-
-        public ExpressionListBuilder WithExpression(Expression expression)
-        {
-            Expressions.Add(expression);
-            return this;
-        }
-    }
-
-    public class FunctionBuilder
+    public class FunctionBuilder : IBuilder<FunctionDefinition>
     {
         public FunctionBuilder()
         {
         }
 
-        public List<Expression> Body { get; private set; }
+        public ExpressionList Body { get; private set; }
         public string FunctionName { get; private set; }
         public IFifthType ReturnType { get; private set; }
         internal ParameterDeclarationList ParameterDeclarations { get; private set; }
@@ -50,6 +21,11 @@ namespace fifth.parser.Parser.AST.Builders
 
         public FunctionDefinition Build()
         {
+            if (!IsValid())
+            {
+                throw new System.Exception("Attempted to build an invalid function definition");
+            }
+
             return new FunctionDefinition
             {
                 Name = this.FunctionName,
@@ -58,9 +34,16 @@ namespace fifth.parser.Parser.AST.Builders
             };
         }
 
+        public bool IsValid()
+        {
+            return !string.IsNullOrWhiteSpace(FunctionName)
+                && ReturnType != null
+                && Body != null;
+        }
+
         public FunctionBuilder WithBody(List<Expression> expressions)
         {
-            this.Body = expressions;
+            this.Body = new ExpressionList{Expressions = expressions};
             return this;
         }
 

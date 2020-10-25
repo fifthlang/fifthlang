@@ -1,4 +1,4 @@
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
     public enum SymbolKind
     {

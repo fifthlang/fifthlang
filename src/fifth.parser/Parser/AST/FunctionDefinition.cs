@@ -1,12 +1,13 @@
-﻿using fifth.VirtualMachine;
+﻿using Fifth.VirtualMachine;
 using System.Collections.Generic;
 
-namespace fifth.parser.Parser.AST
+namespace Fifth.AST
 {
     public class FunctionDefinition : AstNode
     {
-        public List<Expression> Body { get; internal set; }
+        public ExpressionList Body { get; set; }
+        public ParameterDeclarationList ParameterDeclarations { get; set; }
         public string Name { get; set; }
-        public IFifthType ReturnType { get; internal set; }
+        public IFifthType ReturnType { get; set; }
     }
 }

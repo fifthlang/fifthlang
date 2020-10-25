@@ -1,4 +1,4 @@
-﻿namespace fifth.VirtualMachine.PrimitiveTypes
+﻿namespace Fifth.VirtualMachine.PrimitiveTypes
 {
     internal enum OperatorPosition
     {

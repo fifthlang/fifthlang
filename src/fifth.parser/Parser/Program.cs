@@ -1,6 +1,6 @@
 ﻿using System;
 
-internal class Fifth
+internal class Program
 {
     public static void Main(string[] arg)
     {

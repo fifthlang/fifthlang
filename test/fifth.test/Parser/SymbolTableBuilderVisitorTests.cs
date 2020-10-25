@@ -1,9 +1,10 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Fifth.Parser;
 using NUnit.Framework;
 using static FifthParser;
 
-namespace fifth.parser.Parser.Tests
+namespace Fifth.Tests
 {
     [TestFixture()]
     public class SymbolTableBuilderVisitorTests : ParserTestBase

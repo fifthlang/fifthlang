@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace fifth.VirtualMachine
+namespace Fifth.VirtualMachine
 {
     public class Environment : IEnvironment
     {

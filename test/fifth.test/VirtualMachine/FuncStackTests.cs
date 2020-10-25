@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System;
 
-namespace fifth.Tests
+namespace Fifth.Tests
 {
     [TestFixture()]
     public class FuncStackTests

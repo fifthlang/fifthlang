@@ -1,8 +1,7 @@
-using System;
-using Antlr4.Runtime;
-
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
+    using Antlr4.Runtime;
+
     public interface IScope
     {
         IScope EnclosingScope { get; set; }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
     public class SymbolTable : Dictionary<string, ISymbolTableEntry>, ISymbolTable
     {

@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
-using fifth;
+using Fifth;
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
 
-namespace fifth.Tests
+namespace Fifth.Tests
 {
     [TestFixture()]
     public class FunTests

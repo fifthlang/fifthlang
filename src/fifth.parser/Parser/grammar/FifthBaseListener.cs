@@ -71,6 +71,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBlock([NotNull] FifthParser.BlockContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.explist"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterExplist([NotNull] FifthParser.ExplistContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.explist"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitExplist([NotNull] FifthParser.ExplistContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EFuncCall</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>

@@ -4,7 +4,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using static FifthParser;
 
-namespace fifth.parser.Parser
+namespace Fifth.Parser
 {
     public class SymbolTableBuilderVisitor : FifthBaseListener
     {

@@ -12,6 +12,10 @@ alias:
 block: OPENBRACE statement* CLOSEBRACE
 ;
 
+explist
+    : exp (COMMA exp)*
+    ;
+
 exp
     : exp LT exp               # ELT
     | exp GT exp               # EGT
@@ -50,7 +54,7 @@ function_args:
 ;
 
 function_body:
-    LAMBDASEP exp (COMMA exp)* SEMICOLON
+    LAMBDASEP explist SEMICOLON
 ;
 
 function_call

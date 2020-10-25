@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace fifth.VirtualMachine
+namespace Fifth.VirtualMachine
 {
     /// <summary>
     /// Performs fetch, execute and store cycle on stack.
