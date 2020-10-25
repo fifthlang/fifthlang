@@ -58,6 +58,12 @@ namespace Fifth.Parser.LangProcessingPhases
             Op = Operator.And
         };
 
+        public override IAstNode VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context) => new UnaryExpression
+        {
+            Operand = (Expression)this.Visit(context.operand),
+            Op = Operator.Minus
+        };
+
         public override IAstNode VisitEDiv([NotNull] FifthParser.EDivContext context) => new BinaryExpression
         {
             Left = (Expression)this.Visit(context.left),
@@ -96,6 +102,12 @@ namespace Fifth.Parser.LangProcessingPhases
             Op = Operator.LessThanOrEqual
         };
 
+        public override IAstNode VisitELogicNegation([NotNull] FifthParser.ELogicNegationContext context) => new UnaryExpression
+        {
+            Operand = (Expression)this.Visit(context.operand),
+            Op = Operator.Not
+        };
+
         public override IAstNode VisitELT([NotNull] FifthParser.ELTContext context) => new BinaryExpression
         {
             Left = (Expression)this.Visit(context.left),
@@ -110,12 +122,6 @@ namespace Fifth.Parser.LangProcessingPhases
             Op = Operator.Times
         };
 
-        public override IAstNode VisitENegation([NotNull] FifthParser.ENegationContext context) => new UnaryExpression
-        {
-            Operand = (Expression)this.Visit(context.operand),
-            Op = Operator.Not
-        };
-
         public override IAstNode VisitEParen([NotNull] FifthParser.EParenContext context) => this.Visit(context.innerexp);
 
         public override IAstNode VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
@@ -128,11 +134,12 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitEString([NotNull] FifthParser.EStringContext context) => new StringValueExpression(context.value.Text);
 
-        public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context)
+        public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context) => new BinaryExpression
         {
-            Log.Debug("VisitESub");
-            return base.VisitESub(context);
-        }
+            Left = (Expression)this.Visit(context.left),
+            Right = (Expression)this.Visit(context.right),
+            Op = Operator.Minus
+        };
 
         public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
         {

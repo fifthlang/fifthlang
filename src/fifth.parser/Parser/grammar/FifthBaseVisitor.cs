@@ -107,6 +107,17 @@ public partial class FifthBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEVarname([NotNull] FifthParser.EVarnameContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>EArithNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EInt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>
@@ -151,6 +162,17 @@ public partial class FifthBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEGEQ([NotNull] FifthParser.EGEQContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ELogicNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitELogicNegation([NotNull] FifthParser.ELogicNegationContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EAnd</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>
@@ -194,17 +216,6 @@ public partial class FifthBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEParen([NotNull] FifthParser.EParenContext context) { return VisitChildren(context); }
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ENegation</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// <para>
-	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
-	/// on <paramref name="context"/>.
-	/// </para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	public virtual Result VisitENegation([NotNull] FifthParser.ENegationContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

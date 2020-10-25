@@ -26,13 +26,14 @@ exp
     | left=exp MINUS right=exp   # ESub
     | left=exp TIMES right=exp   # EMul
     | left=exp DIVIDE right=exp  # EDiv
+    | MINUS operand=exp          # EArithNegation
     | value=INT                  # EInt
     | value=FLOAT                # EDouble
     | value=STRING               # EString
     | var_name                   # EVarname
     | function_name OPENPAREN (exp (COMMA exp)*)? CLOSEPAREN  # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
-    | NOT operand=exp           # ENegation
+    | NOT operand=exp           # ELogicNegation
     | NEW type_initialiser      # ETypeCreate
     | statement                 # EStatement
 ;

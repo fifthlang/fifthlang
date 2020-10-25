@@ -6,12 +6,6 @@ namespace Fifth.Tests
 {
     public class ParserTestBase
     {
-        protected static FifthContext ParseProgram(string fragment)
-            => GetParserFor(fragment).fifth();
-
-        protected static ParserRuleContext ParseDeclAssignment(string fragment)
-            => GetParserFor(fragment).statement();
-
         protected static FifthParser GetParserFor(string fragment)
         {
             FifthLexer lexer = new FifthLexer(new AntlrInputStream(fragment));
@@ -23,5 +17,14 @@ namespace Fifth.Tests
             parser.AddErrorListener(new ThrowingErrorListener<IToken>());
             return parser;
         }
+
+        protected static ParserRuleContext ParseDeclAssignment(string fragment)
+            => GetParserFor(fragment).statement();
+
+        protected static ParserRuleContext ParseExpression(string fragment)
+            => GetParserFor(fragment).exp();
+
+        protected static FifthContext ParseProgram(string fragment)
+                                    => GetParserFor(fragment).fifth();
     }
 }

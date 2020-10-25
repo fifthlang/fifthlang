@@ -107,6 +107,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EArithNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEArithNegation([NotNull] FifthParser.EArithNegationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EArithNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEArithNegation([NotNull] FifthParser.EArithNegationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EInt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -155,6 +167,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEGEQ([NotNull] FifthParser.EGEQContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>ELogicNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterELogicNegation([NotNull] FifthParser.ELogicNegationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ELogicNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitELogicNegation([NotNull] FifthParser.ELogicNegationContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EAnd</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -202,18 +226,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEParen([NotNull] FifthParser.EParenContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ENegation</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterENegation([NotNull] FifthParser.ENegationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ENegation</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitENegation([NotNull] FifthParser.ENegationContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

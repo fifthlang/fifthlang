@@ -77,6 +77,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>EArithNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EInt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -105,6 +112,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEGEQ([NotNull] FifthParser.EGEQContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ELogicNegation</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitELogicNegation([NotNull] FifthParser.ELogicNegationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EAnd</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -132,13 +146,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEParen([NotNull] FifthParser.EParenContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ENegation</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitENegation([NotNull] FifthParser.ENegationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
