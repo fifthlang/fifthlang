@@ -153,12 +153,27 @@ namespace Fifth.Parser.LangProcessingPhases
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
             Log.Debug("VisitFifth");
-            return base.VisitFifth(context);
+            var functionDeclarations = context._functions
+                .Select(fctx => this.VisitFunction_declaration(fctx))
+                .Cast<FunctionDefinition>()
+                .ToList();
+            var aliasDeclarations = context.alias()
+                .Select(actx => this.VisitAlias(actx))
+                .Cast<AliasDeclaration>()
+                .ToList();
+            return new FifthProgram
+            {
+                Functions = functionDeclarations,
+                Aliases = aliasDeclarations
+            };
         }
 
         public override IAstNode VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context)
         {
-            Log.Debug("VisitFormal_parameters");
+            if (context == null)
+            {
+                return null;
+            }
             var parameters = new List<ParameterDeclaration>();
             parameters.AddRange(
                 context
@@ -223,12 +238,6 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             Log.Debug("VisitIri");
             return base.VisitIri(context);
-        }
-
-        public override IAstNode VisitIri_query([NotNull] FifthParser.Iri_queryContext context)
-        {
-            Log.Debug("VisitIri_query");
-            return base.VisitIri_query(context);
         }
 
         public override IAstNode VisitIri_query_param([NotNull] FifthParser.Iri_query_paramContext context)

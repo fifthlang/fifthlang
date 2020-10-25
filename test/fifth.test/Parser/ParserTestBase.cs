@@ -24,6 +24,9 @@ namespace Fifth.Tests
         protected static ParserRuleContext ParseExpression(string fragment)
             => GetParserFor(fragment).exp();
 
+        protected static ParserRuleContext ParseIri(string fragment)
+            => GetParserFor(fragment).iri();
+
         protected static FifthContext ParseProgram(string fragment)
                                     => GetParserFor(fragment).fifth();
     }

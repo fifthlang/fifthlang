@@ -353,7 +353,7 @@ public partial class FifthBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitIri([NotNull] FifthParser.IriContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Visit a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -361,7 +361,17 @@ public partial class FifthBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitIri_query([NotNull] FifthParser.Iri_queryContext context) { return VisitChildren(context); }
+	public virtual Result VisitQNameIri([NotNull] FifthParser.QNameIriContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
 	/// <para>

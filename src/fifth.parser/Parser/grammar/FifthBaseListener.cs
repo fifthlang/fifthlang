@@ -433,17 +433,29 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIri([NotNull] FifthParser.IriContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Enter a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIri_query([NotNull] FifthParser.Iri_queryContext context) { }
+	public virtual void EnterQNameIri([NotNull] FifthParser.QNameIriContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Exit a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIri_query([NotNull] FifthParser.Iri_queryContext context) { }
+	public virtual void ExitQNameIri([NotNull] FifthParser.QNameIriContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
 	/// <para>The default implementation does nothing.</para>

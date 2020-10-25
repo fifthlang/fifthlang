@@ -3,11 +3,10 @@ grammar Fifth;
 fifth:
     module_import*
     alias*
-    statement*
-    function_declaration* ;
+    functions+=function_declaration* ;
 
 alias:
-    ALIAS iri AS packagename SEMICOLON;
+    ALIAS LT absoluteIri GT AS packagename SEMICOLON;
 
 block: OPENBRACE statement* CLOSEBRACE
 ;
@@ -65,11 +64,25 @@ function_call
 function_name: IDENTIFIER ;
 
 iri
-   : IDENTIFIER COLON IDENTIFIER (QMARK iri_query)? (HASH IDENTIFIER)?
+   :
+   qNameIri | absoluteIri
    ;
-iri_query: iri_query_param ( AMP iri_query_param)* ;
+
+
+qNameIri: prefix=IDENTIFIER? COLON fragname=IDENTIFIER ;
+
+absoluteIri :
+    iri_scheme=IDENTIFIER
+    COLON DIVIDE DIVIDE
+    iri_domain+=IDENTIFIER (DOT iri_domain+=IDENTIFIER)*
+    (DIVIDE iri_segment+=IDENTIFIER)*
+    DIVIDE?
+    (HASH IDENTIFIER?)?
+    // (QMARK iri_query_param (AMP iri_query_param)*)?
+;
+
 iri_query_param:
-    IDENTIFIER '=' IDENTIFIER;
+    name=IDENTIFIER ASSIGN val=IDENTIFIER;
 
 module_import: USE module_name (COMMA module_name)* SEMICOLON ;
 
@@ -148,8 +161,10 @@ NOT: '!';     // negation
 SEMICOLON: ';' ;
 
 // CHARACTER CLASSES ETC
+// IRI_PARAM_VALUE: (LETTER|DIGIT|URI_PUNCT)+;
 IDENTIFIER: (LETTER|'_') (LETTER|DIGIT | '.')*;
 fragment LETTER: [a-zA-Z];
+// fragment URI_PUNCT: [%\-_+];
 STRING:'"' (~["])* '"'  | '\'' (~['])* '\'';
 fragment EXP: [eE] [+\-]? INT;
 fragment DIGIT: [0-9];

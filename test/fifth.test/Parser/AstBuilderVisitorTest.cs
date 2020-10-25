@@ -39,13 +39,45 @@ namespace Fifth.Test.Parser
             binexp.Op.Should().Be(op);
         }
 
-        [Test]
-        public void TestCanBuildProgram()
+        [TestCase(@"main(int x) => x + 1;")]
+        [TestCase(@"main(int x) => int x = 234, x + 1;")]
+        [TestCase(@"main(int x) => int x = 234, x + 1;foo()=>43;", 2)]
+        [TestCase(@"main(int x) => int x = 234, x + 1;
+foo()=>43;", 2)]
+        public void TestCanBuildProgram(string programText, int funcCount = 1)
         {
-            var ctx = ParseProgram(@"main(int x) => x + 1;");
+            var ctx = ParseProgram(programText);
             var sut = new AstBuilderVisitor();
-            var ast = sut.Visit(ctx);
+            var ast = sut.VisitFifth(ctx) as FifthProgram;
             _ = ast.Should().NotBeNull();
+            _ = ast.Functions.Should().NotBeNull().And.HaveCount(funcCount);
         }
+
+        [TestCase(@"alias <http://tempuri.com/blah/> as tu; main(int x) => int x = 234, x + 1;", 1)]
+        [TestCase(@"
+alias <http://tempuri.com/blah/> as a1;
+alias <http://tempuri.com/bob> as a2;
+main(int x) => int x = 234, x + 1;", 2)]
+        public void TestCanConstructAliasesFromProgram(string programText, int aliasCount)
+        {
+            var ctx = ParseProgram(programText);
+            var sut = new AstBuilderVisitor();
+            var ast = sut.VisitFifth(ctx) as FifthProgram;
+            _ = ast.Should().NotBeNull();
+            _ = ast.Functions.Should().NotBeNull().And.HaveCount(1);
+            _ = ast.Aliases.Should().NotBeNull().And.HaveCount(aliasCount);
+        }
+
+        [TestCase(@":blah")]
+        [TestCase(@"p:blah")]
+        [TestCase(@"http://tempuri.com/blah/")]
+        [TestCase(@"http://tempuri.com/blah#")]
+        [TestCase(@"http://tempuri.com?blah=value")]
+        [TestCase(@"http://tempuri.com?blah=value+vakgkjhg")]
+        [TestCase(@"http://tempuri.com#fragid?blah=value+vakgkjhg")]
+        [TestCase(@"http://tempuri.com#fragid?blah=value%20vakgkjhg")]
+        [TestCase(@"http://tempuri.com#fragid")]
+        [TestCase(@"http://tempuri.com/blah#fragid")]
+        public void TestCanParseIri(string iriText) => _ = ParseIri(iriText).Should().NotBeNull();
     }
 }

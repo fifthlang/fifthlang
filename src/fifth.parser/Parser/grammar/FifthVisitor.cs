@@ -231,11 +231,17 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIri([NotNull] FifthParser.IriContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Visit a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitIri_query([NotNull] FifthParser.Iri_queryContext context);
+	Result VisitQNameIri([NotNull] FifthParser.QNameIriContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
 	/// </summary>

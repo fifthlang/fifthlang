@@ -369,15 +369,25 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitIri([NotNull] FifthParser.IriContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Enter a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterIri_query([NotNull] FifthParser.Iri_queryContext context);
+	void EnterQNameIri([NotNull] FifthParser.QNameIriContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.iri_query"/>.
+	/// Exit a parse tree produced by <see cref="FifthParser.qNameIri"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitIri_query([NotNull] FifthParser.Iri_queryContext context);
+	void ExitQNameIri([NotNull] FifthParser.QNameIriContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.absoluteIri"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAbsoluteIri([NotNull] FifthParser.AbsoluteIriContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.iri_query_param"/>.
 	/// </summary>
