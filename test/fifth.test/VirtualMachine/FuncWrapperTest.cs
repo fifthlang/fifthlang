@@ -1,6 +1,6 @@
+using System;
 using Fifth;
 using NUnit.Framework;
-using System;
 
 namespace fifth_test
 {

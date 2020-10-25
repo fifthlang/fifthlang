@@ -15,7 +15,8 @@ namespace Fifth.VirtualMachine
         public static IEnumerable<Type> TypesHavingAttribute<TAttribute, TSampleType>()
         {
             var types = typeof(TSampleType).Assembly.GetTypes();
-            if(types == null || types.Length == 0) throw new Exception("no types found");
+            if (types == null || types.Length == 0)
+                throw new Exception("no types found");
             foreach (var type in types)
             {
                 if (type.GetCustomAttributes(true).Any(attr => attr is TAttribute))
@@ -37,7 +38,8 @@ namespace Fifth.VirtualMachine
                 var tt = pt.GetCustomAttributes(false).Cast<TypeTraitsAttribute>().FirstOrDefault();
                 if (tt == null)
                     continue;
-                if (tt.Keyword == typename){
+                if (tt.Keyword == typename)
+                {
                     var fi = pt.GetField("Default", BindingFlags.Public | BindingFlags.Static);
                     var v = (IFifthType)fi.GetValue(null);
                     return v;

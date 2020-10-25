@@ -1,5 +1,4 @@
-﻿using Fifth.VirtualMachine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Fifth.AST.Builders
@@ -23,14 +22,16 @@ namespace Fifth.AST.Builders
 
         public ProgramDefinition Build()
         {
-            if(!IsValid()) throw new System.Exception("Invalid program definition");
+            if (!IsValid())
+                throw new System.Exception("Invalid program definition");
             return new ProgramDefinition
             {
                 FunctionDefinitions = FunctionDefinitions
             };
         }
 
-        public bool IsValid() {
+        public bool IsValid()
+        {
             // there must be at least one function defined, called 'main'
             return FunctionDefinitions.Any(fd => fd.Name == "main");
         }

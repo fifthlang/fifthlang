@@ -1,9 +1,8 @@
-﻿using NUnit.Framework;
-using Fifth.VirtualMachine;
-using FluentAssertions;
-using Fifth.VirtualMachine.PrimitiveTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Fifth.VirtualMachine.PrimitiveTypes;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace Fifth.VirtualMachine.Tests
 {

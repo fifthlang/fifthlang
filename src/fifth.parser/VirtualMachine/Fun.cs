@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Fifth
 {
     public static class Fun
     {
 
-        public static FuncWrapper AsFun<T>(this T x) => Wrap(()=>x);
+        public static FuncWrapper AsFun<T>(this T x) => Wrap(() => x);
 
         public static FuncWrapper Wrap<R>(Func<R> fn) =>
             new FuncWrapper(new List<Type> { }, typeof(R), f: fn);

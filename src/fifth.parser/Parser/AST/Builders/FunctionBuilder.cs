@@ -1,5 +1,5 @@
-﻿using Fifth.VirtualMachine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Fifth.VirtualMachine;
 
 namespace Fifth.AST.Builders
 {
@@ -43,7 +43,7 @@ namespace Fifth.AST.Builders
 
         public FunctionBuilder WithBody(List<Expression> expressions)
         {
-            this.Body = new ExpressionList{Expressions = expressions};
+            this.Body = new ExpressionList { Expressions = expressions };
             return this;
         }
 

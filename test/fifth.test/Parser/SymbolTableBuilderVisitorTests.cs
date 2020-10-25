@@ -1,17 +1,17 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Fifth.Parser;
-using NUnit.Framework;
-
 namespace Fifth.Tests
 {
+    using Antlr4.Runtime;
+    using Antlr4.Runtime.Tree;
+    using Fifth.Parser;
+    using NUnit.Framework;
+
     [TestFixture()]
     public class SymbolTableBuilderVisitorTests : ParserTestBase
     {
         [Test]
         public void TestCanAccessScopeForMain()
         {
-            string TestProgram = @"use std;
+            var TestProgram = @"use std;
             main(int x, int y) => myprint(x + y);
             myprint(int x) => std.print(""the answer is "" + x);";
 
@@ -29,7 +29,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanGatherMultipleDefinitions()
         {
-            string TestProgram = @"main() => myprint(""hello world"");
+            var TestProgram = @"main() => myprint(""hello world"");
             myprint(string x) => std.print(x);
             blah() => int result = 5, result;";
 
@@ -48,7 +48,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanGatherSingleFunctionDefinitions()
         {
-            string TestProgram = @"main() => myprint(""hello world"");";
+            var TestProgram = @"main() => myprint(""hello world"");";
 
             var ctx = ParseProgram(TestProgram);
             var annotatedAst = new AnnotatedSyntaxTree(ctx);
@@ -62,7 +62,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanParseFullProgram()
         {
-            string TestProgram = @"use std;
+            var TestProgram = @"use std;
             main(int x, int y) => myprint(x + y);
             myprint(int x) => std.print(""the answer is "" + x);";
 

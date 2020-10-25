@@ -1,5 +1,4 @@
 ﻿using Fifth.VirtualMachine;
-using System.Collections.Generic;
 
 namespace Fifth.AST
 {

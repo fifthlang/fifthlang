@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Fifth.VirtualMachine;
 using Fifth.VirtualMachine.PrimitiveTypes;
 using FluentAssertions;

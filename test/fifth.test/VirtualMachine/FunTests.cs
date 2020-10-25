@@ -1,8 +1,6 @@
-﻿using NUnit.Framework;
-using Fifth;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using FluentAssertions;
+using NUnit.Framework;
 
 namespace Fifth.Tests
 {

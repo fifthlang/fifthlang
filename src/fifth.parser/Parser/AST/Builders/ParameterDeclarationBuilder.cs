@@ -1,6 +1,5 @@
-﻿using Fifth.VirtualMachine;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Fifth.VirtualMachine;
 
 namespace Fifth.AST.Builders
 {
