@@ -7,14 +7,8 @@ namespace Fifth
 
     public class AnnotatedSyntaxTree
     {
-        private AnnotatedSyntaxTree()
-        {
-            ScopeLookupTable = new Dictionary<ParserRuleContext, IScope>();
-        }
-        public AnnotatedSyntaxTree(ParserRuleContext astRoot) : this()
-        {
-            AstRoot = astRoot;
-        }
+        private AnnotatedSyntaxTree() => this.ScopeLookupTable = new Dictionary<ParserRuleContext, IScope>();
+        public AnnotatedSyntaxTree(ParserRuleContext astRoot) : this() => this.AstRoot = astRoot;
 
         /// A lookup table to get from the AST Nodes to the scopes defined for them
         public Dictionary<ParserRuleContext, IScope> ScopeLookupTable { get; private set; }
@@ -25,22 +19,22 @@ namespace Fifth
         public IScope CreateNewScope(ParserRuleContext ctx)
         {
             // check if this is we are creating a root/global scope for the outermost context
-            if (AstRoot == null && ctx.Payload is FifthContext)
+            if (this.AstRoot == null && ctx.Payload is FifthContext)
             {
-                AstRoot = ctx;
+                this.AstRoot = ctx;
             }
 
             // if we've created a scope for this context before, reuse it
-            if (ScopeLookupTable.ContainsKey(ctx))
+            if (this.ScopeLookupTable.ContainsKey(ctx))
             {
-                return ScopeLookupTable[ctx];
+                return this.ScopeLookupTable[ctx];
             }
             // create the scope, attach it to context and return
-            return ScopeLookupTable[ctx] = new Scope(ctx);
+            return this.ScopeLookupTable[ctx] = new Scope(ctx);
         }
         public IScope CreateNewScope(ParserRuleContext ctx, IScope enclosingScope)
         {
-            var result = CreateNewScope(ctx);
+            var result = this.CreateNewScope(ctx);
             result.EnclosingScope = enclosingScope;
             return result;
         }

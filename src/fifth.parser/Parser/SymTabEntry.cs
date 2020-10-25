@@ -5,10 +5,7 @@ namespace Fifth.Parser
 {
     public class SymTabEntry : ISymbolTableEntry
     {
-        public SymTabEntry()
-        {
-            Annotations = new Dictionary<string, object>();
-        }
+        public SymTabEntry() => this.Annotations = new Dictionary<string, object>();
         public string Name { get; set; }
         public string DefiningModule { get; set; }
         public int Line { get; set; }

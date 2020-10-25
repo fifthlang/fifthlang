@@ -4,8 +4,8 @@
     {
         public VariableAssignment(IFifthType fifthType, object value)
         {
-            FifthType = fifthType;
-            Value = value;
+            this.FifthType = fifthType;
+            this.Value = value;
         }
 
         public IFifthType FifthType { get; }

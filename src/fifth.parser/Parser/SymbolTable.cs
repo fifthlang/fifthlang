@@ -8,12 +8,12 @@ namespace Fifth.Parser
         {
             ISymbolTableEntry result;
 
-            if (TryGetValue(v, out result))
+            if (this.TryGetValue(v, out result))
             {
                 return result;
             }
             return null;
         }
-        public IEnumerable<ISymbolTableEntry> All() => Values;
+        public IEnumerable<ISymbolTableEntry> All() => this.Values;
     }
 }

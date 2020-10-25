@@ -13,10 +13,7 @@ namespace Fifth.VirtualMachine
         /// originaltag="see">Dispatcher</a> class.
         /// </summary>
         /// <param name="stack">The stack.</param>
-        public Dispatcher(IFuncStack stack)
-        {
-            Stack = stack;
-        }
+        public Dispatcher(IFuncStack stack) => this.Stack = stack;
 
         /// <summary>
         /// Gets or sets the instruction stack.
@@ -31,17 +28,17 @@ namespace Fifth.VirtualMachine
         public void Dispatch()
         {
             // if stack empty do nothing
-            if (Stack.IsEmpty)
+            if (this.Stack.IsEmpty)
             {
                 return;
             }
 
             // pop stack into x
-            var x = Stack.Pop();
+            var x = this.Stack.Pop();
             // if x is a constant then return to stack
             if (x.IsValue)
             {
-                Stack.Push(x);
+                this.Stack.Push(x);
             }
             else
             {
@@ -49,7 +46,7 @@ namespace Fifth.VirtualMachine
                 var args = new List<object>();
                 foreach (var t in x.ArgTypes)
                 {
-                    object o = Resolve();
+                    object o = this.Resolve();
                     // check that types of values match type requirements of x
                     if (!t.IsInstanceOfType(o))
                     {
@@ -61,7 +58,7 @@ namespace Fifth.VirtualMachine
                 args.Reverse(); // return to same order they were passsed onto the stack
                 var result = x.Invoke(args.ToArray());
                 // push result onto stack
-                Stack.Push(result.AsFun());
+                this.Stack.Push(result.AsFun());
             }
         }
 
@@ -76,12 +73,12 @@ namespace Fifth.VirtualMachine
         /// </returns>
         private object Resolve()
         {
-            if (Stack.IsEmpty)
+            if (this.Stack.IsEmpty)
             {
                 return null;
             }
 
-            var x = Stack.Pop();
+            var x = this.Stack.Pop();
             if (x.IsValue)
             {
                 return x.Invoke();
@@ -89,9 +86,9 @@ namespace Fifth.VirtualMachine
             else
             {
                 // we can't resolve this value directly, we need to recurse via dispatch
-                Stack.Push(x);
-                Dispatch();
-                x = Stack.Pop();
+                this.Stack.Push(x);
+                this.Dispatch();
+                x = this.Stack.Pop();
                 return x.Invoke();
             }
         }

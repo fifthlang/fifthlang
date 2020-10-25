@@ -8,21 +8,15 @@ namespace Fifth.AST.Builders
     /// </summary>
     public class ProgramBuilder : IBuilder<ProgramDefinition>
     {
-        public ProgramBuilder()
-        {
-            this.FunctionDefinitions = new List<FunctionDefinition>();
-        }
+        public ProgramBuilder() => this.FunctionDefinitions = new List<FunctionDefinition>();
 
         public List<FunctionDefinition> FunctionDefinitions { get; set; }
 
-        public static ProgramBuilder Start()
-        {
-            return new ProgramBuilder();
-        }
+        public static ProgramBuilder Start() => new ProgramBuilder();
 
         public ProgramDefinition Build()
         {
-            if (!IsValid())
+            if (!this.IsValid())
                 throw new System.Exception("Invalid program definition");
             return new ProgramDefinition
             {
@@ -30,11 +24,9 @@ namespace Fifth.AST.Builders
             };
         }
 
-        public bool IsValid()
-        {
+        public bool IsValid() =>
             // there must be at least one function defined, called 'main'
-            return FunctionDefinitions.Any(fd => fd.Name == "main");
-        }
+            this.FunctionDefinitions.Any(fd => fd.Name == "main");
 
         public ProgramBuilder WithFunction(FunctionDefinition functionDefinition)
         {

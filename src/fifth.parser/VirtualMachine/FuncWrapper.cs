@@ -26,7 +26,7 @@ namespace Fifth
         {
             this.ArgTypes = argTypes;
             this.ResultType = resultType;
-            Function = f;
+            this.Function = f;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Fifth
         /// Gets a value indicating whether this instance is a function wrapping a constant literal.
         /// </summary>
         /// <value><c>true</c> if this instance is a value; otherwise, <c>false</c>.</value>
-        public bool IsValue => ArgTypes.Count == 0;
+        public bool IsValue => this.ArgTypes.Count == 0;
 
         /// <summary>
         /// Gets the <see cref="Type"/> of the result returned by the Function.
@@ -58,9 +58,6 @@ namespace Fifth
         /// </summary>
         /// <param name="args">The arguments to pass to the function.</param>
         /// <returns>an object of the same type as ResultType</returns>
-        public object Invoke(params object[] args)
-        {
-            return this.Function.DynamicInvoke(args);
-        }
+        public object Invoke(params object[] args) => this.Function.DynamicInvoke(args);
     }
 }

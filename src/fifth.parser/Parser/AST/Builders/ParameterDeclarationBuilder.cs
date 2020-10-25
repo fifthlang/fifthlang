@@ -11,19 +11,13 @@ namespace Fifth.AST.Builders
         public IFifthType ParameterType { get; private set; }
         public string TypeName { get; private set; }
 
-        public static ParameterDeclarationBuilder Start()
-        {
-            return new ParameterDeclarationBuilder();
-        }
+        public static ParameterDeclarationBuilder Start() => new ParameterDeclarationBuilder();
 
-        public ParameterDeclaration Build()
+        public ParameterDeclaration Build() => new ParameterDeclaration
         {
-            return new ParameterDeclaration
-            {
-                ParameterType = this.ParameterType,
-                ParameterName = this.ParameterName
-            };
-        }
+            ParameterType = this.ParameterType,
+            ParameterName = this.ParameterName
+        };
 
         public ParameterDeclarationBuilder WithName(string name)
         {

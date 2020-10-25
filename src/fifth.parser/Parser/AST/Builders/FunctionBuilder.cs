@@ -14,14 +14,11 @@ namespace Fifth.AST.Builders
         public IFifthType ReturnType { get; private set; }
         internal ParameterDeclarationList ParameterDeclarations { get; private set; }
 
-        public static FunctionBuilder Start()
-        {
-            return new FunctionBuilder();
-        }
+        public static FunctionBuilder Start() => new FunctionBuilder();
 
         public FunctionDefinition Build()
         {
-            if (!IsValid())
+            if (!this.IsValid())
             {
                 throw new System.Exception("Attempted to build an invalid function definition");
             }
@@ -34,12 +31,9 @@ namespace Fifth.AST.Builders
             };
         }
 
-        public bool IsValid()
-        {
-            return !string.IsNullOrWhiteSpace(FunctionName)
-                && ReturnType != null
-                && Body != null;
-        }
+        public bool IsValid() => !string.IsNullOrWhiteSpace(this.FunctionName)
+                && this.ReturnType != null
+                && this.Body != null;
 
         public FunctionBuilder WithBody(List<Expression> expressions)
         {
@@ -49,7 +43,7 @@ namespace Fifth.AST.Builders
 
         public FunctionBuilder WithName(string functionName)
         {
-            FunctionName = functionName;
+            this.FunctionName = functionName;
             return this;
         }
 

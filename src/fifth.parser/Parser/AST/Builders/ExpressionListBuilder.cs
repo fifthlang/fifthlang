@@ -7,28 +7,19 @@ namespace Fifth.AST.Builders
     /// </summary>
     public class ExpressionListBuilder : IBuilder<List<Expression>>
     {
-        public ExpressionListBuilder()
-        {
-            Expressions = new List<Expression>();
-        }
+        public ExpressionListBuilder() => this.Expressions = new List<Expression>();
 
         public List<Expression> Expressions { get; private set; }
 
-        public static ExpressionListBuilder Start()
-        {
-            return new ExpressionListBuilder();
-        }
+        public static ExpressionListBuilder Start() => new ExpressionListBuilder();
 
-        public List<Expression> Build()
-        {
-            return Expressions;
-        }
+        public List<Expression> Build() => this.Expressions;
 
         public bool IsValid() => throw new System.NotImplementedException();
 
         public ExpressionListBuilder WithExpression(Expression expression)
         {
-            Expressions.Add(expression);
+            this.Expressions.Add(expression);
             return this;
         }
     }

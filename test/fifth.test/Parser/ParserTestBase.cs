@@ -1,18 +1,18 @@
-using Antlr4.Runtime;
-using Fifth.Parser;
-using static FifthParser;
-
 namespace Fifth.Tests
 {
+    using Antlr4.Runtime;
+    using Fifth.Parser;
+    using static FifthParser;
+
     public class ParserTestBase
     {
         protected static FifthParser GetParserFor(string fragment)
         {
-            FifthLexer lexer = new FifthLexer(new AntlrInputStream(fragment));
+            var lexer = new FifthLexer(new AntlrInputStream(fragment));
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new ThrowingErrorListener<int>());
 
-            FifthParser parser = new FifthParser(new CommonTokenStream(lexer));
+            var parser = new FifthParser(new CommonTokenStream(lexer));
             parser.RemoveErrorListeners();
             parser.AddErrorListener(new ThrowingErrorListener<IToken>());
             return parser;

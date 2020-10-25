@@ -1,6 +1,6 @@
 namespace Fifth.AST.Builders
 {
-    interface IBuilder<TypeBuilt>
+    internal interface IBuilder<TypeBuilt>
     {
         TypeBuilt Build();
         bool IsValid();
