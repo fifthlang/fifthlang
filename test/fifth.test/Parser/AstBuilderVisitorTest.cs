@@ -14,7 +14,7 @@ namespace Fifth.Test.Parser
             var ctx = ParseProgram(@"main(int x) => x + 1;");
             var sut = new AstBuilderVisitor();
             var ast = sut.Visit(ctx);
-            ast.Should().NotBeNull();
+            _ = ast.Should().NotBeNull();
         }
     }
 }
