@@ -1,4 +1,4 @@
-﻿using Fifth.VirtualMachine;
+using Fifth.VirtualMachine;
 
 namespace Fifth.AST
 {

@@ -223,6 +223,20 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitELEQ([NotNull] FifthParser.ELEQContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EParen</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEParen([NotNull] FifthParser.EParenContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EParen</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEParen([NotNull] FifthParser.EParenContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>ENegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -264,20 +278,6 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEDouble([NotNull] FifthParser.EDoubleContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>EFuncParen</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterEFuncParen([NotNull] FifthParser.EFuncParenContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>EFuncParen</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitEFuncParen([NotNull] FifthParser.EFuncParenContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>EAdd</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -542,20 +542,6 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ReturnStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterReturnStmt([NotNull] FifthParser.ReturnStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ReturnStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitReturnStmt([NotNull] FifthParser.ReturnStmtContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>IfElseStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.

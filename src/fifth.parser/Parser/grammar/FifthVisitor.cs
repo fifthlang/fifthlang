@@ -126,6 +126,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitELEQ([NotNull] FifthParser.ELEQContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>EParen</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEParen([NotNull] FifthParser.EParenContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>ENegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -146,13 +153,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEDouble([NotNull] FifthParser.EDoubleContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>EFuncParen</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitEFuncParen([NotNull] FifthParser.EFuncParenContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>EAdd</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -285,13 +285,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ReturnStmt</c>
-	/// labeled alternative in <see cref="FifthParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitReturnStmt([NotNull] FifthParser.ReturnStmtContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IfElseStmt</c>
 	/// labeled alternative in <see cref="FifthParser.statement"/>.

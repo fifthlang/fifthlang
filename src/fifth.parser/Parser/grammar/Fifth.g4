@@ -17,24 +17,24 @@ explist
     ;
 
 exp
-    : exp LT exp               # ELT
-    | exp GT exp               # EGT
-    | exp LEQ exp               # ELEQ
-    | exp GEQ exp               # EGEQ
-    | exp AND exp               # EAnd
-    | exp PLUS exp              # EAdd
-    | exp MINUS exp             # ESub
-    | exp TIMES exp             # EMul
-    | exp DIVIDE exp            # EDiv
-    | INT                       # EInt
-    | FLOAT                     # EDouble
-    | STRING                    # EString
-    | var_name                  # EVarname
+    : left=exp LT right=exp      # ELT
+    | left=exp GT right=exp      # EGT
+    | left=exp LEQ right=exp     # ELEQ
+    | left=exp GEQ right=exp     # EGEQ
+    | left=exp AND right=exp     # EAnd
+    | left=exp PLUS right=exp    # EAdd
+    | left=exp MINUS right=exp   # ESub
+    | left=exp TIMES right=exp   # EMul
+    | left=exp DIVIDE right=exp  # EDiv
+    | value=INT                  # EInt
+    | value=FLOAT                # EDouble
+    | value=STRING               # EString
+    | var_name                   # EVarname
     | function_name OPENPAREN (exp (COMMA exp)*)? CLOSEPAREN  # EFuncCall
-    | OPENPAREN exp CLOSEPAREN  # EFuncParen
-    | NOT exp                   # ENegation
+    | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
+    | NOT operand=exp           # ENegation
     | NEW type_initialiser      # ETypeCreate
-    | statement                 #EStatement
+    | statement                 # EStatement
 ;
 
 formal_parameters:
@@ -90,9 +90,7 @@ parameter_name: IDENTIFIER
 statement:
       type_name var_name (ASSIGN exp)?     # VarDeclStmt
     | var_name ASSIGN exp                  # AssignmentStmt
-    | RETURN exp                           # ReturnStmt
-    // | IF OPENPAREN exp CLOSEPAREN block # IfStmt // not sure this is valid when using statements as a kind of expression
-    | IF OPENPAREN exp CLOSEPAREN block ELSE block   # IfElseStmt
+    | IF OPENPAREN condition=exp CLOSEPAREN ifpart=block ELSE elsepart=block   # IfElseStmt
     | WITH statement  block                # WithStmt
 ;
 

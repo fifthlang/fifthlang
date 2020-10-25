@@ -5,8 +5,8 @@ DIR_TEST := test/fifth.test
 
 # TOOLS
 JVM := java
-ANTLR := ~/bin/antlr-4.8-complete.jar
-ANTLR_ARGS := -Dlanguage=CSharp -visitor -listener
+ANTLR := tools/antlr-4.8-complete.jar
+ANTLR_ARGS := -Dlanguage=CSharp -visitor -listener -o $(DIR_GRAMMAR)
 CC := dotnet
 CC_ARGS:=
 
