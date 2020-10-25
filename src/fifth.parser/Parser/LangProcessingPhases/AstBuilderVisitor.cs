@@ -9,7 +9,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
     public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected override IAstNode DefaultResult => base.DefaultResult;
 
         public override bool Equals(object obj) => base.Equals(obj);
@@ -20,25 +20,25 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode Visit(IParseTree tree)
         {
-            this.Log("Visit");
+            Log.Debug("Visit");
             return base.Visit(tree);
         }
 
         public override IAstNode VisitAlias([NotNull] FifthParser.AliasContext context)
         {
-            this.Log("VisitAlias");
+            Log.Debug("VisitAlias");
             return base.VisitAlias(context);
         }
 
         public override IAstNode VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context)
         {
-            this.Log("VisitAssignmentStmt");
+            Log.Debug("VisitAssignmentStmt");
             return base.VisitAssignmentStmt(context);
         }
 
         public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context)
         {
-            this.Log("VisitBlock");
+            Log.Debug("VisitBlock");
             return base.VisitBlock(context);
         }
 
@@ -69,7 +69,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context)
         {
-            this.Log("VisitEFuncCall");
+            Log.Debug("VisitEFuncCall");
             return base.VisitEFuncCall(context);
         }
 
@@ -122,7 +122,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitEStatement([NotNull] FifthParser.EStatementContext context)
         {
-            this.Log("VisitEStatement");
+            Log.Debug("VisitEStatement");
             return base.VisitEStatement(context);
         }
 
@@ -130,13 +130,13 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context)
         {
-            this.Log("VisitESub");
+            Log.Debug("VisitESub");
             return base.VisitESub(context);
         }
 
         public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
         {
-            this.Log("VisitETypeCreate");
+            Log.Debug("VisitETypeCreate");
             return base.VisitETypeCreate(context);
         }
 
@@ -145,19 +145,19 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
-            this.Log("VisitFifth");
+            Log.Debug("VisitFifth");
             return base.VisitFifth(context);
         }
 
         public override IAstNode VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context)
         {
-            this.Log("VisitFormal_parameters");
+            Log.Debug("VisitFormal_parameters");
             var parameters = new List<ParameterDeclaration>();
             parameters.AddRange(
                 context
                     .children
                     .Where(c => c is FifthParser.Parameter_declarationContext)
-                    .Select(c => VisitParameter_declaration((FifthParser.Parameter_declarationContext)c))
+                    .Select(c => this.VisitParameter_declaration((FifthParser.Parameter_declarationContext)c))
                     .Cast<ParameterDeclaration>());
             return new ParameterDeclarationList
             {
@@ -167,18 +167,18 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFunction_args([NotNull] FifthParser.Function_argsContext context)
         {
-            this.Log("VisitFunction_args");
+            Log.Debug("VisitFunction_args");
             return base.VisitFunction_args(context);
         }
 
         public override IAstNode VisitFunction_body([NotNull] FifthParser.Function_bodyContext context)
         {
-            this.Log("VisitFunction_body");
+            Log.Debug("VisitFunction_body");
             return new ExpressionList
             {
                 Expressions = context.explist()
                                     .children
-                                    .Select(e => Visit(e))
+                                    .Select(e => this.Visit(e))
                                     .Cast<Expression>()
                                     .ToList()
             };
@@ -186,13 +186,13 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFunction_call([NotNull] FifthParser.Function_callContext context)
         {
-            this.Log("VisitFunction_call");
+            Log.Debug("VisitFunction_call");
             return base.VisitFunction_call(context);
         }
 
         public override IAstNode VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
         {
-            this.Log("VisitFunction_declaration");
+            Log.Debug("VisitFunction_declaration");
             var formals = context.function_args().formal_parameters();
             var parameterList = this.VisitFormal_parameters(formals);
             var body = this.VisitFunction_body(context.function_body());
@@ -208,49 +208,49 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitIfElseStmt([NotNull] FifthParser.IfElseStmtContext context)
         {
-            this.Log("VisitIfElseStmt");
+            Log.Debug("VisitIfElseStmt");
             return base.VisitIfElseStmt(context);
         }
 
         public override IAstNode VisitIri([NotNull] FifthParser.IriContext context)
         {
-            this.Log("VisitIri");
+            Log.Debug("VisitIri");
             return base.VisitIri(context);
         }
 
         public override IAstNode VisitIri_query([NotNull] FifthParser.Iri_queryContext context)
         {
-            this.Log("VisitIri_query");
+            Log.Debug("VisitIri_query");
             return base.VisitIri_query(context);
         }
 
         public override IAstNode VisitIri_query_param([NotNull] FifthParser.Iri_query_paramContext context)
         {
-            this.Log("VisitIri_query_param");
+            Log.Debug("VisitIri_query_param");
             return base.VisitIri_query_param(context);
         }
 
         public override IAstNode VisitModule_import([NotNull] FifthParser.Module_importContext context)
         {
-            this.Log("VisitModule_import");
+            Log.Debug("VisitModule_import");
             return base.VisitModule_import(context);
         }
 
         public override IAstNode VisitModule_name([NotNull] FifthParser.Module_nameContext context)
         {
-            this.Log("VisitModule_name");
+            Log.Debug("VisitModule_name");
             return base.VisitModule_name(context);
         }
 
         public override IAstNode VisitPackagename([NotNull] FifthParser.PackagenameContext context)
         {
-            this.Log("VisitPackagename");
+            Log.Debug("VisitPackagename");
             return base.VisitPackagename(context);
         }
 
         public override IAstNode VisitParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context)
         {
-            this.Log("VisitParameter_declaration");
+            Log.Debug("VisitParameter_declaration");
             var type = context.parameter_type().IDENTIFIER().GetText();
             var name = context.parameter_name().IDENTIFIER().GetText();
             return new ParameterDeclaration
@@ -262,13 +262,13 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context)
         {
-            this.Log("VisitParameter_name");
+            Log.Debug("VisitParameter_name");
             return base.VisitParameter_name(context);
         }
 
         public override IAstNode VisitParameter_type([NotNull] FifthParser.Parameter_typeContext context)
         {
-            this.Log("VisitParameter_type");
+            Log.Debug("VisitParameter_type");
             return base.VisitParameter_type(context);
         }
 
@@ -276,44 +276,42 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitType_initialiser([NotNull] FifthParser.Type_initialiserContext context)
         {
-            this.Log("VisitType_initialiser");
+            Log.Debug("VisitType_initialiser");
             return base.VisitType_initialiser(context);
         }
 
         public override IAstNode VisitType_name([NotNull] FifthParser.Type_nameContext context)
         {
-            this.Log("VisitType_name");
+            Log.Debug("VisitType_name");
             return new Identifier { Value = context.IDENTIFIER().GetText() };
         }
 
         public override IAstNode VisitType_property_init([NotNull] FifthParser.Type_property_initContext context)
         {
-            this.Log("VisitType_property_init");
+            Log.Debug("VisitType_property_init");
             return base.VisitType_property_init(context);
         }
 
         public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context)
         {
-            this.Log("VisitVar_name");
+            Log.Debug("VisitVar_name");
             return new Identifier { Value = context.IDENTIFIER().GetText() };
         }
 
         public override IAstNode VisitVarDeclStmt([NotNull] FifthParser.VarDeclStmtContext context)
         {
-            this.Log("VisitVarDeclStmt");
+            Log.Debug("VisitVarDeclStmt");
             return base.VisitVarDeclStmt(context);
         }
 
         public override IAstNode VisitWithStmt([NotNull] FifthParser.WithStmtContext context)
         {
-            this.Log("VisitWithStmt");
+            Log.Debug("VisitWithStmt");
             return base.VisitWithStmt(context);
         }
 
         protected override IAstNode AggregateResult(IAstNode aggregate, IAstNode nextResult) => base.AggregateResult(aggregate, nextResult);
 
         protected override bool ShouldVisitNextChild(IRuleNode node, IAstNode currentResult) => base.ShouldVisitNextChild(node, currentResult);
-
-        private void Log(string msg) => log.Info(msg);
     }
 }
