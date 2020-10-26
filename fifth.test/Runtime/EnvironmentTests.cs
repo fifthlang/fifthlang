@@ -1,8 +1,9 @@
-namespace Fifth.Runtime.Tests
+namespace Fifth.Tests.Runtime
 {
     using System;
     using System.Collections.Generic;
     using Fifth.PrimitiveTypes;
+    using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
 

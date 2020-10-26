@@ -1,4 +1,4 @@
-namespace Fifth.Test
+namespace Fifth.Tests
 {
     using System;
     using Fifth.PrimitiveTypes;

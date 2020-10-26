@@ -1,4 +1,4 @@
-namespace Fifth.Test.Parser
+namespace Fifth.Tests.Parser
 {
     using System;
     using Fifth.AST;

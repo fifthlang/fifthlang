@@ -1,7 +1,6 @@
 namespace Fifth.AST.Builders
 {
     using System.Collections.Generic;
-    using Fifth.Runtime;
 
     public class FunctionBuilder : IBuilder<FunctionDefinition>
     {

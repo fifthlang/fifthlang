@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Fifth.Test
+namespace Fifth.Tests
 {
     public class Tests
     {

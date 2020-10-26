@@ -1,4 +1,4 @@
-﻿namespace Fifth.PrimitiveTypes
+namespace Fifth
 {
     using System;
 

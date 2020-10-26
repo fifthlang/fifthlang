@@ -5,7 +5,7 @@ namespace Fifth.Parser.LangProcessingPhases
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using Fifth.AST;
-    using Fifth.Runtime;
+    using Fifth;
 
     public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
     {

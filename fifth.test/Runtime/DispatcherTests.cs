@@ -1,9 +1,8 @@
-using Fifth;
-using Fifth.Runtime;
-using NUnit.Framework;
-
-namespace fifthlang_tests
+namespace Fifth.Tests
 {
+    using Fifth.Runtime;
+    using NUnit.Framework;
+
     internal class DispatcherTests
     {
         [Test]

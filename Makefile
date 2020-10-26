@@ -1,7 +1,7 @@
 # LAYOUT
-DIR_PARSER := src/fifth.parser
-DIR_GRAMMAR := $(DIR_PARSER)/Parser/grammar
-DIR_TEST := test/fifth.test
+DIR_PARSER := fifth.parser
+DIR_GRAMMAR := $(DIR_PARSER)/grammar
+DIR_TEST := fifth.test
 
 # TOOLS
 JVM := java

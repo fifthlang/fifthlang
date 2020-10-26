@@ -1,7 +1,6 @@
-﻿using Fifth;
 using NUnit.Framework;
 
-namespace fifth_test
+namespace Fifth.Tests
 {
     public class FuncStackTest
     {
@@ -41,7 +40,5 @@ namespace fifth_test
             sut.Push(add);
             Assert.That(sut.Stack, Has.Count.EqualTo(3));
         }
-
-
     }
 }

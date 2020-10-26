@@ -1,4 +1,4 @@
-namespace Fifth.Runtime
+namespace Fifth
 {
     using System;
     using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace Fifth.Runtime
                     continue;
                 if (tt.Keyword == typename)
                 {
-                    var fi = pt.GetField("Default", BindingFlags.Public | BindingFlags.Static);
+                    var fi = pt.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
                     var v = (IFifthType)fi.GetValue(null);
                     return v;
                 }
