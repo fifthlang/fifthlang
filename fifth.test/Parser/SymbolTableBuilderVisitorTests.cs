@@ -3,6 +3,7 @@ namespace Fifth.Tests
     using Antlr4.Runtime;
     using Antlr4.Runtime.Tree;
     using Fifth.Parser;
+    using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
 
     [TestFixture()]
