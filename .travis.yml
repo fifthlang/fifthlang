@@ -8,3 +8,5 @@ install:
 script:
   - dotnet build
   - dotnet test test/fifth.test/fifth.test.csproj
+notifications:
+  slack: matthews-family:PzF5BbuJiQlFsYX9iQKKTIn6
