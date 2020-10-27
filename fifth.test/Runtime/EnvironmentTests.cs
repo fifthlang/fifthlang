@@ -23,15 +23,15 @@ namespace Fifth.Tests.Runtime
         [TestCaseSource("Cases")]
         public void EnvironmentTest(Tuple<IFifthType, object> a)
         {
-            (IFifthType t, object o) = a;
+            (var t, var o) = a;
             var sut = new Fifth.Runtime.Environment(null);
-            sut.Should().NotBeNull();
-            sut.IsEmpty.Should().BeTrue();
+            _ = sut.Should().NotBeNull();
+            _ = sut.IsEmpty.Should().BeTrue();
             sut[new VariableReference("hello")] = new VariableAssignment(t, o);
-            sut.IsEmpty.Should().BeFalse();
-            IVariableAssignment x = sut[new VariableReference("hello")];
-            x.Value.Should().Be(o);
-            x.FifthType.Should().Be(t);
+            _ = sut.IsEmpty.Should().BeFalse();
+            var x = sut[new VariableReference("hello")];
+            _ = x.Value.Should().Be(o);
+            _ = x.FifthType.Should().Be(t);
         }
     }
 }

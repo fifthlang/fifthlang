@@ -1,8 +1,8 @@
-using System;
-using NUnit.Framework;
-
 namespace Fifth.Tests
 {
+    using System;
+    using NUnit.Framework;
+
     public class FuncWrapperTest
     {
         [SetUp]
@@ -27,7 +27,7 @@ namespace Fifth.Tests
         [Test]
         public void TestFn0()
         {
-            Func<int> f1 = () => 1;
+            static int f1() => 1;
             var sut = Fun.Wrap(f1);
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.ResultType, Is.EqualTo(typeof(int)));
@@ -36,8 +36,8 @@ namespace Fifth.Tests
         [Test]
         public void TestFn1()
         {
-            Func<int, int> f2 = (x) => x + 1;
-            var sut = Fun.Wrap(f2);
+            static int f2(int x) => x + 1;
+            var sut = Fun.Wrap((Func<int, int>)f2);
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.ResultType, Is.EqualTo(typeof(int)));
             Assert.That(sut.ArgTypes.Count, Is.EqualTo(1));
@@ -47,8 +47,8 @@ namespace Fifth.Tests
         [Test]
         public void TestFn2()
         {
-            Func<int, float, float> f3 = (x, y) => x + y;
-            var sut = Fun.Wrap(f3);
+            static float f3(int x, float y) => x + y;
+            var sut = Fun.Wrap((Func<int, float, float>)f3);
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.ResultType, Is.EqualTo(typeof(float)));
             Assert.That(sut.ArgTypes.Count, Is.EqualTo(2));

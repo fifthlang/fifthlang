@@ -46,28 +46,28 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitEAdd([NotNull] FifthParser.EAddContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.Plus
         };
 
         public override IAstNode VisitEAnd([NotNull] FifthParser.EAndContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.And
         };
 
         public override IAstNode VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context) => new UnaryExpression
         {
-            Operand = (Expression)this.Visit(context.operand),
+            Operand = (Expression)Visit(context.operand),
             Op = Operator.Minus
         };
 
         public override IAstNode VisitEDiv([NotNull] FifthParser.EDivContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.Divide
         };
 
@@ -76,20 +76,22 @@ namespace Fifth.Parser.LangProcessingPhases
         public override IAstNode VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context)
         {
             Log.Debug("VisitEFuncCall");
-            return base.VisitEFuncCall(context);
+            var name = context.funcname.GetText();
+            var actualParams = VisitExplist(context.args);
+            return new FuncCallExpression { Name = name, ActualParameters = (ExpressionList)actualParams };
         }
 
         public override IAstNode VisitEGEQ([NotNull] FifthParser.EGEQContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.GreaterThanOrEqual
         };
 
         public override IAstNode VisitEGT([NotNull] FifthParser.EGTContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.GreaterThan
         };
 
@@ -97,32 +99,32 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitELEQ([NotNull] FifthParser.ELEQContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.LessThanOrEqual
         };
 
         public override IAstNode VisitELogicNegation([NotNull] FifthParser.ELogicNegationContext context) => new UnaryExpression
         {
-            Operand = (Expression)this.Visit(context.operand),
+            Operand = (Expression)Visit(context.operand),
             Op = Operator.Not
         };
 
         public override IAstNode VisitELT([NotNull] FifthParser.ELTContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.LessThan
         };
 
         public override IAstNode VisitEMul([NotNull] FifthParser.EMulContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.Times
         };
 
-        public override IAstNode VisitEParen([NotNull] FifthParser.EParenContext context) => this.Visit(context.innerexp);
+        public override IAstNode VisitEParen([NotNull] FifthParser.EParenContext context) => Visit(context.innerexp);
 
         public override IAstNode VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
 
@@ -136,29 +138,39 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context) => new BinaryExpression
         {
-            Left = (Expression)this.Visit(context.left),
-            Right = (Expression)this.Visit(context.right),
+            Left = (Expression)Visit(context.left),
+            Right = (Expression)Visit(context.right),
             Op = Operator.Minus
         };
 
-        public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
-        {
-            Log.Debug("VisitETypeCreate");
-            return base.VisitETypeCreate(context);
-        }
+        //public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
+        //{
+        //    Log.Debug("VisitETypeCreate");
+        //    return base.VisitETypeCreate(context);
+        //}
 
         public override IAstNode VisitEVarname([NotNull] FifthParser.EVarnameContext context)
-            => new IdentifierExpression { Identifier = (Identifier)this.Visit(context.var_name()) };
+            => new IdentifierExpression { Identifier = (Identifier)Visit(context.var_name()) };
+
+        public override IAstNode VisitExplist([NotNull] FifthParser.ExplistContext context)
+        {
+            var exps = new List<Expression>();
+            foreach (var e in context.exp())
+            {
+                exps.Add((Expression)base.Visit(e));
+            }
+            return new ExpressionList { Expressions = exps };
+        }
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
             Log.Debug("VisitFifth");
             var functionDeclarations = context._functions
-                .Select(fctx => this.VisitFunction_declaration(fctx))
+                .Select(fctx => VisitFunction_declaration(fctx))
                 .Cast<FunctionDefinition>()
                 .ToList();
             var aliasDeclarations = context.alias()
-                .Select(actx => this.VisitAlias(actx))
+                .Select(actx => VisitAlias(actx))
                 .Cast<AliasDeclaration>()
                 .ToList();
             return new FifthProgram
@@ -179,7 +191,7 @@ namespace Fifth.Parser.LangProcessingPhases
                 context
                     .children
                     .Where(c => c is FifthParser.Parameter_declarationContext)
-                    .Select(c => this.VisitParameter_declaration((FifthParser.Parameter_declarationContext)c))
+                    .Select(c => VisitParameter_declaration((FifthParser.Parameter_declarationContext)c))
                     .Cast<ParameterDeclaration>());
             return new ParameterDeclarationList
             {
@@ -196,14 +208,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override IAstNode VisitFunction_body([NotNull] FifthParser.Function_bodyContext context)
         {
             Log.Debug("VisitFunction_body");
-            return new ExpressionList
-            {
-                Expressions = context.explist()
-                                    .children
-                                    .Select(e => this.Visit(e))
-                                    .Cast<Expression>()
-                                    .ToList()
-            };
+            return VisitExplist(context.explist());
         }
 
         public override IAstNode VisitFunction_call([NotNull] FifthParser.Function_callContext context)
@@ -216,8 +221,8 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             Log.Debug("VisitFunction_declaration");
             var formals = context.function_args().formal_parameters();
-            var parameterList = this.VisitFormal_parameters(formals);
-            var body = this.VisitFunction_body(context.function_body());
+            var parameterList = VisitFormal_parameters(formals);
+            var body = VisitFunction_body(context.function_body());
             var name = context.function_name().IDENTIFIER().GetText();
             return new FunctionDefinition
             {

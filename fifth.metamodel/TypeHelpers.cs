@@ -22,7 +22,10 @@ namespace Fifth
             {
                 var tt = pt.GetCustomAttributes(false).Cast<TypeTraitsAttribute>().FirstOrDefault();
                 if (tt == null)
+                {
                     continue;
+                }
+
                 if (tt.Keyword == typename)
                 {
                     var fi = pt.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
@@ -38,7 +41,10 @@ namespace Fifth
         {
             var types = typeof(TSampleType).Assembly.GetTypes();
             if (types == null || types.Length == 0)
+            {
                 throw new Exception("no types found");
+            }
+
             foreach (var type in types)
             {
                 if (type.GetCustomAttributes(true).Any(attr => attr is TAttribute))

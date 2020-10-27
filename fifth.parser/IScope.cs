@@ -1,12 +1,14 @@
 namespace Fifth.Parser
 {
     using Antlr4.Runtime;
+    using Fifth.AST;
 
     public interface IScope
     {
+        IAstNode AstNode { get; set; }
         IScope EnclosingScope { get; set; }
         ISymbolTable SymbolTable { get; set; }
-        ParserRuleContext AstNode { get; set; }
-        void Declare(string name, SymbolKind kind, ParserRuleContext ctx, params (string, object)[] properties);
+
+        void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties);
     }
 }

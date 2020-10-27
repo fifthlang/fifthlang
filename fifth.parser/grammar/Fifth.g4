@@ -30,10 +30,10 @@ exp
     | value=FLOAT                # EDouble
     | value=STRING               # EString
     | var_name                   # EVarname
-    | function_name OPENPAREN (exp (COMMA exp)*)? CLOSEPAREN  # EFuncCall
+    | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN  # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
     | NOT operand=exp           # ELogicNegation
-    | NEW type_initialiser      # ETypeCreate
+    | NEW type_initialiser      # ETypeCreateInst
     | statement                 # EStatement
 ;
 

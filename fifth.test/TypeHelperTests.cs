@@ -13,7 +13,7 @@ namespace Fifth.Tests
         public void TestBuiltinTypesAreFound()
         {
             var builtins = TypeHelpers.TypesHavingAttribute<TypeTraitsAttribute, IFifthType>();
-            builtins.Should().NotBeEmpty();
+            _ = builtins.Should().NotBeEmpty();
         }
 
         [TestCase("char", typeof(PrimitiveChar))]
@@ -23,7 +23,7 @@ namespace Fifth.Tests
         public void TestCanGetPrimitiveType(string typename, Type expectedType)
         {
             var fifthType = TypeHelpers.LookupBuiltinType(typename);
-            fifthType.Should().NotBeNull();
+            _ = fifthType.Should().NotBeNull().And.BeOfType(expectedType);
         }
     }
 }

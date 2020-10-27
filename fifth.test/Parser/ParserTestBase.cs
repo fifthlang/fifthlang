@@ -1,6 +1,8 @@
 namespace Fifth.Tests
 {
     using Antlr4.Runtime;
+    using Antlr4.Runtime.Tree;
+    using Fifth.AST;
     using Fifth.Parser.LangProcessingPhases;
     using static FifthParser;
 
@@ -28,6 +30,13 @@ namespace Fifth.Tests
             => GetParserFor(fragment).iri();
 
         protected static FifthContext ParseProgram(string fragment)
-                                    => GetParserFor(fragment).fifth();
+            => GetParserFor(fragment).fifth();
+
+        protected static IAstNode ParseProgramToAst(string fragment)
+        {
+            var parseTree = ParseProgram(fragment);
+            var visitor = new AstBuilderVisitor();
+            return visitor.Visit(parseTree);
+        }
     }
 }

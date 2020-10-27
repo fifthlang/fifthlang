@@ -31,12 +31,12 @@ namespace Fifth.Tests.Parser
             var ctx = ParseExpression(fragment);
             var sut = new AstBuilderVisitor();
             var ast = sut.Visit(ctx);
-            ast.Should().BeOfType(typeof(BinaryExpression));
+            _ = ast.Should().BeOfType(typeof(BinaryExpression));
             var binexp = ast as BinaryExpression;
-            binexp.Should().NotBeNull();
-            binexp.Left.Should().NotBeNull().And.BeOfType(leftOperandType);
-            binexp.Right.Should().NotBeNull().And.BeOfType(rightOperandType);
-            binexp.Op.Should().Be(op);
+            _ = binexp.Should().NotBeNull();
+            _ = binexp.Left.Should().NotBeNull().And.BeOfType(leftOperandType);
+            _ = binexp.Right.Should().NotBeNull().And.BeOfType(rightOperandType);
+            _ = binexp.Op.Should().Be(op);
         }
 
         [TestCase(@"main(int x) => x + 1;")]

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from src/fifth.parser/Parser/grammar/Fifth.g4 by ANTLR 4.8
+// Generated from fifth.parser/grammar/Fifth.g4 by ANTLR 4.8
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -62,13 +62,6 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>ETypeCreate</c>
-	/// labeled alternative in <see cref="FifthParser.exp"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>EVarname</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -139,6 +132,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitELEQ([NotNull] FifthParser.ELEQContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ETypeCreateInst</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitETypeCreateInst([NotNull] FifthParser.ETypeCreateInstContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>EParen</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

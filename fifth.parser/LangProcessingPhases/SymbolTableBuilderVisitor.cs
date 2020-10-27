@@ -1,47 +1,45 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
-    using Antlr4.Runtime;
-    using Antlr4.Runtime.Misc;
-    using static FifthParser;
+    using System;
+    using Fifth.AST;
 
-    public class SymbolTableBuilderVisitor : FifthBaseListener
+    public class SymbolTableBuilderVisitor : BaseAstVisitor
     {
-        public SymbolTableBuilderVisitor(AnnotatedSyntaxTree ast) => this.Ast = ast;
+        public SymbolTableBuilderVisitor(AnnotatedSyntaxTree ast)
+            => Ast = ast;
 
         public AnnotatedSyntaxTree Ast { get; set; }
         public IScope CurrentScope { get; set; }
         public IScope GlobalScope { get; set; }
 
-        public override void EnterFifth(FifthContext context) =>
-            // this is the top level entrypoint into the AST. So this is where root scopes etc get
-            // set up
-            this.CurrentScope = this.GlobalScope = this.Ast.CreateNewScope(context);
+        public override void EnterFifthProgram(FifthProgram ctx)
+            => CurrentScope = GlobalScope = Ast.CreateNewScope(ctx);
 
-        public override void EnterFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
+        public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
-            this.CurrentScope.Declare(context.Start.Text, SymbolKind.FunctionDeclaration, context);
-            this.CurrentScope = this.Ast.CreateNewScope(context, this.CurrentScope);
+            Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);
+            EnterScope(ctx);
         }
 
-        public override void EnterParameter_declaration([NotNull] Parameter_declarationContext context)
-        {
-            var varType = context.GetChild<Parameter_typeContext>(0);
-            var varName = context.children[1];
-            this.CurrentScope.Declare(varName.GetText(), SymbolKind.FormalParameter, context, ("type_name", varType.GetText()));
-            base.EnterParameter_declaration(context);
-        }
+        public override void EnterParameterDeclaration(ParameterDeclaration ctx)
+            => Declare(ctx.ParameterName, SymbolKind.FormalParameter, ctx, ("type_name", ctx.ParameterType));
 
-        public override void EnterVarDeclStmt([NotNull] VarDeclStmtContext context) => this.CurrentScope.Declare(context.Start.Text, SymbolKind.VariableDeclaration, context);
+        public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
+            => Declare(ctx.Name, SymbolKind.VariableDeclaration, ctx);
 
-        public override void ExitFifth([NotNull] FifthContext context)
-        => this.LeaveNode(context);
+        public override void LeaveFifthProgram(FifthProgram ctx)
+            => LeaveScope();
 
-        public override void ExitFunction_declaration([NotNull] Function_declarationContext context)
-        => this.LeaveNode(context);
+        public override void LeaveFunctionDefinition(FunctionDefinition ctx)
+            => LeaveScope();
 
-        public override void ExitVarDeclStmt([NotNull] VarDeclStmtContext context)
-        => this.LeaveNode(context);
+        private void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)
+            => CurrentScope.Declare(name, kind, ctx, properties);
 
-        private void LeaveNode(ParserRuleContext ctx) => this.CurrentScope = this.CurrentScope.EnclosingScope ?? this.GlobalScope;
+        private void EnterScope(IAstNode ctx)
+            => CurrentScope = Ast.CreateNewScope(ctx, CurrentScope);
+
+        private void LeaveScope()
+            => CurrentScope = CurrentScope.EnclosingScope ?? GlobalScope;
     }
 }

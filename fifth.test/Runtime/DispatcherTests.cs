@@ -10,7 +10,7 @@ namespace Fifth.Tests
         {
             var f5 = 5.AsFun();
             var add = Fun.Wrap((int x, int y) => x + y);
-            FuncStack stack = new FuncStack();
+            var stack = new FuncStack();
             var sut = new Dispatcher(stack);
             stack.Push(f5);
             stack.Push(f5);
@@ -28,8 +28,8 @@ namespace Fifth.Tests
         {
             var add = Fun.Wrap((int x, int y) => x + y);
             var mul = Fun.Wrap((int x, int y) => x * y);
-            FuncStack stack = new FuncStack();
-            Dispatcher sut = new Dispatcher(stack);
+            var stack = new FuncStack();
+            var sut = new Dispatcher(stack);
             stack.Push(3.AsFun());
             stack.Push(5.AsFun());
             stack.Push(add);
@@ -47,7 +47,7 @@ namespace Fifth.Tests
         public void TestCanDispatchStrings()
         {
             var add = Fun.Wrap((string x, string y) => $"{x} {y}");
-            FuncStack stack = new FuncStack();
+            var stack = new FuncStack();
             var sut = new Dispatcher(stack);
             stack.Push("hello".AsFun());
             stack.Push("world".AsFun());

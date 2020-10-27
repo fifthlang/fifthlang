@@ -1,7 +1,9 @@
 namespace Fifth.Tests
 {
+    using System.Linq;
     using Antlr4.Runtime;
     using Antlr4.Runtime.Tree;
+    using Fifth.AST;
     using Fifth.Parser;
     using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
@@ -16,12 +18,12 @@ namespace Fifth.Tests
             main(int x, int y) => myprint(x + y);
             myprint(int x) => std.print(""the answer is "" + x);";
 
-            var ctx = ParseProgram(TestProgram);
-            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var ast = ParseProgramToAst(TestProgram) as FifthProgram;
+            var annotatedAst = new AnnotatedSyntaxTree(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
-            ParseTreeWalker.Default.Walk(visitor, ctx);
+            ast.Accept(visitor);
             Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
-            var mainfuncdecl = (ParserRuleContext)annotatedAst.AstRoot.GetChild(1).Payload;
+            var mainfuncdecl = ast.Functions.First(f => f.Name == "main");
             var mainScope = annotatedAst.ScopeLookupTable[mainfuncdecl];
             Assert.That(mainScope, Is.Not.Null);
             Assert.That(mainScope.SymbolTable.Count, Is.EqualTo(2));
@@ -34,10 +36,10 @@ namespace Fifth.Tests
             myprint(string x) => std.print(x);
             blah() => int result = 5, result;";
 
-            var ctx = ParseProgram(TestProgram);
-            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var ast = ParseProgramToAst(TestProgram) as FifthProgram;
+            var annotatedAst = new AnnotatedSyntaxTree(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
-            ParseTreeWalker.Default.Walk(visitor, ctx);
+            ast.Accept(visitor);
             var symtab = visitor.GlobalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(3));
             foreach (var v in symtab.Values)
@@ -51,10 +53,10 @@ namespace Fifth.Tests
         {
             var TestProgram = @"main() => myprint(""hello world"");";
 
-            var ctx = ParseProgram(TestProgram);
-            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var ast = ParseProgramToAst(TestProgram) as FifthProgram;
+            var annotatedAst = new AnnotatedSyntaxTree(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
-            ParseTreeWalker.Default.Walk(visitor, ctx);
+            ast.Accept(visitor);
             var symtab = visitor.GlobalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(1));
             Assert.That(symtab.Resolve("main"), Is.Not.Null);
@@ -67,12 +69,13 @@ namespace Fifth.Tests
             main(int x, int y) => myprint(x + y);
             myprint(int x) => std.print(""the answer is "" + x);";
 
-            var ctx = ParseProgram(TestProgram);
-            var annotatedAst = new AnnotatedSyntaxTree(ctx);
+            var ast = ParseProgramToAst(TestProgram) as FifthProgram;
+            var annotatedAst = new AnnotatedSyntaxTree(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
-            ParseTreeWalker.Default.Walk(visitor, ctx);
+            ast.Accept(visitor);
             Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
-            var mainfuncdecl = (ParserRuleContext)annotatedAst.AstRoot.GetChild(1).Payload;
+            var astRoot = annotatedAst.AstRoot as FifthProgram;
+            var mainfuncdecl = astRoot.Functions.First(f => f.Name == "main");
             Assert.That(annotatedAst.ScopeLookupTable.ContainsKey(mainfuncdecl), Is.True);
         }
     }

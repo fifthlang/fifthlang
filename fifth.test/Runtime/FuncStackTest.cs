@@ -1,7 +1,7 @@
-using NUnit.Framework;
-
 namespace Fifth.Tests
 {
+    using NUnit.Framework;
+
     public class FuncStackTest
     {
         [SetUp]
@@ -12,7 +12,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanAddFunc()
         {
-            FuncStack sut = new FuncStack();
+            var sut = new FuncStack();
             Assert.That(sut.Stack, Is.Empty);
             sut.Push(5.AsFun());
             Assert.That(sut.Stack, Is.Not.Empty);
@@ -21,7 +21,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanAddMultipleFuncs()
         {
-            FuncStack sut = new FuncStack();
+            var sut = new FuncStack();
             Assert.That(sut.Stack, Is.Empty);
             sut.Push(5.AsFun());
             sut.Push((-6).AsFun());
@@ -33,7 +33,7 @@ namespace Fifth.Tests
         {
             var f5 = 5.AsFun();
             var add = Fun.Wrap((int x, int y) => x + y);
-            FuncStack sut = new FuncStack();
+            var sut = new FuncStack();
             Assert.That(sut.Stack, Is.Empty);
             sut.Push(f5);
             sut.Push(f5);

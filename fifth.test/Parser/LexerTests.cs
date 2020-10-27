@@ -39,7 +39,7 @@ namespace Fifth.Tests
         [TestCase("55.05e12", "FLOAT")]
         public void TestCanRecogniseIntegers(string sample, string expectedType)
         {
-            FifthLexer lexer = new FifthLexer(new AntlrInputStream(sample));
+            var lexer = new FifthLexer(new AntlrInputStream(sample));
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(new ThrowingErrorListener<int>());
 

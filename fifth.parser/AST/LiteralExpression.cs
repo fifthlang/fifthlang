@@ -1,8 +1,8 @@
 namespace Fifth.AST
 {
-    public class LiteralExpression<T> : Expression
+    public abstract class LiteralExpression<T> : Expression
     {
-        public LiteralExpression(T value) => this.Value = value;
+        public LiteralExpression(T value) => Value = value;
 
         public T Value { get; set; }
     }

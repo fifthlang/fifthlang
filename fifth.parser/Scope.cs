@@ -1,33 +1,36 @@
-using Antlr4.Runtime;
-
 namespace Fifth.Parser
 {
+    using Antlr4.Runtime;
+    using Fifth.AST;
+
     public class Scope : IScope
     {
-        public ParserRuleContext AstNode { get; set; }
-
-        public Scope(ParserRuleContext astNode)
+        public Scope(IAstNode astNode)
         {
-            this.SymbolTable = new SymbolTable();
-            this.AstNode = astNode;
+            SymbolTable = new SymbolTable();
+            AstNode = astNode;
         }
-        public Scope(ParserRuleContext astNode, IScope enclosingScope) : this(astNode) => this.EnclosingScope = enclosingScope;
+
+        public Scope(IAstNode astNode, IScope enclosingScope) : this(astNode) => EnclosingScope = enclosingScope;
+
+        public IAstNode AstNode { get; set; }
         public IScope EnclosingScope { get; set; }
         public ISymbolTable SymbolTable { get; set; }
-        public void Declare(string name, SymbolKind kind, ParserRuleContext ctx, params (string, object)[] properties)
+
+        public void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)
         {
             var symTabEntry = new SymTabEntry
             {
                 Name = name,
                 SymbolKind = kind,
-                Line = ctx.Start.Line,
+                Line = ctx.Line,
                 Context = ctx
             };
-            foreach ((string x, object y) in properties)
+            foreach ((var x, var y) in properties)
             {
                 symTabEntry.Annotations[x] = y;
             }
-            this.SymbolTable[name] = symTabEntry;
+            SymbolTable[name] = symTabEntry;
         }
     }
 }
