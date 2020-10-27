@@ -1,9 +1,9 @@
+using Fifth.AST;
+
 namespace Fifth.Parser
 {
-    public interface ISymbolTableEntry
+    public interface ISymbolTableEntry : IAnnotated, IFromSourceFile
     {
-        string DefiningModule { get; set; }
-        int Line { get; set; }
         string Name { get; set; }
         SymbolKind SymbolKind { get; set; }
     }

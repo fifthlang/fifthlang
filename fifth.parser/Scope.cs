@@ -28,7 +28,7 @@ namespace Fifth.Parser
             };
             foreach ((var x, var y) in properties)
             {
-                symTabEntry.Annotations[x] = y;
+                symTabEntry[x] = y;
             }
             SymbolTable[name] = symTabEntry;
         }

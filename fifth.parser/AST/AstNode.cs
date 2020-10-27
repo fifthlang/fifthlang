@@ -3,13 +3,18 @@ namespace Fifth.AST
     using System.Collections.Generic;
     using Fifth.Parser.LangProcessingPhases;
 
-    public abstract class AstNode : IAstNode
+    public abstract class AstNode : BaseAnnotated, IAstNode
     {
-        private readonly IDictionary<string, object> annotations = new Dictionary<string, object>();
-
         public int Column { get; set; }
         public string Filename { get; set; }
         public int Line { get; set; }
+
+        public abstract void Accept(IAstVisitor visitor);
+    }
+
+    public abstract class BaseAnnotated : IAnnotated
+    {
+        private readonly IDictionary<string, object> annotations = new Dictionary<string, object>();
 
         public object this[string index]
         {
@@ -24,6 +29,7 @@ namespace Fifth.AST
             set => annotations[index] = value;
         }
 
-        public abstract void Accept(IAstVisitor visitor);
+        public bool HasAnnotation(string key)
+        => annotations.ContainsKey(key);
     }
 }

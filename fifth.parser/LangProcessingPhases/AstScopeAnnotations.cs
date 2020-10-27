@@ -1,4 +1,4 @@
-namespace Fifth
+namespace Fifth.Parser.LangProcessingPhases
 {
     using System.Collections.Generic;
     using Fifth.AST;
