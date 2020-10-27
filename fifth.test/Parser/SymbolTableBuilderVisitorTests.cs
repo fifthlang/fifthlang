@@ -19,12 +19,12 @@ namespace Fifth.Tests
             myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AnnotatedSyntaxTree(ast);
+            var annotatedAst = new AstScopeAnnotations(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ast.Accept(visitor);
             Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
             var mainfuncdecl = ast.Functions.First(f => f.Name == "main");
-            var mainScope = annotatedAst.ScopeLookupTable[mainfuncdecl];
+            var mainScope = annotatedAst.NodeToScopeMappings[mainfuncdecl];
             Assert.That(mainScope, Is.Not.Null);
             Assert.That(mainScope.SymbolTable.Count, Is.EqualTo(2));
         }
@@ -37,7 +37,7 @@ namespace Fifth.Tests
             blah() => int result = 5, result;";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AnnotatedSyntaxTree(ast);
+            var annotatedAst = new AstScopeAnnotations(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ast.Accept(visitor);
             var symtab = visitor.GlobalScope.SymbolTable;
@@ -54,7 +54,7 @@ namespace Fifth.Tests
             var TestProgram = @"main() => myprint(""hello world"");";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AnnotatedSyntaxTree(ast);
+            var annotatedAst = new AstScopeAnnotations(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ast.Accept(visitor);
             var symtab = visitor.GlobalScope.SymbolTable;
@@ -70,13 +70,13 @@ namespace Fifth.Tests
             myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AnnotatedSyntaxTree(ast);
+            var annotatedAst = new AstScopeAnnotations(ast);
             var visitor = new SymbolTableBuilderVisitor(annotatedAst);
             ast.Accept(visitor);
             Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
             var astRoot = annotatedAst.AstRoot as FifthProgram;
             var mainfuncdecl = astRoot.Functions.First(f => f.Name == "main");
-            Assert.That(annotatedAst.ScopeLookupTable.ContainsKey(mainfuncdecl), Is.True);
+            Assert.That(annotatedAst.NodeToScopeMappings.ContainsKey(mainfuncdecl), Is.True);
         }
     }
 }
