@@ -1,6 +1,5 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
-    using System;
     using Fifth.AST;
 
     public class SymbolTableBuilderVisitor : BaseAstVisitor

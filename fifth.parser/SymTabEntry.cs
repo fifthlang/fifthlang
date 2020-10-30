@@ -1,7 +1,5 @@
 namespace Fifth.Parser
 {
-    using System.Collections.Generic;
-    using Antlr4.Runtime;
     using Fifth.AST;
 
     public class SymTabEntry : BaseAnnotated, ISymbolTableEntry

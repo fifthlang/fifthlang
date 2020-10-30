@@ -5,7 +5,7 @@ namespace Fifth.Runtime
 
     public class VariableReference : IVariableReference, IEquatable<VariableReference>
     {
-        public VariableReference(string name) => this.LocalName = name;
+        public VariableReference(string name) => LocalName = name;
 
         public string LocalName { get; }
 
@@ -13,11 +13,11 @@ namespace Fifth.Runtime
 
         public static bool operator ==(VariableReference left, VariableReference right) => EqualityComparer<VariableReference>.Default.Equals(left, right);
 
-        public override bool Equals(object obj) => this.Equals(obj as VariableReference);
+        public override bool Equals(object obj) => Equals(obj as VariableReference);
 
         public bool Equals(VariableReference other) => other != null &&
-                   this.LocalName == other.LocalName;
+                   LocalName == other.LocalName;
 
-        public override int GetHashCode() => this.LocalName.GetHashCode();
+        public override int GetHashCode() => LocalName.GetHashCode();
     }
 }

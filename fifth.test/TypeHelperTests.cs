@@ -2,7 +2,6 @@ namespace Fifth.Tests
 {
     using System;
     using Fifth.PrimitiveTypes;
-    using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
 

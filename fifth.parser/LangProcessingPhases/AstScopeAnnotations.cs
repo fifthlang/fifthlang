@@ -3,7 +3,6 @@ namespace Fifth.Parser.LangProcessingPhases
     using System.Collections.Generic;
     using Fifth.AST;
     using Fifth.Parser;
-    using static FifthParser;
 
     public class AstScopeAnnotations
     {

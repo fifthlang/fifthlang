@@ -4,8 +4,8 @@ namespace Fifth.Runtime
     {
         public VariableAssignment(IFifthType fifthType, object value)
         {
-            this.FifthType = fifthType;
-            this.Value = value;
+            FifthType = fifthType;
+            Value = value;
         }
 
         public IFifthType FifthType { get; }

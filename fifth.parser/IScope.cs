@@ -1,6 +1,5 @@
 namespace Fifth.Parser
 {
-    using Antlr4.Runtime;
     using Fifth.AST;
 
     public interface IScope

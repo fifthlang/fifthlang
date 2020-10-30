@@ -1,19 +1,18 @@
-using System.Collections.Generic;
-
 namespace Fifth.Parser
 {
+    using System.Collections.Generic;
+
     public class SymbolTable : Dictionary<string, ISymbolTableEntry>, ISymbolTable
     {
+        public IEnumerable<ISymbolTableEntry> All() => Values;
+
         public ISymbolTableEntry Resolve(string v)
         {
-            ISymbolTableEntry result;
-
-            if (this.TryGetValue(v, out result))
+            if (TryGetValue(v, out var result))
             {
                 return result;
             }
             return null;
         }
-        public IEnumerable<ISymbolTableEntry> All() => this.Values;
     }
 }

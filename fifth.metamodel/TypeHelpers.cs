@@ -4,7 +4,6 @@ namespace Fifth
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Fifth.PrimitiveTypes;
 
     public static class TypeHelpers
     {

@@ -1,8 +1,6 @@
 namespace Fifth.Tests
 {
     using System.Linq;
-    using Antlr4.Runtime;
-    using Antlr4.Runtime.Tree;
     using Fifth.AST;
     using Fifth.Parser;
     using Fifth.Parser.LangProcessingPhases;

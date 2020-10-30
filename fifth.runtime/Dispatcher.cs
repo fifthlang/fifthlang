@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace Fifth.Runtime
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Performs fetch, execute and store cycle on stack.
     /// </summary>
@@ -13,7 +13,7 @@ namespace Fifth.Runtime
         /// originaltag="see">Dispatcher</a> class.
         /// </summary>
         /// <param name="stack">The stack.</param>
-        public Dispatcher(IFuncStack stack) => this.Stack = stack;
+        public Dispatcher(IFuncStack stack) => Stack = stack;
 
         /// <summary>
         /// Gets or sets the instruction stack.
@@ -28,17 +28,17 @@ namespace Fifth.Runtime
         public void Dispatch()
         {
             // if stack empty do nothing
-            if (this.Stack.IsEmpty)
+            if (Stack.IsEmpty)
             {
                 return;
             }
 
             // pop stack into x
-            var x = this.Stack.Pop();
+            var x = Stack.Pop();
             // if x is a constant then return to stack
             if (x.IsValue)
             {
-                this.Stack.Push(x);
+                Stack.Push(x);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace Fifth.Runtime
                 var args = new List<object>();
                 foreach (var t in x.ArgTypes)
                 {
-                    var o = this.Resolve();
+                    var o = Resolve();
                     // check that types of values match type requirements of x
                     if (!t.IsInstanceOfType(o))
                     {
@@ -58,7 +58,7 @@ namespace Fifth.Runtime
                 args.Reverse(); // return to same order they were passsed onto the stack
                 var result = x.Invoke(args.ToArray());
                 // push result onto stack
-                this.Stack.Push(result.AsFun());
+                Stack.Push(result.AsFun());
             }
         }
 
@@ -73,12 +73,12 @@ namespace Fifth.Runtime
         /// </returns>
         private object Resolve()
         {
-            if (this.Stack.IsEmpty)
+            if (Stack.IsEmpty)
             {
                 return null;
             }
 
-            var x = this.Stack.Pop();
+            var x = Stack.Pop();
             if (x.IsValue)
             {
                 return x.Invoke();
@@ -86,9 +86,9 @@ namespace Fifth.Runtime
             else
             {
                 // we can't resolve this value directly, we need to recurse via dispatch
-                this.Stack.Push(x);
-                this.Dispatch();
-                x = this.Stack.Pop();
+                Stack.Push(x);
+                Dispatch();
+                x = Stack.Pop();
                 return x.Invoke();
             }
         }
