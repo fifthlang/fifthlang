@@ -1,5 +1,6 @@
 namespace Fifth.AST
 {
+    using Fifth;
     using Fifth.Parser.LangProcessingPhases;
 
     public class BinaryExpression : Expression

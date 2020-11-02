@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
+    <ProjectReference Include="..\fifth.parser\fifth.parser.csproj" />
   </ItemGroup>
-
 </Project>

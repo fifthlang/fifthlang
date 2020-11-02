@@ -27,11 +27,11 @@ namespace Fifth.Tests.Runtime
             var sut = new Fifth.Runtime.Environment(null);
             _ = sut.Should().NotBeNull();
             _ = sut.IsEmpty.Should().BeTrue();
-            sut[new VariableReference("hello")] = new VariableAssignment(t, o);
+            sut[new VariableReference("hello")] = new ValueObject(t, o);
             _ = sut.IsEmpty.Should().BeFalse();
             var x = sut[new VariableReference("hello")];
             _ = x.Value.Should().Be(o);
-            _ = x.FifthType.Should().Be(t);
+            _ = x.ValueType.Should().Be(t);
         }
     }
 }

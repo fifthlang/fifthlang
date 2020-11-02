@@ -1,6 +1,7 @@
 namespace Fifth.Tests.Parser
 {
     using System;
+    using Fifth;
     using Fifth.AST;
     using Fifth.Parser.LangProcessingPhases;
     using Fifth.Tests;
@@ -10,21 +11,21 @@ namespace Fifth.Tests.Parser
     [TestFixture()]
     public class AstBuilderVisitorTest : ParserTestBase
     {
-        [TestCase(@"2 + 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Plus)]
-        [TestCase(@"2 - 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Minus)]
-        [TestCase(@"2 * 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Times)]
+        [TestCase(@"2 + 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Add)]
+        [TestCase(@"2 - 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Subtract)]
+        [TestCase(@"2 * 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Multiply)]
         [TestCase(@"2 / 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Divide)]
-        [TestCase(@"1 + x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Plus)]
-        [TestCase(@"1 - x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Minus)]
-        [TestCase(@"1 * x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Times)]
+        [TestCase(@"1 + x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Add)]
+        [TestCase(@"1 - x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Subtract)]
+        [TestCase(@"1 * x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Multiply)]
         [TestCase(@"1 / x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Divide)]
-        [TestCase(@"x + 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Plus)]
-        [TestCase(@"x - 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Minus)]
-        [TestCase(@"x * 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Times)]
+        [TestCase(@"x + 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Add)]
+        [TestCase(@"x - 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Subtract)]
+        [TestCase(@"x * 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Multiply)]
         [TestCase(@"x / 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Divide)]
-        [TestCase(@"y + x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Plus)]
-        [TestCase(@"y - x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Minus)]
-        [TestCase(@"y * x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Times)]
+        [TestCase(@"y + x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Add)]
+        [TestCase(@"y - x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Subtract)]
+        [TestCase(@"y * x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Multiply)]
         [TestCase(@"y / x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Divide)]
         public void TestCanBuildBinaryExpression(string fragment, Type leftOperandType, Type rightOperandType, Operator op)
         {

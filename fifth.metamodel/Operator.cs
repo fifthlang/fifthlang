@@ -1,9 +1,9 @@
-﻿namespace Fifth.AST
+namespace Fifth
 {
     public enum Operator
     {
         // ArithmeticOperator
-        Plus, Minus, Times, Divide, Rem, Mod,
+        Add, Subtract, Multiply, Divide, Rem, Mod,
 
         // LogicalOperators
         And, Or, Not, Nand, Nor, Xor,

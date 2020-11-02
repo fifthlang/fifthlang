@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace Fifth
 {
+    using System;
+    using System.Collections.Generic;
+
     /// <summary>
     /// A wrapper around any sort of function, to make it easier to extract and perform type
     /// checking on its type parameters and result type.
@@ -42,6 +42,13 @@ namespace Fifth
         public Delegate Function { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is a (builtin) meta function that
+        /// operates on the environment itself.
+        /// </summary>
+        /// <value><c>true</c> if this instance is meta function; otherwise, <c>false</c>.</value>
+        public bool IsMetaFunction { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether this instance is a function wrapping a constant literal.
         /// </summary>
         /// <value><c>true</c> if this instance is a value; otherwise, <c>false</c>.</value>
@@ -59,5 +66,10 @@ namespace Fifth
         /// <param name="args">The arguments to pass to the function.</param>
         /// <returns>an object of the same type as ResultType</returns>
         public object Invoke(params object[] args) => Function.DynamicInvoke(args);
+
+        public override string ToString()
+        {
+            return $"\\{Function.Method.Name}";
+        }
     }
 }

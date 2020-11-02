@@ -1,6 +1,7 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
     using Fifth.AST;
+    using Fifth.PrimitiveTypes;
 
     public class TypeAnnotatorVisitor : BaseAstVisitor
     {
@@ -11,7 +12,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override void EnterExpressionList(ExpressionList ctx) => base.EnterExpressionList(ctx);
 
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
-            => ctx["type"] = ctx.FifthType;
+            => ctx["type"] = typeof(PrimitiveFloat);
 
         public override void EnterFuncCallExpression(FuncCallExpression ctx) => base.EnterFuncCallExpression(ctx);
 
@@ -20,12 +21,12 @@ namespace Fifth.Parser.LangProcessingPhases
         public override void EnterIfElseStmt(IfElseStmt ctx) => base.EnterIfElseStmt(ctx);
 
         public override void EnterIntValueExpression(IntValueExpression ctx)
-            => ctx["type"] = ctx.FifthType;
+            => ctx["type"] = typeof(PrimitiveInteger);
 
         public override void EnterNotExpression(UnaryExpression ctx) => base.EnterNotExpression(ctx);
 
         public override void EnterStringValueExpression(StringValueExpression ctx)
-            => ctx["type"] = ctx.FifthType;
+            => ctx["type"] = typeof(PrimitiveString);
 
         public override void EnterTypeInitialiser(TypeInitialiser ctx) => base.EnterTypeInitialiser(ctx);
 

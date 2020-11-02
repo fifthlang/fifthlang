@@ -4,6 +4,6 @@ namespace Fifth.Runtime
     {
         bool IsEmpty { get; }
         IEnvironment Parent { get; }
-        IVariableAssignment this[IVariableReference index] { get; set; }
+        IValueObject this[IVariableReference index] { get; set; }
     }
 }

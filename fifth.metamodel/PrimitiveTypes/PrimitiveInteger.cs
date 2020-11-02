@@ -1,5 +1,7 @@
 namespace Fifth.PrimitiveTypes
 {
+#pragma warning disable IDE1006 // Naming Styles
+
     [TypeTraits(IsPrimitive = true, IsNumeric = true, Keyword = "int")]
     public class PrimitiveInteger : IFifthType
     {
@@ -10,15 +12,17 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveInteger Default { get; set; } = new PrimitiveInteger();
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "+")]
-        public static int Add(int left, int right) => left + right;
+        public static int add_int_int(int left, int right) => left + right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "/")]
-        public static int Divide(int left, int right) => left / right;
+        public static int divide_int_int(int left, int right) => left / right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "*")]
-        public static int Multiply(int left, int right) => left * right;
+        public static int multiply_int_int(int left, int right) => left * right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "-")]
-        public static int Subtract(int left, int right) => left - right;
+        public static int subtract_int_int(int left, int right) => left - right;
     }
+
+#pragma warning restore IDE1006 // Naming Styles
 }

@@ -3,6 +3,7 @@ namespace Fifth
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
 
     public static class TypeHelpers
@@ -34,6 +35,136 @@ namespace Fifth
             }
 
             return null;
+        }
+
+        public static bool TryGetMethodByName(this Type t, string name, out FuncWrapper fw)
+        {
+            var methods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+            fw = methods
+                .Where(m => m.Name == name)
+                .Select(method =>
+                {
+                    var parameters = method.GetParameters();
+                    var formalParams = parameters
+                               .Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                               .ToArray();
+                    var call = Expression.Call(null, method, formalParams);
+                    return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(),
+                                           method.ReturnType,
+                                           Expression.Lambda(call, formalParams).Compile());
+                })
+                .FirstOrDefault();
+            return fw != null;
+        }
+
+        public static bool TryGetOperatorByNameAndTypes(Operator op, Type lhsType, Type rhsType, out FuncWrapper fw)
+        {
+            // get the type traits that hold keyword name (that's used in the operator naming
+            // convention for binary operators)
+            if (!lhsType.TryGetTypeTraits(out var lhsTraits))
+            {
+                throw new TypeCheckingException($"unable to find type traits for type {lhsType.FullName}");
+            }
+
+            if (!rhsType.TryGetTypeTraits(out var rhsTraits))
+            {
+                throw new TypeCheckingException($"unable to find type traits for type {rhsType.FullName}");
+            }
+
+            // work out what the suffix will be given the short names of the left and right side
+            // expression types
+            var suffix = $"_{lhsTraits.Keyword}_{rhsTraits.Keyword}";
+            string operator_name;
+            // now work out what the rest of the name will be based on the operator kind
+            switch (op)
+            {
+                case Operator.Add:
+                    operator_name = $"add{suffix}";
+                    break;
+
+                case Operator.Subtract:
+                    operator_name = $"subtract{suffix}";
+                    break;
+
+                case Operator.Multiply:
+                    operator_name = $"multiply{suffix}";
+                    break;
+
+                case Operator.Divide:
+                    operator_name = $"divide{suffix}";
+                    break;
+
+                case Operator.Rem:
+                    operator_name = $"remainder{suffix}";
+                    break;
+
+                case Operator.Mod:
+                    operator_name = $"modulo{suffix}";
+                    break;
+
+                case Operator.And:
+                    operator_name = $"logical_and{suffix}";
+                    break;
+
+                case Operator.Or:
+                    operator_name = $"logical_or{suffix}";
+                    break;
+
+                case Operator.Not:
+                    operator_name = $"logical_not{suffix}";
+                    break;
+
+                case Operator.Nand:
+                    operator_name = $"logical_nand{suffix}";
+                    break;
+
+                case Operator.Nor:
+                    operator_name = $"logical_nor{suffix}";
+                    break;
+
+                case Operator.Xor:
+                    operator_name = $"logical_xor{suffix}";
+                    break;
+
+                case Operator.Equal:
+                    operator_name = $"equals{suffix}";
+                    break;
+
+                case Operator.NotEqual:
+                    operator_name = $"not_equals{suffix}";
+                    break;
+
+                case Operator.LessThan:
+                    operator_name = $"less_than{suffix}";
+                    break;
+
+                case Operator.GreaterThan:
+                    operator_name = $"greater_than{suffix}";
+                    break;
+
+                case Operator.LessThanOrEqual:
+                    operator_name = $"less_than_or_equal{suffix}";
+                    break;
+
+                case Operator.GreaterThanOrEqual:
+                    operator_name = $"greater_than_or_equal{suffix}";
+                    break;
+
+                default:
+                    operator_name = "noop";
+                    break;
+            }
+
+            // now lookup (always on the LHS type) the operation we're looking for
+            return lhsType.TryGetMethodByName(operator_name, out fw);
+        }
+
+        public static bool TryGetTypeTraits(this Type t, out TypeTraitsAttribute tr)
+        {
+            tr = (TypeTraitsAttribute)t.GetCustomAttributes(true)
+                                       .FirstOrDefault(attr => attr is TypeTraitsAttribute);
+            return tr != null;
         }
 
         public static IEnumerable<Type> TypesHavingAttribute<TAttribute, TSampleType>()

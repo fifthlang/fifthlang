@@ -48,7 +48,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             Left = (Expression)Visit(context.left),
             Right = (Expression)Visit(context.right),
-            Op = Operator.Plus
+            Op = Operator.Add
         };
 
         public override IAstNode VisitEAnd([NotNull] FifthParser.EAndContext context) => new BinaryExpression
@@ -61,7 +61,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override IAstNode VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context) => new UnaryExpression
         {
             Operand = (Expression)Visit(context.operand),
-            Op = Operator.Minus
+            Op = Operator.Subtract
         };
 
         public override IAstNode VisitEDiv([NotNull] FifthParser.EDivContext context) => new BinaryExpression
@@ -121,7 +121,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             Left = (Expression)Visit(context.left),
             Right = (Expression)Visit(context.right),
-            Op = Operator.Times
+            Op = Operator.Multiply
         };
 
         public override IAstNode VisitEParen([NotNull] FifthParser.EParenContext context) => Visit(context.innerexp);
@@ -140,7 +140,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             Left = (Expression)Visit(context.left),
             Right = (Expression)Visit(context.right),
-            Op = Operator.Minus
+            Op = Operator.Subtract
         };
 
         //public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
