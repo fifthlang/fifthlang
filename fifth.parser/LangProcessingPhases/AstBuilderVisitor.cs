@@ -321,8 +321,16 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitVarDeclStmt([NotNull] FifthParser.VarDeclStmtContext context)
         {
-            Log.Debug("VisitVarDeclStmt");
-            return base.VisitVarDeclStmt(context);
+            var exp = base.Visit(context.exp());
+            var nameId = base.Visit(context.var_name());
+            var buitinType = TypeHelpers.LookupBuiltinType(context.type_name().GetText());
+
+            return new VariableDeclarationStatement
+            {
+                Expression = (Expression)exp,
+                Name = (Identifier)nameId,
+                FifthType = buitinType.GetType() // dodgy
+            };
         }
 
         public override IAstNode VisitWithStmt([NotNull] FifthParser.WithStmtContext context)

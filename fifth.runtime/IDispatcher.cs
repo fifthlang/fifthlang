@@ -2,8 +2,10 @@ namespace Fifth.Runtime
 {
     public interface IDispatcher
     {
-        IFuncStack Stack { get; }
+        ActivationFrame Frame { get; }
 
         void Dispatch();
+
+        object Resolve();
     }
 }

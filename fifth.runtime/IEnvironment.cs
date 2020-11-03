@@ -2,8 +2,9 @@ namespace Fifth.Runtime
 {
     public interface IEnvironment
     {
+        int Count { get; }
         bool IsEmpty { get; }
         IEnvironment Parent { get; }
-        IValueObject this[IVariableReference index] { get; set; }
+        IValueObject this[string index] { get; set; }
     }
 }

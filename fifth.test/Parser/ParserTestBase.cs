@@ -22,8 +22,25 @@ namespace Fifth.Tests
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
             => GetParserFor(fragment).statement();
 
+        protected static IAstNode ParseDeclAssignmentToAst(string fragment)
+        {
+            var parseTree = ParseDeclAssignment(fragment);
+            var visitor = new AstBuilderVisitor();
+            return visitor.Visit(parseTree);
+        }
+
         protected static ParserRuleContext ParseExpression(string fragment)
             => GetParserFor(fragment).exp();
+
+        protected static ParserRuleContext ParseExpressionList(string fragment)
+                    => GetParserFor(fragment).explist();
+
+        protected static IAstNode ParseExpressionListToAst(string fragment)
+        {
+            var parseTree = ParseExpressionList(fragment);
+            var visitor = new AstBuilderVisitor();
+            return visitor.Visit(parseTree);
+        }
 
         protected static IAstNode ParseExpressionToAst(string fragment)
         {

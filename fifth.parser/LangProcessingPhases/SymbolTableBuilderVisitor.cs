@@ -24,7 +24,7 @@ namespace Fifth.Parser.LangProcessingPhases
             => Declare(ctx.ParameterName, SymbolKind.FormalParameter, ctx, ("type_name", ctx.ParameterType));
 
         public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
-            => Declare(ctx.Name, SymbolKind.VariableDeclaration, ctx);
+            => Declare(ctx.Name.Value, SymbolKind.VariableDeclaration, ctx);
 
         public override void LeaveFifthProgram(FifthProgram ctx)
             => LeaveScope();

@@ -7,9 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.parser", "fifth.parse
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.test", "fifth.test\fifth.test.csproj", "{F2A6C19A-14F8-472B-A39F-C4217E5621C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.metamodel", "fifth.metamodel\fifth.metamodel.csproj", "{F7E67E97-B7BC-4713-BA28-0F429B94BAD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.metamodel", "fifth.metamodel\fifth.metamodel.csproj", "{F7E67E97-B7BC-4713-BA28-0F429B94BAD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.runtime", "fifth.runtime\fifth.runtime.csproj", "{982B259A-D0B8-455F-AF15-A78E9061E057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.runtime", "fifth.runtime\fifth.runtime.csproj", "{982B259A-D0B8-455F-AF15-A78E9061E057}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47E4C047-F8B2-4E63-BC44-40A0B5C24D31}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,15 +10,15 @@ namespace Fifth.Tests
         {
             var f5 = 5.AsFun();
             var add = Fun.Wrap((int x, int y) => x + y);
-            var stack = new FuncStack();
-            var sut = new Dispatcher(stack);
-            stack.Push(f5);
-            stack.Push(f5);
-            stack.Push(add);
-            Assert.That(stack.Stack, Has.Count.EqualTo(3));
+            var frame = new ActivationFrame();
+            var sut = new Dispatcher(frame);
+            frame.Stack.Push(f5);
+            frame.Stack.Push(f5);
+            frame.Stack.Push(add);
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(3));
             sut.Dispatch();
-            Assert.That(stack.Stack, Has.Count.EqualTo(1));
-            var x = stack.Stack.Pop();
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(1));
+            var x = frame.Stack.Stack.Pop();
             Assert.That(x.IsValue, Is.True);
             Assert.That(x.Invoke(), Is.EqualTo(10));
         }
@@ -28,17 +28,17 @@ namespace Fifth.Tests
         {
             var add = Fun.Wrap((int x, int y) => x + y);
             var mul = Fun.Wrap((int x, int y) => x * y);
-            var stack = new FuncStack();
-            var sut = new Dispatcher(stack);
-            stack.Push(3.AsFun());
-            stack.Push(5.AsFun());
-            stack.Push(add);
-            stack.Push(7.AsFun());
-            stack.Push(mul);
-            Assert.That(stack.Stack, Has.Count.EqualTo(5));
+            var frame = new ActivationFrame();
+            var sut = new Dispatcher(frame);
+            frame.Stack.Push(3.AsFun());
+            frame.Stack.Push(5.AsFun());
+            frame.Stack.Push(add);
+            frame.Stack.Push(7.AsFun());
+            frame.Stack.Push(mul);
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(5));
             sut.Dispatch();
-            Assert.That(stack.Stack, Has.Count.EqualTo(1));
-            var x = stack.Stack.Pop();
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(1));
+            var x = frame.Stack.Stack.Pop();
             Assert.That(x.IsValue, Is.True);
             Assert.That(x.Invoke(), Is.EqualTo(56));
         }
@@ -47,15 +47,15 @@ namespace Fifth.Tests
         public void TestCanDispatchStrings()
         {
             var add = Fun.Wrap((string x, string y) => $"{x} {y}");
-            var stack = new FuncStack();
-            var sut = new Dispatcher(stack);
-            stack.Push("hello".AsFun());
-            stack.Push("world".AsFun());
-            stack.Push(add);
-            Assert.That(stack.Stack, Has.Count.EqualTo(3));
+            var frame = new ActivationFrame();
+            var sut = new Dispatcher(frame);
+            frame.Stack.Push("hello".AsFun());
+            frame.Stack.Push("world".AsFun());
+            frame.Stack.Push(add);
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(3));
             sut.Dispatch();
-            Assert.That(stack.Stack, Has.Count.EqualTo(1));
-            var x = stack.Stack.Pop();
+            Assert.That(frame.Stack.Stack, Has.Count.EqualTo(1));
+            var x = frame.Stack.Stack.Pop();
             Assert.That(x.IsValue, Is.True);
             Assert.That(x.Invoke(), Is.EqualTo("hello world"));
         }

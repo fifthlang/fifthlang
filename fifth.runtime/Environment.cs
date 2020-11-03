@@ -6,11 +6,12 @@ namespace Fifth.Runtime
     {
         public Environment(IEnvironment parent) => Parent = parent;
 
-        public bool IsEmpty => Variables.Count == 0;
+        public int Count => Variables.Count;
+        public bool IsEmpty => Count == 0;
         public IEnvironment Parent { get; set; }
-        private Dictionary<IVariableReference, IValueObject> Variables { get; set; } = new Dictionary<IVariableReference, IValueObject>();
+        private Dictionary<string, IValueObject> Variables { get; set; } = new Dictionary<string, IValueObject>();
 
-        public IValueObject this[IVariableReference index]
+        public IValueObject this[string index]
         {
             get => Variables[index];
             set => Variables[index] = value;

@@ -27,9 +27,9 @@ namespace Fifth.Tests.Runtime
             var sut = new Fifth.Runtime.Environment(null);
             _ = sut.Should().NotBeNull();
             _ = sut.IsEmpty.Should().BeTrue();
-            sut[new VariableReference("hello")] = new ValueObject(t, o);
+            sut["hello"] = new ValueObject(t, o);
             _ = sut.IsEmpty.Should().BeFalse();
-            var x = sut[new VariableReference("hello")];
+            var x = sut["hello"];
             _ = x.Value.Should().Be(o);
             _ = x.ValueType.Should().Be(t);
         }

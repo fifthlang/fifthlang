@@ -13,13 +13,15 @@ namespace Fifth.Runtime
         /// originaltag="see">Dispatcher</a> class.
         /// </summary>
         /// <param name="stack">The stack.</param>
-        public Dispatcher(IFuncStack stack) => Stack = stack;
+        public Dispatcher(ActivationFrame frame) => Frame = frame;
 
         /// <summary>
         /// Gets or sets the instruction stack.
         /// </summary>
         /// <value>The stack.</value>
-        public IFuncStack Stack { get; }
+        public ActivationFrame Frame { get; }
+
+        public IFuncStack Stack => Frame.Stack;
 
         /// <summary>
         /// Dispatch takes a function from the top of the stack, and then attempts to invoke it with
@@ -39,6 +41,10 @@ namespace Fifth.Runtime
             if (x.IsValue)
             {
                 Stack.Push(x);
+            }
+            else if (x.IsMetaFunction)
+            {
+                _ = x.Invoke(this); // what would it mean to reassign the frame here...
             }
             else
             {
@@ -71,7 +77,7 @@ namespace Fifth.Runtime
         /// an object. Either the value on the top of the stack, or the result of dispatching the
         /// function on top of the stack.
         /// </returns>
-        private object Resolve()
+        public object Resolve()
         {
             if (Stack.IsEmpty)
             {

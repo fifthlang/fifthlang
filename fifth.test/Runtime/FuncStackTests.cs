@@ -84,10 +84,11 @@ namespace Fifth.Tests
         public void TestCanDeserialiseValue((string serialisedStack, object resolvedValue) blah)
         {
             var sut = new FuncStackDeserialiser();
-            var stack = sut.Deserialise(blah.serialisedStack);
-            var dispatcher = new Dispatcher(stack);
+            var af = new ActivationFrame();
+            af.Stack.CopyStack(sut.Deserialise(blah.serialisedStack));
+            var dispatcher = new Dispatcher(af);
             dispatcher.Dispatch();
-            var actual = stack.Pop().Invoke();
+            var actual = af.Stack.Pop().Invoke();
             actual.Should().Be(blah.resolvedValue);
         }
 

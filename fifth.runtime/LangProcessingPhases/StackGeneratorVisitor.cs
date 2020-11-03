@@ -28,7 +28,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         /// Adds a meta function to the stack
         /// </summary>
         /// <param name="metafunc">The metafunction to be pushed</param>
-        public void EmitMeta(Func<ActivationFrame, ActivationFrame> metafunc)
+        public void EmitMeta(Func<IDispatcher, IDispatcher> metafunc)
         {
             var wrapped = Fun.Wrap(metafunc);
             wrapped.IsMetaFunction = true;
@@ -168,7 +168,17 @@ namespace Fifth.Runtime.LangProcessingPhases
             // need to create scopes for params and body block, and execute within those scopes
         }
 
-        public override void LeaveIdentifierExpression(IdentifierExpression identifierExpression) => EmitMeta(MetaFunction.DereferenceVariable);
+        public override void LeaveIdentifier(Identifier identifier)
+        {
+            Emit(identifier.Value.AsFun());
+            EmitMeta(MetaFunction.DereferenceVariable);
+        }
+
+        public override void LeaveIdentifierExpression(IdentifierExpression identifierExpression)
+        {
+            Emit(identifierExpression.Identifier.Value.AsFun());
+            EmitMeta(MetaFunction.DereferenceVariable);
+        }
 
         public override void LeaveIfElseStmt(IfElseStmt ctx)
         {
@@ -193,9 +203,7 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public override void LeaveStringValueExpression(StringValueExpression ctx) => Emit(ctx.Value.AsFun());
 
-        public override void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx)
-        {
-        }
+        public override void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx) => EmitMeta(MetaFunction.CreateVariable);
 
         public override void LeaveTypeInitialiser(TypeInitialiser ctx)
         {

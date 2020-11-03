@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Fifth
@@ -36,5 +37,10 @@ namespace Fifth
         /// </summary>
         /// <param name="funcWrapper">The function wrapper.</param>
         public void Push(FuncWrapper funcWrapper) => Stack.Push(funcWrapper);
+
+        public void CopyStack(IFuncStack funcStack)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
