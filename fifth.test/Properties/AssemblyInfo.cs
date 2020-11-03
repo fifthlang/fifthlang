@@ -1,4 +1,5 @@
 using System;
+using log4net.Config;
 
 [assembly: CLSCompliant(false)]
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
+[assembly: XmlConfigurator(ConfigFile = "log4net.config")]

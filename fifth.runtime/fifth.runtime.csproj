@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
     <ProjectReference Include="..\fifth.parser\fifth.parser.csproj" />
   </ItemGroup>

@@ -1,6 +1,43 @@
-﻿namespace Fifth.Serialisation
+namespace Fifth.Serialisation
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    [Serializable]
+    public class FunctionTable
+    {
+        public FunctionTableEntry this[uint index]
+        {
+            get => table[index];
+            set => table[index] = value;
+        }
+
+        private readonly Dictionary<uint, FunctionTableEntry> table = new Dictionary<uint, FunctionTableEntry>();
+
+        // override object.Equals
+        public override bool Equals(object obj)
+        {
+            // See the full list of guidelines at http://go.microsoft.com/fwlink/?LinkID=85237 and
+            // also the guidance for operator== at http://go.microsoft.com/fwlink/?LinkId=85238
+
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+            var rhs = (FunctionTable)obj;
+
+            return table.SequenceEqual(rhs.table);
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            throw new NotImplementedException();
+            return base.GetHashCode();
+        }
+    }
 
     [Serializable]
     public struct FunctionTableEntry
@@ -41,11 +78,6 @@
         }
 
         // override object.GetHashCode
-        public override int GetHashCode()
-        {
-            // TODO: write your implementation of GetHashCode() here
-            throw new NotImplementedException();
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => functionIdentifier.GetHashCode();
     }
 }

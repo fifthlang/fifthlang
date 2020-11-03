@@ -76,6 +76,15 @@ namespace Fifth.Serialisation
             }
         }
 
+        public static byte[] Serialise<T>(this T obj)
+        {
+            using (var s = new MemoryStream())
+            {
+                s.Serialise(obj);
+                return s.ReadToEnd();
+            }
+        }
+
         public static void Serialise<T>(this Stream fs, T obj)
         {
             if (!fs.CanWrite)
