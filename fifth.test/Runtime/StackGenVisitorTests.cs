@@ -1,14 +1,13 @@
 namespace Fifth.Test.Runtime
 {
-    using System.Collections.Generic;
-    using Fifth.Parser.LangProcessingPhases;
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
-    using Fifth.Tests;
     using FluentAssertions;
     using NUnit.Framework;
+    using Parser.LangProcessingPhases;
+    using Tests;
 
-    [TestFixture()]
+    [TestFixture]
     internal class StackGenVisitorTests : ParserTestBase
     {
         [TestCase("int x = 5 * 1, x", "x", 5)]
@@ -17,15 +16,15 @@ namespace Fifth.Test.Runtime
             var astNode = ParseExpressionListToAst(code);
             var af = new ActivationFrame();
             var stack = af.Stack;
-            var sut = new StackGeneratorVisitor() { Stack = stack };
-            astNode.Accept(visitor: new TypeAnnotatorVisitor());
-            astNode.Accept(visitor: sut);
+            var sut = new StackGeneratorVisitor {Stack = stack, Emit = new StackEmitter()};
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
             var dispatcher = new Dispatcher(af);
             dispatcher.Dispatch();
-            Assert.That(stack.Stack, Has.Count.EqualTo(1));
-            var v = stack.Stack.Pop();
-            v.IsValue.Should().BeTrue();
-            v.Invoke().Should().Be(resolvedValue);
+            Assert.That(stack, Has.Count.EqualTo(1));
+            var v = stack.Pop();
+            v.Should().BeOfType<ValueStackElement>();
+            ((ValueStackElement)v).Value.Should().Be(resolvedValue);
             af.Environment.Count.Should().Be(1);
         }
 
@@ -38,15 +37,15 @@ namespace Fifth.Test.Runtime
             var astNode = ParseExpressionToAst(code);
             var af = new ActivationFrame();
             var stack = af.Stack;
-            var sut = new StackGeneratorVisitor() { Stack = stack };
-            astNode.Accept(visitor: new TypeAnnotatorVisitor());
-            astNode.Accept(visitor: sut);
+            var sut = new StackGeneratorVisitor {Stack = stack, Emit = new StackEmitter()};
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
             var dispatcher = new Dispatcher(af);
             dispatcher.Dispatch();
-            Assert.That(stack.Stack, Has.Count.EqualTo(1));
-            var v = stack.Stack.Pop();
-            v.IsValue.Should().BeTrue();
-            v.Invoke().Should().Be(resolvedValue);
+            Assert.That(stack, Has.Count.EqualTo(1));
+            var v = stack.Pop();
+            v.Should().BeOfType<ValueStackElement>();
+            ((ValueStackElement)v).Value.Should().Be(resolvedValue);
         }
     }
 }

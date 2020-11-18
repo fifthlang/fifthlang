@@ -1,9 +1,11 @@
 namespace Fifth.AST
 {
-    using Fifth.Parser.LangProcessingPhases;
+    using Parser.LangProcessingPhases;
 
     public class VariableReference : AstNode
     {
+        public string Name { get; set; }
+
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterVariableReference(this);

@@ -1,11 +1,10 @@
 namespace Fifth.Tests
 {
     using System.Collections.Generic;
-    using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
 
-    [TestFixture()]
+    [TestFixture]
     public class FuncStackTests
     {
         public static IEnumerable<(string, object)> DeserialisationCases()
@@ -18,7 +17,7 @@ namespace Fifth.Tests
             yield return ((object)'a', "'a'");
         }
 
-        [Test()]
+        [Test]
         public void FuncStackTest()
         {
             var sut = new FuncStack();
@@ -27,7 +26,7 @@ namespace Fifth.Tests
             sut.Stack.Should().BeEmpty();
         }
 
-        [Test()]
+        [Test]
         public void PopTest()
         {
             var sut = new FuncStack();
@@ -37,7 +36,7 @@ namespace Fifth.Tests
             sut.Stack.Should().BeEmpty();
         }
 
-        [Test()]
+        [Test]
         public void PushTest()
         {
             var sut = new FuncStack();
@@ -78,28 +77,6 @@ namespace Fifth.Tests
             sut.Push(f5);
             sut.Push(add);
             Assert.That(sut.Stack, Has.Count.EqualTo(3));
-        }
-
-        [TestCaseSource("DeserialisationCases"), Ignore("not sure this is worth pursuing")]
-        public void TestCanDeserialiseValue((string serialisedStack, object resolvedValue) blah)
-        {
-            var sut = new FuncStackDeserialiser();
-            var af = new ActivationFrame();
-            af.Stack.CopyStack(sut.Deserialise(blah.serialisedStack));
-            var dispatcher = new Dispatcher(af);
-            dispatcher.Dispatch();
-            var actual = af.Stack.Pop().Invoke();
-            actual.Should().Be(blah.resolvedValue);
-        }
-
-        [TestCaseSource("SerialisationCases"), Ignore("not sure this is worth pursuing")]
-        public void TestCanSerialiseValue((object value, string expectedSerialisation) blah)
-        {
-            var sut = new FuncStackSerialiser();
-            var stack = new FuncStack();
-            stack.Push(blah.value.AsFun());
-            var actual = sut.Serialise(stack);
-            actual.Should().Be(blah.expectedSerialisation);
         }
     }
 }

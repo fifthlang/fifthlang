@@ -15,6 +15,12 @@ Fifth is (to be) a general purpose programming language running on the .NET tech
 - [Contributing](#contributing)
 - [License](#license)
 
+## Building the grammar from Powershell
+
+```powershell
+java -jar .\tools\antlr-4.8-complete.jar -Dlanguage=CSharp -visitor -listener -o .\fifth.parser\grammar\ .\fifth.parser\grammar\Fifth.g4
+```
+
 ## Examples
 
 Here's an example of Fifth in action:

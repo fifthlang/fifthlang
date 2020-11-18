@@ -3,29 +3,25 @@ namespace Fifth.Runtime
     using System;
     using System.Collections.Generic;
 
-    /// <summary>
-    /// Performs fetch, execute and store cycle on stack.
-    /// </summary>
     public class Dispatcher : IDispatcher
     {
         /// <summary>
-        /// Initializes a new instance of the <a onclick="return false;" href="Dispatcher"
-        /// originaltag="see">Dispatcher</a> class.
+        ///     Initializes a new instance of the <see cref="Dispatcher" /> class.
         /// </summary>
         /// <param name="stack">The stack.</param>
         public Dispatcher(ActivationFrame frame) => Frame = frame;
 
+        public IRuntimeStack Stack => Frame.Stack;
+
         /// <summary>
-        /// Gets or sets the instruction stack.
+        ///     Gets or sets the instruction stack.
         /// </summary>
         /// <value>The stack.</value>
         public ActivationFrame Frame { get; }
 
-        public IFuncStack Stack => Frame.Stack;
-
         /// <summary>
-        /// Dispatch takes a function from the top of the stack, and then attempts to invoke it with
-        /// arguments gathered from the stack below
+        ///     Dispatch takes a function from the top of the stack, and then attempts to invoke it with
+        ///     arguments gathered from the stack below
         /// </summary>
         public void Dispatch()
         {
@@ -35,47 +31,47 @@ namespace Fifth.Runtime
                 return;
             }
 
-            // pop stack into x
-            var x = Stack.Pop();
             // if x is a constant then return to stack
-            if (x.IsValue)
+            switch (Stack.Pop())
             {
-                Stack.Push(x);
-            }
-            else if (x.IsMetaFunction)
-            {
-                _ = x.Invoke(this); // what would it mean to reassign the frame here...
-            }
-            else
-            {
-                // if x is a func requiring (m) params: resolve m values into values
-                var args = new List<object>();
-                foreach (var t in x.ArgTypes)
-                {
-                    var o = Resolve();
-                    // check that types of values match type requirements of x
-                    if (!t.IsInstanceOfType(o))
+                case ValueStackElement vse:
+                    Stack.Push(vse);
+                    break;
+                case MetaFunctionStackElement mfe:
+                    _ = mfe.MetaFunction.Invoke(this); // what would it mean to reassign the frame here...
+                    break;
+                case FunctionStackElement fe:
+                    // if x is a func requiring (m) params: resolve m values into values
+                    var args = new List<object>();
+                    foreach (var t in fe.Function.ArgTypes)
                     {
-                        throw new Exception("Invalid Parameter Type"); /// TODO need better error message
+                        var o = Resolve();
+                        // check that types of values match type requirements of x
+                        if (!t.IsInstanceOfType(o))
+                        {
+                            throw new Exception("Invalid Parameter Type"); // TODO need better error message
+                        }
+
+                        args.Add(o);
                     }
-                    args.Add(o);
-                }
-                // pass values to x as args
-                args.Reverse(); // return to same order they were passsed onto the stack
-                var result = x.Invoke(args.ToArray());
-                // push result onto stack
-                Stack.Push(result.AsFun());
+
+                    // pass values to x as args
+                    args.Reverse(); // return to same order they were passed onto the stack
+                    var result = fe.Function.Invoke(args.ToArray());
+                    // push result onto stack
+                    Stack.PushConstantValue(result); // TODO: can't assume this will always be a value
+                    break;
             }
         }
 
         /// <summary>
-        /// Resolve, attempts to convert functions at the top of the stack into actual values. If
-        /// they are real functions, then it recurses into those functions till it is able to get a
-        /// number off the stack to return.
+        ///     Resolve, attempts to convert functions at the top of the stack into actual values. If
+        ///     they are real functions, then it recurses into those functions till it is able to get a
+        ///     number off the stack to return.
         /// </summary>
         /// <returns>
-        /// an object. Either the value on the top of the stack, or the result of dispatching the
-        /// function on top of the stack.
+        ///     an object. Either the value on the top of the stack, or the result of dispatching the
+        ///     function on top of the stack.
         /// </returns>
         public object Resolve()
         {
@@ -85,112 +81,20 @@ namespace Fifth.Runtime
             }
 
             var x = Stack.Pop();
-            if (x.IsValue)
+            switch (x)
             {
-                return x.Invoke();
-            }
-            else
-            {
-                // we can't resolve this value directly, we need to recurse via dispatch
-                Stack.Push(x);
-                Dispatch();
-                x = Stack.Pop();
-                return x.Invoke();
-            }
-        }
-    }
-
-    public class Dispatcher2 : IDispatcher
-    {
-        /// <summary>
-        /// Initializes a new instance of the <a onclick="return false;" href="Dispatcher"
-        /// originaltag="see">Dispatcher</a> class.
-        /// </summary>
-        /// <param name="stack">The stack.</param>
-        public Dispatcher2(ActivationFrame frame) => Frame = frame;
-
-        /// <summary>
-        /// Gets or sets the instruction stack.
-        /// </summary>
-        /// <value>The stack.</value>
-        public ActivationFrame Frame { get; }
-
-        public IFuncStack Stack => Frame.Stack;
-
-        /// <summary>
-        /// Dispatch takes a function from the top of the stack, and then attempts to invoke it with
-        /// arguments gathered from the stack below
-        /// </summary>
-        public void Dispatch()
-        {
-            // if stack empty do nothing
-            if (Stack.IsEmpty)
-            {
-                return;
+                case ValueStackElement vse:
+                    return vse.Value;
+                case VariableReferenceStackElement vrse:
+                    return Frame.Environment[vrse.VariableName].Value;
             }
 
-            // pop stack into x
-            var x = Stack.Pop();
-            // if x is a constant then return to stack
-            if (x.IsValue)
-            {
-                Stack.Push(x);
-            }
-            else if (x.IsMetaFunction)
-            {
-                _ = x.Invoke(this); // what would it mean to reassign the frame here...
-            }
-            else
-            {
-                // if x is a func requiring (m) params: resolve m values into values
-                var args = new List<object>();
-                foreach (var t in x.ArgTypes)
-                {
-                    var o = Resolve();
-                    // check that types of values match type requirements of x
-                    if (!t.IsInstanceOfType(o))
-                    {
-                        throw new Exception("Invalid Parameter Type"); /// TODO need better error message
-                    }
-                    args.Add(o);
-                }
-                // pass values to x as args
-                args.Reverse(); // return to same order they were passsed onto the stack
-                var result = x.Invoke(args.ToArray());
-                // push result onto stack
-                Stack.Push(result.AsFun());
-            }
-        }
-
-        /// <summary>
-        /// Resolve, attempts to convert functions at the top of the stack into actual values. If
-        /// they are real functions, then it recurses into those functions till it is able to get a
-        /// number off the stack to return.
-        /// </summary>
-        /// <returns>
-        /// an object. Either the value on the top of the stack, or the result of dispatching the
-        /// function on top of the stack.
-        /// </returns>
-        public object Resolve()
-        {
-            if (Stack.IsEmpty)
-            {
-                return null;
-            }
-
-            var x = Stack.Pop();
-            if (x.IsValue)
-            {
-                return x.Invoke();
-            }
-            else
-            {
-                // we can't resolve this value directly, we need to recurse via dispatch
-                Stack.Push(x);
-                Dispatch();
-                x = Stack.Pop();
-                return x.Invoke();
-            }
+            // we can't resolve this value directly, we need to recurse via dispatch
+            Stack.Push(x);
+            Dispatch();
+            x = Stack.Pop();
+            var result = x as ValueStackElement;
+            return result?.Value;
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace Fifth.AST
 {
-    using Fifth.Parser.LangProcessingPhases;
+    using Parser.LangProcessingPhases;
 
     public class VariableDeclarationStatement : Statement
     {
@@ -13,10 +13,7 @@ namespace Fifth.AST
             visitor.EnterVariableDeclarationStatement(this);
             Name.Accept(visitor);
 
-            if (Expression != null)
-            {
-                Expression.Accept(visitor);
-            }
+            Expression?.Accept(visitor);
             visitor.LeaveVariableDeclarationStatement(this);
         }
     }
