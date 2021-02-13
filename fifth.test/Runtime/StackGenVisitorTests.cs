@@ -21,7 +21,7 @@ namespace Fifth.Test.Runtime
             astNode.Accept(sut);
             var dispatcher = new Dispatcher(af);
             dispatcher.Dispatch();
-            Assert.That(stack, Has.Count.EqualTo(1));
+            stack.Count.Should().Be(1);
             var v = stack.Pop();
             v.Should().BeOfType<ValueStackElement>();
             ((ValueStackElement)v).Value.Should().Be(resolvedValue);

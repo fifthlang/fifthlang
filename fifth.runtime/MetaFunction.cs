@@ -31,7 +31,7 @@ namespace Fifth.Runtime
         {
             var varName = dispatcher.Resolve() as string;
             var rhsValue = dispatcher.Resolve();
-            dispatcher.Frame.Environment[varName] = new ValueObject(PrimitiveInteger.Default, rhsValue);
+            dispatcher.Frame.Environment[varName] = new ValueObject(PrimitiveInteger.Default, "int", rhsValue);
             return dispatcher;
         }
 
@@ -52,11 +52,29 @@ namespace Fifth.Runtime
             _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
             var varName = dispatcher.Resolve() as string;
-            dispatcher.Frame.Environment[varName] = default; // TODO: WARNING: not type info
-            dispatcher.Frame.Stack
-                .PushVariableReference(varName); // create var ref in place of string, to prove its been created in env
+            var typeName = dispatcher.Resolve() as string;
+            IFifthType typeReferencedByTypeName = null;
+            if (string.IsNullOrWhiteSpace(typeName) || typeName == "var")
+            {
+                // OK no type given or implicit type name use
+                // either way, we will have to use type inference to work out what type to use.
+                throw new NotImplementedException("type inference not yet available");
+            }
+
+            typeReferencedByTypeName = LookupTypeDefinitionByName(typeName);
+            _ = typeReferencedByTypeName ?? throw new TypeCheckingException("Unable to find type, or no type provided");
+
+            dispatcher.Frame.Environment[varName] =
+                new ValueObject<string>(typeReferencedByTypeName, varName, string.Empty);
+
+            // create var ref in place of string, to prove its been created in env
+            dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
             return dispatcher;
         }
+
+        private static IFifthType LookupTypeDefinitionByName(string typeName) =>
+            // TODO: need to have actual registry of types to lookup against
+            PrimitiveInteger.Default;
 
         /// <summary>
         ///     <para>Binds a variable reference to a value</para>
@@ -78,7 +96,7 @@ namespace Fifth.Runtime
             var varName = dispatcher.Resolve() as string;
             var value = dispatcher.Resolve();
             dispatcher.Frame.Environment[varName] =
-                new ValueObject(PrimitiveInteger.Default, value); // TODO: WARNING: not type info
+                new ValueObject(PrimitiveInteger.Default, "int", value); // TODO: WARNING: not type info
             return dispatcher;
         }
 
@@ -94,7 +112,8 @@ namespace Fifth.Runtime
         {
             var varName = dispatcher.Resolve() as string;
             var value = dispatcher.Frame.Environment[varName];
-            dispatcher.Frame.Stack.PushConstantValue(value.Value);
+            var valueObj = value.GetValueOfValueObject();
+            dispatcher.Frame.Stack.PushConstantValue(valueObj);
             return dispatcher;
         }
     }

@@ -1,6 +1,8 @@
 namespace Fifth.Runtime
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
 
     public enum StackElementType
     {
@@ -51,9 +53,9 @@ namespace Fifth.Runtime
 
         public bool IsEmpty => Count == 0;
 
-        public IRuntimeStack PushVariableReference(string varName)
+        public IRuntimeStack PushVariableReference(IValueObject variableEntryInEnvironment)
         {
-            Push(new VariableReferenceStackElement(varName));
+            Push(new VariableReferenceStackElement(variableEntryInEnvironment.NamesInScope.First()));
             return this;
         }
     }
@@ -70,6 +72,7 @@ namespace Fifth.Runtime
     }
 
     /// <summary>A stack element consisting of a wrapped lambda function</summary>
+    [DebuggerDisplay("λ:{Function.Function}")]
     public class FunctionStackElement : StackElement
     {
         public FunctionStackElement(FuncWrapper function)
@@ -93,6 +96,7 @@ namespace Fifth.Runtime
     }
 
     /// <summary>Any element that can be pushed onto a stack</summary>
+    [DebuggerDisplay("val:{Value}")]
     public class ValueStackElement : StackElement
     {
         public ValueStackElement(object value)
@@ -101,7 +105,7 @@ namespace Fifth.Runtime
         public object Value { get; }
     }
 
-    /// <summary>Any element that can be pushed onto a stack</summary>
+    [DebuggerDisplay("var:{VariableName}")]
     public class VariableReferenceStackElement : StackElement
     {
         public VariableReferenceStackElement(string variableName)

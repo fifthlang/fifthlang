@@ -1,6 +1,6 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
-    using Fifth.AST;
+    using AST;
 
     public abstract class BaseAstVisitor : IAstVisitor
     {

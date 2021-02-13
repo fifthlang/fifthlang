@@ -86,7 +86,8 @@ namespace Fifth.Runtime
                 case ValueStackElement vse:
                     return vse.Value;
                 case VariableReferenceStackElement vrse:
-                    return Frame.Environment[vrse.VariableName].Value;
+                    var referencedVariableValue = ResolveTypedVariable(Frame.Environment[vrse.VariableName]);
+                    return referencedVariableValue;
             }
 
             // we can't resolve this value directly, we need to recurse via dispatch
@@ -95,6 +96,22 @@ namespace Fifth.Runtime
             x = Stack.Pop();
             var result = x as ValueStackElement;
             return result?.Value;
+        }
+
+        /// <summary>
+        ///     try to resolve the type of the value and get its internal value
+        /// </summary>
+        /// <returns>Value if it can find it, as an object</returns>
+        public object ResolveTypedVariable(IValueObject vo)
+        {
+            var pi = vo.GetType().GetProperty("Value");
+
+            if (pi?.CanRead ?? false)
+            {
+                return pi!.GetMethod!.Invoke(vo, new object[] { });
+            }
+
+            return null;
         }
     }
 }

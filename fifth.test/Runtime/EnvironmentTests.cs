@@ -2,12 +2,13 @@ namespace Fifth.Tests.Runtime
 {
     using System;
     using System.Collections.Generic;
-    using Fifth.PrimitiveTypes;
     using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
+    using PrimitiveTypes;
+    using Environment = Fifth.Runtime.Environment;
 
-    [TestFixture()]
+    [TestFixture]
     public class EnvironmentTests
     {
         public static IEnumerable<Tuple<IFifthType, object>> Cases()
@@ -23,14 +24,14 @@ namespace Fifth.Tests.Runtime
         [TestCaseSource("Cases")]
         public void EnvironmentTest(Tuple<IFifthType, object> a)
         {
-            (var t, var o) = a;
-            var sut = new Fifth.Runtime.Environment(null);
+            var (t, o) = a;
+            var sut = new Environment(null);
             _ = sut.Should().NotBeNull();
             _ = sut.IsEmpty.Should().BeTrue();
-            sut["hello"] = new ValueObject(t, o);
+            sut["hello"] = new ValueObject(t, t.GetTypeName(), o);
             _ = sut.IsEmpty.Should().BeFalse();
             var x = sut["hello"];
-            _ = x.Value.Should().Be(o);
+            _ = x.GetValueOfValueObject().Should().Be(o);
             _ = x.ValueType.Should().Be(t);
         }
     }

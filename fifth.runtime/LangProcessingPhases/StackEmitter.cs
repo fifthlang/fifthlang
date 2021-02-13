@@ -3,6 +3,23 @@ namespace Fifth.Runtime.LangProcessingPhases
     using System;
     using AST;
 
+    /*
+    public class EmitBuilder
+    {
+        private readonly IRuntimeStack runtimeStack;
+        internal readonly Queue<StackElement> tmpQueue;
+
+        private EmitBuilder(IRuntimeStack runtimeStack)
+        {
+            this.runtimeStack = runtimeStack;
+            tmpQueue = new Queue<StackElement>();
+        }
+
+        public static EmitBuilder Into(IRuntimeStack stack) => new EmitBuilder(stack);
+
+        public EmitBuilder VariableDeclaration(VariableDeclarationStatement variableDeclarationStatement) => this;
+    }*/
+
     public class StackEmitter : IStackEmitter
     {
         /// <summary>

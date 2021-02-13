@@ -7,6 +7,7 @@ namespace Fifth.AST
         public Expression Expression { get; set; }
         public Identifier Name { get; set; }
         public IFifthType Type { get; set; }
+        public string TypeName { get; set; }
 
         public override void Accept(IAstVisitor visitor)
         {

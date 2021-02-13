@@ -9,10 +9,26 @@ namespace Fifth
     public static class TypeHelpers
     {
         public static bool Implements<TInterface>(this Type t)
-        => t.GetInterfaces().Contains(typeof(TInterface));
+            => t.GetInterfaces().Contains(typeof(TInterface));
 
         public static bool IsBuiltinType(string typename)
-                => LookupBuiltinType(typename) != null;
+            => LookupBuiltinType(typename) != null;
+
+        /// <summary>
+        ///     try to resolve the type of the value and get its internal value
+        /// </summary>
+        /// <returns>Value if it can find it, as an object</returns>
+        public static object GetValueOfValueObject(this object vo)
+        {
+            var pi = vo.GetType().GetProperty("Value");
+
+            if (pi?.CanRead ?? false)
+            {
+                return pi!.GetMethod!.Invoke(vo, new object[] { });
+            }
+
+            return null;
+        }
 
         public static IFifthType LookupBuiltinType(string typename)
         {
@@ -47,12 +63,12 @@ namespace Fifth
                 {
                     var parameters = method.GetParameters();
                     var formalParams = parameters
-                               .Select(p => Expression.Parameter(p.ParameterType, p.Name))
-                               .ToArray();
+                        .Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                        .ToArray();
                     var call = Expression.Call(null, method, formalParams);
                     return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(),
-                                           method.ReturnType,
-                                           Expression.Lambda(call, formalParams).Compile());
+                        method.ReturnType,
+                        Expression.Lambda(call, formalParams).Compile());
                 })
                 .FirstOrDefault();
             return fw != null;
@@ -163,8 +179,18 @@ namespace Fifth
         public static bool TryGetTypeTraits(this Type t, out TypeTraitsAttribute tr)
         {
             tr = (TypeTraitsAttribute)t.GetCustomAttributes(true)
-                                       .FirstOrDefault(attr => attr is TypeTraitsAttribute);
+                .FirstOrDefault(attr => attr is TypeTraitsAttribute);
             return tr != null;
+        }
+
+        public static string GetTypeName(this IFifthType ft)
+        {
+            if (ft.GetType().TryGetTypeTraits(out var tr))
+            {
+                return tr.Keyword;
+            }
+
+            throw new TypeCheckingException("Type does not have a name");
         }
 
         public static IEnumerable<Type> TypesHavingAttribute<TAttribute, TSampleType>()
