@@ -71,5 +71,19 @@ namespace Fifth
         {
             return $"\\{Function.Method.Name}";
         }
+
+        // if the functions are the same then everything else should be the same as well
+        public override bool Equals(object obj)
+        {
+            var other = obj as FuncWrapper;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Function.Equals(other.Function);
+        }
+
+        public override int GetHashCode() => Function.GetHashCode();
     }
 }

@@ -79,6 +79,19 @@ namespace Fifth.Runtime
             => Function = function;
 
         public FuncWrapper Function { get; }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as FunctionStackElement;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => Function.GetHashCode();
     }
 
     /// <summary>A stack element consisting of a function that acts on the environment somehow</summary>
@@ -88,6 +101,19 @@ namespace Fifth.Runtime
             => MetaFunction = metaFunction;
 
         public FuncWrapper MetaFunction { get; }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as MetaFunctionStackElement;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => MetaFunction.GetHashCode();
     }
 
     /// <summary>Base type of anything that can be pushed onto a stack</summary>
@@ -103,6 +129,20 @@ namespace Fifth.Runtime
             => Value = value;
 
         public object Value { get; }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ValueStackElement;
+            if (other == null)
+            {
+                return false;
+            }
+
+
+            return other.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 
     [DebuggerDisplay("var:{VariableName}")]
@@ -112,5 +152,18 @@ namespace Fifth.Runtime
             => VariableName = variableName;
 
         public string VariableName { get; }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as VariableReferenceStackElement;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => VariableName.GetHashCode();
     }
 }

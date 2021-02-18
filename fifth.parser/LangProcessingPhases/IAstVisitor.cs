@@ -1,17 +1,17 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
-    using Fifth.AST;
+    using AST;
 
     public interface IAstVisitor
     {
+        void EnterAbsoluteUri(AbsoluteIri absoluteIri);
         void EnterAlias(AliasDeclaration ctx);
 
         void EnterAssignmentStmt(AssignmentStmt ctx);
 
         void EnterBinaryExpression(BinaryExpression ctx);
-        void EnterAbsoluteUri(AbsoluteIri absoluteIri);
-        void LeaveAbsoluteUri(AbsoluteIri absoluteIri);
         void EnterBlock(Block ctx);
+        void EnterBooleanExpression(BooleanExpression ctx);
 
         void EnterExpression(Expression expression);
 
@@ -52,6 +52,7 @@ namespace Fifth.Parser.LangProcessingPhases
         void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx);
 
         void EnterVariableReference(VariableReference variableRef);
+        void LeaveAbsoluteUri(AbsoluteIri absoluteIri);
 
         void LeaveAlias(AliasDeclaration ctx);
 
@@ -60,6 +61,7 @@ namespace Fifth.Parser.LangProcessingPhases
         void LeaveBinaryExpression(BinaryExpression ctx);
 
         void LeaveBlock(Block ctx);
+        void LeaveBooleanExpression(BooleanExpression ctx);
 
         void LeaveExpression(Expression expression);
 

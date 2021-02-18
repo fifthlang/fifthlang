@@ -47,7 +47,7 @@ namespace Fifth.Runtime
         ///         This builtin function will create a new entry for the variable in the current environment
         ///     </para>
         /// </remarks>
-        internal static IDispatcher DeclareVariable(IDispatcher dispatcher)
+        public static IDispatcher DeclareVariable(IDispatcher dispatcher)
         {
             _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
@@ -72,7 +72,7 @@ namespace Fifth.Runtime
             return dispatcher;
         }
 
-        private static IFifthType LookupTypeDefinitionByName(string typeName) =>
+        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
             // TODO: need to have actual registry of types to lookup against
             PrimitiveInteger.Default;
 
@@ -89,7 +89,7 @@ namespace Fifth.Runtime
         ///         environment and attach a value from the top of the stack to it
         ///     </para>
         /// </remarks>
-        internal static IDispatcher BindVariable(IDispatcher dispatcher)
+        public static IDispatcher BindVariable(IDispatcher dispatcher)
         {
             _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
@@ -108,7 +108,7 @@ namespace Fifth.Runtime
         /// <remarks>
         ///     This will resolve the value of the variable and place that onto the stack instead of the reference
         /// </remarks>
-        internal static IDispatcher DereferenceVariable(IDispatcher dispatcher)
+        public static IDispatcher DereferenceVariable(IDispatcher dispatcher)
         {
             var varName = dispatcher.Resolve() as string;
             var value = dispatcher.Frame.Environment[varName];

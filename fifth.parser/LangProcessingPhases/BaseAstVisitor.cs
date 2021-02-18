@@ -20,6 +20,14 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
+        public virtual void EnterBooleanExpression(BooleanExpression ctx)
+        {
+        }
+
+        public virtual void LeaveBooleanExpression(BooleanExpression ctx)
+        {
+        }
+
         public virtual void EnterBlock(Block ctx)
         {
         }

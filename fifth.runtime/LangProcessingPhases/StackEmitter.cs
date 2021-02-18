@@ -57,16 +57,29 @@ namespace Fifth.Runtime.LangProcessingPhases
         /// <param name="stack"></param>
         /// <param name="v"></param>
         public void Value(IRuntimeStack stack, object v)
-            => Emit(stack, new ValueStackElement(v));
+            => Emit(stack, WrapValue(v));
 
         public void BinaryFunction<T1, T2, TR>(IRuntimeStack stack, Func<T1, T2, TR> f)
-            => Emit(stack, new FunctionStackElement(Fun.Wrap(f)));
+            => Emit(stack, WrapBinaryFunction(f));
 
         public void UnaryFunction<T1, TR>(IRuntimeStack stack, Func<T1, TR> f)
-            => Emit(stack, new FunctionStackElement(Fun.Wrap(f)));
+            => Emit(stack, WrapUnaryFunction(f));
 
         public void MetaFunction(IRuntimeStack stack, Func<IDispatcher, IDispatcher> metafunc)
-            => Emit(stack, new MetaFunctionStackElement(Fun.Wrap(metafunc)));
+            => Emit(stack, WrapMetaFunction(metafunc));
+
+
+        public StackElement WrapValue(object v)
+            => new ValueStackElement(v);
+
+        public StackElement WrapBinaryFunction<T1, T2, TR>(Func<T1, T2, TR> f)
+            => new FunctionStackElement(Fun.Wrap(f));
+
+        public StackElement WrapUnaryFunction<T1, TR>(Func<T1, TR> f)
+            => new FunctionStackElement(Fun.Wrap(f));
+
+        public StackElement WrapMetaFunction(Func<IDispatcher, IDispatcher> metafunc)
+            => new MetaFunctionStackElement(Fun.Wrap(metafunc));
 
         private Type LookupType(Expression e) => e["type"] as Type;
     }

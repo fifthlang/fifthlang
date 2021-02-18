@@ -11,6 +11,8 @@ alias:
 block: OPENBRACE statement* CLOSEBRACE
 ;
 
+boolean: value=TRUE | value=FALSE ;
+
 explist
     : exp (COMMA exp)*
     ;
@@ -26,6 +28,7 @@ exp
     | left=exp TIMES right=exp   # EMul
     | left=exp DIVIDE right=exp  # EDiv
     | MINUS operand=exp          # EArithNegation
+    | boolean                    # EBool
     | value=INT                  # EInt
     | value=FLOAT                # EDouble
     | value=STRING               # EString
@@ -129,6 +132,8 @@ NEW: 'new';
 WITH: 'with';
 RETURN: 'return';
 USE: 'use';
+TRUE: 'true' ; 
+FALSE: 'false' ; 
 
 // OPERATORS AND PUCTUATION
 ASSIGN: '=';    // equal

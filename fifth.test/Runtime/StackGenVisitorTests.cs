@@ -10,6 +10,17 @@ namespace Fifth.Test.Runtime
     [TestFixture]
     internal class StackGenVisitorTests : ParserTestBase
     {
+        private readonly StackEmitter em = new StackEmitter();
+
+        [Test]
+        public void TestStackGenerationForExpressions()
+        {
+            TestExpressionEmission("5", em.WrapValue(5));
+            TestExpressionEmission("0.2", em.WrapValue(0.2F));
+            TestExpressionEmission("true", em.WrapValue(true));
+            TestExpressionEmission("x", em.WrapMetaFunction(MetaFunction.DereferenceVariable), em.WrapValue("x"));
+        }
+
         [TestCase("int x = 5 * 1, x", "x", 5)]
         public void TestCanAssignAndDereferenceValue(string code, string varName, object resolvedValue)
         {
@@ -46,6 +57,23 @@ namespace Fifth.Test.Runtime
             var v = stack.Pop();
             v.Should().BeOfType<ValueStackElement>();
             ((ValueStackElement)v).Value.Should().Be(resolvedValue);
+        }
+
+        private void TestExpressionEmission(string expression, params StackElement[] matchList)
+        {
+            var stack = ParseAndGenerateExpression(expression);
+            stack.Matches(matchList).Should().BeTrue();
+        }
+
+        private static ActivationStack ParseAndGenerateExpression(string expressionString)
+        {
+            var astNode = ParseExpressionToAst(expressionString);
+            var af = new ActivationFrame();
+            var stack = af.Stack;
+            var sut = new StackGeneratorVisitor {Stack = stack, Emit = new StackEmitter()};
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
+            return stack;
         }
     }
 }
