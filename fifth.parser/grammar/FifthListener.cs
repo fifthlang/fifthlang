@@ -61,6 +61,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBlock([NotNull] FifthParser.BlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBoolean([NotNull] FifthParser.BooleanContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBoolean([NotNull] FifthParser.BooleanContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.explist"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -82,6 +92,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEFuncCall([NotNull] FifthParser.EFuncCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EBool</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEBool([NotNull] FifthParser.EBoolContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EBool</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEBool([NotNull] FifthParser.EBoolContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>EVarname</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

@@ -36,6 +36,9 @@ namespace Fifth.Parser.LangProcessingPhases
             return base.VisitBlock(context);
         }
 
+        public override IAstNode VisitBoolean(FifthParser.BooleanContext context)
+        => new BooleanExpression(bool.Parse(context.value.Text));
+
         public override IAstNode VisitChildren(IRuleNode node) => base.VisitChildren(node);
 
         public override IAstNode VisitEAdd([NotNull] FifthParser.EAddContext context) => new BinaryExpression

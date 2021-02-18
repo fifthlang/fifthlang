@@ -32,6 +32,9 @@ namespace Fifth.Runtime.LangProcessingPhases
         public override void LeaveFloatValueExpression(FloatValueExpression ctx)
             => Emit.Value(Stack, ctx.Value);
 
+        public override void LeaveBooleanExpression(BooleanExpression ctx)
+            => Emit.Value(Stack, ctx.Value);
+
 
         public override void LeaveFunctionDefinition(FunctionDefinition ctx)
         {

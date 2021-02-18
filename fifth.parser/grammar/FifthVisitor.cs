@@ -50,6 +50,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBlock([NotNull] FifthParser.BlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBoolean([NotNull] FifthParser.BooleanContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.explist"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -62,6 +68,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>EBool</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEBool([NotNull] FifthParser.EBoolContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>EVarname</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

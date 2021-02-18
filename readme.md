@@ -17,6 +17,20 @@ Fifth is (to be) a general purpose programming language running on the .NET tech
 
 ## Building the grammar from Powershell
 
+To be able to run ANTLR, you must have a copy of java to run the Jar file:
+
+```
+sudo apt install openjdk-15-jre-headless
+```
+
+go to the root of the development hierarchy:
+
+```
+make grammar
+```
+
+Alternatively, to build within windows:
+
 ```powershell
 java -jar .\tools\antlr-4.8-complete.jar -Dlanguage=CSharp -visitor -listener -o .\fifth.parser\grammar\ .\fifth.parser\grammar\Fifth.g4
 ```
