@@ -17,16 +17,18 @@ namespace Fifth.Test.Runtime
         public void TestStackGenerationForBinaryExpressions()
         {
             TestExpressionEmission("5 + 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int), em.WrapValue(5), em.WrapValue(5));
+            TestExpressionEmission("5 - 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.subtract_int_int), em.WrapValue(5), em.WrapValue(5));
+            TestExpressionEmission("5 * 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int), em.WrapValue(5), em.WrapValue(5));
+            TestExpressionEmission("5 / 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.divide_int_int), em.WrapValue(5), em.WrapValue(5));
         }
 
         [Test]
-        public void TestStackGenerationForExpressions()
+        public void TestStackGenerationForValueExpressions()
         {
             TestExpressionEmission("5", em.WrapValue(5));
             TestExpressionEmission("0.2", em.WrapValue(0.2F));
             TestExpressionEmission("true", em.WrapValue(true));
             TestExpressionEmission("x", em.WrapMetaFunction(MetaFunction.DereferenceVariable), em.WrapValue("x"));
-            TestExpressionEmission("5 + 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int), em.WrapValue(5), em.WrapValue(5));
         }
 
         [TestCase("int x = 5 * 1, x", "x", 5)]
