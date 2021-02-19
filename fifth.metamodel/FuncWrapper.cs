@@ -2,6 +2,7 @@ namespace Fifth
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     /// <summary>
     /// A wrapper around any sort of function, to make it easier to extract and perform type
@@ -13,7 +14,7 @@ namespace Fifth
     /// function on the stack are compatible with the function. It could make use of reflection, but
     /// this is much simpler, and probably faster.
     /// </remarks>
-    public class FuncWrapper
+    public class FuncWrapper : IEquatable<FuncWrapper>
     {
         /// <summary>
         /// Initializes a new instance of the <a onclick="return false;" href="FuncWrapper"
@@ -23,10 +24,16 @@ namespace Fifth
         /// <param name="resultType">Type of the result the function returns.</param>
         /// <param name="f">The function itself.</param>
         public FuncWrapper(List<Type> argTypes, Type resultType, Delegate f)
+            :this(argTypes,  resultType,  f, f.Method.MetadataToken)
+        {
+        }
+
+        public FuncWrapper(List<Type> argTypes, Type resultType, Delegate f, int metadataToken)
         {
             ArgTypes = argTypes;
             ResultType = resultType;
             Function = f;
+            UnderlyingMetadataToken = metadataToken;
         }
 
         /// <summary>
@@ -40,6 +47,8 @@ namespace Fifth
         /// </summary>
         /// <value>The function.</value>
         public Delegate Function { get; }
+
+        public int UnderlyingMetadataToken { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is a (builtin) meta function that
@@ -73,17 +82,11 @@ namespace Fifth
         }
 
         // if the functions are the same then everything else should be the same as well
-        public override bool Equals(object obj)
+        public bool Equals(FuncWrapper other)
         {
-            var other = obj as FuncWrapper;
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Function.Equals(other.Function);
+            return other?.UnderlyingMetadataToken.Equals(UnderlyingMetadataToken) ?? false;
         }
 
-        public override int GetHashCode() => Function.GetHashCode();
+        public override bool Equals(object obj) => Equals(obj as FuncWrapper);
     }
 }

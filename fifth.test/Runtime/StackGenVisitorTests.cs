@@ -5,6 +5,7 @@ namespace Fifth.Test.Runtime
     using FluentAssertions;
     using NUnit.Framework;
     using Parser.LangProcessingPhases;
+    using PrimitiveTypes;
     using Tests;
 
     [TestFixture]
@@ -13,12 +14,19 @@ namespace Fifth.Test.Runtime
         private readonly StackEmitter em = new StackEmitter();
 
         [Test]
+        public void TestStackGenerationForBinaryExpressions()
+        {
+            TestExpressionEmission("5 + 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int), em.WrapValue(5), em.WrapValue(5));
+        }
+
+        [Test]
         public void TestStackGenerationForExpressions()
         {
             TestExpressionEmission("5", em.WrapValue(5));
             TestExpressionEmission("0.2", em.WrapValue(0.2F));
             TestExpressionEmission("true", em.WrapValue(true));
             TestExpressionEmission("x", em.WrapMetaFunction(MetaFunction.DereferenceVariable), em.WrapValue("x"));
+            TestExpressionEmission("5 + 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int), em.WrapValue(5), em.WrapValue(5));
         }
 
         [TestCase("int x = 5 * 1, x", "x", 5)]

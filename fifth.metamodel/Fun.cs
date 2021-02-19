@@ -2,10 +2,22 @@ namespace Fifth
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
 
     public static class Fun
     {
         public static FuncWrapper AsFun<T>(this T x) => Wrap(() => x);
+
+        public static FuncWrapper Wrap(this Delegate d)
+        {
+            var method = d.Method;
+            var parameters = method.GetParameters();
+            var formalParams = parameters.Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                .ToArray();
+            var call = Expression.Call(null, method, formalParams);
+            return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(), method.ReturnType, Expression.Lambda(call, formalParams).Compile(), method.MetadataToken);
+        }
 
         public static FuncWrapper Wrap<R>(Func<R> fn) =>
             new FuncWrapper(new List<Type> { }, typeof(R), f: fn);

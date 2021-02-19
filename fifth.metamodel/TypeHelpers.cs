@@ -8,11 +8,15 @@ namespace Fifth
 
     public static class TypeHelpers
     {
-        public static bool Implements<TInterface>(this Type t)
-            => t.GetInterfaces().Contains(typeof(TInterface));
+        public static string GetTypeName(this IFifthType ft)
+        {
+            if (ft.GetType().TryGetTypeTraits(out var tr))
+            {
+                return tr.Keyword;
+            }
 
-        public static bool IsBuiltinType(string typename)
-            => LookupBuiltinType(typename) != null;
+            throw new TypeCheckingException("Type does not have a name");
+        }
 
         /// <summary>
         ///     try to resolve the type of the value and get its internal value
@@ -29,6 +33,12 @@ namespace Fifth
 
             return null;
         }
+
+        public static bool Implements<TInterface>(this Type t)
+            => t.GetInterfaces().Contains(typeof(TInterface));
+
+        public static bool IsBuiltinType(string typename)
+            => LookupBuiltinType(typename) != null;
 
         public static IFifthType LookupBuiltinType(string typename)
         {
@@ -59,17 +69,7 @@ namespace Fifth
 
             fw = methods
                 .Where(m => m.Name == name)
-                .Select(method =>
-                {
-                    var parameters = method.GetParameters();
-                    var formalParams = parameters
-                        .Select(p => Expression.Parameter(p.ParameterType, p.Name))
-                        .ToArray();
-                    var call = Expression.Call(null, method, formalParams);
-                    return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(),
-                        method.ReturnType,
-                        Expression.Lambda(call, formalParams).Compile());
-                })
+                .Select(WrapMethodInfo)
                 .FirstOrDefault();
             return fw != null;
         }
@@ -183,16 +183,6 @@ namespace Fifth
             return tr != null;
         }
 
-        public static string GetTypeName(this IFifthType ft)
-        {
-            if (ft.GetType().TryGetTypeTraits(out var tr))
-            {
-                return tr.Keyword;
-            }
-
-            throw new TypeCheckingException("Type does not have a name");
-        }
-
         public static IEnumerable<Type> TypesHavingAttribute<TAttribute, TSampleType>()
         {
             var types = typeof(TSampleType).Assembly.GetTypes();
@@ -208,6 +198,25 @@ namespace Fifth
                     yield return type;
                 }
             }
+        }
+
+        public static FuncWrapper WrapMethodInfo(MethodInfo method)
+        {
+            var parameters = method.GetParameters();
+            var formalParams = parameters.Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                .ToArray();
+            var call = Expression.Call(null, method, formalParams);
+            return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(), method.ReturnType, Expression.Lambda(call, formalParams).Compile(), method.MetadataToken);
+        }
+
+
+        private static Delegate DelegateFromMethodInfo(MethodInfo mi)
+        {
+            var parameters = mi.GetParameters();
+            var formalParams = parameters.Select(p => Expression.Parameter(p.ParameterType, p.Name))
+                .ToArray();
+            var call = Expression.Call(null, mi, formalParams);
+            return Expression.Lambda(call, formalParams).Compile();
         }
     }
 }

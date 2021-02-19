@@ -1,5 +1,6 @@
 namespace Fifth.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -80,18 +81,14 @@ namespace Fifth.Runtime
 
         public FuncWrapper Function { get; }
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as FunctionStackElement;
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.GetHashCode() == GetHashCode();
-        }
+        public override bool Equals(object obj) => Equals(obj as StackElement);
 
         public override int GetHashCode() => Function.GetHashCode();
+        public override bool Equals(StackElement other)
+        {
+            var x = other as FunctionStackElement;
+            return x?.Function.Equals(Function) ?? false;
+        }
     }
 
     /// <summary>A stack element consisting of a function that acts on the environment somehow</summary>
@@ -102,23 +99,20 @@ namespace Fifth.Runtime
 
         public FuncWrapper MetaFunction { get; }
 
-        public override bool Equals(object obj)
-        {
-            var other = obj as MetaFunctionStackElement;
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.GetHashCode() == GetHashCode();
-        }
+        public override bool Equals(object obj) => Equals(obj as StackElement);
 
         public override int GetHashCode() => MetaFunction.GetHashCode();
+        public override bool Equals(StackElement other)
+        {
+            var x = other as MetaFunctionStackElement;
+            return x?.MetaFunction.Equals(MetaFunction) ?? false;
+        }
     }
 
     /// <summary>Base type of anything that can be pushed onto a stack</summary>
-    public abstract class StackElement
+    public abstract class StackElement : IEquatable<StackElement>
     {
+        public abstract bool Equals(StackElement other);
     }
 
     /// <summary>Any element that can be pushed onto a stack</summary>
@@ -143,6 +137,11 @@ namespace Fifth.Runtime
         }
 
         public override int GetHashCode() => Value.GetHashCode();
+        public override bool Equals(StackElement other)
+        {
+            var x = other as ValueStackElement;
+            return x?.Value.Equals(Value) ?? false;
+        }
     }
 
     [DebuggerDisplay("var:{VariableName}")]
@@ -153,17 +152,13 @@ namespace Fifth.Runtime
 
         public string VariableName { get; }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object obj) => Equals(obj as StackElement);
+
+        public override int GetHashCode() => (nameof(VariableReferenceStackElement) + VariableName).GetHashCode();
+        public override bool Equals(StackElement other)
         {
-            var other = obj as VariableReferenceStackElement;
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.GetHashCode() == GetHashCode();
+            var x = other as VariableReferenceStackElement;
+            return x?.VariableName.Equals(VariableName) ?? false;
         }
-
-        public override int GetHashCode() => VariableName.GetHashCode();
     }
 }
