@@ -111,12 +111,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
 
-        public override IAstNode VisitEStatement([NotNull] FifthParser.EStatementContext context)
-        {
-            Log.Debug("VisitEStatement");
-            return base.VisitEStatement(context);
-        }
-
         public override IAstNode VisitEString([NotNull] FifthParser.EStringContext context) =>
             new StringValueExpression(context.value.Text);
 

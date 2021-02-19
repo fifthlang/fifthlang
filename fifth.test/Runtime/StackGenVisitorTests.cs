@@ -1,5 +1,6 @@
 namespace Fifth.Test.Runtime
 {
+    using System.Diagnostics.CodeAnalysis;
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
     using FluentAssertions;
@@ -9,6 +10,7 @@ namespace Fifth.Test.Runtime
     using Tests;
 
     [TestFixture]
+    [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
     internal class StackGenVisitorTests : ParserTestBase
     {
         private readonly StackEmitter em = new StackEmitter();
@@ -20,6 +22,20 @@ namespace Fifth.Test.Runtime
             TestExpressionEmission("5 - 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.subtract_int_int), em.WrapValue(5), em.WrapValue(5));
             TestExpressionEmission("5 * 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int), em.WrapValue(5), em.WrapValue(5));
             TestExpressionEmission("5 / 5", em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.divide_int_int), em.WrapValue(5), em.WrapValue(5));
+        }
+
+        [Test]
+        [Category("WIP")]
+        public void TestStackGenerationForAssignment()
+        {
+            TestExpressionEmission("int x = 5 * 1",
+                em.WrapMetaFunction(MetaFunction.Assign),
+                em.WrapMetaFunction(MetaFunction.DereferenceVariable),
+                em.WrapVariableReference("x"),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int),
+                em.WrapValue(5),
+                em.WrapValue(1)
+                );
         }
 
         [Test]

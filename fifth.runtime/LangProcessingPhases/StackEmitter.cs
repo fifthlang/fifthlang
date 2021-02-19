@@ -59,6 +59,8 @@ namespace Fifth.Runtime.LangProcessingPhases
         public void Value(IRuntimeStack stack, object v)
             => Emit(stack, WrapValue(v));
 
+        public void VariableReference(IRuntimeStack stack, string v) => Emit(stack, WrapVariableReference(v));
+
         public void BinaryFunction<T1, T2, TR>(IRuntimeStack stack, Func<T1, T2, TR> f)
             => Emit(stack, WrapBinaryFunction(f));
 
@@ -68,6 +70,9 @@ namespace Fifth.Runtime.LangProcessingPhases
         public void MetaFunction(IRuntimeStack stack, Func<IDispatcher, IDispatcher> metafunc)
             => Emit(stack, WrapMetaFunction(metafunc));
 
+
+        public StackElement WrapVariableReference(string i)
+            => new VariableReferenceStackElement(i);
 
         public StackElement WrapValue(object v)
             => new ValueStackElement(v);

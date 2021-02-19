@@ -8,7 +8,7 @@ fifth:
 alias:
     ALIAS LT absoluteIri GT AS packagename SEMICOLON;
 
-block: OPENBRACE statement* CLOSEBRACE
+block: OPENBRACE explist CLOSEBRACE
 ;
 
 boolean: value=TRUE | value=FALSE ;
@@ -32,12 +32,16 @@ exp
     | value=INT                  # EInt
     | value=FLOAT                # EDouble
     | value=STRING               # EString
+    | WITH exp  block                # WithStmt // this is not useful as is
+    | type_name var_name ASSIGN exp        # VarDeclStmt
+    | var_name ASSIGN exp                  # AssignmentStmt
     | var_name                   # EVarname
     | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN  # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
     | NOT operand=exp           # ELogicNegation
     | NEW type_initialiser      # ETypeCreateInst
-    | statement                 # EStatement
+    | IF OPENPAREN condition=exp CLOSEPAREN ifpart=block ELSE elsepart=block   # IfElseStmt
+
 ;
 
 formal_parameters:
@@ -102,13 +106,6 @@ parameter_type: IDENTIFIER
 ;
 
 parameter_name: IDENTIFIER
-;
-
-statement:
-      type_name var_name (ASSIGN exp)?     # VarDeclStmt
-    | var_name ASSIGN exp                  # AssignmentStmt
-    | IF OPENPAREN condition=exp CLOSEPAREN ifpart=block ELSE elsepart=block   # IfElseStmt
-    | WITH statement  block                # WithStmt
 ;
 
 type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE

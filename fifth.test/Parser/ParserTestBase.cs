@@ -20,7 +20,7 @@ namespace Fifth.Tests
         }
 
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
-            => GetParserFor(fragment).statement();
+            => GetParserFor(fragment).exp();
 
         protected static IAstNode ParseDeclAssignmentToAst(string fragment)
         {

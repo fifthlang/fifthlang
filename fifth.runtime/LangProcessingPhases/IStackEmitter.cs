@@ -21,6 +21,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         /// </summary>
         /// <param name="metafunc">The metafunction to be pushed</param>
         void Value(IRuntimeStack stack, object v);
+        void VariableReference(IRuntimeStack stack, string v);
 
         void BinaryFunction<T1, T2, TR>(IRuntimeStack stack, Func<T1, T2, TR> f);
         void UnaryFunction<T1, TR>(IRuntimeStack stack, Func<T1, TR> f);
