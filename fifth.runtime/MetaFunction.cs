@@ -68,7 +68,7 @@ namespace Fifth.Runtime
                 new ValueObject<string>(typeReferencedByTypeName, varName, string.Empty);
 
             // create var ref in place of string, to prove its been created in env
-            dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
+            // dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
             return dispatcher;
         }
 

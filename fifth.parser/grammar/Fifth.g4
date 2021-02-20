@@ -32,9 +32,9 @@ exp
     | value=INT                  # EInt
     | value=FLOAT                # EDouble
     | value=STRING               # EString
-    | WITH exp  block                # WithStmt // this is not useful as is
-    | type_name var_name ASSIGN exp        # VarDeclStmt
-    | var_name ASSIGN exp                  # AssignmentStmt
+    | WITH exp  block            # WithStmt // this is not useful as is
+    | decl=var_decl (ASSIGN exp)?     # VarDeclStmt
+    | var_name ASSIGN exp        # AssignmentStmt
     | var_name                   # EVarname
     | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN  # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
@@ -115,6 +115,10 @@ type_name:  IDENTIFIER
 ;
 
 type_property_init: var_name ASSIGN exp
+;
+
+var_decl:
+    type_name var_name
 ;
 
 var_name: IDENTIFIER

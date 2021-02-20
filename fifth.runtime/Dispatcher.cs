@@ -19,20 +19,23 @@ namespace Fifth.Runtime
         /// <value>The stack.</value>
         public ActivationFrame Frame { get; }
 
+        public void DispatchWhileNotEmpty()
+        {
+            while (!Stack.IsEmpty)
+            {
+                Dispatch();
+            }
+        }
+
         /// <summary>
         ///     Dispatch takes a function from the top of the stack, and then attempts to invoke it with
         ///     arguments gathered from the stack below
         /// </summary>
         public void Dispatch()
         {
-            // if stack empty do nothing
-            if (Stack.IsEmpty)
-            {
-                return;
-            }
-
             // if x is a constant then return to stack
-            switch (Stack.Pop())
+            var topOfStack = Stack.Pop();
+            switch (topOfStack)
             {
                 case ValueStackElement vse:
                     Stack.Push(vse);
@@ -62,6 +65,7 @@ namespace Fifth.Runtime
                     Stack.PushConstantValue(result); // TODO: can't assume this will always be a value
                     break;
             }
+
         }
 
         /// <summary>
@@ -86,7 +90,8 @@ namespace Fifth.Runtime
                 case ValueStackElement vse:
                     return vse.Value;
                 case VariableReferenceStackElement vrse:
-                    var referencedVariableValue = ResolveTypedVariable(Frame.Environment[vrse.VariableName]);
+                    var valueObject = Frame.Environment[vrse.VariableName];
+                    var referencedVariableValue = ResolveTypedVariable(valueObject);
                     return referencedVariableValue;
             }
 

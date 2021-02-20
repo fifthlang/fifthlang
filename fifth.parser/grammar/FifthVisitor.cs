@@ -337,6 +337,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitType_property_init([NotNull] FifthParser.Type_property_initContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.var_decl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVar_decl([NotNull] FifthParser.Var_declContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.var_name"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -19,6 +19,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "semantics", "semantics", "{8F302E4D-0BE6-4DED-A0AA-FD8DE4078C00}"
+	ProjectSection(SolutionItems) = preProject
+		doc\Semantics\metafunctions\Metafunction.Assign.md = doc\Semantics\metafunctions\Metafunction.Assign.md
+		doc\Semantics\metafunctions\Metafunction.BindVariable.md = doc\Semantics\metafunctions\Metafunction.BindVariable.md
+		doc\Semantics\metafunctions\Metafunction.DeclareVariable.md = doc\Semantics\metafunctions\Metafunction.DeclareVariable.md
+		doc\Semantics\metafunctions\Metafunction.DereferenceVariable.md = doc\Semantics\metafunctions\Metafunction.DereferenceVariable.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +52,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8F302E4D-0BE6-4DED-A0AA-FD8DE4078C00} = {47E4C047-F8B2-4E63-BC44-40A0B5C24D31}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7903CF41-8433-4C0C-BEAE-C78EF9C05F83}

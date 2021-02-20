@@ -11,7 +11,7 @@ namespace Fifth.Test
         {
             var elements = stack.Export();
             var elementsFromStack = elements as List<StackElement> ?? elements.ToList();
-
+            elementsToCompareAgainst = elementsToCompareAgainst.Reverse().ToArray();
             return elementsFromStack.SequenceEquals(elementsToCompareAgainst);
         }
 
@@ -24,6 +24,10 @@ namespace Fifth.Test
             }
             if (Object.ReferenceEquals(seq1, seq2))
                 return true;
+            if (seq1.Count() != seq2.Count())
+            {
+                return false;
+            }
             var en1 = seq1.GetEnumerator();
             var en2 = seq2.GetEnumerator();
 

@@ -14,9 +14,19 @@ namespace Fifth.Runtime
         public bool IsEmpty => Count == 0;
         public IEnvironment Parent { get; set; }
 
+        public bool TryGetVariableValue(string index, out IValueObject value)
+            => Variables.TryGetValue(index, out value);
+
         public IValueObject this[string index]
         {
-            get => Variables[index];
+            get
+            {
+                if (!TryGetVariableValue(index, out var result))
+                {
+                    throw new InvalidVariableReferenceException(index);
+                }
+                return Variables[index];
+            }
             set => Variables[index] = value;
         }
     }

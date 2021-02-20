@@ -645,6 +645,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitType_property_init([NotNull] FifthParser.Type_property_initContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.var_decl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVar_decl([NotNull] FifthParser.Var_declContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.var_decl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVar_decl([NotNull] FifthParser.Var_declContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.var_name"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -28,11 +28,16 @@ namespace Fifth.Runtime
     /// <summary>
     ///     A runtime value that can be stored in an environment and shared between variable bindings
     /// </summary>
-    public class ValueObject<T> : ValueObject, IValueObject<T>
+    public class ValueObject<T> : IValueObject<T>
     {
-        public ValueObject(IFifthType fifthType, string name, T value) : base(fifthType, name, value)
+        public ValueObject(IFifthType fifthType, string name, T value)
         {
+            ValueType = fifthType;
+            NamesInScope.Add(name);
+            Value = value;
         }
+
+        public IFifthType ValueType { get; }
 
         /// <summary>
         ///     A list of names by which this variable is known
@@ -44,10 +49,5 @@ namespace Fifth.Runtime
         /// </summary>
         public T Value { get; set; }
 
-        /// <summary>
-        ///     Gets the type of the value
-        /// </summary>
-        /// <value>The type of the value.</value>
-        public IFifthType ValueType { get; }
     }
 }
