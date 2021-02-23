@@ -2,11 +2,11 @@ namespace Fifth.Test.Runtime
 {
     using System.Diagnostics.CodeAnalysis;
     using AST;
+    using Fifth.Parser.LangProcessingPhases;
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
     using FluentAssertions;
     using NUnit.Framework;
-    using Parser.LangProcessingPhases;
     using PrimitiveTypes;
     using Tests;
 
@@ -36,7 +36,6 @@ namespace Fifth.Test.Runtime
         }
 
         [Test]
-        [Category("WIP")]
         public void TestStackGenerationForAssignment1()
         {
             TestExpressionEmission("int x = 5 * 1",

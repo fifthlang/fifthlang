@@ -5,34 +5,15 @@ namespace Fifth.Parser.LangProcessingPhases
 
     public class TypeAnnotatorVisitor : BaseAstVisitor
     {
-        public override void EnterBinaryExpression(BinaryExpression ctx) => base.EnterBinaryExpression(ctx);
-
-        public override void EnterExpression(Expression expression) => base.EnterExpression(expression);
-
-        public override void EnterExpressionList(ExpressionList ctx) => base.EnterExpressionList(ctx);
 
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
-            => ctx["type"] = typeof(PrimitiveFloat);
-
-        public override void EnterFuncCallExpression(FuncCallExpression ctx) => base.EnterFuncCallExpression(ctx);
-
-        public override void EnterIdentifierExpression(IdentifierExpression identifierExpression) => base.EnterIdentifierExpression(identifierExpression);
-
-        public override void EnterIfElseStmt(IfElseStmt ctx) => base.EnterIfElseStmt(ctx);
+            => ctx["type"] = PrimitiveFloat.Default;
 
         public override void EnterIntValueExpression(IntValueExpression ctx)
-            => ctx["type"] = typeof(PrimitiveInteger);
-
-        public override void EnterNotExpression(UnaryExpression ctx) => base.EnterNotExpression(ctx);
+            => ctx["type"] = PrimitiveInteger.Default;
 
         public override void EnterStringValueExpression(StringValueExpression ctx)
-            => ctx["type"] = typeof(PrimitiveString);
-
-        public override void EnterTypeInitialiser(TypeInitialiser ctx) => base.EnterTypeInitialiser(ctx);
-
-        public override void EnterUnaryExpression(UnaryExpression ctx) => base.EnterUnaryExpression(ctx);
-
-        public override void EnterVariableReference(VariableReference variableRef) => base.EnterVariableReference(variableRef);
+            => ctx["type"] = PrimitiveString.Default;
 
         public override void LeaveAssignmentStmt(AssignmentStmt ctx)
         {
@@ -45,5 +26,14 @@ namespace Fifth.Parser.LangProcessingPhases
             // 4. annotate the type of the assignment expression
             ctx["type"] = ctx.Expression["type"];
         }
+
+        public override void LeaveBinaryExpression(BinaryExpression ctx)
+        {
+            if (TypeHelpers.TryInferOperationResultType(ctx.Op, ctx.Left["type"] as IFifthType, ctx.Right["type"] as IFifthType, out var resulttype))
+            {
+                ctx["type"] = resulttype;
+            }
+        }
+
     }
 }
