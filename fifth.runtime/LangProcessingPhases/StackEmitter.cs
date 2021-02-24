@@ -39,8 +39,8 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void Operator(IRuntimeStack stack, BinaryExpression ctx)
         {
-            var lhsType = LookupType(ctx.Left);
-            var rhsType = LookupType(ctx.Right);
+            var lhsType = LookupType(ctx.Left).GetType();
+            var rhsType = LookupType(ctx.Right).GetType();
 
             if (!TypeHelpers.TryGetOperatorByNameAndTypes(ctx.Op, lhsType, rhsType, out var operatorFunction))
             {
@@ -86,6 +86,6 @@ namespace Fifth.Runtime.LangProcessingPhases
         public StackElement WrapMetaFunction(Func<IDispatcher, IDispatcher> metafunc)
             => new MetaFunctionStackElement(Fun.Wrap(metafunc));
 
-        private Type LookupType(Expression e) => e["type"] as Type;
+        private IFifthType LookupType(Expression e) => e["type"] as IFifthType;
     }
 }
