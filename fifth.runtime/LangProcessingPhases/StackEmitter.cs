@@ -51,11 +51,6 @@ namespace Fifth.Runtime.LangProcessingPhases
             Emit(stack, new FunctionStackElement(operatorFunction));
         }
 
-        /// <summary>
-        ///     Adds a meta function to the stack
-        /// </summary>
-        /// <param name="stack"></param>
-        /// <param name="v"></param>
         public void Value(IRuntimeStack stack, object v)
             => Emit(stack, WrapValue(v));
 
@@ -69,7 +64,6 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void MetaFunction(IRuntimeStack stack, Func<IDispatcher, IDispatcher> metafunc)
             => Emit(stack, WrapMetaFunction(metafunc));
-
 
         public StackElement WrapVariableReference(string i)
             => new VariableReferenceStackElement(i);

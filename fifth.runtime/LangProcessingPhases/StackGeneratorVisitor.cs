@@ -1,5 +1,6 @@
 namespace Fifth.Runtime.LangProcessingPhases
 {
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using AST;
     using Parser.LangProcessingPhases;
@@ -156,8 +157,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         }
         public void Emit(IStackEmitter emitter, IRuntimeStack stack)
         {
-            expressionList.Expressions.Reverse();
-            foreach (var e in expressionList.Expressions)
+            foreach (var e in expressionList.Expressions.Reverse())
             {
                 var ese = new ExpressionStackEmitter(e);
                 ese.Emit(emitter, stack);
