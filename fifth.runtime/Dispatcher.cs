@@ -3,6 +3,10 @@ namespace Fifth.Runtime
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    ///   The runtime component responsible for invoking functions on the stack, 
+    ///   and resolving values on the stack.
+    /// </summary>
     public class Dispatcher : IDispatcher
     {
         /// <summary>
@@ -31,6 +35,13 @@ namespace Fifth.Runtime
         ///     Dispatch takes a function from the top of the stack, and then attempts to invoke it with
         ///     arguments gathered from the stack below
         /// </summary>
+        /// <remarks>
+        ///   If the element at the top of the stack is not a function of some sort, then it is left alone.
+        ///   If it is a meta function then the dispatcher itself, including the activation frame, is passed 
+        ///   to the meta function, giving it much more power over the runtime environment.
+        ///   If it is a function, then metadata for the function wrapper is gathered, and used to resolves 
+        ///   values from the stack.
+        /// </summary>
         public void Dispatch()
         {
             // if x is a constant then return to stack
@@ -52,6 +63,7 @@ namespace Fifth.Runtime
                         // check that types of values match type requirements of x
                         if (!t.IsInstanceOfType(o))
                         {
+                            // TODO: maybe try to resolve an implicit coercion operator here.
                             throw new Exception("Invalid Parameter Type"); // TODO need better error message
                         }
 
@@ -99,6 +111,9 @@ namespace Fifth.Runtime
             Stack.Push(x);
             Dispatch();
             x = Stack.Pop();
+            // TODO: this code has issues - what if we need to support higher order functions?
+            // functions that return functions will never resolve to a ValueStackElement here.
+            // this piece needs to be more sophisticated...
             var result = x as ValueStackElement;
             return result?.Value;
         }
