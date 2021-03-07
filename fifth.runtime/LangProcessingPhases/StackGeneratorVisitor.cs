@@ -1,9 +1,11 @@
 namespace Fifth.Runtime.LangProcessingPhases
 {
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using AST;
     using Parser.LangProcessingPhases;
-
+    using System.Linq;
 
     public class StackGeneratorVisitor : BaseAstVisitor
     {
@@ -44,9 +46,6 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public override void LeaveNotExpression(UnaryExpression ctx)
             => Emit.UnaryFunction(Stack, (bool b) => !b);
-
-        public override void LeaveStringValueExpression(StringValueExpression ctx)
-            => Emit.Value(Stack, ctx.Value);
 
         public override void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx)
             => Emit.MetaFunction(Stack, MetaFunction.DeclareVariable);
@@ -163,8 +162,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         }
         public void Emit(IStackEmitter emitter, IRuntimeStack stack)
         {
-            expressionList.Expressions.Reverse();
-            foreach (var e in expressionList.Expressions)
+            foreach (var e in ((IEnumerable<Expression>)expressionList.Expressions).Reverse())
             {
                 var ese = new ExpressionStackEmitter(e);
                 ese.Emit(emitter, stack);

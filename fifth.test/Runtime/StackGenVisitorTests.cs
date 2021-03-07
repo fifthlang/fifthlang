@@ -53,6 +53,21 @@ namespace Fifth.Test.Runtime
         }
 
         [Test]
+        public void TestStackGenerationForAssignment3()
+        {
+            TestExpressionEmission("string x = \"hello world\"",
+                // bind part
+                em.WrapValue("hello world"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.BindVariable),
+                // decl part
+                em.WrapValue("string"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+        }
+
+        [Test]
         public void TestStackGenerationForAssignment2()
         {
             TestExpressionEmission("float a = 0.1",

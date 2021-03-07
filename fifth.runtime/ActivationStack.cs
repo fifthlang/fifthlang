@@ -107,6 +107,10 @@ namespace Fifth.Runtime
             var x = other as MetaFunctionStackElement;
             return x?.MetaFunction.Equals(MetaFunction) ?? false;
         }
+        public override string ToString()
+        {
+            return $"\\{MetaFunction}";
+        }
     }
 
     /// <summary>Base type of anything that can be pushed onto a stack</summary>
