@@ -10,15 +10,15 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveFloat Default { get; set; } = new PrimitiveFloat();
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "+")]
-        public static float Add(float left, float right) => left + right;
+        public static float add_float_float(float left, float right) => left + right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "/")]
-        public static float Divide(float left, float right) => left / right;
+        public static float divide_float_float(float left, float right) => left / right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "*")]
-        public static float Multiply(float left, float right) => left * right;
+        public static float multiply_float_float(float left, float right) => left * right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "-")]
-        public static float Subtract(float left, float right) => left - right;
+        public static float subtract_float_float(float left, float right) => left - right;
     }
 }

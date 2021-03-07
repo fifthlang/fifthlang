@@ -113,6 +113,10 @@ namespace Fifth.Runtime.LangProcessingPhases
         {
             emitter.Value(stack, fe.Value);
         }
+        public void EmitStringValueExpression(StringValueExpression se, IStackEmitter emitter, IRuntimeStack stack)
+        {
+            emitter.Value(stack, se.Value);
+        }
         public void EmitBinaryExpression(BinaryExpression be, IStackEmitter emitter, IRuntimeStack stack)
         {
             var lhsEmitter = new ExpressionStackEmitter(be.Left);
@@ -139,6 +143,9 @@ namespace Fifth.Runtime.LangProcessingPhases
                     break;
                 case FloatValueExpression fe:
                     EmitFloatValueExpression(fe, emitter, stack);
+                    break;
+                case StringValueExpression se:
+                    EmitStringValueExpression(se, emitter, stack);
                     break;
                 case VariableDeclarationStatement vde:
                     EmitVariableDeclarationExpression(vde, emitter, stack);

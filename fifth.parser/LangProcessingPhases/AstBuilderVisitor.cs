@@ -111,8 +111,16 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitErrorNode(IErrorNode node) => base.VisitErrorNode(node);
 
-        public override IAstNode VisitEString([NotNull] FifthParser.EStringContext context) =>
-            new StringValueExpression(context.value.Text);
+        public override IAstNode VisitEString([NotNull] FifthParser.EStringContext context)
+        {
+            var s = context.value.Text;
+            if ((s.StartsWith("\'") && s.EndsWith("\'")) || (s.StartsWith("\"") && s.EndsWith("\"")))
+            {
+                s = s.Substring(1, s.Length - 2);
+            }
+
+            return new StringValueExpression(s);
+        }
 
         public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context) => new BinaryExpression
         {

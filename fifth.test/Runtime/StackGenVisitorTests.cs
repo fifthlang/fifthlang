@@ -95,10 +95,15 @@ namespace Fifth.Test.Runtime
             af.Environment.Count.Should().Be(1);
         }
 
-        [TestCase("8 + 5", 13)]
+        [TestCase("8 + 5", 13)] // ints
         [TestCase("8 - 5", 3)]
         [TestCase("8 * 5", 40)]
         [TestCase("100 / 5", 20)]
+        [TestCase("8.0 + 5.0", 13F)] // floats
+        [TestCase("8.0 - 5.0", 3F)]
+        [TestCase("8.0 * 5.0", 40F)]
+        [TestCase("100.0 / 5.0", 20F)]
+        [TestCase("\"hello\" + \"world\"", "helloworld", Category = "WIP")]//strings
         public void TestCanExecuteStackGeneratedFromExpression(string code, object resolvedValue)
         {
             var astNode = ParseExpressionToAst(code);

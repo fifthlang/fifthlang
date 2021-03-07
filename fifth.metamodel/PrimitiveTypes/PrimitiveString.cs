@@ -10,6 +10,6 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveString Default { get; } = new PrimitiveString();
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "+")]
-        public static string Add(string left, string right) => left + right;
+        public static string add_string_string(string left, string right) => left + right;
     }
 }

@@ -17,7 +17,6 @@ namespace Fifth.Test.Parser
         }
 
         [Test]
-        [Category("WIP")]
         public void IfBinaryExpressionElementsAreInt_TheExpressionIsInt()
         {
             var exp = "5 + 6";
