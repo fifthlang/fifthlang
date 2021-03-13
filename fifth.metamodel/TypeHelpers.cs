@@ -188,6 +188,9 @@ namespace Fifth
         {
             switch(nt.Name)
             {
+                case "Void":
+                    ft = PrimitiveVoid.Default;
+                    return true;
                 case "Int32":
                     ft = PrimitiveInteger.Default;
                     return true;
@@ -341,6 +344,7 @@ namespace Fifth
             return new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(), method.ReturnType, Expression.Lambda(call, formalParams).Compile(), method.MetadataToken);
         }
 
+        public static FuncWrapper Wrap(this MethodInfo method) => WrapMethodInfo(method);
 
         private static Delegate DelegateFromMethodInfo(MethodInfo mi)
         {

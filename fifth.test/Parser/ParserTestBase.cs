@@ -3,6 +3,8 @@ namespace Fifth.Tests
     using Antlr4.Runtime;
     using Fifth.AST;
     using Fifth.Parser.LangProcessingPhases;
+    using Fifth.Runtime;
+    using Fifth.Runtime.LangProcessingPhases;
     using static FifthParser;
 
     public class ParserTestBase
@@ -35,9 +37,19 @@ namespace Fifth.Tests
         protected static ParserRuleContext ParseExpressionList(string fragment)
                     => GetParserFor(fragment).explist();
 
+        protected static ParserRuleContext ParseFunctionDecl(string fragment)
+                    => GetParserFor(fragment).function_declaration();
+
         protected static IAstNode ParseExpressionListToAst(string fragment)
         {
             var parseTree = ParseExpressionList(fragment);
+            var visitor = new AstBuilderVisitor();
+            return visitor.Visit(parseTree);
+        }
+
+        protected static IAstNode ParseFunctionDeclToAst(string fragment)
+        {
+            var parseTree = ParseFunctionDecl(fragment);
             var visitor = new AstBuilderVisitor();
             return visitor.Visit(parseTree);
         }
@@ -60,6 +72,50 @@ namespace Fifth.Tests
             var parseTree = ParseProgram(fragment);
             var visitor = new AstBuilderVisitor();
             return visitor.Visit(parseTree);
+        }
+
+        protected static ActivationStack ParseAndGenerateFunctionDecl(string functionString)
+        {
+            var astNode = ParseFunctionDeclToAst(functionString);
+            var af = new ActivationFrame();
+            var stack = af.Stack;
+            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
+            return stack;
+        }
+
+        protected static ActivationFrame ParseAndGenerateProgram(string functionString)
+        {
+            var astNode = ParseProgramToAst(functionString);
+            var af = new ActivationFrame();
+            var stack = af.Stack;
+            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
+            return af;
+        }
+
+        protected static ActivationStack ParseAndGenerateExpression(string expressionString)
+        {
+            var astNode = ParseExpressionListToAst(expressionString);
+            var af = new ActivationFrame();
+            var stack = af.Stack;
+            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
+            astNode.Accept(new TypeAnnotatorVisitor());
+            astNode.Accept(sut);
+            return stack;
+        }
+
+        protected static ActivationStack ParseAndGenerateExpressionFragment(string expressionString)
+        {
+            var astNode = ParseExpressionToAst(expressionString);
+            var af = new ActivationFrame();
+            var stack = af.Stack;
+            var sut = new ExpressionStackEmitter(astNode as Expression);
+            astNode.Accept(new TypeAnnotatorVisitor());
+            sut.Emit(new StackEmitter(), af);
+            return stack;
         }
     }
 }

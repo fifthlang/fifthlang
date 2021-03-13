@@ -1,22 +1,27 @@
 namespace Fifth.Runtime.LangProcessingPhases
 {
-    using System.Collections;
+    using System;
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
+    using System.Linq;
     using AST;
     using Parser.LangProcessingPhases;
-    using System.Linq;
+    using ASTFunctionDefinition = AST.FunctionDefinition;
+    using RuntimeFunctionDefinition = FunctionDefinition;
 
     public class StackGeneratorVisitor : BaseAstVisitor
     {
-        public IRuntimeStack Stack { get; set; }
-        public IStackEmitter Emit { get; set; }
-
         #region Builders
 
         private ExpressionListStackEmitter elsemitter;
+
         #endregion
 
+        public IActivationFrame Frame { get; set; }
+        public IEnvironment Environment => Frame.Environment;
+        public IRuntimeStack Stack => Frame.Stack;
+        public IStackEmitter Emitter { get; set; }
+
+        /*
         /// <summary>
         ///     Reverse the expression list, to ensure code is generated into the stack in the right order for consumption
         /// </summary>
@@ -24,19 +29,23 @@ namespace Fifth.Runtime.LangProcessingPhases
         public override void EnterExpressionList(ExpressionList ctx)
             => elsemitter = new ExpressionListStackEmitter(ctx);
 
+        public override void LeaveAssignmentStmt(AssignmentStmt ctx)
+            => Emitter.MetaFunction(Stack, MetaFunction.Assign);
+
         /// <summary>
         ///     reverse the reversal of the expression list performed in the enter function
         /// </summary>
         /// <param name="ctx"></param>
         public override void LeaveExpressionList(ExpressionList ctx)
-            => elsemitter.Emit(Emit, Stack);
-
-        public override void LeaveAssignmentStmt(AssignmentStmt ctx)
-            => Emit.MetaFunction(Stack, MetaFunction.Assign);
+            => elsemitter.Emit(Emitter, Frame);
 
         public override void LeaveFunctionDefinition(FunctionDefinition ctx)
         {
             // need to create scopes for params and body block, and execute within those scopes
+            var fd = new RuntimeFunctionDefinition {Name = ctx.Name};
+            var ele = new ExpressionListStackEmitter(ctx.Body);
+            ele.Emit(Emitter, fd);
+            Environment.AddFunctionDefinition(fd);
         }
 
         public override void LeaveIfElseStmt(IfElseStmt ctx)
@@ -45,37 +54,156 @@ namespace Fifth.Runtime.LangProcessingPhases
         }
 
         public override void LeaveNotExpression(UnaryExpression ctx)
-            => Emit.UnaryFunction(Stack, (bool b) => !b);
+            => Emitter.UnaryFunction(Stack, (bool b) => !b);
 
         public override void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx)
-            => Emit.MetaFunction(Stack, MetaFunction.DeclareVariable);
+            => Emitter.MetaFunction(Stack, MetaFunction.DeclareVariable);
 
         public override void LeaveVariableReference(VariableReference variableRef) =>
-            Emit.MetaFunction(Stack, MetaFunction.DereferenceVariable);
+            Emitter.MetaFunction(Stack, MetaFunction.DereferenceVariable);
+            */
+        
+        public override void EnterFifthProgram(FifthProgram ctx)
+        {
+            var fpe = new FifthProgramEmitter(ctx);
+            fpe.Emit(Emitter, Frame);
+        }
     }
 
     public interface ISpecialFormEmitter
     {
-        void Emit(IStackEmitter emitter, IRuntimeStack stack);
+        void Emit(IStackEmitter emitter, IActivationFrame frame);
+    }
+
+    public class FifthProgramEmitter : ISpecialFormEmitter
+    {
+        private readonly FifthProgram programAst;
+
+        public FifthProgramEmitter(FifthProgram ast) => programAst = ast;
+
+        public void Emit(IStackEmitter emitter, IActivationFrame frame)
+        {
+            foreach (var astAlias in programAst.Aliases)
+            {
+                var aliasEmitter = new AliasEmitter(astAlias);
+                aliasEmitter.Emit(emitter, frame);
+            }
+
+            foreach (var astFunction in programAst.Functions)
+            {
+                var funEmitter = new FunctionDefinitionEmitter(astFunction);
+                funEmitter.Emit(emitter, frame);
+            }
+        }
+    }
+
+    public class FunctionDefinitionEmitter : ISpecialFormEmitter
+    {
+        private readonly ASTFunctionDefinition astFunction;
+        private readonly RuntimeFunctionDefinition runtimeFunction;
+
+        public FunctionDefinitionEmitter(FunctionDefinition astFunction)
+        {
+            this.astFunction = astFunction;
+            runtimeFunction = new RuntimeFunctionDefinition {Name = astFunction.Name};
+        }
+
+        public void Emit(IStackEmitter emitter, IActivationFrame frame)
+        {
+            var ele = new ExpressionListStackEmitter(astFunction.Body);
+            ele.Emit(emitter, runtimeFunction);
+            frame.Environment.AddFunctionDefinition(runtimeFunction);
+        }
+    }
+
+    public class AliasEmitter : ISpecialFormEmitter
+    {
+        public AliasEmitter(AliasDeclaration astAlias) => throw new NotImplementedException();
+
+        public void Emit(IStackEmitter emitter, IActivationFrame frame)
+        {
+        }
     }
 
     public class ExpressionStackEmitter : ISpecialFormEmitter
     {
         private readonly Expression expression;
 
-        public ExpressionStackEmitter(Expression expression)
+        public ExpressionStackEmitter(Expression expression) => this.expression = expression;
+
+        public void Emit(IStackEmitter emitter, IActivationFrame frame)
         {
-            this.expression = expression;
+            switch (expression)
+            {
+                case FuncCallExpression fce:
+                    EmitFuncCallExpression(fce, emitter, frame);
+                    break;
+                case IdentifierExpression ie:
+                    EmitIdentifierExpression(ie, emitter, frame);
+                    break;
+                case BinaryExpression be:
+                    EmitBinaryExpression(be, emitter, frame);
+                    break;
+                case BooleanExpression boole:
+                    EmitBooleanExpression(boole, emitter, frame);
+                    break;
+                case IntValueExpression ie:
+                    EmitIntValueExpression(ie, emitter, frame);
+                    break;
+                case FloatValueExpression fe:
+                    EmitFloatValueExpression(fe, emitter, frame);
+                    break;
+                case StringValueExpression se:
+                    EmitStringValueExpression(se, emitter, frame);
+                    break;
+                case VariableDeclarationStatement vde:
+                    EmitVariableDeclarationExpression(vde, emitter, frame);
+                    break;
+            }
         }
-        public void EmitBooleanExpression(BooleanExpression be, IStackEmitter emitter, IRuntimeStack stack)
+
+        public void EmitBinaryExpression(BinaryExpression be, IStackEmitter emitter, IActivationFrame frame)
         {
-            emitter.Value(stack, be.Value);
+            var lhsEmitter = new ExpressionStackEmitter(be.Left);
+            var rhsEmitter = new ExpressionStackEmitter(be.Right);
+            lhsEmitter.Emit(emitter, frame);
+            rhsEmitter.Emit(emitter, frame);
+            emitter.Operator(frame.Stack, be);
         }
-        public void EmitIntValueExpression(IntValueExpression ie, IStackEmitter emitter, IRuntimeStack stack)
+
+        public void EmitBooleanExpression(BooleanExpression be, IStackEmitter emitter, IActivationFrame frame) =>
+            emitter.Value(frame.Stack, be.Value);
+
+        public void EmitFloatValueExpression(FloatValueExpression fe, IStackEmitter emitter, IActivationFrame frame) =>
+            emitter.Value(frame.Stack, fe.Value);
+
+        public void EmitFuncCallExpression(FuncCallExpression fce, IStackEmitter emitter, IActivationFrame frame)
         {
-            emitter.Value(stack, ie.Value);
+
+            if (fce.ActualParameters.Expressions.Any())
+            {
+                var ele = new ExpressionListStackEmitter(fce.ActualParameters);
+                ele.Emit(emitter, frame);
+            }
+            emitter.Value(frame.Stack, fce.Name);
+            emitter.MetaFunction(frame.Stack, MetaFunction.CallFunction);
         }
-        public void EmitVariableDeclarationExpression(VariableDeclarationStatement vde, IStackEmitter emitter, IRuntimeStack stack)
+
+        public void EmitIdentifierExpression(IdentifierExpression ie, IStackEmitter emitter, IActivationFrame frame)
+        {
+            emitter.Value(frame.Stack, ie.Identifier.Value);
+            emitter.MetaFunction(frame.Stack, MetaFunction.DereferenceVariable);
+        }
+
+        public void EmitIntValueExpression(IntValueExpression ie, IStackEmitter emitter, IActivationFrame frame) =>
+            emitter.Value(frame.Stack, ie.Value);
+
+        public void EmitStringValueExpression(StringValueExpression se, IStackEmitter emitter,
+            IActivationFrame frame) =>
+            emitter.Value(frame.Stack, se.Value);
+
+        public void EmitVariableDeclarationExpression(VariableDeclarationStatement vde, IStackEmitter emitter,
+            IActivationFrame frame)
         {
             // see /docs/semantic/metafunctions/Metafunction.DeclareVariable.md for semantics
 
@@ -83,9 +211,9 @@ namespace Fifth.Runtime.LangProcessingPhases
             {
                 // just a bare decl: `int x`
                 // format:     [typename, id, \DeclareVariable] => []
-                emitter.Value(stack, vde.TypeName);
-                emitter.Value(stack, vde.Name.Value);
-                emitter.MetaFunction(stack, MetaFunction.DeclareVariable);
+                emitter.Value(frame.Stack, vde.TypeName);
+                emitter.Value(frame.Stack, vde.Name.Value);
+                emitter.MetaFunction(frame.Stack, MetaFunction.DeclareVariable);
             }
             else
             {
@@ -93,79 +221,29 @@ namespace Fifth.Runtime.LangProcessingPhases
                 // format:     [<expression>, id, \Assign, typename, id, \DeclareVariable] => []
 
                 // assign part
-                new ExpressionStackEmitter(vde.Expression).Emit(emitter, stack);
-                emitter.Value(stack, vde.Name.Value);
-                emitter.MetaFunction(stack, MetaFunction.BindVariable);
+                new ExpressionStackEmitter(vde.Expression).Emit(emitter, frame);
+                emitter.Value(frame.Stack, vde.Name.Value);
+                emitter.MetaFunction(frame.Stack, MetaFunction.BindVariable);
                 // decl part
-                emitter.Value(stack, vde.TypeName);
-                emitter.Value(stack, vde.Name.Value);
-                emitter.MetaFunction(stack, MetaFunction.DeclareVariable);
-            }
-
-        }
-        public void EmitIdentifierExpression(IdentifierExpression ie, IStackEmitter emitter, IRuntimeStack stack)
-        {
-            emitter.Value(stack, ie.Identifier.Value);
-            emitter.MetaFunction(stack, MetaFunction.DereferenceVariable);
-        }
-        public void EmitFloatValueExpression(FloatValueExpression fe, IStackEmitter emitter, IRuntimeStack stack)
-        {
-            emitter.Value(stack, fe.Value);
-        }
-        public void EmitStringValueExpression(StringValueExpression se, IStackEmitter emitter, IRuntimeStack stack)
-        {
-            emitter.Value(stack, se.Value);
-        }
-        public void EmitBinaryExpression(BinaryExpression be, IStackEmitter emitter, IRuntimeStack stack)
-        {
-            var lhsEmitter = new ExpressionStackEmitter(be.Left);
-            var rhsEmitter = new ExpressionStackEmitter(be.Right);
-            lhsEmitter.Emit(emitter, stack);
-            rhsEmitter.Emit(emitter, stack);
-            emitter.Operator(stack, be);
-        }
-        public void Emit(IStackEmitter emitter, IRuntimeStack stack)
-        {
-            switch (expression)
-            {
-                case IdentifierExpression ie:
-                    EmitIdentifierExpression(ie, emitter, stack);
-                    break;
-                case BinaryExpression be:
-                    EmitBinaryExpression(be, emitter, stack);
-                    break;
-                case BooleanExpression boole:
-                    EmitBooleanExpression(boole, emitter, stack);
-                    break;
-                case IntValueExpression ie:
-                    EmitIntValueExpression(ie, emitter, stack);
-                    break;
-                case FloatValueExpression fe:
-                    EmitFloatValueExpression(fe, emitter, stack);
-                    break;
-                case StringValueExpression se:
-                    EmitStringValueExpression(se, emitter, stack);
-                    break;
-                case VariableDeclarationStatement vde:
-                    EmitVariableDeclarationExpression(vde, emitter, stack);
-                    break;
+                emitter.Value(frame.Stack, vde.TypeName);
+                emitter.Value(frame.Stack, vde.Name.Value);
+                emitter.MetaFunction(frame.Stack, MetaFunction.DeclareVariable);
             }
         }
     }
 
     public class ExpressionListStackEmitter : ISpecialFormEmitter
     {
-        private ExpressionList expressionList;
-        public ExpressionListStackEmitter(ExpressionList el)
+        private readonly IEnumerable<Expression> expressionList;
+
+        public ExpressionListStackEmitter(ExpressionList el) => expressionList = (IEnumerable<Expression>)el.Expressions;
+
+        public void Emit(IStackEmitter emitter, IActivationFrame frame)
         {
-            expressionList = el;
-        }
-        public void Emit(IStackEmitter emitter, IRuntimeStack stack)
-        {
-            foreach (var e in ((IEnumerable<Expression>)expressionList.Expressions).Reverse())
+            foreach (var e in expressionList.Reverse())
             {
                 var ese = new ExpressionStackEmitter(e);
-                ese.Emit(emitter, stack);
+                ese.Emit(emitter, frame);
             }
         }
     }

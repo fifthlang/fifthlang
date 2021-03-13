@@ -21,7 +21,7 @@ namespace Fifth.Runtime
         ///     Gets or sets the instruction stack.
         /// </summary>
         /// <value>The stack.</value>
-        public ActivationFrame Frame { get; }
+        public ActivationFrame Frame { get; set; }
 
         public void DispatchWhileNotEmpty()
         {
@@ -117,6 +117,8 @@ namespace Fifth.Runtime
             var result = x as ValueStackElement;
             return result?.Value;
         }
+
+        public T Resolve<T>() where T:class => Resolve() as T;
 
         /// <summary>
         ///     try to resolve the type of the value and get its internal value

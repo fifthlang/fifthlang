@@ -9,11 +9,12 @@ namespace Fifth.Test.Runtime
     using NUnit.Framework;
     using PrimitiveTypes;
     using Tests;
+    using VariableReference = Fifth.Runtime.VariableReference;
 
     [TestFixture]
-    [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
-    internal class StackGenVisitorTests : ParserTestBase
-    {
+        [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
+        internal class StackGenVisitorTests : ParserTestBase
+        {
         private readonly StackEmitter em = new StackEmitter();
 
         [Test]
@@ -35,8 +36,20 @@ namespace Fifth.Test.Runtime
             );
         }
 
+
+
         [Test]
-        public void TestStackGenerationForAssignment1()
+        public void TestFunctionDeclaration()
+        {
+            TestFunctionDeclEmission("main() => write('5 + 6');",
+                em.WrapValue("string"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+        }
+
+        [Test]
+        public void TestStackGenerationForAssignment_BinaryExpression()
         {
             TestExpressionEmission("int x = 5 * 1",
                 // bind part
@@ -53,7 +66,7 @@ namespace Fifth.Test.Runtime
         }
 
         [Test]
-        public void TestStackGenerationForAssignment3()
+        public void TestStackGenerationForAssignment_StringExpression()
         {
             TestExpressionEmission("string x = \"hello world\"",
                 // bind part
@@ -96,7 +109,7 @@ namespace Fifth.Test.Runtime
             var astNode = ParseExpressionListToAst(code);
             var af = new ActivationFrame();
             var stack = af.Stack;
-            var sut = new StackGeneratorVisitor {Stack = stack, Emit = new StackEmitter()};
+            var sut = new StackGeneratorVisitor {Frame = af, Emitter = new StackEmitter()};
             astNode.Accept(new TypeAnnotatorVisitor());
             astNode.Accept(sut);
             var dispatcher = new Dispatcher(af);
@@ -126,7 +139,7 @@ namespace Fifth.Test.Runtime
             var stack = af.Stack;
             var sut = new ExpressionStackEmitter(astNode as Expression);
             astNode.Accept(new TypeAnnotatorVisitor());
-            sut.Emit(new StackEmitter(), stack);
+            sut.Emit(new StackEmitter(), af);
             var dispatcher = new Dispatcher(af);
             dispatcher.Dispatch();
             Assert.That(stack, Has.Count.EqualTo(1));
@@ -141,31 +154,16 @@ namespace Fifth.Test.Runtime
             stack.Matches(matchList).Should().BeTrue();
         }
 
+        private void TestFunctionDeclEmission(string expression, params StackElement[] matchList)
+        {
+            var stack = ParseAndGenerateFunctionDecl(expression);
+            stack.Matches(matchList).Should().BeTrue();
+        }
+
         private void TestExpressionFragmentEmission(string expression, params StackElement[] matchList)
         {
             var stack = ParseAndGenerateExpressionFragment(expression);
             stack.Matches(matchList).Should().BeTrue();
         }
-
-        private static ActivationStack ParseAndGenerateExpression(string expressionString)
-        {
-            var astNode = ParseExpressionListToAst(expressionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new StackGeneratorVisitor { Stack = stack, Emit = new StackEmitter() };
-            astNode.Accept(new TypeAnnotatorVisitor());
-            astNode.Accept(sut);
-            return stack;
         }
-        private static ActivationStack ParseAndGenerateExpressionFragment(string expressionString)
-        {
-            var astNode = ParseExpressionToAst(expressionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new ExpressionStackEmitter(astNode as Expression);
-            astNode.Accept(new TypeAnnotatorVisitor());
-            sut.Emit(new StackEmitter(), stack);
-            return stack;
-        }
-    }
 }

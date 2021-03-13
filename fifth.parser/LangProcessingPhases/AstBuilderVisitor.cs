@@ -10,29 +10,23 @@ namespace Fifth.Parser.LangProcessingPhases
 
     public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public override IAstNode Visit(IParseTree tree)
         {
-            Log.Debug("Visit");
             return base.Visit(tree);
         }
 
         public override IAstNode VisitAlias([NotNull] FifthParser.AliasContext context)
         {
-            Log.Debug("VisitAlias");
             return base.VisitAlias(context);
         }
 
         public override IAstNode VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context)
         {
-            Log.Debug("VisitAssignmentStmt");
             return base.VisitAssignmentStmt(context);
         }
 
         public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context)
         {
-            Log.Debug("VisitBlock");
             return base.VisitBlock(context);
         }
 
@@ -64,7 +58,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context)
         {
-            Log.Debug("VisitEFuncCall");
             var name = context.funcname.GetText();
             var actualParams = VisitExplist(context.args);
             return new FuncCallExpression {Name = name, ActualParameters = (ExpressionList)actualParams};
@@ -129,7 +122,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
         //public override IAstNode VisitETypeCreate([NotNull] FifthParser.ETypeCreateContext context)
         //{
-        //    Log.Debug("VisitETypeCreate");
         //    return base.VisitETypeCreate(context);
         //}
 
@@ -149,7 +141,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
-            Log.Debug("VisitFifth");
             var functionDeclarations = context._functions
                 .Select(fctx => VisitFunction_declaration(fctx))
                 .Cast<FunctionDefinition>()
@@ -180,25 +171,21 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFunction_args([NotNull] FifthParser.Function_argsContext context)
         {
-            Log.Debug("VisitFunction_args");
             return base.VisitFunction_args(context);
         }
 
         public override IAstNode VisitFunction_body([NotNull] FifthParser.Function_bodyContext context)
         {
-            Log.Debug("VisitFunction_body");
             return VisitExplist(context.explist());
         }
 
         public override IAstNode VisitFunction_call([NotNull] FifthParser.Function_callContext context)
         {
-            Log.Debug("VisitFunction_call");
             return base.VisitFunction_call(context);
         }
 
         public override IAstNode VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
         {
-            Log.Debug("VisitFunction_declaration");
             var formals = context.function_args().formal_parameters();
             var parameterList = VisitFormal_parameters(formals);
             var body = VisitFunction_body(context.function_body());
@@ -214,43 +201,36 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitIfElseStmt([NotNull] FifthParser.IfElseStmtContext context)
         {
-            Log.Debug("VisitIfElseStmt");
             return base.VisitIfElseStmt(context);
         }
 
         public override IAstNode VisitIri([NotNull] FifthParser.IriContext context)
         {
-            Log.Debug("VisitIri");
             return base.VisitIri(context);
         }
 
         public override IAstNode VisitIri_query_param([NotNull] FifthParser.Iri_query_paramContext context)
         {
-            Log.Debug("VisitIri_query_param");
             return base.VisitIri_query_param(context);
         }
 
         public override IAstNode VisitModule_import([NotNull] FifthParser.Module_importContext context)
         {
-            Log.Debug("VisitModule_import");
             return base.VisitModule_import(context);
         }
 
         public override IAstNode VisitModule_name([NotNull] FifthParser.Module_nameContext context)
         {
-            Log.Debug("VisitModule_name");
             return base.VisitModule_name(context);
         }
 
         public override IAstNode VisitPackagename([NotNull] FifthParser.PackagenameContext context)
         {
-            Log.Debug("VisitPackagename");
             return base.VisitPackagename(context);
         }
 
         public override IAstNode VisitParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context)
         {
-            Log.Debug("VisitParameter_declaration");
             var type = context.parameter_type().IDENTIFIER().GetText();
             var name = context.parameter_name().IDENTIFIER().GetText();
             return new ParameterDeclaration {ParameterName = name, ParameterType = TypeHelpers.LookupBuiltinType(type)};
@@ -258,13 +238,11 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context)
         {
-            Log.Debug("VisitParameter_name");
             return base.VisitParameter_name(context);
         }
 
         public override IAstNode VisitParameter_type([NotNull] FifthParser.Parameter_typeContext context)
         {
-            Log.Debug("VisitParameter_type");
             return base.VisitParameter_type(context);
         }
 
@@ -272,25 +250,21 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitType_initialiser([NotNull] FifthParser.Type_initialiserContext context)
         {
-            Log.Debug("VisitType_initialiser");
             return base.VisitType_initialiser(context);
         }
 
         public override IAstNode VisitType_name([NotNull] FifthParser.Type_nameContext context)
         {
-            Log.Debug("VisitType_name");
             return new Identifier {Value = context.IDENTIFIER().GetText()};
         }
 
         public override IAstNode VisitType_property_init([NotNull] FifthParser.Type_property_initContext context)
         {
-            Log.Debug("VisitType_property_init");
             return base.VisitType_property_init(context);
         }
 
         public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context)
         {
-            Log.Debug("VisitVar_name");
             return new Identifier {Value = context.IDENTIFIER().GetText()};
         }
 
@@ -323,7 +297,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitWithStmt([NotNull] FifthParser.WithStmtContext context)
         {
-            Log.Debug("VisitWithStmt");
             return base.VisitWithStmt(context);
         }
 

@@ -1,6 +1,7 @@
 namespace Fifth.Runtime
 {
     using System;
+    using System.Collections.Generic;
     using PrimitiveTypes;
 
     /// <summary>
@@ -33,6 +34,103 @@ namespace Fifth.Runtime
             var rhsValue = dispatcher.Resolve();
             dispatcher.Frame.Environment[varName] = new ValueObject(PrimitiveInteger.Default, "int", rhsValue);
             return dispatcher;
+        }
+
+        /// <summary>
+        ///     <para>Binds a variable reference to a value</para>
+        /// </summary>
+        /// <param name="dispatcher">the place where operations are performed</param>
+        /// <returns>the altered stack frame</returns>
+        /// <remarks>
+        ///     <para>Stack effect: [var:variableref, val:value] |- []</para>
+        ///     <para>Environment Effect: [(id, ?)] |- [(id, val)]</para>
+        ///     <para>
+        ///         This builtin function will take an existing entry for a variable in the current
+        ///         environment and attach a value from the top of the stack to it
+        ///     </para>
+        /// </remarks>
+        public static IDispatcher BindVariable(IDispatcher dispatcher)
+        {
+            _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            var varName = dispatcher.Resolve() as string;
+            var value = dispatcher.Resolve();
+            dispatcher.Frame.Environment[varName] =
+                new ValueObject(PrimitiveInteger.Default, "int", value); // TODO: WARNING: not type info
+            return dispatcher;
+        }
+
+        /// <summary>
+        ///     A wrapper function encompassing all the activity needed to make a function call.
+        /// </summary>
+        /// <remarks>
+        ///     Activities include 1) creating and entering scope, 2) resolving args, 3) fetching function definition, 4) leaving
+        ///     scope and cleaning up
+        /// </remarks>
+        public static IDispatcher CallFunction(IDispatcher dispatcher)
+        {
+            // 1. get the definition of the function being called
+            var functionName = dispatcher.Resolve<string>();
+            if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(functionName, out var functionDefinition))
+            {
+                throw new RuntimeException($"Unable to resolve function '{functionName}' by name");
+            }
+
+            if (functionDefinition is BuiltinFunctionDefinition)
+            {
+                InvokeBuiltinFunction(dispatcher, functionDefinition);
+                return dispatcher;
+            }
+
+            // 2. create a new call frame
+            var newFrame = dispatcher.Frame.CreateChildFrame();
+
+            // 3. load the function definition into the stack for execution
+            LoadFunctionDefinitionIntoFrame(functionDefinition, newFrame);
+
+            // 4. resolve the parameters to the function (into new environment)
+            foreach (var argument in functionDefinition.Arguments)
+            {
+                var val = dispatcher.Resolve();
+                newFrame.Environment[argument.Name] = new ValueObject(argument.Type,argument.Name, val);
+            }
+
+            // 5. Execute the function
+            dispatcher.Frame = newFrame;
+            dispatcher.Dispatch();
+
+            // 6. copy the result of the function invocation back onto the calling stack
+            var result = dispatcher.Resolve();
+            newFrame.ParentFrame?.Stack.Push(new ValueStackElement(result));
+            dispatcher.Frame = newFrame.ParentFrame;
+            return dispatcher;
+        }
+
+        private static void InvokeBuiltinFunction(IDispatcher dispatcher, IFunctionDefinition functionDefinition)
+        {
+            var f = functionDefinition as BuiltinFunctionDefinition;
+            var args = new List<object>();
+            foreach (var t in f.Function.ArgTypes)
+            {
+                var o = dispatcher.Resolve();
+                // check that types of values match type requirements of x
+                if (!t.IsInstanceOfType(o))
+                {
+                    // TODO: maybe try to resolve an implicit coercion operator here.
+                    throw new Exception("Invalid Parameter Type"); // TODO need better error message
+                }
+
+                args.Add(o);
+            }
+
+            // pass values to x as args
+            args.Reverse(); // return to same order they were passed onto the stack
+            var resultValue = f.Function.Invoke(args.ToArray());
+            // push result onto stack
+            if (f.Function.ResultType != typeof(void))
+            {
+                dispatcher.Frame.Stack.PushConstantValue(resultValue); // TODO: can't assume this will always be a value
+            }
         }
 
         /// <summary>
@@ -72,34 +170,6 @@ namespace Fifth.Runtime
             return dispatcher;
         }
 
-        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
-            // TODO: need to have actual registry of types to lookup against
-            PrimitiveInteger.Default;
-
-        /// <summary>
-        ///     <para>Binds a variable reference to a value</para>
-        /// </summary>
-        /// <param name="dispatcher">the place where operations are performed</param>
-        /// <returns>the altered stack frame</returns>
-        /// <remarks>
-        ///     <para>Stack effect: [var:variableref, val:value] |- []</para>
-        ///     <para>Environment Effect: [(id, ?)] |- [(id, val)]</para>
-        ///     <para>
-        ///         This builtin function will take an existing entry for a variable in the current
-        ///         environment and attach a value from the top of the stack to it
-        ///     </para>
-        /// </remarks>
-        public static IDispatcher BindVariable(IDispatcher dispatcher)
-        {
-            _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
-            var varName = dispatcher.Resolve() as string;
-            var value = dispatcher.Resolve();
-            dispatcher.Frame.Environment[varName] =
-                new ValueObject(PrimitiveInteger.Default, "int", value); // TODO: WARNING: not type info
-            return dispatcher;
-        }
-
         /// <summary>
         ///     Looks up the value of a variable in the environment
         /// </summary>
@@ -115,6 +185,31 @@ namespace Fifth.Runtime
             var valueObj = value.GetValueOfValueObject();
             dispatcher.Frame.Stack.PushConstantValue(valueObj);
             return dispatcher;
+        }
+
+        public static IDispatcher EnterScope(IDispatcher dispatcher)
+        {
+            return dispatcher;
+        }
+
+        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
+            // TODO: need to have actual registry of types to lookup against
+            PrimitiveInteger.Default;
+
+        public static IDispatcher MarshalTopOfStackOntoStackBelow(IDispatcher dispatcher) => dispatcher;
+
+        public static IDispatcher ResolveFunctionArgs(IDispatcher dispatcher) => dispatcher;
+
+        private static void LoadFunctionDefinitionIntoFrame(
+            IFunctionDefinition functionDefinition,
+            ActivationFrame newFrame)
+        {
+            switch (functionDefinition)
+            {
+                case FunctionDefinition s:
+                    newFrame.Stack.Import(s.Stack.Export());
+                    break;
+            }
         }
     }
 }
