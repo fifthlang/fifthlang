@@ -34,5 +34,13 @@ namespace Fifth.Tests.Runtime
             _ = x.GetValueOfValueObject().Should().Be(o);
             _ = x.ValueType.Should().Be(t);
         }
+
+        [Test]
+        public void CanLoadBuilltinFunctions()
+        {
+            var e = new Environment(null);
+            BuiltinFunctions.loadBuiltins(e);
+            e.Should().NotBeNull();
+        }
     }
 }

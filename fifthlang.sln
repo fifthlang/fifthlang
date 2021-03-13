@@ -27,6 +27,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "semantics", "semantics", "{
 		doc\Semantics\metafunctions\Metafunction.DereferenceVariable.md = doc\Semantics\metafunctions\Metafunction.DereferenceVariable.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{6DD90A62-4B81-4DDA-9C4E-8203F5F57164}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "semantics", "semantics", "{2A3F51D6-F624-4358-BDE0-9A4224BEFFFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "expressions", "expressions", "{23D4A3DA-3554-4351-B2C4-90BC079F0091}"
+	ProjectSection(SolutionItems) = preProject
+		doc\Semantics\expressions\exp.EFuncCall.md = doc\Semantics\expressions\exp.EFuncCall.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +64,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8F302E4D-0BE6-4DED-A0AA-FD8DE4078C00} = {47E4C047-F8B2-4E63-BC44-40A0B5C24D31}
+		{6DD90A62-4B81-4DDA-9C4E-8203F5F57164} = {8F302E4D-0BE6-4DED-A0AA-FD8DE4078C00}
+		{2A3F51D6-F624-4358-BDE0-9A4224BEFFFD} = {6DD90A62-4B81-4DDA-9C4E-8203F5F57164}
+		{23D4A3DA-3554-4351-B2C4-90BC079F0091} = {2A3F51D6-F624-4358-BDE0-9A4224BEFFFD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7903CF41-8433-4C0C-BEAE-C78EF9C05F83}

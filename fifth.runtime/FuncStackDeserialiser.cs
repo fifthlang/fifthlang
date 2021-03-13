@@ -27,7 +27,7 @@ namespace Fifth
             var sb = new StringBuilder();
             while (!stack.IsEmpty)
             {
-                sb.Append(stack.Pop().ToString());
+                sb.Append(stack.Pop());
                 sb.Append(" ");
             }
             return sb.ToString();

@@ -12,4 +12,12 @@ namespace Fifth.PrimitiveTypes
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "+")]
         public static string Add(char left, char right) => $"{left}{right}";
     }
+
+    [TypeTraits(IsPrimitive = true, IsNumeric = false, Keyword = "void")]
+    public class PrimitiveVoid : IFifthType
+    {
+        private PrimitiveVoid() { }
+
+        public static PrimitiveVoid Default { get; set; } = new PrimitiveVoid();
+    }
 }
