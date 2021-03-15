@@ -31,6 +31,14 @@ namespace Fifth.Runtime
             }
         }
 
+        public void DispatchWhileOperationsAtTopOfStack()
+        {
+            while (!Stack.IsEmpty && !Stack.IsValueOnTop)
+            {
+                Dispatch();
+            }
+        }
+
         /// <summary>
         ///     Dispatch takes a function from the top of the stack, and then attempts to invoke it with
         ///     arguments gathered from the stack below

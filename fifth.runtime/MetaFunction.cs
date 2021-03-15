@@ -101,8 +101,7 @@ namespace Fifth.Runtime
             dispatcher.Dispatch();
 
             // 6. copy the result of the function invocation back onto the calling stack
-            var result = dispatcher.Resolve();
-            newFrame.ParentFrame?.Stack.Push(new ValueStackElement(result));
+            newFrame.ReturnResultToParentFrame();
             dispatcher.Frame = newFrame.ParentFrame;
             return dispatcher;
         }

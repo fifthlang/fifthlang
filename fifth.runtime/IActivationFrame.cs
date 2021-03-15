@@ -8,5 +8,7 @@ namespace Fifth.Runtime
         ActivationStack Stack { get; set; }
 
         ActivationFrame CreateChildFrame();
+
+        bool ReturnResultToParentFrame();
     }
 }

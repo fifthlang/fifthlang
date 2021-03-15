@@ -53,6 +53,18 @@ namespace Fifth.Runtime
         }
 
         public bool IsEmpty => Count == 0;
+        public bool IsValueOnTop
+        {
+            get
+            {
+                if (IsEmpty)
+                {
+                    return false;
+                }
+                var topType = Peek().GetType();
+                return typeof(ValueStackElement).IsAssignableFrom(topType);
+            }
+        }
 
         public IRuntimeStack PushVariableReference(IValueObject variableEntryInEnvironment)
         {
@@ -65,6 +77,7 @@ namespace Fifth.Runtime
     public interface IRuntimeStack
     {
         bool IsEmpty { get; }
+        bool IsValueOnTop { get; }
         IRuntimeStack PushConstantValue<T>(T value);
         IRuntimeStack PushFunction(FuncWrapper f);
         IRuntimeStack PushMetaFunction(FuncWrapper f);

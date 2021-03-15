@@ -54,5 +54,15 @@ namespace Fifth.Runtime
             result.KnowledgeGraph.ParentGraph = KnowledgeGraph;
             return result;
         }
+
+        public bool ReturnResultToParentFrame()
+        {
+            if (ParentFrame != null && !Stack.IsEmpty)
+            {
+                ParentFrame?.Stack.Push(Stack.Pop());
+                return true;
+            }
+            return false;
+        }
     }
 }

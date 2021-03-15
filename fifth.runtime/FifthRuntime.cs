@@ -19,16 +19,24 @@ namespace Fifth.Runtime
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
             fpe.Emit(new StackEmitter(), rootActivationFrame);
             BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
+
+            var result = 0;
+
             if (rootActivationFrame.Environment.TryGetFunctionDefinition("main", out var fd))
             {
                 var frame = fd as ActivationFrame;
                 frame.ParentFrame = rootActivationFrame;
                 frame.Environment.Parent = rootActivationFrame.Environment;
                 var d = new Dispatcher(frame);
-                d.Dispatch();
+                d.DispatchWhileOperationsAtTopOfStack();
+                if (!d.Stack.IsEmpty)
+                {
+                    var tmp = d.Stack.Pop() as ValueStackElement;
+                    result = (int) tmp?.GetValueOfValueObject();
+                }
             }
-
-            return 0;
+            
+            return result;
         }
 
         private static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
