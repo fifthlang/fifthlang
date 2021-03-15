@@ -28,7 +28,7 @@ namespace Fifth.Runtime
                 frame.ParentFrame = rootActivationFrame;
                 frame.Environment.Parent = rootActivationFrame.Environment;
                 var d = new Dispatcher(frame);
-                d.DispatchWhileOperationsAtTopOfStack();
+                d.DispatchWhileOperationIsAtTopOfStack();
                 if (!d.Stack.IsEmpty)
                 {
                     var tmp = d.Stack.Pop() as ValueStackElement;

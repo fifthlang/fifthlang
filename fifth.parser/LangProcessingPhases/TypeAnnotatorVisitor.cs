@@ -104,16 +104,19 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             if (!identifierExpression.HasAnnotation("type"))
             {
-                // look in params to see if the type is known from there
-                var funcDef = currentFunctionDef.Peek() as FunctionDefinition;
-                if (funcDef != null && funcDef.ParameterDeclarations != null &&
-                    funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd =>
-                        pd.ParameterName == identifierExpression.Identifier.Value))
+                if (currentFunctionDef != null && currentFunctionDef.Count > 0)
                 {
-                    var paramDecl = funcDef.ParameterDeclarations.ParameterDeclarations.First(pd =>
-                        pd.ParameterName == identifierExpression.Identifier.Value);
-                    identifierExpression.Identifier["type"] = paramDecl.ParameterType;
-                    identifierExpression["type"] = paramDecl.ParameterType;
+                    // look in params to see if the type is known from there
+                    var funcDef = currentFunctionDef.Peek() as FunctionDefinition;
+                    if (funcDef != null && funcDef.ParameterDeclarations != null &&
+                        funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd =>
+                            pd.ParameterName == identifierExpression.Identifier.Value))
+                    {
+                        var paramDecl = funcDef.ParameterDeclarations.ParameterDeclarations.First(pd =>
+                            pd.ParameterName == identifierExpression.Identifier.Value);
+                        identifierExpression.Identifier["type"] = paramDecl.ParameterType;
+                        identifierExpression["type"] = paramDecl.ParameterType;
+                    }
                 }
             }
         }

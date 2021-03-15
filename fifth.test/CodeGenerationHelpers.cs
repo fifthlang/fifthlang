@@ -15,6 +15,14 @@ namespace Fifth.Test
             return elementsFromStack.SequenceEquals(elementsToCompareAgainst);
         }
 
+        public static bool Matches(this FunctionDefinition fd, params StackElement[] elementsToCompareAgainst)
+        {
+            var elements = fd.Stack.Export();
+            var elementsFromStack = elements as List<StackElement> ?? elements.ToList();
+            elementsToCompareAgainst = elementsToCompareAgainst.Reverse().ToArray();
+            return elementsFromStack.SequenceEquals(elementsToCompareAgainst);
+        }
+
         public static bool SequenceEquals<T>(this IEnumerable<T> seq1, IEnumerable<T> seq2)
         where T : IEquatable<T>
         {

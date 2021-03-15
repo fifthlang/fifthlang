@@ -9,13 +9,6 @@ namespace Fifth.Test.Parser
     [TestFixture]
     public class TypeAnnotatorVisitorTests : ParserTestBase
     {
-        protected static IAstNode ParseExpressionToAst(string fragment)
-        {
-            var parseTree = ParseExpression(fragment);
-            var visitor = new AstBuilderVisitor();
-            return visitor.Visit(parseTree);
-        }
-
         [Test]
         public void IfBinaryExpressionElementsAreInt_TheExpressionIsInt()
         {

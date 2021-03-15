@@ -1,13 +1,11 @@
 namespace Fifth.Test.Runtime
 {
-    using System.Diagnostics.CodeAnalysis;
     using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
     using Tests;
 
     [TestFixture(Category = "WIP")]
-    [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
     internal class EndToEndTests : ParserTestBase
     {
         [TestCase("void main() => write('hello world');", 0)]
@@ -15,7 +13,8 @@ namespace Fifth.Test.Runtime
         [TestCase("int main() => greet('world'), 1+2; void greet(string s) => write('hello, ' + s);", 3)]
         [TestCase("int main() => doSomeCalculation(13, 17); int doSomeCalculation(int x, int y) => x + y;", 30)]
         [TestCase("int main() => int a = doSomeCalculation(13, 17), a + 10; int doSomeCalculation(int x, int y) => x + y;", 40)]
-        [TestCase("int main() => int a = doSomeCalculation(13, 17), int b = a + 10, b + 11; int doSomeCalculation(int x, int y) => x + y;", 51)]
+        [TestCase("int main() => int a = doSomeCalculation(13, 17), int b = a + 10, b + 11; "+
+                  "int doSomeCalculation(int x, int y) => x + y;", 51)]
         public void TestProgram(string fragment, int expectedResult)
         {
             var runtime = new FifthRuntime();

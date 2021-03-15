@@ -9,118 +9,29 @@ namespace Fifth.Test.Runtime
     using NUnit.Framework;
     using PrimitiveTypes;
     using Tests;
-    using VariableReference = Fifth.Runtime.VariableReference;
 
     [TestFixture(Category = "WIP")]
-        [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
-        internal class StackGenVisitorTests : ParserTestBase
-        {
+    [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
+    internal class StackGenVisitorTests : ParserTestBase
+    {
         private readonly StackEmitter em = new StackEmitter();
 
-        [Test]
-        public void TestStackGenerationForBinaryExpressions()
-        {
-            TestExpressionFragmentEmission("5 + 5", em.WrapValue(5), em.WrapValue(5), em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int));
-            TestExpressionFragmentEmission("5 - 5", em.WrapValue(5), em.WrapValue(5), em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.subtract_int_int));
-            TestExpressionFragmentEmission("5 * 5", em.WrapValue(5), em.WrapValue(5), em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int));
-            TestExpressionFragmentEmission("5 / 5", em.WrapValue(5), em.WrapValue(5), em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.divide_int_int));
-        }
-
-        [Test]
-        public void TestVariableDeclaration()
-        {
-            TestExpressionEmission("string x",
-                em.WrapValue("string"),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.DeclareVariable)
-            );
-        }
-
-
-
-        [Test]
-        public void TestFunctionDeclaration()
-        {
-            TestFunctionDeclEmission("main() => write('5 + 6');",
-                em.WrapValue("string"),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.DeclareVariable)
-            );
-        }
-
-        [Test]
-        public void TestStackGenerationForAssignment_BinaryExpression()
-        {
-            TestExpressionEmission("int x = 5 * 1",
-                // bind part
-                em.WrapValue(5),
-                em.WrapValue(1),
-                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.BindVariable),
-                // decl part
-                em.WrapValue("int"),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.DeclareVariable)
-            );
-        }
-
-        [Test]
-        public void TestStackGenerationForAssignment_StringExpression()
-        {
-            TestExpressionEmission("string x = \"hello world\"",
-                // bind part
-                em.WrapValue("hello world"),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.BindVariable),
-                // decl part
-                em.WrapValue("string"),
-                em.WrapValue("x"),
-                em.WrapMetaFunction(MetaFunction.DeclareVariable)
-            );
-        }
-
-        [Test]
-        public void TestStackGenerationForAssignment2()
-        {
-            TestExpressionEmission("float a = 0.1",
-                em.WrapValue(0.1F),
-                em.WrapValue("a"),
-                em.WrapMetaFunction(MetaFunction.BindVariable),
-
-                em.WrapValue("float"),
-                em.WrapValue("a"),
-                em.WrapMetaFunction(MetaFunction.DeclareVariable)
-            );
-        }
-
-        [Test]
-        public void TestStackGenerationForValueExpressions()
-        {
-            TestExpressionFragmentEmission("5", em.WrapValue(5));
-            TestExpressionFragmentEmission("0.2", em.WrapValue(0.2F));
-            TestExpressionFragmentEmission("true", em.WrapValue(true));
-            TestExpressionFragmentEmission("x", em.WrapValue("x"), em.WrapMetaFunction(MetaFunction.DereferenceVariable));
-        }
-
-        [TestCase("int x = 5 * 1, x", "x", 5)]
+        [TestCase("int x = 5 * 1, x", "x", 5, Category = "WIP")]
         public void TestCanAssignAndDereferenceValue(string code, string varName, object resolvedValue)
         {
-            var astNode = ParseExpressionListToAst(code);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new StackGeneratorVisitor {Frame = af, Emitter = new StackEmitter()};
-            astNode.Accept(new TypeAnnotatorVisitor());
-            astNode.Accept(sut);
+            var af = ParseAndGenerate<ExpressionList>(code);
             var dispatcher = new Dispatcher(af);
-            dispatcher.Dispatch(); // first for the decl
-            dispatcher.Dispatch(); // then for the assignment
-            dispatcher.Dispatch(); // finally for the dereference
-            stack.Count.Should().Be(1); 
-            var v = stack.Pop();
-            v.Should().BeOfType<ValueStackElement>();
-            ((ValueStackElement)v).Value.Should().Be(resolvedValue);
-            af.Environment.Count.Should().Be(1);
+            dispatcher.DispatchWhileOperationIsAtTopOfStack();
+            af.Stack.Count.Should().Be(1);
+            af.Stack.Peek().GetValueOfValueObject().Should().Be(5);
+            if (af.Environment.TryGetVariableValue(varName, out var actualValueObject))
+            {
+                actualValueObject.GetValueOfValueObject().Should().Be(resolvedValue);
+            }
+            else
+            {
+                Assert.Fail("variable should have been initialised in global frame");
+            }
         }
 
         [TestCase("8 + 5", 13)] // ints
@@ -131,7 +42,7 @@ namespace Fifth.Test.Runtime
         [TestCase("8.0 - 5.0", 3F)]
         [TestCase("8.0 * 5.0", 40F)]
         [TestCase("100.0 / 5.0", 20F)]
-        [TestCase("\"hello\" + \"world\"", "helloworld")]//strings
+        [TestCase("\"hello\" + \"world\"", "helloworld")] //strings
         public void TestCanExecuteStackGeneratedFromExpression(string code, object resolvedValue)
         {
             var astNode = ParseExpressionToAst(code);
@@ -154,16 +65,101 @@ namespace Fifth.Test.Runtime
             stack.Matches(matchList).Should().BeTrue();
         }
 
-        private void TestFunctionDeclEmission(string expression, params StackElement[] matchList)
-        {
-            var stack = ParseAndGenerateFunctionDecl(expression);
-            stack.Matches(matchList).Should().BeTrue();
-        }
-
         private void TestExpressionFragmentEmission(string expression, params StackElement[] matchList)
         {
             var stack = ParseAndGenerateExpressionFragment(expression);
             stack.Matches(matchList).Should().BeTrue();
         }
+
+
+        [Test]
+        [Category("WIP")]
+        public void TestFunctionDeclaration()
+        {
+            var expression = "void main() => write('5 + 6');";
+            var af = ParseAndGenerateFunctionDecl(expression);
+            var matchList = new[]
+            {
+                em.WrapValue("5 + 6"),
+                em.WrapValue("write"),
+                em.WrapMetaFunction(MetaFunction.CallFunction),
+            };
+            if (af.Environment.TryGetFunctionDefinition("main", out var fd))
+            {
+                (fd as Fifth.Runtime.FunctionDefinition)?.Matches(matchList).Should().BeTrue();
+                
+            }
+
         }
+
+        [Test]
+        public void TestStackGenerationForAssignment_BinaryExpression() =>
+            TestExpressionEmission("int x = 5 * 1",
+                // bind part
+                em.WrapValue(5),
+                em.WrapValue(1),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.BindVariable),
+                // decl part
+                em.WrapValue("int"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+
+        [Test]
+        public void TestStackGenerationForAssignment_StringExpression() =>
+            TestExpressionEmission("string x = \"hello world\"",
+                // bind part
+                em.WrapValue("hello world"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.BindVariable),
+                // decl part
+                em.WrapValue("string"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+
+        [Test]
+        public void TestStackGenerationForAssignment2() =>
+            TestExpressionEmission("float a = 0.1",
+                em.WrapValue(0.1F),
+                em.WrapValue("a"),
+                em.WrapMetaFunction(MetaFunction.BindVariable),
+                em.WrapValue("float"),
+                em.WrapValue("a"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+
+        [Test]
+        public void TestStackGenerationForBinaryExpressions()
+        {
+            TestExpressionFragmentEmission("5 + 5", em.WrapValue(5), em.WrapValue(5),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.add_int_int));
+            TestExpressionFragmentEmission("5 - 5", em.WrapValue(5), em.WrapValue(5),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.subtract_int_int));
+            TestExpressionFragmentEmission("5 * 5", em.WrapValue(5), em.WrapValue(5),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.multiply_int_int));
+            TestExpressionFragmentEmission("5 / 5", em.WrapValue(5), em.WrapValue(5),
+                em.WrapBinaryFunction<int, int, int>(PrimitiveInteger.divide_int_int));
+        }
+
+        [Test]
+        public void TestStackGenerationForValueExpressions()
+        {
+            TestExpressionFragmentEmission("5", em.WrapValue(5));
+            TestExpressionFragmentEmission("0.2", em.WrapValue(0.2F));
+            TestExpressionFragmentEmission("true", em.WrapValue(true));
+            TestExpressionFragmentEmission("x", em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DereferenceVariable));
+        }
+
+        [Test]
+        public void TestVariableDeclaration() =>
+            TestExpressionEmission("string x",
+                em.WrapValue("string"),
+                em.WrapValue("x"),
+                em.WrapMetaFunction(MetaFunction.DeclareVariable)
+            );
+    }
 }

@@ -13,8 +13,8 @@ namespace Fifth.Tests
         public void TestCanAccessScopeForMain()
         {
             var TestProgram = @"use std;
-            main(int x, int y) => myprint(x + y);
-            myprint(int x) => std.print(""the answer is "" + x);";
+            void main(int x, int y) => myprint(x + y);
+            void myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var annotatedAst = new AstScopeAnnotations(ast);
@@ -30,9 +30,9 @@ namespace Fifth.Tests
         [Test]
         public void TestCanGatherMultipleDefinitions()
         {
-            var TestProgram = @"main() => myprint(""hello world"");
-            myprint(string x) => std.print(x);
-            blah() => int result = 5, result;";
+            var TestProgram = @"void main() => myprint(""hello world"");
+            void myprint(string x) => std.print(x);
+            void blah() => int result = 5, result;";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var annotatedAst = new AstScopeAnnotations(ast);
@@ -49,7 +49,7 @@ namespace Fifth.Tests
         [Test]
         public void TestCanGatherSingleFunctionDefinitions()
         {
-            var TestProgram = @"main() => myprint(""hello world"");";
+            var TestProgram = @"void main() => myprint(""hello world"");";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var annotatedAst = new AstScopeAnnotations(ast);
@@ -64,8 +64,8 @@ namespace Fifth.Tests
         public void TestCanParseFullProgram()
         {
             var TestProgram = @"use std;
-            main(int x, int y) => myprint(x + y);
-            myprint(int x) => std.print(""the answer is "" + x);";
+            void main(int x, int y) => myprint(x + y);
+            void myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var annotatedAst = new AstScopeAnnotations(ast);

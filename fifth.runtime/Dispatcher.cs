@@ -31,7 +31,7 @@ namespace Fifth.Runtime
             }
         }
 
-        public void DispatchWhileOperationsAtTopOfStack()
+        public void DispatchWhileOperationIsAtTopOfStack()
         {
             while (!Stack.IsEmpty && !Stack.IsValueOnTop)
             {

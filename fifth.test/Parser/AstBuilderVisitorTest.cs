@@ -40,11 +40,11 @@ namespace Fifth.Tests.Parser
             _ = binexp.Op.Should().Be(op);
         }
 
-        [TestCase(@"main(int x) => x + 1;")]
-        [TestCase(@"main(int x) => int x = 234, x + 1;")]
-        [TestCase(@"main(int x) => int x = 234, x + 1;foo()=>43;", 2)]
-        [TestCase(@"main(int x) => int x = 234, x + 1;
-foo()=>43;", 2)]
+        [TestCase(@"void main(int x) => x + 1;")]
+        [TestCase(@"void main(int x) => int x = 234, x + 1;")]
+        [TestCase(@"void main(int x) => int x = 234, x + 1;int foo()=>43;", 2)]
+        [TestCase(@"void main(int x) => int x = 234, x + 1;
+void foo()=>43;", 2)]
         public void TestCanBuildProgram(string programText, int funcCount = 1)
         {
             var ctx = ParseProgram(programText);
@@ -54,11 +54,11 @@ foo()=>43;", 2)]
             _ = ast.Functions.Should().NotBeNull().And.HaveCount(funcCount);
         }
 
-        [TestCase(@"alias <http://tempuri.com/blah/> as tu; main(int x) => int x = 234, x + 1;", 1)]
+        [TestCase(@"alias <http://tempuri.com/blah/> as tu; void main(int x) => int x = 234, x + 1;", 1)]
         [TestCase(@"
 alias <http://tempuri.com/blah/> as a1;
 alias <http://tempuri.com/bob> as a2;
-main(int x) => int x = 234, x + 1;", 2)]
+void main(int x) => int x = 234, x + 1;", 2)]
         public void TestCanConstructAliasesFromProgram(string programText, int aliasCount)
         {
             var ctx = ParseProgram(programText);

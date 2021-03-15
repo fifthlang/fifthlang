@@ -6,9 +6,58 @@ namespace Fifth.Tests
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
     using static FifthParser;
+    using FunctionDefinition = AST.FunctionDefinition;
 
     public class ParserTestBase
     {
+        #region Core Drivers
+        protected static IAstNode ParseToAst<T>(string fragment)
+            where T : IAstNode
+        {
+            if (typeof(T) == typeof(ExpressionList))
+            {
+                return (T)ParseExpressionListToAst(fragment);
+            }
+            if (typeof(T) == typeof(Expression))
+            {
+                return (T)ParseExpressionToAst(fragment);
+            }
+            if (typeof(T) == typeof(FunctionDefinition))
+            {
+                return (T)ParseFunctionDeclToAst(fragment);
+            }
+
+            return null;
+        }
+
+        protected static IAstNode ParseAndAnnotate<T>(string fragment)
+            where T : IAstNode
+        {
+            var ast = ParseToAst<T>(fragment);
+
+            if (ast != null)
+            {
+                ast.Accept(new TypeAnnotatorVisitor());
+            }
+            return ast;
+        }
+
+        protected static ActivationFrame ParseAndGenerate<T>(string expressionString)
+            where T : IAstNode
+        {
+            var astNode = ParseAndAnnotate<T>(expressionString);
+            var af = new ActivationFrame();
+            ISpecialFormEmitter specialFormEmitter = astNode switch
+            {
+                Expression e => new ExpressionStackEmitter(e),
+                ExpressionList el => new ExpressionListStackEmitter(el),
+                FunctionDefinition fd => new FunctionDefinitionEmitter(fd),
+                _ => throw new System.NotImplementedException(),
+            };
+            specialFormEmitter.Emit(new StackEmitter(), af);
+            return af;
+        }
+
         protected static FifthParser GetParserFor(string fragment)
         {
             var lexer = new FifthLexer(new AntlrInputStream(fragment));
@@ -21,8 +70,28 @@ namespace Fifth.Tests
             return parser;
         }
 
+        #endregion
+
+        #region Parsing into Parse Tree
+        protected static ParserRuleContext ParseIri(string fragment)
+                    => GetParserFor(fragment).iri();
+
+        protected static FifthContext ParseProgram(string fragment)
+            => GetParserFor(fragment).fifth();
+        protected static ParserRuleContext ParseExpression(string fragment)
+            => GetParserFor(fragment).exp();
+
+        protected static ParserRuleContext ParseExpressionList(string fragment)
+            => GetParserFor(fragment).explist();
+
+        protected static ParserRuleContext ParseFunctionDecl(string fragment)
+            => GetParserFor(fragment).function_declaration();
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
             => GetParserFor(fragment).exp();
+
+        #endregion
+
+        #region Parsing into AST Node
 
         protected static IAstNode ParseDeclAssignmentToAst(string fragment)
         {
@@ -31,14 +100,6 @@ namespace Fifth.Tests
             return visitor.Visit(parseTree);
         }
 
-        protected static ParserRuleContext ParseExpression(string fragment)
-            => GetParserFor(fragment).exp();
-
-        protected static ParserRuleContext ParseExpressionList(string fragment)
-                    => GetParserFor(fragment).explist();
-
-        protected static ParserRuleContext ParseFunctionDecl(string fragment)
-                    => GetParserFor(fragment).function_declaration();
 
         protected static IAstNode ParseExpressionListToAst(string fragment)
         {
@@ -61,11 +122,6 @@ namespace Fifth.Tests
             return visitor.Visit(parseTree);
         }
 
-        protected static ParserRuleContext ParseIri(string fragment)
-                    => GetParserFor(fragment).iri();
-
-        protected static FifthContext ParseProgram(string fragment)
-            => GetParserFor(fragment).fifth();
 
         protected static IAstNode ParseProgramToAst(string fragment)
         {
@@ -73,49 +129,19 @@ namespace Fifth.Tests
             var visitor = new AstBuilderVisitor();
             return visitor.Visit(parseTree);
         }
+        
 
-        protected static ActivationStack ParseAndGenerateFunctionDecl(string functionString)
-        {
-            var astNode = ParseFunctionDeclToAst(functionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
-            astNode.Accept(new TypeAnnotatorVisitor());
-            astNode.Accept(sut);
-            return stack;
-        }
+        #endregion
 
+        #region Parsing and Generation
+        protected static ActivationFrame ParseAndGenerateFunctionDecl(string functionString)
+            => ParseAndGenerate<FunctionDefinition>(functionString);
         protected static ActivationFrame ParseAndGenerateProgram(string functionString)
-        {
-            var astNode = ParseProgramToAst(functionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
-            astNode.Accept(new TypeAnnotatorVisitor());
-            astNode.Accept(sut);
-            return af;
-        }
-
+            => ParseAndGenerate<FifthProgram>(functionString);
         protected static ActivationStack ParseAndGenerateExpression(string expressionString)
-        {
-            var astNode = ParseExpressionListToAst(expressionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new StackGeneratorVisitor { Frame = af, Emitter = new StackEmitter() };
-            astNode.Accept(new TypeAnnotatorVisitor());
-            astNode.Accept(sut);
-            return stack;
-        }
-
+            => ParseAndGenerate<Expression>(expressionString).Stack;
         protected static ActivationStack ParseAndGenerateExpressionFragment(string expressionString)
-        {
-            var astNode = ParseExpressionToAst(expressionString);
-            var af = new ActivationFrame();
-            var stack = af.Stack;
-            var sut = new ExpressionStackEmitter(astNode as Expression);
-            astNode.Accept(new TypeAnnotatorVisitor());
-            sut.Emit(new StackEmitter(), af);
-            return stack;
-        }
+            => ParseAndGenerate<Expression>(expressionString).Stack;
+        #endregion
     }
 }
