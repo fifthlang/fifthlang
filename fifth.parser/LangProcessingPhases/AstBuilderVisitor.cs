@@ -193,7 +193,7 @@ namespace Fifth.Parser.LangProcessingPhases
             return new FunctionDefinition
             {
                 Body = body as ExpressionList,
-                ParameterDeclarations = parameterList as ParameterDeclarationList,
+                ParameterDeclarations = parameterList as ParameterDeclarationList ?? new ParameterDeclarationList{ParameterDeclarations = new List<ParameterDeclaration>()},
                 ReturnType = TypeHelpers.LookupType(context.result_type.GetText()),
                 Name = name
             };
@@ -272,14 +272,14 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var nameId = base.Visit(context.var_name());
             var typename = context.type_name().GetText();
-            var builtinType = TypeHelpers.LookupBuiltinType(typename);
+            var builtinType = TypeHelpers.LookupType(typename);
 
             return new VariableDeclarationStatement
             {
                 Expression = default,
                 Name = (Identifier)nameId,
                 TypeName = typename,
-                FifthType = builtinType.GetType() // dodgy
+                FifthType = builtinType
             };
         }
 

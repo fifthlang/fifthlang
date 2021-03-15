@@ -6,5 +6,6 @@ namespace Fifth.Parser
     {
         string Name { get; set; }
         SymbolKind SymbolKind { get; set; }
+        IAstNode Context { get; set; }
     }
 }

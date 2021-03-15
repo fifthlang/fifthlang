@@ -1,5 +1,6 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,6 +10,7 @@ namespace Fifth.Parser.LangProcessingPhases
     public class TypeAnnotatorVisitor : BaseAstVisitor
     {
         private readonly Stack<IAstNode> currentFunctionDef = new Stack<IAstNode>();
+
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
             => ctx["type"] = PrimitiveFloat.Default;
 
@@ -25,6 +27,7 @@ namespace Fifth.Parser.LangProcessingPhases
             {
                 throw new Fifth.TypeCheckingException("Unable to infer type of expression during assignment");
             }
+
             // 3. annotate the type of the symbol in the symtab
             // 4. annotate the type of the assignment expression
             ctx["type"] = ctx.Expression["type"];
@@ -32,9 +35,57 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override void LeaveBinaryExpression(BinaryExpression ctx)
         {
-            if (TypeHelpers.TryInferOperationResultType(ctx.Op, ctx.Left["type"] as IFifthType, ctx.Right["type"] as IFifthType, out var resulttype))
+            var left = ctx.Left;
+            AnnotateIfIdentifierInSymtab(left);
+            var right = ctx.Right;
+            AnnotateIfIdentifierInSymtab(right);
+
+            if (TypeHelpers.TryInferOperationResultType(ctx.Op, left["type"] as IFifthType,
+                right["type"] as IFifthType, out var resulttype))
             {
                 ctx["type"] = resulttype;
+            }
+        }
+
+        private void AnnotateIfIdentifierInSymtab(Expression expression)
+        {
+            if (!expression.HasAnnotation("type"))
+            {
+                if (expression is IdentifierExpression)
+                {
+                    var id = expression as IdentifierExpression;
+                    var astNode = currentFunctionDef.Peek();
+                    if (astNode.TryGetAnnotation<Scope>("symtab", out var scope))
+                    {
+                        if (scope.SymbolTable.TryGetValue(id.Identifier.Value, out var symtabEntry))
+                        {
+                            IFifthType fifthType = null;
+                            switch (symtabEntry.SymbolKind)
+                            {
+                                case SymbolKind.VariableDeclaration:
+                                    var vd = symtabEntry.Context as VariableDeclarationStatement;
+                                    fifthType = vd.FifthType;
+                                    break;
+                                case SymbolKind.FunctionDeclaration:
+                                case SymbolKind.FormalParameter:
+                                case SymbolKind.VariableReference:
+                                case SymbolKind.FunctionReference:
+                                default:
+                                    if (symtabEntry.Context.TryGetAnnotation<IFifthType>("type", out var symType))
+                                    {
+                                        fifthType = symType;
+                                    }
+
+                                    break;
+                            }
+
+                            if (fifthType != null)
+                            {
+                                expression["type"] = fifthType;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -46,7 +97,6 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             if (ctx.TryGetAnnotation<ISymbolTable>("symtab", out var blah))
             {
-                
             }
         }
 
@@ -56,7 +106,9 @@ namespace Fifth.Parser.LangProcessingPhases
             {
                 // look in params to see if the type is known from there
                 var funcDef = currentFunctionDef.Peek() as FunctionDefinition;
-                if (funcDef != null && funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd => pd.ParameterName == identifierExpression.Identifier.Value))
+                if (funcDef != null && funcDef.ParameterDeclarations != null &&
+                    funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd =>
+                        pd.ParameterName == identifierExpression.Identifier.Value))
                 {
                     var paramDecl = funcDef.ParameterDeclarations.ParameterDeclarations.First(pd =>
                         pd.ParameterName == identifierExpression.Identifier.Value);

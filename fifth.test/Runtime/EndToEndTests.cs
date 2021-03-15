@@ -14,6 +14,7 @@ namespace Fifth.Test.Runtime
         [TestCase("int main() => greet('world'), 0; void greet(string s) => write('hello, ' + s);", 0)]
         [TestCase("int main() => greet('world'), 1+2; void greet(string s) => write('hello, ' + s);", 3)]
         [TestCase("int main() => doSomeCalculation(13, 17); int doSomeCalculation(int x, int y) => x + y;", 30)]
+        [TestCase("int main() => int a = doSomeCalculation(13, 17), a + 10; int doSomeCalculation(int x, int y) => x + y;", 40)]
         public void TestProgram(string fragment, int expectedResult)
         {
             var runtime = new FifthRuntime();
