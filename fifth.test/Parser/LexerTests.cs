@@ -4,7 +4,7 @@ namespace Fifth.Tests
     using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
 
-    [TestFixture()]
+    [TestFixture, Category("Lexer")]
     public class LexerTests : ParserTestBase
     {
         [TestCase("alias", "ALIAS")]

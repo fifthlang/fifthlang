@@ -5,7 +5,7 @@ namespace Fifth.Tests
     using FluentAssertions;
     using NUnit.Framework;
 
-    [TestFixture]
+    [TestFixture, Category("Helper Code"), Category("Type Checking")]
     public class TypeHelperTests
     {
         [Test]

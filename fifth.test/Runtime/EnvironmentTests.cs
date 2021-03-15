@@ -8,7 +8,7 @@ namespace Fifth.Tests.Runtime
     using PrimitiveTypes;
     using Environment = Fifth.Runtime.Environment;
 
-    [TestFixture]
+    [TestFixture(Category = "Environment")]
     public class EnvironmentTests
     {
         public static IEnumerable<Tuple<IFifthType, object>> Cases()

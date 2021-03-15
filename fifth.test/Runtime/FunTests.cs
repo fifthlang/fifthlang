@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using NUnit.Framework;
 
 namespace Fifth.Tests
 {
-    [TestFixture()]
+    [TestFixture,Category("Functions"),Category("Metadata"),Category("Helper Code")]
     public class FunTests
     {
         [TestCase(5)]

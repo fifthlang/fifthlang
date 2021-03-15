@@ -4,7 +4,7 @@ namespace Fifth.Tests
     using FluentAssertions;
     using NUnit.Framework;
 
-    [TestFixture]
+    [TestFixture, Category("Stack"), Category("Functions")]
     public class FuncStackTests
     {
         public static IEnumerable<(string, object)> DeserialisationCases()

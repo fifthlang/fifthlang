@@ -4,7 +4,8 @@ namespace Fifth.Tests
     using FluentAssertions;
     using NUnit.Framework;
 
-    internal class DispatcherTests
+    [TestFixture(Category = "Dispatching")]
+    public class DispatcherTests
     {
         [Test]
         public void TestCanDispatchAnAdd()

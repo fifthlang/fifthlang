@@ -3,7 +3,7 @@ using static FifthParser;
 
 namespace Fifth.Tests
 {
-    [TestFixture()]
+    [TestFixture, Category("Parser")]
     public class ParserTests : ParserTestBase
     {
         [Test]

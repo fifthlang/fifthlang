@@ -6,7 +6,7 @@ namespace Fifth.Test.Serialisation
     using FluentAssertions.Common;
     using NUnit.Framework;
 
-    [TestFixture]
+    [TestFixture, Category("Serialisation")]
     public class TestSerialisation
     {
         [Test]

@@ -10,13 +10,13 @@ namespace Fifth.Test.Runtime
     using PrimitiveTypes;
     using Tests;
 
-    [TestFixture(Category = "WIP")]
+    [TestFixture(Category = "Code Generation")]
     [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
     internal class StackGenVisitorTests : ParserTestBase
     {
         private readonly StackEmitter em = new StackEmitter();
 
-        [TestCase("int x = 5 * 1, x", "x", 5, Category = "WIP")]
+        [TestCase("int x = 5 * 1, x", "x", 5)]
         public void TestCanAssignAndDereferenceValue(string code, string varName, object resolvedValue)
         {
             var af = ParseAndGenerate<ExpressionList>(code);
@@ -73,7 +73,6 @@ namespace Fifth.Test.Runtime
 
 
         [Test]
-        [Category("WIP")]
         public void TestFunctionDeclaration()
         {
             var expression = "void main() => write('5 + 6');";

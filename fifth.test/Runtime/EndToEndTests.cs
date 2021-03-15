@@ -5,7 +5,7 @@ namespace Fifth.Test.Runtime
     using NUnit.Framework;
     using Tests;
 
-    [TestFixture(Category = "WIP")]
+    [TestFixture(Category = "End to End")]
     internal class EndToEndTests : ParserTestBase
     {
         [TestCase("void main() => write('hello world');", 0)]

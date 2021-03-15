@@ -3,6 +3,7 @@ namespace Fifth.Tests
     using System;
     using NUnit.Framework;
 
+    [TestFixture, Category("Functions"), Category("Helper Code")]
     public class FuncWrapperTest
     {
         [SetUp]

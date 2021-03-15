@@ -6,7 +6,7 @@ namespace Fifth.Test.Parser
     using NUnit.Framework;
     using Tests;
 
-    [TestFixture]
+    [TestFixture, Category("Type Checking"), Category("Visitors")]
     public class TypeAnnotatorVisitorTests : ParserTestBase
     {
         [Test]

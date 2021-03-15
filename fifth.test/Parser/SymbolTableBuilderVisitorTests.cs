@@ -6,7 +6,7 @@ namespace Fifth.Tests
     using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
 
-    [TestFixture()]
+    [TestFixture, Category("Symbol Table"), Category("Parsing")]
     public class SymbolTableBuilderVisitorTests : ParserTestBase
     {
         [Test]

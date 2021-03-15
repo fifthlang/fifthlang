@@ -8,7 +8,7 @@ namespace Fifth.Tests.Parser
     using FluentAssertions;
     using NUnit.Framework;
 
-    [TestFixture()]
+    [TestFixture, Category("AST"), Category("Visitors")]
     public class AstBuilderVisitorTest : ParserTestBase
     {
         [TestCase(@"2 + 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Add)]
