@@ -49,9 +49,10 @@ formal_parameters:
 ;
 
 function_declaration:
-    function_name
-    function_args
-    function_body
+    result_type=function_type
+    name=function_name
+    args=function_args
+    body=function_body
 ;
 
 function_args:
@@ -68,7 +69,13 @@ function_call
    : function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
    ;
 
-function_name: IDENTIFIER ;
+function_name:
+    IDENTIFIER
+;
+
+function_type:
+    IDENTIFIER
+;
 
 iri
    :

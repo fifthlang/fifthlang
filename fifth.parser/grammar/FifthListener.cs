@@ -417,6 +417,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_name([NotNull] FifthParser.Function_nameContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.function_type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction_type([NotNull] FifthParser.Function_typeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.function_type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction_type([NotNull] FifthParser.Function_typeContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.iri"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

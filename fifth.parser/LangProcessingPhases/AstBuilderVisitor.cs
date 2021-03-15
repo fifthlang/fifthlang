@@ -194,7 +194,7 @@ namespace Fifth.Parser.LangProcessingPhases
             {
                 Body = body as ExpressionList,
                 ParameterDeclarations = parameterList as ParameterDeclarationList,
-                ReturnType = TypeHelpers.LookupBuiltinType("int"),
+                ReturnType = TypeHelpers.LookupType(context.result_type.GetText()),
                 Name = name
             };
         }

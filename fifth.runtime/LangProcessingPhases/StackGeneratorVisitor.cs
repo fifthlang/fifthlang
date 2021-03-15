@@ -106,6 +106,16 @@ namespace Fifth.Runtime.LangProcessingPhases
         {
             this.astFunction = astFunction;
             runtimeFunction = new RuntimeFunctionDefinition {Name = astFunction.Name};
+            if (this.astFunction.ParameterDeclarations != null && this.astFunction.ParameterDeclarations.ParameterDeclarations.Any())
+            {
+                runtimeFunction.Arguments.AddRange(this.astFunction.ParameterDeclarations.ParameterDeclarations.Select((p, i) =>
+                    new FunctionArgument
+                    {
+                        ArgOrdinal = i,
+                        Name = p.ParameterName,
+                        Type = p.ParameterType
+                    }));
+            }
         }
 
         public void Emit(IStackEmitter emitter, IActivationFrame frame)

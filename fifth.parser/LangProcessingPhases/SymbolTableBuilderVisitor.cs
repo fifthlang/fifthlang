@@ -36,7 +36,10 @@ namespace Fifth.Parser.LangProcessingPhases
             => CurrentScope.Declare(name, kind, ctx, properties);
 
         private void EnterScope(IAstNode ctx)
-            => CurrentScope = Ast.CreateNewScope(ctx, CurrentScope);
+        {
+            CurrentScope = Ast.CreateNewScope(ctx, CurrentScope);
+            ctx["symtab"] = CurrentScope;
+        }
 
         private void LeaveScope()
             => CurrentScope = CurrentScope.EnclosingScope ?? GlobalScope;

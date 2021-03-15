@@ -1,11 +1,14 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
     using Fifth.AST;
     using Fifth.PrimitiveTypes;
 
     public class TypeAnnotatorVisitor : BaseAstVisitor
     {
-
+        private readonly Stack<IAstNode> currentFunctionDef = new Stack<IAstNode>();
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
             => ctx["type"] = PrimitiveFloat.Default;
 
@@ -35,5 +38,32 @@ namespace Fifth.Parser.LangProcessingPhases
             }
         }
 
+        public override void EnterFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Push(ctx);
+
+        public override void LeaveFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Pop();
+
+        public override void EnterParameterDeclaration(ParameterDeclaration ctx)
+        {
+            if (ctx.TryGetAnnotation<ISymbolTable>("symtab", out var blah))
+            {
+                
+            }
+        }
+
+        public override void EnterIdentifierExpression(IdentifierExpression identifierExpression)
+        {
+            if (!identifierExpression.HasAnnotation("type"))
+            {
+                // look in params to see if the type is known from there
+                var funcDef = currentFunctionDef.Peek() as FunctionDefinition;
+                if (funcDef != null && funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd => pd.ParameterName == identifierExpression.Identifier.Value))
+                {
+                    var paramDecl = funcDef.ParameterDeclarations.ParameterDeclarations.First(pd =>
+                        pd.ParameterName == identifierExpression.Identifier.Value);
+                    identifierExpression.Identifier["type"] = paramDecl.ParameterType;
+                    identifierExpression["type"] = paramDecl.ParameterType;
+                }
+            }
+        }
     }
 }

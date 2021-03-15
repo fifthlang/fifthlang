@@ -9,5 +9,6 @@
         }
 
         bool HasAnnotation(string key);
+        bool TryGetAnnotation<T>(string name, out T result);
     }
 }

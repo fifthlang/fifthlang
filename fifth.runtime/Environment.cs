@@ -120,6 +120,6 @@ namespace Fifth.Runtime
     {
         public string Name { get; set; }
         public IFifthType Type { get; set; }
-        public ArrayList<IFunctionArgument> Arguments { get; }
+        public ArrayList<IFunctionArgument> Arguments { get; } = new ArrayList<IFunctionArgument>();
     }
 }

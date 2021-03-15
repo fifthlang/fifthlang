@@ -1,5 +1,6 @@
 namespace Fifth.AST
 {
+    using System.Linq;
     using Fifth.Parser.LangProcessingPhases;
 
     public class FunctionDefinition : AstNode
@@ -12,8 +13,8 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterFunctionDefinition(this);
-            visitor.Accept(Body);
             visitor.Accept(ParameterDeclarations);
+            visitor.Accept(Body);
             visitor.LeaveFunctionDefinition(this);
         }
     }

@@ -15,11 +15,7 @@ namespace Fifth.Runtime
     {
         public int Execute(string fifthProgram)
         {
-            var parseTree = GetParserFor(fifthProgram).fifth();
-            var visitor = new AstBuilderVisitor();
-            var astNode = visitor.Visit(parseTree);
-            var rootActivationFrame = new ActivationFrame();
-            astNode.Accept(new TypeAnnotatorVisitor());
+            var astNode = ParseAndAnnotateProgram(fifthProgram, out var rootActivationFrame);
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
             fpe.Emit(new StackEmitter(), rootActivationFrame);
             BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
@@ -33,6 +29,18 @@ namespace Fifth.Runtime
             }
 
             return 0;
+        }
+
+        private static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
+        {
+            var parseTree = GetParserFor(fifthProgram).fifth();
+            var visitor = new AstBuilderVisitor();
+            var astNode = visitor.Visit(parseTree);
+            rootActivationFrame = new ActivationFrame();
+            var annotatedAst = new AstScopeAnnotations(astNode);
+            astNode.Accept(new SymbolTableBuilderVisitor(annotatedAst));
+            astNode.Accept(new TypeAnnotatorVisitor());
+            return astNode;
         }
 
         protected static FifthParser GetParserFor(string fragment)

@@ -11,7 +11,7 @@ namespace Fifth.Test.Runtime
     using Tests;
     using VariableReference = Fifth.Runtime.VariableReference;
 
-    [TestFixture]
+    [TestFixture(Category = "WIP")]
         [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
         internal class StackGenVisitorTests : ParserTestBase
         {
@@ -131,7 +131,7 @@ namespace Fifth.Test.Runtime
         [TestCase("8.0 - 5.0", 3F)]
         [TestCase("8.0 * 5.0", 40F)]
         [TestCase("100.0 / 5.0", 20F)]
-        [TestCase("\"hello\" + \"world\"", "helloworld", Category = "WIP")]//strings
+        [TestCase("\"hello\" + \"world\"", "helloworld")]//strings
         public void TestCanExecuteStackGeneratedFromExpression(string code, object resolvedValue)
         {
             var astNode = ParseExpressionToAst(code);

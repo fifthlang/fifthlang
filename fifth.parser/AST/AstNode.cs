@@ -31,5 +31,17 @@ namespace Fifth.AST
 
         public bool HasAnnotation(string key)
         => annotations.ContainsKey(key);
+
+        public bool TryGetAnnotation<T>(string name, out T result)
+        {
+            if (annotations.TryGetValue(name, out var uncastResult))
+            {
+                result = (T)uncastResult;
+                return true;
+            }
+
+            result = default;
+            return false;
+        }
     }
 }

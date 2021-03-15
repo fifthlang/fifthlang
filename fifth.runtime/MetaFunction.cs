@@ -2,6 +2,7 @@ namespace Fifth.Runtime
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using PrimitiveTypes;
 
     /// <summary>
@@ -207,7 +208,7 @@ namespace Fifth.Runtime
             switch (functionDefinition)
             {
                 case FunctionDefinition s:
-                    newFrame.Stack.Import(s.Stack.Export());
+                    newFrame.Stack.Import(s.Stack.Export().Reverse());
                     break;
             }
         }

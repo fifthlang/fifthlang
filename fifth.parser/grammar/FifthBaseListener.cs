@@ -489,6 +489,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunction_name([NotNull] FifthParser.Function_nameContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.function_type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunction_type([NotNull] FifthParser.Function_typeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.function_type"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunction_type([NotNull] FifthParser.Function_typeContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.iri"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

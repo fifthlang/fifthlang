@@ -259,6 +259,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunction_name([NotNull] FifthParser.Function_nameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.function_type"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunction_type([NotNull] FifthParser.Function_typeContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.iri"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -354,5 +354,15 @@ namespace Fifth
             var call = Expression.Call(null, mi, formalParams);
             return Expression.Lambda(call, formalParams).Compile();
         }
+
+        public static IFifthType LookupType(string typename)
+        {
+            if (IsBuiltinType(typename))
+            {
+                return LookupBuiltinType(typename);
+            }
+
+            throw new TypeCheckingException("no way to lookup non native types yet");
+        }
     }
 }
