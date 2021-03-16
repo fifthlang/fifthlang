@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "expressions", "expressions"
 		doc\Semantics\expressions\exp.EFuncCall.md = doc\Semantics\expressions\exp.EFuncCall.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth", "fifth\fifth.csproj", "{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{982B259A-D0B8-455F-AF15-A78E9061E057}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{982B259A-D0B8-455F-AF15-A78E9061E057}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{982B259A-D0B8-455F-AF15-A78E9061E057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

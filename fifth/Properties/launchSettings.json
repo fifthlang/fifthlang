@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "fifth": {
+      "commandName": "Project",
+      "commandLineArgs": " --file-name \"C:\\dev\\fifthlang\\doc\\examples\\ex2.calc.5th\""
+    }
+  }
+}

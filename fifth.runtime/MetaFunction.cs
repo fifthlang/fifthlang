@@ -98,7 +98,7 @@ namespace Fifth.Runtime
 
             // 5. Execute the function
             dispatcher.Frame = newFrame;
-            dispatcher.Dispatch();
+            dispatcher.DispatchWhileOperationIsAtTopOfStack();
 
             // 6. copy the result of the function invocation back onto the calling stack
             newFrame.ReturnResultToParentFrame();
