@@ -1,5 +1,6 @@
 namespace Fifth.Runtime
 {
+    using System.Linq;
     using Antlr4.Runtime;
     using AST;
     using LangProcessingPhases;
@@ -10,7 +11,7 @@ namespace Fifth.Runtime
     /// </summary>
     public class FifthRuntime
     {
-        public int Execute(string fifthProgram)
+        public int Execute(string fifthProgram, params object[] args)
         {
             var astNode = ParseAndAnnotateProgram(fifthProgram, out var rootActivationFrame);
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
@@ -24,6 +25,10 @@ namespace Fifth.Runtime
                 var frame = fd as ActivationFrame;
                 frame.ParentFrame = rootActivationFrame;
                 frame.Environment.Parent = rootActivationFrame.Environment;
+                if (args != null && args.Length > 0)
+                {
+                    LoadArgs(frame.Environment, fd, args);
+                }
                 var d = new Dispatcher(frame);
                 d.DispatchWhileOperationIsAtTopOfStack();
                 if (!d.Stack.IsEmpty)
@@ -35,6 +40,22 @@ namespace Fifth.Runtime
 
             return result;
         }
+
+        void LoadArgs(Environment e, IFunctionDefinition fd, object[] args)
+        {
+            for(int i = 0; i < fd.Arguments.Count; i++)
+            {
+                var argType = args[i].GetType();
+                if (TypeHelpers.TryGetNearestFifthTypeToNativeType(argType, out var ft))
+                {
+                    var name = fd.Arguments[i].Name;
+                    e[name] = new ValueObject(ft, name, args[i]);
+                }
+            }
+
+        }
+
+        public int Execute(string fifthProgram) => Execute(fifthProgram, null);
 
         protected static FifthParser GetParserFor(string fragment)
         {
