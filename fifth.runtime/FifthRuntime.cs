@@ -1,5 +1,6 @@
 namespace Fifth.Runtime
 {
+    using System;
     using System.Linq;
     using Antlr4.Runtime;
     using AST;
@@ -11,14 +12,14 @@ namespace Fifth.Runtime
     /// </summary>
     public class FifthRuntime
     {
-        public int Execute(string fifthProgram, params object[] args)
+        public string Execute(string fifthProgram, params object[] args)
         {
             var astNode = ParseAndAnnotateProgram(fifthProgram, out var rootActivationFrame);
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
             fpe.Emit(new StackEmitter(), rootActivationFrame);
             _ = BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
 
-            var result = 0;
+            string result = String.Empty;
 
             if (rootActivationFrame.Environment.TryGetFunctionDefinition("main", out var fd))
             {
@@ -34,16 +35,17 @@ namespace Fifth.Runtime
                 if (!d.Stack.IsEmpty)
                 {
                     var tmp = d.Stack.Pop() as ValueStackElement;
-                    result = (int)tmp?.GetValueOfValueObject();
+                    // whatever the result may be, we have to try to convert it to string, since that is the default return type of main
+                    result = Convert.ToString(tmp?.GetValueOfValueObject()) ;
                 }
             }
 
             return result;
         }
 
-        void LoadArgs(Environment e, IFunctionDefinition fd, object[] args)
+        internal void LoadArgs(Environment e, IFunctionDefinition fd, object[] args)
         {
-            for(int i = 0; i < fd.Arguments.Count; i++)
+            for(var i = 0; i < fd.Arguments.Count; i++)
             {
                 var argType = args[i].GetType();
                 if (TypeHelpers.TryGetNearestFifthTypeToNativeType(argType, out var ft))
@@ -55,7 +57,7 @@ namespace Fifth.Runtime
 
         }
 
-        public int Execute(string fifthProgram) => Execute(fifthProgram, null);
+        public string Execute(string fifthProgram) => Execute(fifthProgram, null);
 
         protected static FifthParser GetParserFor(string fragment)
         {

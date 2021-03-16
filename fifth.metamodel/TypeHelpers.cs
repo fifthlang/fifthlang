@@ -197,12 +197,20 @@ namespace Fifth
             return lhsType.TryGetMethodByName(operator_name, out fw);
         }
 
-        public static bool TryGetTypeTraits(this Type t, out TypeTraitsAttribute tr)
+        public static bool TryGetAttribute<T>(this Type t, out T attr)
         {
-            tr = (TypeTraitsAttribute)t.GetCustomAttributes(true)
-                .FirstOrDefault(attr => attr is TypeTraitsAttribute);
-            return tr != null;
+            attr = (T)t.GetCustomAttributes(true).FirstOrDefault(attr => attr is T);
+            return attr != null;
         }
+
+        public static bool TryGetAttribute<T>(this MethodInfo mi, out T attr)
+        {
+            attr = (T)mi.GetCustomAttributes(true).FirstOrDefault(attr => attr is T);
+            return attr != null;
+        }
+
+        public static bool TryGetTypeTraits(this Type t, out TypeTraitsAttribute tr) =>
+            t.TryGetAttribute(out tr);
 
         public static IEnumerable<Type> TypesHavingAttribute<TAttribute, TSampleType>()
         {
@@ -220,6 +228,8 @@ namespace Fifth
                 }
             }
         }
+        public static IEnumerable<MethodInfo> MethodsHavingAttribute<TAttribute>(this Type t)
+         => t.GetMethods().Where(mi => mi.GetCustomAttributes(true).Any(attr => attr is TAttribute));
 
         public static FuncWrapper WrapMethodInfo(MethodInfo method)
         {

@@ -32,16 +32,17 @@ namespace Fifth.Runtime
             return Parent?.TryGetFunctionDefinition(index, out value)??false;
         }
 
-        public void AddFunctionDefinition(IFunctionDefinition fd)
+        public void AddFunctionDefinition(IFunctionDefinition fd, string name)
         {
-            if (Definitions.ContainsKey(fd.Name))
+            if (Definitions.ContainsKey(name))
             {
                 throw new TypeCheckingException("Duplication Function Definition");
             }
 
-            Definitions[fd.Name] = fd;
+            Definitions[name] = fd;
         }
 
+        public void AddFunctionDefinition(IFunctionDefinition fd) => AddFunctionDefinition(fd, fd.Name);
         public IValueObject this[string index]
         {
             get

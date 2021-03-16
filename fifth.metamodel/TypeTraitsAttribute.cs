@@ -2,7 +2,7 @@ namespace Fifth
 {
     using System;
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class TypeTraitsAttribute : Attribute
     {
         public bool IsNumeric { get; set; }
