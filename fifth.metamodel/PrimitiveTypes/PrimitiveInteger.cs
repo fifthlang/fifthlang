@@ -30,10 +30,10 @@ namespace Fifth.PrimitiveTypes
         public static bool less_than_or_equal_int_int(int left, int right) => left <= right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = ">")]
-        public static bool greater_int_int(int left, int right) => left > right;
+        public static bool greater_than_int_int(int left, int right) => left > right;
 
         [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "<")]
-        public static bool less_int_int(int left, int right) => left < right;
+        public static bool less_than_int_int(int left, int right) => left < right;
     }
 
 #pragma warning restore IDE1006 // Naming Styles
