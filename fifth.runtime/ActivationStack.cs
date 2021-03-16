@@ -53,6 +53,7 @@ namespace Fifth.Runtime
         }
 
         public bool IsEmpty => Count == 0;
+
         public bool IsValueOnTop
         {
             get
@@ -61,6 +62,7 @@ namespace Fifth.Runtime
                 {
                     return false;
                 }
+
                 var topType = Peek().GetType();
                 return typeof(ValueStackElement).IsAssignableFrom(topType);
             }
@@ -78,11 +80,11 @@ namespace Fifth.Runtime
     {
         bool IsEmpty { get; }
         bool IsValueOnTop { get; }
+        StackElement Pop();
+        void Push(StackElement element);
         IRuntimeStack PushConstantValue<T>(T value);
         IRuntimeStack PushFunction(FuncWrapper f);
         IRuntimeStack PushMetaFunction(FuncWrapper f);
-        StackElement Pop();
-        void Push(StackElement element);
     }
 
     /// <summary>A stack element consisting of a wrapped lambda function</summary>
@@ -96,12 +98,13 @@ namespace Fifth.Runtime
 
         public override bool Equals(object obj) => Equals(obj as StackElement);
 
-        public override int GetHashCode() => Function.GetHashCode();
         public override bool Equals(StackElement other)
         {
             var x = other as FunctionStackElement;
             return x?.Function.Equals(Function) ?? false;
         }
+
+        public override int GetHashCode() => Function.GetHashCode();
     }
 
     /// <summary>A stack element consisting of a function that acts on the environment somehow</summary>
@@ -114,16 +117,15 @@ namespace Fifth.Runtime
 
         public override bool Equals(object obj) => Equals(obj as StackElement);
 
-        public override int GetHashCode() => MetaFunction.GetHashCode();
         public override bool Equals(StackElement other)
         {
             var x = other as MetaFunctionStackElement;
             return x?.MetaFunction.Equals(MetaFunction) ?? false;
         }
-        public override string ToString()
-        {
-            return $"\\{MetaFunction}";
-        }
+
+        public override int GetHashCode() => MetaFunction.GetHashCode();
+
+        public override string ToString() => $"\\{MetaFunction}";
     }
 
     /// <summary>Base type of anything that can be pushed onto a stack</summary>
@@ -143,8 +145,7 @@ namespace Fifth.Runtime
 
         public override bool Equals(object obj)
         {
-            var other = obj as ValueStackElement;
-            if (other == null)
+            if (!(obj is ValueStackElement other))
             {
                 return false;
             }
@@ -153,12 +154,13 @@ namespace Fifth.Runtime
             return other.GetHashCode() == GetHashCode();
         }
 
-        public override int GetHashCode() => Value.GetHashCode();
         public override bool Equals(StackElement other)
         {
             var x = other as ValueStackElement;
             return x?.Value.Equals(Value) ?? false;
         }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 
     [DebuggerDisplay("var:{VariableName}")]
@@ -171,11 +173,12 @@ namespace Fifth.Runtime
 
         public override bool Equals(object obj) => Equals(obj as StackElement);
 
-        public override int GetHashCode() => (nameof(VariableReferenceStackElement) + VariableName).GetHashCode();
         public override bool Equals(StackElement other)
         {
             var x = other as VariableReferenceStackElement;
             return x?.VariableName.Equals(VariableName) ?? false;
         }
+
+        public override int GetHashCode() => (nameof(VariableReferenceStackElement) + VariableName).GetHashCode();
     }
 }

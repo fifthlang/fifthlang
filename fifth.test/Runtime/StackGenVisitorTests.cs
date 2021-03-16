@@ -1,3 +1,4 @@
+#pragma warning disable IDE0058 // Expression value is never used
 namespace Fifth.Test.Runtime
 {
     using System.Diagnostics.CodeAnalysis;
@@ -11,7 +12,6 @@ namespace Fifth.Test.Runtime
     using Tests;
 
     [TestFixture(Category = "Code Generation")]
-    [SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>")]
     internal class StackGenVisitorTests : ParserTestBase
     {
         private readonly StackEmitter em = new StackEmitter();
@@ -162,3 +162,4 @@ namespace Fifth.Test.Runtime
             );
     }
 }
+#pragma warning restore IDE0058 // Expression value is never used

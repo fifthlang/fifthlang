@@ -1,19 +1,11 @@
-using System;
-
-namespace fifth
+namespace Fifth
 {
-    using System.Diagnostics;
     using System.IO;
     using Fifth.Runtime;
 
-    class Program
+    // ReSharper disable once UnusedType.Global
+    internal class Program
     {
-        static int Main(string fileName)
-        {
-            var result = new FifthRuntime().Execute(File.ReadAllText(fileName));
-            Debug.WriteLine(result);
-            return result;
-        }
-
+        private static int Main(string fileName) => new FifthRuntime().Execute(File.ReadAllText(fileName));
     }
 }

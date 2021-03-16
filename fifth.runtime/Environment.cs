@@ -46,7 +46,7 @@ namespace Fifth.Runtime
         {
             get
             {
-                if (!TryGetVariableValue(index, out var result))
+                if (!TryGetVariableValue(index, out _))
                 {
                     throw new InvalidVariableReferenceException(index);
                 }
@@ -87,7 +87,7 @@ namespace Fifth.Runtime
             Name = mi.Name;
             var parameters = mi.GetParameters();
             Arguments = new ArrayList<IFunctionArgument>(parameters.Length);
-            int ord = 0;
+            var ord = 0;
             foreach (var parameter in parameters)
             {
                 if (!TypeHelpers.TryGetNearestFifthTypeToNativeType(parameter.ParameterType, out var fifthType))

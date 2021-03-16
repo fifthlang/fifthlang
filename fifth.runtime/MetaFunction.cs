@@ -93,7 +93,7 @@ namespace Fifth.Runtime
             foreach (var argument in functionDefinition.Arguments)
             {
                 var val = dispatcher.Resolve();
-                newFrame.Environment[argument.Name] = new ValueObject(argument.Type,argument.Name, val);
+                newFrame.Environment[argument.Name] = new ValueObject(argument.Type, argument.Name, val);
             }
 
             // 5. Execute the function
@@ -101,10 +101,66 @@ namespace Fifth.Runtime
             dispatcher.DispatchWhileOperationIsAtTopOfStack();
 
             // 6. copy the result of the function invocation back onto the calling stack
-            newFrame.ReturnResultToParentFrame();
+            _ = newFrame.ReturnResultToParentFrame();
             dispatcher.Frame = newFrame.ParentFrame;
             return dispatcher;
         }
+
+        /// <summary>
+        ///     <para>Declares a new unbound variable in the environment</para>
+        /// </summary>
+        /// <param name="dispatcher">the place where operations are performed</param>
+        /// <returns>the altered stack frame</returns>
+        /// <remarks>
+        ///     <para>Stack effect: [id:string] |- []</para>
+        ///     <para>Environment Effect: [] |- [(id, null)]</para>
+        ///     <para>
+        ///         This builtin function will create a new entry for the variable in the current environment
+        ///     </para>
+        /// </remarks>
+        public static IDispatcher DeclareVariable(IDispatcher dispatcher)
+        {
+            _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
+            var varName = dispatcher.Resolve() as string;
+            var typeName = dispatcher.Resolve() as string;
+            if (string.IsNullOrWhiteSpace(typeName) || typeName == "var")
+            {
+                // OK no type given or implicit type name use
+                // either way, we will have to use type inference to work out what type to use.
+                throw new NotImplementedException("type inference not yet available");
+            }
+
+            var typeReferencedByTypeName = LookupTypeDefinitionByName(typeName);
+            _ = typeReferencedByTypeName ?? throw new TypeCheckingException("Unable to find type, or no type provided");
+
+            dispatcher.Frame.Environment[varName] =
+                new ValueObject<string>(typeReferencedByTypeName, varName, string.Empty);
+
+            // create var ref in place of string, to prove its been created in env
+            // dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
+            return dispatcher;
+        }
+
+        /// <summary>
+        ///     Looks up the value of a variable in the environment
+        /// </summary>
+        /// <param name="dispatcher"></param>
+        /// <returns>the altered stack frame</returns>
+        /// <remarks>
+        ///     This will resolve the value of the variable and place that onto the stack instead of the reference
+        /// </remarks>
+        public static IDispatcher DereferenceVariable(IDispatcher dispatcher)
+        {
+            var varName = dispatcher.Resolve() as string;
+            var value = dispatcher.Frame.Environment[varName];
+            var valueObj = value.GetValueOfValueObject();
+            _ = dispatcher.Frame.Stack.PushConstantValue(valueObj);
+            return dispatcher;
+        }
+
+        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
+            TypeHelpers.LookupType(typeName);
 
         private static void InvokeBuiltinFunction(IDispatcher dispatcher, IFunctionDefinition functionDefinition)
         {
@@ -129,76 +185,9 @@ namespace Fifth.Runtime
             // push result onto stack
             if (f.Function.ResultType != typeof(void))
             {
-                dispatcher.Frame.Stack.PushConstantValue(resultValue); // TODO: can't assume this will always be a value
+                _ = dispatcher.Frame.Stack.PushConstantValue(resultValue); // TODO: can't assume this will always be a value
             }
         }
-
-        /// <summary>
-        ///     <para>Declares a new unbound variable in the environment</para>
-        /// </summary>
-        /// <param name="dispatcher">the place where operations are performed</param>
-        /// <returns>the altered stack frame</returns>
-        /// <remarks>
-        ///     <para>Stack effect: [id:string] |- []</para>
-        ///     <para>Environment Effect: [] |- [(id, null)]</para>
-        ///     <para>
-        ///         This builtin function will create a new entry for the variable in the current environment
-        ///     </para>
-        /// </remarks>
-        public static IDispatcher DeclareVariable(IDispatcher dispatcher)
-        {
-            _ = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
-
-            var varName = dispatcher.Resolve() as string;
-            var typeName = dispatcher.Resolve() as string;
-            IFifthType typeReferencedByTypeName = null;
-            if (string.IsNullOrWhiteSpace(typeName) || typeName == "var")
-            {
-                // OK no type given or implicit type name use
-                // either way, we will have to use type inference to work out what type to use.
-                throw new NotImplementedException("type inference not yet available");
-            }
-
-            typeReferencedByTypeName = LookupTypeDefinitionByName(typeName);
-            _ = typeReferencedByTypeName ?? throw new TypeCheckingException("Unable to find type, or no type provided");
-
-            dispatcher.Frame.Environment[varName] =
-                new ValueObject<string>(typeReferencedByTypeName, varName, string.Empty);
-
-            // create var ref in place of string, to prove its been created in env
-            // dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
-            return dispatcher;
-        }
-
-        /// <summary>
-        ///     Looks up the value of a variable in the environment
-        /// </summary>
-        /// <param name="dispatcher"></param>
-        /// <returns>the altered stack frame</returns>
-        /// <remarks>
-        ///     This will resolve the value of the variable and place that onto the stack instead of the reference
-        /// </remarks>
-        public static IDispatcher DereferenceVariable(IDispatcher dispatcher)
-        {
-            var varName = dispatcher.Resolve() as string;
-            var value = dispatcher.Frame.Environment[varName];
-            var valueObj = value.GetValueOfValueObject();
-            dispatcher.Frame.Stack.PushConstantValue(valueObj);
-            return dispatcher;
-        }
-
-        public static IDispatcher EnterScope(IDispatcher dispatcher)
-        {
-            return dispatcher;
-        }
-
-        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
-            // TODO: need to have actual registry of types to lookup against
-            PrimitiveInteger.Default;
-
-        public static IDispatcher MarshalTopOfStackOntoStackBelow(IDispatcher dispatcher) => dispatcher;
-
-        public static IDispatcher ResolveFunctionArgs(IDispatcher dispatcher) => dispatcher;
 
         private static void LoadFunctionDefinitionIntoFrame(
             IFunctionDefinition functionDefinition,

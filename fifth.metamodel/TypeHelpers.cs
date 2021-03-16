@@ -93,86 +93,29 @@ namespace Fifth
             // work out what the suffix will be given the short names of the left and right side
             // expression types
             var suffix = $"_{lhsTraits.Keyword}_{rhsTraits.Keyword}";
-            string operator_name;
             // now work out what the rest of the name will be based on the operator kind
-            switch (op)
+            var operator_name = op switch
             {
-                case Operator.Add:
-                    operator_name = $"add{suffix}";
-                    break;
-
-                case Operator.Subtract:
-                    operator_name = $"subtract{suffix}";
-                    break;
-
-                case Operator.Multiply:
-                    operator_name = $"multiply{suffix}";
-                    break;
-
-                case Operator.Divide:
-                    operator_name = $"divide{suffix}";
-                    break;
-
-                case Operator.Rem:
-                    operator_name = $"remainder{suffix}";
-                    break;
-
-                case Operator.Mod:
-                    operator_name = $"modulo{suffix}";
-                    break;
-
-                case Operator.And:
-                    operator_name = $"logical_and{suffix}";
-                    break;
-
-                case Operator.Or:
-                    operator_name = $"logical_or{suffix}";
-                    break;
-
-                case Operator.Not:
-                    operator_name = $"logical_not{suffix}";
-                    break;
-
-                case Operator.Nand:
-                    operator_name = $"logical_nand{suffix}";
-                    break;
-
-                case Operator.Nor:
-                    operator_name = $"logical_nor{suffix}";
-                    break;
-
-                case Operator.Xor:
-                    operator_name = $"logical_xor{suffix}";
-                    break;
-
-                case Operator.Equal:
-                    operator_name = $"equals{suffix}";
-                    break;
-
-                case Operator.NotEqual:
-                    operator_name = $"not_equals{suffix}";
-                    break;
-
-                case Operator.LessThan:
-                    operator_name = $"less_than{suffix}";
-                    break;
-
-                case Operator.GreaterThan:
-                    operator_name = $"greater_than{suffix}";
-                    break;
-
-                case Operator.LessThanOrEqual:
-                    operator_name = $"less_than_or_equal{suffix}";
-                    break;
-
-                case Operator.GreaterThanOrEqual:
-                    operator_name = $"greater_than_or_equal{suffix}";
-                    break;
-
-                default:
-                    operator_name = "noop";
-                    break;
-            }
+                Operator.Add => $"add{suffix}",
+                Operator.Subtract => $"subtract{suffix}",
+                Operator.Multiply => $"multiply{suffix}",
+                Operator.Divide => $"divide{suffix}",
+                Operator.Rem => $"remainder{suffix}",
+                Operator.Mod => $"modulo{suffix}",
+                Operator.And => $"logical_and{suffix}",
+                Operator.Or => $"logical_or{suffix}",
+                Operator.Not => $"logical_not{suffix}",
+                Operator.Nand => $"logical_nand{suffix}",
+                Operator.Nor => $"logical_nor{suffix}",
+                Operator.Xor => $"logical_xor{suffix}",
+                Operator.Equal => $"equals{suffix}",
+                Operator.NotEqual => $"not_equals{suffix}",
+                Operator.LessThan => $"less_than{suffix}",
+                Operator.GreaterThan => $"greater_than{suffix}",
+                Operator.LessThanOrEqual => $"less_than_or_equal{suffix}",
+                Operator.GreaterThanOrEqual => $"greater_than_or_equal{suffix}",
+                _ => "noop"
+            };
 
             // now lookup (always on the LHS type) the operation we're looking for
             if (lhsType.GetType().TryGetMethodByName(operator_name, out var fw))
@@ -226,86 +169,29 @@ namespace Fifth
             // work out what the suffix will be given the short names of the left and right side
             // expression types
             var suffix = $"_{lhsTraits.Keyword}_{rhsTraits.Keyword}";
-            string operator_name;
             // now work out what the rest of the name will be based on the operator kind
-            switch (op)
+            var operator_name = op switch
             {
-                case Operator.Add:
-                    operator_name = $"add{suffix}";
-                    break;
-
-                case Operator.Subtract:
-                    operator_name = $"subtract{suffix}";
-                    break;
-
-                case Operator.Multiply:
-                    operator_name = $"multiply{suffix}";
-                    break;
-
-                case Operator.Divide:
-                    operator_name = $"divide{suffix}";
-                    break;
-
-                case Operator.Rem:
-                    operator_name = $"remainder{suffix}";
-                    break;
-
-                case Operator.Mod:
-                    operator_name = $"modulo{suffix}";
-                    break;
-
-                case Operator.And:
-                    operator_name = $"logical_and{suffix}";
-                    break;
-
-                case Operator.Or:
-                    operator_name = $"logical_or{suffix}";
-                    break;
-
-                case Operator.Not:
-                    operator_name = $"logical_not{suffix}";
-                    break;
-
-                case Operator.Nand:
-                    operator_name = $"logical_nand{suffix}";
-                    break;
-
-                case Operator.Nor:
-                    operator_name = $"logical_nor{suffix}";
-                    break;
-
-                case Operator.Xor:
-                    operator_name = $"logical_xor{suffix}";
-                    break;
-
-                case Operator.Equal:
-                    operator_name = $"equals{suffix}";
-                    break;
-
-                case Operator.NotEqual:
-                    operator_name = $"not_equals{suffix}";
-                    break;
-
-                case Operator.LessThan:
-                    operator_name = $"less_than{suffix}";
-                    break;
-
-                case Operator.GreaterThan:
-                    operator_name = $"greater_than{suffix}";
-                    break;
-
-                case Operator.LessThanOrEqual:
-                    operator_name = $"less_than_or_equal{suffix}";
-                    break;
-
-                case Operator.GreaterThanOrEqual:
-                    operator_name = $"greater_than_or_equal{suffix}";
-                    break;
-
-                default:
-                    operator_name = "noop";
-                    break;
-            }
+                Operator.Add => $"add{suffix}",
+                Operator.Subtract => $"subtract{suffix}",
+                Operator.Multiply => $"multiply{suffix}",
+                Operator.Divide => $"divide{suffix}",
+                Operator.Rem => $"remainder{suffix}",
+                Operator.Mod => $"modulo{suffix}",
+                Operator.And => $"logical_and{suffix}",
+                Operator.Or => $"logical_or{suffix}",
+                Operator.Not => $"logical_not{suffix}",
+                Operator.Nand => $"logical_nand{suffix}",
+                Operator.Nor => $"logical_nor{suffix}",
+                Operator.Xor => $"logical_xor{suffix}",
+                Operator.Equal => $"equals{suffix}",
+                Operator.NotEqual => $"not_equals{suffix}",
+                Operator.LessThan => $"less_than{suffix}",
+                Operator.GreaterThan => $"greater_than{suffix}",
+                Operator.LessThanOrEqual => $"less_than_or_equal{suffix}",
+                Operator.GreaterThanOrEqual => $"greater_than_or_equal{suffix}",
+                _ => "noop"
+            };
 
             // now lookup (always on the LHS type) the operation we're looking for
             return lhsType.TryGetMethodByName(operator_name, out fw);
@@ -345,15 +231,6 @@ namespace Fifth
         }
 
         public static FuncWrapper Wrap(this MethodInfo method) => WrapMethodInfo(method);
-
-        private static Delegate DelegateFromMethodInfo(MethodInfo mi)
-        {
-            var parameters = mi.GetParameters();
-            var formalParams = parameters.Select(p => Expression.Parameter(p.ParameterType, p.Name))
-                .ToArray();
-            var call = Expression.Call(null, mi, formalParams);
-            return Expression.Lambda(call, formalParams).Compile();
-        }
 
         public static IFifthType LookupType(string typename)
         {

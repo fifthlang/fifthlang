@@ -1,3 +1,4 @@
+#pragma warning disable IDE0058 // Expression value is never used
 namespace Fifth.Tests
 {
     using System.Collections.Generic;
@@ -80,3 +81,4 @@ namespace Fifth.Tests
         }
     }
 }
+#pragma warning restore IDE0058 // Expression value is never used

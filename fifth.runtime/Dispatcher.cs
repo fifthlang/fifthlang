@@ -82,7 +82,7 @@ namespace Fifth.Runtime
                     args.Reverse(); // return to same order they were passed onto the stack
                     var result = fe.Function.Invoke(args.ToArray());
                     // push result onto stack
-                    Stack.PushConstantValue(result); // TODO: can't assume this will always be a value
+                    _ = Stack.PushConstantValue(result); // TODO: can't assume this will always be a value
                     break;
             }
 

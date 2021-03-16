@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace Fifth.Parser
 {
+    using System.Collections.Generic;
+
     public interface ISymbolTable : IDictionary<string, ISymbolTableEntry>
     {
         IEnumerable<ISymbolTableEntry> All();

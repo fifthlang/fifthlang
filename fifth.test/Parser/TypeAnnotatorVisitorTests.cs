@@ -14,10 +14,10 @@ namespace Fifth.Test.Parser
         {
             var exp = "5 + 6";
             var astNode = ParseExpressionToAst(exp);
-            astNode.HasAnnotation("type").Should().BeFalse();
+            _ = astNode.HasAnnotation("type").Should().BeFalse();
             var sut = new TypeAnnotatorVisitor();
             astNode.Accept(sut);
-            astNode.HasAnnotation("type").Should().BeTrue();
+            _ = astNode.HasAnnotation("type").Should().BeTrue();
         }
     }
 }

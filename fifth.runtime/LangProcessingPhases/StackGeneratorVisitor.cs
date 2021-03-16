@@ -10,59 +10,9 @@ namespace Fifth.Runtime.LangProcessingPhases
 
     public class StackGeneratorVisitor : BaseAstVisitor
     {
-        #region Builders
-
-        private ExpressionListStackEmitter elsemitter;
-
-        #endregion
-
         public IActivationFrame Frame { get; set; }
-        public IEnvironment Environment => Frame.Environment;
-        public IRuntimeStack Stack => Frame.Stack;
         public IStackEmitter Emitter { get; set; }
 
-        /*
-        /// <summary>
-        ///     Reverse the expression list, to ensure code is generated into the stack in the right order for consumption
-        /// </summary>
-        /// <param name="ctx">the expression list to visit</param>
-        public override void EnterExpressionList(ExpressionList ctx)
-            => elsemitter = new ExpressionListStackEmitter(ctx);
-
-        public override void LeaveAssignmentStmt(AssignmentStmt ctx)
-            => Emitter.MetaFunction(Stack, MetaFunction.Assign);
-
-        /// <summary>
-        ///     reverse the reversal of the expression list performed in the enter function
-        /// </summary>
-        /// <param name="ctx"></param>
-        public override void LeaveExpressionList(ExpressionList ctx)
-            => elsemitter.Emit(Emitter, Frame);
-
-        public override void LeaveFunctionDefinition(FunctionDefinition ctx)
-        {
-            // need to create scopes for params and body block, and execute within those scopes
-            var fd = new RuntimeFunctionDefinition {Name = ctx.Name};
-            var ele = new ExpressionListStackEmitter(ctx.Body);
-            ele.Emit(Emitter, fd);
-            Environment.AddFunctionDefinition(fd);
-        }
-
-        public override void LeaveIfElseStmt(IfElseStmt ctx)
-        {
-            // need to create scopes for ifblock and else block, and execute the blocks in those scopes
-        }
-
-        public override void LeaveNotExpression(UnaryExpression ctx)
-            => Emitter.UnaryFunction(Stack, (bool b) => !b);
-
-        public override void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx)
-            => Emitter.MetaFunction(Stack, MetaFunction.DeclareVariable);
-
-        public override void LeaveVariableReference(VariableReference variableRef) =>
-            Emitter.MetaFunction(Stack, MetaFunction.DereferenceVariable);
-            */
-        
         public override void EnterFifthProgram(FifthProgram ctx)
         {
             var fpe = new FifthProgramEmitter(ctx);
@@ -106,15 +56,12 @@ namespace Fifth.Runtime.LangProcessingPhases
         {
             this.astFunction = astFunction;
             runtimeFunction = new RuntimeFunctionDefinition {Name = astFunction.Name};
-            if (this.astFunction.ParameterDeclarations != null && this.astFunction.ParameterDeclarations.ParameterDeclarations.Any())
+            if (this.astFunction.ParameterDeclarations != null &&
+                this.astFunction.ParameterDeclarations.ParameterDeclarations.Any())
             {
-                runtimeFunction.Arguments.AddRange(this.astFunction.ParameterDeclarations.ParameterDeclarations.Select((p, i) =>
-                    new FunctionArgument
-                    {
-                        ArgOrdinal = i,
-                        Name = p.ParameterName,
-                        Type = p.ParameterType
-                    }));
+                runtimeFunction.Arguments.AddRange(this.astFunction.ParameterDeclarations.ParameterDeclarations.Select(
+                    (p, i) =>
+                        new FunctionArgument {ArgOrdinal = i, Name = p.ParameterName, Type = p.ParameterType}));
             }
         }
 
@@ -189,12 +136,12 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void EmitFuncCallExpression(FuncCallExpression fce, IStackEmitter emitter, IActivationFrame frame)
         {
-
             if (fce.ActualParameters.Expressions.Any())
             {
                 var ele = new ExpressionListStackEmitter(fce.ActualParameters);
                 ele.Emit(emitter, frame);
             }
+
             emitter.Value(frame.Stack, fce.Name);
             emitter.MetaFunction(frame.Stack, MetaFunction.CallFunction);
         }
@@ -246,7 +193,7 @@ namespace Fifth.Runtime.LangProcessingPhases
     {
         private readonly IEnumerable<Expression> expressionList;
 
-        public ExpressionListStackEmitter(ExpressionList el) => expressionList = (IEnumerable<Expression>)el.Expressions;
+        public ExpressionListStackEmitter(ExpressionList el) => expressionList = el.Expressions;
 
         public void Emit(IStackEmitter emitter, IActivationFrame frame)
         {

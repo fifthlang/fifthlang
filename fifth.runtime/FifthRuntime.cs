@@ -1,15 +1,12 @@
 namespace Fifth.Runtime
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Antlr4.Runtime;
     using AST;
     using LangProcessingPhases;
     using Parser.LangProcessingPhases;
 
     /// <summary>
-    /// Class that co-ordinates the execution of a Fifth Program
+    ///     Class that co-ordinates the execution of a Fifth Program
     /// </summary>
     public class FifthRuntime
     {
@@ -18,7 +15,7 @@ namespace Fifth.Runtime
             var astNode = ParseAndAnnotateProgram(fifthProgram, out var rootActivationFrame);
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
             fpe.Emit(new StackEmitter(), rootActivationFrame);
-            BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
+            _ = BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
 
             var result = 0;
 
@@ -32,23 +29,11 @@ namespace Fifth.Runtime
                 if (!d.Stack.IsEmpty)
                 {
                     var tmp = d.Stack.Pop() as ValueStackElement;
-                    result = (int) tmp?.GetValueOfValueObject();
+                    result = (int)tmp?.GetValueOfValueObject();
                 }
             }
-            
-            return result;
-        }
 
-        private static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
-        {
-            var parseTree = GetParserFor(fifthProgram).fifth();
-            var visitor = new AstBuilderVisitor();
-            var astNode = visitor.Visit(parseTree);
-            rootActivationFrame = new ActivationFrame();
-            var annotatedAst = new AstScopeAnnotations(astNode);
-            astNode.Accept(new SymbolTableBuilderVisitor(annotatedAst));
-            astNode.Accept(new TypeAnnotatorVisitor());
-            return astNode;
+            return result;
         }
 
         protected static FifthParser GetParserFor(string fragment)
@@ -63,5 +48,16 @@ namespace Fifth.Runtime
             return parser;
         }
 
+        private static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
+        {
+            var parseTree = GetParserFor(fifthProgram).fifth();
+            var visitor = new AstBuilderVisitor();
+            var astNode = visitor.Visit(parseTree);
+            rootActivationFrame = new ActivationFrame();
+            var annotatedAst = new AstScopeAnnotations(astNode);
+            astNode.Accept(new SymbolTableBuilderVisitor(annotatedAst));
+            astNode.Accept(new TypeAnnotatorVisitor());
+            return astNode;
+        }
     }
 }

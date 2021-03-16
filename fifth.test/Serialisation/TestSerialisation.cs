@@ -1,3 +1,4 @@
+#pragma warning disable IDE0058 // Expression value is never used
 namespace Fifth.Test.Serialisation
 {
     using System.IO;
@@ -55,3 +56,4 @@ namespace Fifth.Test.Serialisation
         }
     }
 }
+#pragma warning restore IDE0058 // Expression value is never used

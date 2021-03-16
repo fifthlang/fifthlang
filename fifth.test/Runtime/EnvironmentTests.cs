@@ -1,3 +1,4 @@
+#pragma warning disable IDE0058 // Expression value is never used
 namespace Fifth.Tests.Runtime
 {
     using System;
@@ -44,3 +45,4 @@ namespace Fifth.Tests.Runtime
         }
     }
 }
+#pragma warning restore IDE0058 // Expression value is never used
