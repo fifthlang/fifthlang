@@ -27,6 +27,8 @@ namespace Fifth.Test.Runtime
                   "int max(int a, int b) => if(a <= b){a} else {b};", "5", 5, 6)]
         [TestCase("int main(int a, int b) => max(a,b); " +
                   "int max(int a, int b) => if(a < b){a} else {b};", "5", 5, 6)]
+        [TestCase("int main() => int a = 0, "+
+                    "while (a < 10){a = a + 1}, a;", "10", Category = "WIP")]
         public void TestProgram(string fragment, string expectedResult, params object[] args)
         {
             var runtime = new FifthRuntime();

@@ -26,7 +26,18 @@ namespace Fifth.Runtime
                 return true;
             }
 
-            return Parent?.TryGetVariableValue(index, out value)??false;
+            return Parent?.TryGetVariableValue(index, out value) ?? false;
+        }
+
+        public bool TrySetVariableValue(string index, IValueObject value)
+        {
+            if (Variables.ContainsKey(index))
+            {
+                Variables[index] = value;
+                return true;
+            }
+
+            return Parent?.TrySetVariableValue(index, value) ?? false;
         }
 
         public bool TryGetFunctionDefinition(string index, out IFunctionDefinition value)

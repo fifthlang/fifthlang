@@ -137,14 +137,14 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEVarname([NotNull] FifthParser.EVarnameContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IfElseStmt</c>
+	/// Enter a parse tree produced by the <c>IfElseExp</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterIfElseStmt([NotNull] FifthParser.IfElseStmtContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>IfElseStmt</c>
+	/// Exit a parse tree produced by the <c>IfElseExp</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -304,6 +304,20 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitETypeCreateInst([NotNull] FifthParser.ETypeCreateInstContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EWhile</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEWhile([NotNull] FifthParser.EWhileContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EWhile</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEWhile([NotNull] FifthParser.EWhileContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>VarDeclStmt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

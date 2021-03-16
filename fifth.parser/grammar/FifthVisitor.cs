@@ -83,7 +83,7 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>IfElseStmt</c>
+	/// Visit a parse tree produced by the <c>IfElseExp</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -166,6 +166,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitETypeCreateInst([NotNull] FifthParser.ETypeCreateInstContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>EWhile</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEWhile([NotNull] FifthParser.EWhileContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>VarDeclStmt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

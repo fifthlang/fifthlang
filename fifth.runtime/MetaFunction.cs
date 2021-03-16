@@ -3,7 +3,6 @@ namespace Fifth.Runtime
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using PrimitiveTypes;
 
     /// <summary>
     ///     A class providing functions that operate on the IDispatcher itself.
@@ -15,28 +14,6 @@ namespace Fifth.Runtime
     /// </remarks>
     public static class MetaFunction
     {
-        /// <summary>
-        ///     <para>Performs an assignment within the stack frame</para>
-        /// </summary>
-        /// <param name="dispatcher">The dispatcher containing links to the env within which the assignment should be performed</param>
-        /// <returns>the altered stack frame</returns>
-        /// <remarks>
-        ///     <para>Stack effect: [id, expression] |- []</para>
-        ///     <para>Environment Effect: [] |- [(id, value)]</para>
-        ///     <para>
-        ///         This builtin stack function has the effect of taking an identifier from the top of the
-        ///         stack, plus the result of evaluating an expression, and creates/updates an entry in the
-        ///         environment with the value bound to the identifier.
-        ///     </para>
-        /// </remarks>
-        public static IDispatcher Assign(this IDispatcher dispatcher)
-        {
-            var varName = dispatcher.Resolve() as string;
-            var rhsValue = dispatcher.Resolve();
-            dispatcher.Frame.Environment[varName] = new ValueObject(PrimitiveInteger.Default, "int", rhsValue);
-            return dispatcher;
-        }
-
         /// <summary>
         ///     <para>Binds a variable reference to a value</para>
         /// </summary>
@@ -56,8 +33,15 @@ namespace Fifth.Runtime
 
             var varName = dispatcher.Resolve() as string;
             var value = dispatcher.Resolve();
-            dispatcher.Frame.Environment[varName] =
-                new ValueObject(PrimitiveInteger.Default, "int", value); // TODO: WARNING: not type info
+            if (TypeHelpers.TryGetNearestFifthTypeToNativeType(value.GetType(), out var type))
+            {
+                dispatcher.Frame.Environment.TrySetVariableValue(varName,
+                    new ValueObject(type, varName, value));
+            }
+            else
+            {
+                throw new RuntimeException($"Unable to make sense of type for {varName}");
+            }
             return dispatcher;
         }
 
@@ -104,6 +88,63 @@ namespace Fifth.Runtime
             _ = newFrame.ReturnResultToParentFrame();
             dispatcher.Frame = newFrame.ParentFrame;
             return dispatcher;
+        }
+        /// <summary>
+        ///     A wrapper function encompassing all the activity needed to make a function call.
+        /// </summary>
+        /// <remarks>
+        ///     Activities include 1) creating and entering scope, 2) resolving args, 3) fetching function definition, 4) leaving
+        ///     scope and cleaning up
+        /// </remarks>
+        public static IDispatcher WhileTrue(IDispatcher dispatcher)
+        {
+            // 1. get the definition of the function being called
+            var condFunName = dispatcher.Resolve<string>();
+            var loopBlockFunName = dispatcher.Resolve<string>();
+            if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(condFunName, out var condFunDef))
+            {
+                throw new RuntimeException($"Unable to resolve function '{condFunName}' by name");
+            }
+            if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(loopBlockFunName, out var loopBlockFunDef))
+            {
+                throw new RuntimeException($"Unable to resolve function '{loopBlockFunName}' by name");
+            }
+
+            start:
+            var condOutcome = InvokeFunctionDefinition<bool>(dispatcher, dispatcher.Frame, condFunDef);
+            if (condOutcome)
+            {
+                _ = InvokeFunctionDefinition<object>(dispatcher, dispatcher.Frame, loopBlockFunDef);
+            }
+            else
+            {
+                goto end;
+            }
+            goto start;
+            end:
+            return dispatcher;
+        }
+
+        static T InvokeFunctionDefinition<T>(IDispatcher dispatcher, ActivationFrame parentFrame, IFunctionDefinition fd)
+        {
+            try
+            {
+                var childFrame = parentFrame.CreateChildFrame();
+                LoadFunctionDefinitionIntoFrame(fd, childFrame);
+                dispatcher.Frame = childFrame;
+                dispatcher.DispatchWhileOperationIsAtTopOfStack();
+                if (!childFrame.Stack.IsEmpty)
+                {
+                    var result = childFrame.Stack.Pop();
+                    return (T)result.GetValueOfValueObject();
+                }
+            }
+            finally
+            {
+                dispatcher.Frame = parentFrame;
+            }
+
+            return default;
         }
 
         /// <summary>

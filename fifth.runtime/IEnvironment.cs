@@ -13,5 +13,6 @@ namespace Fifth.Runtime
         bool TryGetVariableValue(string index, out IValueObject value);
         void AddFunctionDefinition(IFunctionDefinition fd);
         bool TryGetFunctionDefinition(string index, out IFunctionDefinition value);
+        bool TrySetVariableValue(string index, IValueObject value);
     }
 }

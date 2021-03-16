@@ -12,8 +12,15 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitAlias([NotNull] FifthParser.AliasContext context) => base.VisitAlias(context);
 
-        public override IAstNode VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context) =>
-            base.VisitAssignmentStmt(context);
+        public override IAstNode VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context)
+        {
+            var id = Visit(context.var_name()) as Identifier;
+            return new AssignmentStmt
+            {
+                Expression = Visit(context.exp()) as Expression,
+                VariableRef = new VariableReference { Name = id.Value}
+            };
+        }
 
         public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context) => VisitExplist(context.explist());
 
@@ -21,6 +28,16 @@ namespace Fifth.Parser.LangProcessingPhases
             => new BooleanExpression(bool.Parse(context.value.Text));
 
         public override IAstNode VisitChildren(IRuleNode node) => base.VisitChildren(node);
+        public override IAstNode VisitEWhile(FifthParser.EWhileContext context)
+        {
+            var condNode = Visit(context.condition);
+            var blockNode = Visit(context.looppart) as ExpressionList;
+            return new WhileExp
+            {
+                Condition = condNode as Expression,
+                LoopBlock = new Block { Expressions = blockNode?.Expressions }
+            };
+        }
 
         public override IAstNode VisitEAdd([NotNull] FifthParser.EAddContext context) => new BinaryExpression
         {
@@ -187,7 +204,7 @@ namespace Fifth.Parser.LangProcessingPhases
             var condNode = Visit(context.condition);
             var ifBlock = VisitBlock(context.ifpart) as ExpressionList;
             var elseBlock = VisitBlock(context.elsepart) as ExpressionList;
-            return new IfElseStmt
+            return new IfElseExp
             {
                 Condition = condNode as Expression,
                 IfBlock = new Block{Expressions = ifBlock.Expressions },

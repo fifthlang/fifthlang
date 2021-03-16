@@ -117,13 +117,13 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>IfElseStmt</c>
+	/// Enter a parse tree produced by the <c>IfElseExp</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterIfElseStmt([NotNull] FifthParser.IfElseStmtContext context);
 	/// <summary>
-	/// Exit a parse tree produced by the <c>IfElseStmt</c>
+	/// Exit a parse tree produced by the <c>IfElseExp</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -260,6 +260,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitETypeCreateInst([NotNull] FifthParser.ETypeCreateInstContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EWhile</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEWhile([NotNull] FifthParser.EWhileContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EWhile</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEWhile([NotNull] FifthParser.EWhileContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>VarDeclStmt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

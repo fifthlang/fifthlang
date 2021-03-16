@@ -29,7 +29,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         void EnterIdentifierExpression(IdentifierExpression identifierExpression);
 
-        void EnterIfElseStmt(IfElseStmt ctx);
+        void EnterIfElseExp(IfElseExp ctx);
 
         void EnterIntValueExpression(IntValueExpression ctx);
 
@@ -79,7 +79,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         void LeaveIdentifierExpression(IdentifierExpression identifierExpression);
 
-        void LeaveIfElseStmt(IfElseStmt ctx);
+        void LeaveIfElseExp(IfElseExp ctx);
 
         void LeaveIntValueExpression(IntValueExpression ctx);
 
@@ -102,5 +102,7 @@ namespace Fifth.Parser.LangProcessingPhases
         void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx);
 
         void LeaveVariableReference(VariableReference variableRef);
+        void EnterWhileExp(WhileExp ctx);
+        void LeaveWhileExp(WhileExp ctx);
     }
 }

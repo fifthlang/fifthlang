@@ -4,6 +4,7 @@ namespace Fifth.Runtime.LangProcessingPhases
     using System.Collections.Generic;
     using System.Linq;
     using AST;
+    using PrimitiveTypes;
 
     /*
     public class EmitBuilder
@@ -164,6 +165,9 @@ namespace Fifth.Runtime.LangProcessingPhases
                 case FuncCallExpression fce:
                     EmitFuncCallExpression(fce, emitter, frame);
                     break;
+                case AssignmentStmt ae:
+                    EmitAssignmentExpression(ae, emitter, frame);
+                    break;
                 case IdentifierExpression ie:
                     EmitIdentifierExpression(ie, emitter, frame);
                     break;
@@ -185,15 +189,25 @@ namespace Fifth.Runtime.LangProcessingPhases
                 case VariableDeclarationStatement vde:
                     EmitVariableDeclarationExpression(vde, emitter, frame);
                     break;
-                case IfElseStmt ifElseStmt:
-                    EmitIfElseExpression(ifElseStmt, emitter, frame);
+                case IfElseExp ifElseExp:
+                    EmitIfElseExpression(ifElseExp, emitter, frame);
+                    break;
+                case WhileExp whileExp:
+                    EmitWhileExpression(whileExp, emitter, frame);
                     break;
             }
         }
 
-        private void EmitIfElseExpression(IfElseStmt e, IStackEmitter emitter, IActivationFrame frame)
+        private void EmitAssignmentExpression(AssignmentStmt ae, IStackEmitter emitter, IActivationFrame frame)
         {
-            // TODO: steps to generate code for IfElseStmt:
+            new ExpressionStackEmitter(ae.Expression).Emit(emitter, frame);
+            emitter.Value(frame.Stack, ae.VariableRef.Name);
+            emitter.MetaFunction(frame.Stack, MetaFunction.BindVariable);
+        }
+
+        private void EmitIfElseExpression(IfElseExp e, IStackEmitter emitter, IActivationFrame frame)
+        {
+            // TODO: steps to generate code for IfElseExp:
             //   create new anon function for if part
             //   create new anon function for else part
             //   emit function names 
@@ -201,11 +215,29 @@ namespace Fifth.Runtime.LangProcessingPhases
             //   emit the metafunction to choose which to call
             EmitBlock(e.ElseBlock, emitter, frame);
             EmitBlock(e.IfBlock, emitter, frame);
-            
+
             var condEmitter = new ExpressionStackEmitter(e.Condition);
             condEmitter.Emit(emitter, frame);
 
             emitter.MetaFunction(frame.Stack, MetaFunction.BranchIfTrue);
+        }
+        private void EmitWhileExpression(WhileExp e, IStackEmitter emitter, IActivationFrame frame)
+        {
+            EmitBlock(e.LoopBlock, emitter, frame);
+
+            var condFunName = Guid.NewGuid().ToString();
+            var condFun = new RuntimeFunctionDefinition(frame)
+            {
+                Name = condFunName,
+                Type = PrimitiveBool.Default
+            };
+
+            var condEmitter = new ExpressionStackEmitter(e.Condition);
+            condEmitter.Emit(emitter, condFun);
+            frame.Environment.AddFunctionDefinition(condFun);
+
+            emitter.Value(frame.Stack, condFunName);
+            emitter.MetaFunction(frame.Stack, MetaFunction.WhileTrue);
         }
 
         public void EmitBlock(Block b, IStackEmitter emitter, IActivationFrame frame)

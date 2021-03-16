@@ -64,7 +64,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void EnterIfElseStmt(IfElseStmt ctx)
+        public virtual void EnterIfElseExp(IfElseExp ctx)
         {
         }
 
@@ -164,7 +164,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void LeaveIfElseStmt(IfElseStmt ctx)
+        public virtual void LeaveIfElseExp(IfElseExp ctx)
         {
         }
 
@@ -211,5 +211,9 @@ namespace Fifth.Parser.LangProcessingPhases
         public virtual void LeaveVariableReference(VariableReference variableRef)
         {
         }
+
+        public void EnterWhileExp(WhileExp ctx) { }
+
+        public void LeaveWhileExp(WhileExp ctx) { }
     }
 }

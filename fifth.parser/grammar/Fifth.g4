@@ -40,7 +40,8 @@ exp
     | OPENPAREN innerexp=exp CLOSEPAREN  # EParen
     | NOT operand=exp           # ELogicNegation
     | NEW type_initialiser      # ETypeCreateInst
-    | IF OPENPAREN condition=exp CLOSEPAREN ifpart=block ELSE elsepart=block   # IfElseStmt
+    | IF OPENPAREN condition=exp CLOSEPAREN ifpart=block ELSE elsepart=block    # IfElseStmt
+    | WHILE OPENPAREN condition=exp CLOSEPAREN looppart=block                   # EWhile
 
 ;
 
@@ -136,6 +137,7 @@ ALIAS: 'alias';
 AS: 'as';
 ELSE: 'else';
 IF: 'if';
+WHILE: 'while';
 NEW: 'new';
 WITH: 'with';
 RETURN: 'return';
