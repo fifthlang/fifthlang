@@ -6,7 +6,6 @@ namespace Fifth.Tests
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
     using static FifthParser;
-    using FunctionDefinition = AST.FunctionDefinition;
 
     public class ParserTestBase
     {
@@ -22,7 +21,7 @@ namespace Fifth.Tests
             {
                 return (T)ParseExpressionToAst(fragment);
             }
-            if (typeof(T) == typeof(FunctionDefinition))
+            if (typeof(T) == typeof(AstFunctionDefinition))
             {
                 return (T)ParseFunctionDeclToAst(fragment);
             }
@@ -51,7 +50,7 @@ namespace Fifth.Tests
             {
                 Expression e => new ExpressionStackEmitter(e),
                 ExpressionList el => new ExpressionListStackEmitter(el),
-                FunctionDefinition fd => new FunctionDefinitionEmitter(fd),
+                AstFunctionDefinition fd => new FunctionDefinitionEmitter(fd),
                 _ => throw new System.NotImplementedException(),
             };
             specialFormEmitter.Emit(new StackEmitter(), af);
@@ -135,7 +134,7 @@ namespace Fifth.Tests
 
         #region Parsing and Generation
         protected static ActivationFrame ParseAndGenerateFunctionDecl(string functionString)
-            => ParseAndGenerate<FunctionDefinition>(functionString);
+            => ParseAndGenerate<AstFunctionDefinition>(functionString);
         protected static ActivationFrame ParseAndGenerateProgram(string functionString)
             => ParseAndGenerate<FifthProgram>(functionString);
         protected static ActivationStack ParseAndGenerateExpression(string expressionString)

@@ -10,9 +10,9 @@ namespace Fifth.Runtime
     public class Environment : IEnvironment
     {
         public Environment(IEnvironment parent) => Parent = parent;
-        private Dictionary<string, IValueObject> Variables { get; } = new Dictionary<string, IValueObject>();
+        public Dictionary<string, IValueObject> Variables { get; } = new Dictionary<string, IValueObject>();
 
-        private Dictionary<string, IFunctionDefinition> Definitions { get; } =
+        public Dictionary<string, IFunctionDefinition> Definitions { get; } =
             new Dictionary<string, IFunctionDefinition>();
 
         public int Count => Variables.Count;
@@ -20,7 +20,14 @@ namespace Fifth.Runtime
         public IEnvironment Parent { get; set; }
 
         public bool TryGetVariableValue(string index, out IValueObject value)
-            => Variables.TryGetValue(index, out value);
+        {
+            if (Variables.TryGetValue(index, out value))
+            {
+                return true;
+            }
+
+            return Parent?.TryGetVariableValue(index, out value)??false;
+        }
 
         public bool TryGetFunctionDefinition(string index, out IFunctionDefinition value)
         {
@@ -117,8 +124,17 @@ namespace Fifth.Runtime
         public FuncWrapper Function { get; set; }
     }
 
-    public class FunctionDefinition : ActivationFrame, IFunctionDefinition
+    public class RuntimeFunctionDefinition : ActivationFrame, IFunctionDefinition
     {
+        public RuntimeFunctionDefinition()
+        {
+        }
+        public RuntimeFunctionDefinition(IActivationFrame parent)
+        {
+            ParentFrame = parent as ActivationFrame;
+            Environment.Parent = parent.Environment;
+            KnowledgeGraph.ParentGraph = parent.KnowledgeGraph;
+        }
         public string Name { get; set; }
         public IFifthType Type { get; set; }
         public ArrayList<IFunctionArgument> Arguments { get; } = new ArrayList<IFunctionArgument>();

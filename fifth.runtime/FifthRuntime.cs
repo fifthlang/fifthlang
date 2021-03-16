@@ -19,7 +19,7 @@ namespace Fifth.Runtime
             fpe.Emit(new StackEmitter(), rootActivationFrame);
             _ = BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
 
-            string result = String.Empty;
+            var result = String.Empty;
 
             if (rootActivationFrame.Environment.TryGetFunctionDefinition("main", out var fd))
             {

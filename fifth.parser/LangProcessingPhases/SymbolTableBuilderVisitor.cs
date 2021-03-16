@@ -14,7 +14,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override void EnterFifthProgram(FifthProgram ctx)
             => CurrentScope = GlobalScope = Ast.CreateNewScope(ctx);
 
-        public override void EnterFunctionDefinition(FunctionDefinition ctx)
+        public override void EnterFunctionDefinition(AstFunctionDefinition ctx)
         {
             Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);
             EnterScope(ctx);
@@ -29,7 +29,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override void LeaveFifthProgram(FifthProgram ctx)
             => LeaveScope();
 
-        public override void LeaveFunctionDefinition(FunctionDefinition ctx)
+        public override void LeaveFunctionDefinition(AstFunctionDefinition ctx)
             => LeaveScope();
 
         private void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)

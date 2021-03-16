@@ -15,7 +15,7 @@ namespace Fifth.Test
             return elementsFromStack.SequenceEquals(elementsToCompareAgainst);
         }
 
-        public static bool Matches(this FunctionDefinition fd, params StackElement[] elementsToCompareAgainst)
+        public static bool Matches(this RuntimeFunctionDefinition fd, params StackElement[] elementsToCompareAgainst)
         {
             var elements = fd.Stack.Export();
             var elementsFromStack = elements as List<StackElement> ?? elements.ToList();

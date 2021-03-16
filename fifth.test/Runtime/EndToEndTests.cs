@@ -18,7 +18,9 @@ namespace Fifth.Test.Runtime
         [TestCase("int main() => int a = doSomeCalculation(13, 17), int b = a + 10, b + 11; " +
                   "int doSomeCalculation(int x, int y) => x + y;", "51")]
         [TestCase("int main(int a, int b) => a+b;", "11", 5, 6)]
-        [TestCase("double main(double a) => sqrt(a);", "8", 64D, Category = "WIP")]
+        [TestCase("double main(double a) => sqrt(a);", "8", 64D)]
+        [TestCase("int main(int a, int b) => max(a,b); "+
+                  "int max(int a, int b) => if(a >= b){a} else {b};", "6", 5, 6, Category = "WIP")]
         public void TestProgram(string fragment, string expectedResult, params object[] args)
         {
             var runtime = new FifthRuntime();

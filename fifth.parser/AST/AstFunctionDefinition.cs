@@ -3,7 +3,7 @@ namespace Fifth.AST
     using System.Linq;
     using Fifth.Parser.LangProcessingPhases;
 
-    public class FunctionDefinition : AstNode
+    public class AstFunctionDefinition : AstNode
     {
         public ExpressionList Body { get; set; }
         public string Name { get; set; }

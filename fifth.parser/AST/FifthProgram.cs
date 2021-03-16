@@ -6,7 +6,7 @@ namespace Fifth.AST
     public class FifthProgram : AstNode
     {
         public IList<AliasDeclaration> Aliases { get; set; }
-        public IList<FunctionDefinition> Functions { get; set; }
+        public IList<AstFunctionDefinition> Functions { get; set; }
 
         public override void Accept(IAstVisitor visitor)
         {

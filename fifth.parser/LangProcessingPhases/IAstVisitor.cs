@@ -23,7 +23,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         void EnterFuncCallExpression(FuncCallExpression ctx);
 
-        void EnterFunctionDefinition(FunctionDefinition ctx);
+        void EnterFunctionDefinition(AstFunctionDefinition ctx);
 
         void EnterIdentifier(Identifier identifier);
 
@@ -73,7 +73,7 @@ namespace Fifth.Parser.LangProcessingPhases
 
         void LeaveFuncCallExpression(FuncCallExpression ctx);
 
-        void LeaveFunctionDefinition(FunctionDefinition ctx);
+        void LeaveFunctionDefinition(AstFunctionDefinition ctx);
 
         void LeaveIdentifier(Identifier identifier);
 

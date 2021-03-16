@@ -52,7 +52,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void EnterFunctionDefinition(FunctionDefinition ctx)
+        public virtual void EnterFunctionDefinition(AstFunctionDefinition ctx)
         {
         }
 
@@ -152,7 +152,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void LeaveFunctionDefinition(FunctionDefinition ctx)
+        public virtual void LeaveFunctionDefinition(AstFunctionDefinition ctx)
         {
         }
 

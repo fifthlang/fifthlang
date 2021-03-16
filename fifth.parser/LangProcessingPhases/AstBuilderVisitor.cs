@@ -15,7 +15,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override IAstNode VisitAssignmentStmt([NotNull] FifthParser.AssignmentStmtContext context) =>
             base.VisitAssignmentStmt(context);
 
-        public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context) => base.VisitBlock(context);
+        public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context) => VisitExplist(context.explist());
 
         public override IAstNode VisitBoolean(FifthParser.BooleanContext context)
             => new BooleanExpression(bool.Parse(context.value.Text));
@@ -130,7 +130,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var functionDeclarations = context._functions
                 .Select(fctx => VisitFunction_declaration(fctx))
-                .Cast<FunctionDefinition>()
+                .Cast<AstFunctionDefinition>()
                 .ToList();
             var aliasDeclarations = context.alias()
                 .Select(actx => VisitAlias(actx))
@@ -171,7 +171,7 @@ namespace Fifth.Parser.LangProcessingPhases
             var parameterList = VisitFormal_parameters(formals);
             var body = VisitFunction_body(context.function_body());
             var name = context.function_name().IDENTIFIER().GetText();
-            return new FunctionDefinition
+            return new AstFunctionDefinition
             {
                 Body = body as ExpressionList,
                 ParameterDeclarations =
@@ -182,8 +182,18 @@ namespace Fifth.Parser.LangProcessingPhases
             };
         }
 
-        public override IAstNode VisitIfElseStmt([NotNull] FifthParser.IfElseStmtContext context) =>
-            base.VisitIfElseStmt(context);
+        public override IAstNode VisitIfElseStmt([NotNull] FifthParser.IfElseStmtContext context)
+        {
+            var condNode = Visit(context.condition);
+            var ifBlock = VisitBlock(context.ifpart) as ExpressionList;
+            var elseBlock = VisitBlock(context.elsepart) as ExpressionList;
+            return new IfElseStmt
+            {
+                Condition = condNode as Expression,
+                IfBlock = new Block{Expressions = ifBlock.Expressions },
+                ElseBlock = new Block{Expressions = elseBlock.Expressions }
+            };
+        }
 
         public override IAstNode VisitIri([NotNull] FifthParser.IriContext context) => base.VisitIri(context);
 

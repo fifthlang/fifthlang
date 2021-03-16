@@ -68,6 +68,51 @@ namespace Fifth.Runtime
         ///     Activities include 1) creating and entering scope, 2) resolving args, 3) fetching function definition, 4) leaving
         ///     scope and cleaning up
         /// </remarks>
+        public static IDispatcher BranchIfTrue(IDispatcher dispatcher)
+        {
+            // 1. get the definition of the function being called
+            var cond = Convert.ToBoolean(dispatcher.Resolve<object>());
+            var ifFunName = dispatcher.Resolve<string>();
+            var elseFunName = dispatcher.Resolve<string>();
+            IFunctionDefinition funDef;
+            if (cond)
+            {
+                if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(ifFunName, out funDef))
+                {
+                    throw new RuntimeException($"Unable to resolve function '{ifFunName}' by name");
+                }
+            }
+            else
+            {
+                if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(elseFunName, out funDef))
+                {
+                    throw new RuntimeException($"Unable to resolve function '{elseFunName}' by name");
+                }
+            }
+
+            // 2. create a new call frame
+            var newFrame = dispatcher.Frame.CreateChildFrame();
+
+            // 3. load the function definition into the stack for execution
+            LoadFunctionDefinitionIntoFrame(funDef, newFrame);
+
+            // 5. Execute the function
+            dispatcher.Frame = newFrame;
+            dispatcher.DispatchWhileOperationIsAtTopOfStack();
+
+            // 6. copy the result of the function invocation back onto the calling stack
+            _ = newFrame.ReturnResultToParentFrame();
+            dispatcher.Frame = newFrame.ParentFrame;
+            return dispatcher;
+        }
+
+        /// <summary>
+        ///     A wrapper function encompassing all the activity needed to make a function call.
+        /// </summary>
+        /// <remarks>
+        ///     Activities include 1) creating and entering scope, 2) resolving args, 3) fetching function definition, 4) leaving
+        ///     scope and cleaning up
+        /// </remarks>
         public static IDispatcher CallFunction(IDispatcher dispatcher)
         {
             // 1. get the definition of the function being called
@@ -153,9 +198,15 @@ namespace Fifth.Runtime
         public static IDispatcher DereferenceVariable(IDispatcher dispatcher)
         {
             var varName = dispatcher.Resolve() as string;
-            var value = dispatcher.Frame.Environment[varName];
-            var valueObj = value.GetValueOfValueObject();
-            _ = dispatcher.Frame.Stack.PushConstantValue(valueObj);
+            if (dispatcher.Frame.Environment.TryGetVariableValue(varName, out var value))
+            {
+                var valueObj = value.GetValueOfValueObject();
+                _ = dispatcher.Frame.Stack.PushConstantValue(valueObj);
+            }
+            else
+            {
+                throw new RuntimeException($"Unable to find variable {varName}");
+            }
             return dispatcher;
         }
 
@@ -195,7 +246,7 @@ namespace Fifth.Runtime
         {
             switch (functionDefinition)
             {
-                case FunctionDefinition s:
+                case RuntimeFunctionDefinition s:
                     newFrame.Stack.Import(s.Stack.Export().Reverse());
                     break;
             }

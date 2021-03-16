@@ -12,7 +12,7 @@ namespace Fifth.Parser.LangProcessingPhases
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
             => ctx["type"] = PrimitiveFloat.Default;
 
-        public override void EnterFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Push(ctx);
+        public override void EnterFunctionDefinition(AstFunctionDefinition ctx) => currentFunctionDef.Push(ctx);
 
         public override void EnterIdentifierExpression(IdentifierExpression identifierExpression)
         {
@@ -21,7 +21,7 @@ namespace Fifth.Parser.LangProcessingPhases
                 if (currentFunctionDef != null && currentFunctionDef.Count > 0)
                 {
                     // look in params to see if the type is known from there
-                    if (currentFunctionDef.Peek() is FunctionDefinition funcDef &&
+                    if (currentFunctionDef.Peek() is AstFunctionDefinition funcDef &&
                         funcDef.ParameterDeclarations != null &&
                         funcDef.ParameterDeclarations.ParameterDeclarations.Any(pd =>
                             pd.ParameterName == identifierExpression.Identifier.Value))
@@ -68,7 +68,7 @@ namespace Fifth.Parser.LangProcessingPhases
             }
         }
 
-        public override void LeaveFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Pop();
+        public override void LeaveFunctionDefinition(AstFunctionDefinition ctx) => currentFunctionDef.Pop();
 
         private void AnnotateIfIdentifierInSymtab(Expression expression)
         {

@@ -85,7 +85,7 @@ namespace Fifth.Test.Runtime
             };
             if (af.Environment.TryGetFunctionDefinition("main", out var fd))
             {
-                (fd as Fifth.Runtime.FunctionDefinition)?.Matches(matchList).Should().BeTrue();
+                (fd as Fifth.Runtime.RuntimeFunctionDefinition)?.Matches(matchList).Should().BeTrue();
                 
             }
 
