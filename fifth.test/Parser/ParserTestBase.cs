@@ -5,6 +5,7 @@ namespace Fifth.Tests
     using Fifth.Parser.LangProcessingPhases;
     using Fifth.Runtime;
     using Fifth.Runtime.LangProcessingPhases;
+    using LangProcessingPhases;
     using static FifthParser;
 
     public class ParserTestBase
@@ -21,9 +22,13 @@ namespace Fifth.Tests
             {
                 return (T)ParseExpressionToAst(fragment);
             }
-            if (typeof(T) == typeof(AstFunctionDefinition))
+            if (typeof(T) == typeof(FunctionDefinition))
             {
                 return (T)ParseFunctionDeclToAst(fragment);
+            }
+            if (typeof(T) == typeof(Block))
+            {
+                return (T)ParseBlockToAst(fragment);
             }
 
             return null;
@@ -36,6 +41,8 @@ namespace Fifth.Tests
 
             if (ast != null)
             {
+                ast.Accept(new VerticalLinkageVisitor());
+                ast.Accept(new SymbolTableBuilderVisitor());
                 ast.Accept(new TypeAnnotatorVisitor());
             }
             return ast;
@@ -48,9 +55,10 @@ namespace Fifth.Tests
             var af = new ActivationFrame();
             ISpecialFormEmitter specialFormEmitter = astNode switch
             {
+                Block b => new BlockEmitter(b),
                 Expression e => new ExpressionStackEmitter(e),
                 ExpressionList el => new ExpressionListStackEmitter(el),
-                AstFunctionDefinition fd => new FunctionDefinitionEmitter(fd),
+                FunctionDefinition fd => new FunctionDefinitionEmitter(fd),
                 _ => throw new System.NotImplementedException(),
             };
             specialFormEmitter.Emit(new StackEmitter(), af);
@@ -83,6 +91,9 @@ namespace Fifth.Tests
         protected static ParserRuleContext ParseExpressionList(string fragment)
             => GetParserFor(fragment).explist();
 
+        protected static ParserRuleContext ParseBlock(string fragment)
+            => GetParserFor(fragment).block();
+
         protected static ParserRuleContext ParseFunctionDecl(string fragment)
             => GetParserFor(fragment).function_declaration();
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
@@ -107,6 +118,13 @@ namespace Fifth.Tests
             return visitor.Visit(parseTree);
         }
 
+        protected static IAstNode ParseBlockToAst(string fragment)
+        {
+            var parseTree = ParseBlock(fragment);
+            var visitor = new AstBuilderVisitor();
+            return new Block(null, (ExpressionList) visitor.Visit(parseTree));
+        }
+
         protected static IAstNode ParseFunctionDeclToAst(string fragment)
         {
             var parseTree = ParseFunctionDecl(fragment);
@@ -126,7 +144,9 @@ namespace Fifth.Tests
         {
             var parseTree = ParseProgram(fragment);
             var visitor = new AstBuilderVisitor();
-            return visitor.Visit(parseTree);
+            var ast = visitor.Visit(parseTree);
+            ast.Accept(new VerticalLinkageVisitor());
+            return ast;
         }
         
 
@@ -134,7 +154,7 @@ namespace Fifth.Tests
 
         #region Parsing and Generation
         protected static ActivationFrame ParseAndGenerateFunctionDecl(string functionString)
-            => ParseAndGenerate<AstFunctionDefinition>(functionString);
+            => ParseAndGenerate<FunctionDefinition>(functionString);
         protected static ActivationFrame ParseAndGenerateProgram(string functionString)
             => ParseAndGenerate<FifthProgram>(functionString);
         protected static ActivationStack ParseAndGenerateExpression(string expressionString)

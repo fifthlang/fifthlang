@@ -1,0 +1,34 @@
+# The AST Type Hierarchy
+
+- AnnotatedThing : IAnnotated
+    - AstNode: IAstNode
+        - AbsoluteIri
+        - AliasDeclaration
+        - FifthProgram
+        - FunctionDefinition
+        - Identifier
+        - ModuleImport
+        - ParameterDeclaration
+        - ParameterDeclarationList
+        - TypedAstNode : ITypedAstNode
+            - Expression
+                - AssignmentStmt
+                - BinaryExpression
+                - FuncCallExpression
+                - IdentifierExpression
+                - LiteralExpression
+                    - BooleanExpression
+                    - FloatValueExpression
+                    - IntValueExpression
+                    - StringValueExpression
+                - Statement
+                    - IfElseExp
+                    - VariableDeclarationStatement (?????)
+                    - WhileExp
+                - TypeCreateInstExpression
+                - UnaryExpression
+                - VariableReference
+            - ExpressionList
+            - ScopeAstNode : IScope
+                - Block
+        - TypeInitialiser

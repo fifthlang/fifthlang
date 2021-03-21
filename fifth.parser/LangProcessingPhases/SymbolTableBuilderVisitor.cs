@@ -1,47 +1,24 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
     using Fifth.AST;
+    using Symbols;
 
     public class SymbolTableBuilderVisitor : BaseAstVisitor
     {
-        public SymbolTableBuilderVisitor(AstScopeAnnotations ast)
-            => Ast = ast;
-
-        public AstScopeAnnotations Ast { get; set; }
-        public IScope CurrentScope { get; set; }
-        public IScope GlobalScope { get; set; }
-
-        public override void EnterFifthProgram(FifthProgram ctx)
-            => CurrentScope = GlobalScope = Ast.CreateNewScope(ctx);
-
-        public override void EnterFunctionDefinition(AstFunctionDefinition ctx)
-        {
-            Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);
-            EnterScope(ctx);
-        }
+        public override void EnterFunctionDefinition(FunctionDefinition ctx)
+            => Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx.ParentNode.NearestScope());
 
         public override void EnterParameterDeclaration(ParameterDeclaration ctx)
-            => Declare(ctx.ParameterName, SymbolKind.FormalParameter, ctx, ("type_name", ctx.ParameterType));
+            => Declare(ctx.ParameterName, SymbolKind.FormalParameter, ctx);
 
         public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
             => Declare(ctx.Name.Value, SymbolKind.VariableDeclaration, ctx);
 
-        public override void LeaveFifthProgram(FifthProgram ctx)
-            => LeaveScope();
-
-        public override void LeaveFunctionDefinition(AstFunctionDefinition ctx)
-            => LeaveScope();
-
-        private void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)
-            => CurrentScope.Declare(name, kind, ctx, properties);
-
-        private void EnterScope(IAstNode ctx)
+        private void Declare<T>(string name, SymbolKind kind, T ctx, params (string, object)[] properties)
+        where T:AstNode
         {
-            CurrentScope = Ast.CreateNewScope(ctx, CurrentScope);
-            ctx["symtab"] = CurrentScope;
+            var enclosingScope = ctx.NearestScope();
+            enclosingScope.Declare(name, kind, ctx, properties);
         }
-
-        private void LeaveScope()
-            => CurrentScope = CurrentScope.EnclosingScope ?? GlobalScope;
     }
 }

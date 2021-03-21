@@ -3,9 +3,10 @@ namespace Fifth
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Reflection;
+    using AST;
     using PrimitiveTypes;
+    using Expression = System.Linq.Expressions.Expression;
 
     public static class TypeHelpers
     {
@@ -64,6 +65,27 @@ namespace Fifth
             return null;
         }
 
+        public static ScopeAstNode GlobalScope(this AstNode node)
+        {
+            // TODO: WARNING: This could return null (a non-scope AST Node), if the root is not a scope node
+            if (node.ParentNode == null)
+            {
+                return node as ScopeAstNode;
+            }
+
+            return node?.ParentNode.GlobalScope();
+        }
+
+        public static ScopeAstNode NearestScope(this AstNode node)
+        {
+            if (node is ScopeAstNode astNode)
+            {
+                return astNode;
+            }
+
+            return node?.ParentNode.NearestScope();
+        }
+
         public static bool TryGetMethodByName(this Type t, string name, out FuncWrapper fw)
         {
             var methods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
@@ -119,6 +141,44 @@ namespace Fifth
 
             // now lookup (always on the LHS type) the operation we're looking for
             if (lhsType.GetType().TryGetMethodByName(operator_name, out var fw))
+            {
+                return TryGetNearestFifthTypeToNativeType(fw.ResultType, out resultType);
+            }
+
+            resultType = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Infer type of operation, on unary expression
+        /// </summary>
+        /// <param name="op"></param>
+        /// <param name="operand"></param>
+        /// <param name="resultType"></param>
+        /// <returns></returns>
+        public static bool TryInferOperationResultType(Operator op, IFifthType operandType, out IFifthType resultType)
+        {
+            // get the type traits that hold keyword name (that's used in the operator naming
+            // convention for binary operators)
+            var operandTypeType = operandType.GetType();
+            if (!operandTypeType.TryGetTypeTraits(out var operandTraits))
+            {
+                throw new TypeCheckingException($"unable to find type traits for type {operandTypeType.FullName}");
+            }
+
+            // work out what the suffix will be given the short names of the left and right side
+            // expression types
+            var suffix = $"_{operandTraits.Keyword}";
+            // now work out what the rest of the name will be based on the operator kind
+            var operatorName = op switch
+            {
+                Operator.Subtract => $"subtract{suffix}",
+                Operator.Not => $"logical_not{suffix}",
+                _ => "noop"
+            };
+
+            // now lookup (always on the LHS type) the operation we're looking for
+            if (operandTypeType.TryGetMethodByName(operatorName, out var fw))
             {
                 return TryGetNearestFifthTypeToNativeType(fw.ResultType, out resultType);
             }
@@ -250,6 +310,16 @@ namespace Fifth
             }
 
             throw new TypeCheckingException("no way to lookup non native types yet");
+        }
+
+        public static T PeekOrDefault<T>(this Stack<T> s)
+        {
+            if (s == null || s.Count == 0)
+            {
+                return default;
+            }
+
+            return s.Peek();
         }
     }
 }

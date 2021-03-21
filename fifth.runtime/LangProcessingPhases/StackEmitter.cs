@@ -42,8 +42,8 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void Operator(IRuntimeStack stack, BinaryExpression ctx)
         {
-            var lhsType = LookupType(ctx.Left).GetType();
-            var rhsType = LookupType(ctx.Right).GetType();
+            var lhsType = ctx.Left.FifthType.GetType();
+            var rhsType = ctx.Right.FifthType.GetType();
 
             if (!TypeHelpers.TryGetOperatorByNameAndTypes(ctx.Op, lhsType, rhsType, out var operatorFunction))
             {
@@ -115,17 +115,17 @@ namespace Fifth.Runtime.LangProcessingPhases
 
     public class FunctionDefinitionEmitter : ISpecialFormEmitter
     {
-        private readonly AstFunctionDefinition astFunction;
+        private readonly FunctionDefinition function;
         private readonly RuntimeFunctionDefinition runtimeFunction;
 
-        public FunctionDefinitionEmitter(AST.AstFunctionDefinition astFunction)
+        public FunctionDefinitionEmitter(AST.FunctionDefinition function)
         {
-            this.astFunction = astFunction;
-            runtimeFunction = new RuntimeFunctionDefinition { Name = astFunction.Name };
-            if (this.astFunction.ParameterDeclarations != null &&
-                this.astFunction.ParameterDeclarations.ParameterDeclarations.Any())
+            this.function = function;
+            runtimeFunction = new RuntimeFunctionDefinition { Name = function.Name };
+            if (this.function.ParameterDeclarations != null &&
+                this.function.ParameterDeclarations.ParameterDeclarations.Any())
             {
-                runtimeFunction.Arguments.AddRange(this.astFunction.ParameterDeclarations.ParameterDeclarations.Select(
+                runtimeFunction.Arguments.AddRange(this.function.ParameterDeclarations.ParameterDeclarations.Select(
                     (p, i) =>
                         new FunctionArgument { ArgOrdinal = i, Name = p.ParameterName, Type = p.ParameterType }));
             }
@@ -133,7 +133,7 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void Emit(IStackEmitter emitter, IActivationFrame frame)
         {
-            var ele = new ExpressionListStackEmitter(astFunction.Body);
+            var ele = new ExpressionListStackEmitter(function.Body);
             ele.Emit(emitter, runtimeFunction);
             frame.Environment.AddFunctionDefinition(runtimeFunction);
             foreach (var kvp in runtimeFunction.Environment.Definitions)

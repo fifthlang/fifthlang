@@ -1,5 +1,6 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using System;
     using AST;
 
     public abstract class BaseAstVisitor : IAstVisitor
@@ -52,7 +53,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void EnterFunctionDefinition(AstFunctionDefinition ctx)
+        public virtual void EnterFunctionDefinition(FunctionDefinition ctx)
         {
         }
 
@@ -152,7 +153,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public virtual void LeaveFunctionDefinition(AstFunctionDefinition ctx)
+        public virtual void LeaveFunctionDefinition(FunctionDefinition ctx)
         {
         }
 

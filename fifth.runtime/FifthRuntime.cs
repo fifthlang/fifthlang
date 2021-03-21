@@ -4,6 +4,7 @@ namespace Fifth.Runtime
     using System.Linq;
     using Antlr4.Runtime;
     using AST;
+    using Fifth.LangProcessingPhases;
     using LangProcessingPhases;
     using Parser.LangProcessingPhases;
 
@@ -77,8 +78,8 @@ namespace Fifth.Runtime
             var visitor = new AstBuilderVisitor();
             var astNode = visitor.Visit(parseTree);
             rootActivationFrame = new ActivationFrame();
-            var annotatedAst = new AstScopeAnnotations(astNode);
-            astNode.Accept(new SymbolTableBuilderVisitor(annotatedAst));
+            astNode.Accept(new VerticalLinkageVisitor());
+            astNode.Accept(new SymbolTableBuilderVisitor());
             astNode.Accept(new TypeAnnotatorVisitor());
             return astNode;
         }

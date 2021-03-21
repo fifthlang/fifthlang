@@ -9,7 +9,7 @@ namespace Fifth.Test.Parser
     [TestFixture, Category("Type Checking"), Category("Visitors")]
     public class TypeAnnotatorVisitorTests : ParserTestBase
     {
-        [Test]
+        [Test, Ignore("Requires massive refactoring to work out of context")]
         public void IfBinaryExpressionElementsAreInt_TheExpressionIsInt()
         {
             var exp = "5 + 6";

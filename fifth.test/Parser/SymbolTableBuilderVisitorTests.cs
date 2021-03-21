@@ -5,6 +5,7 @@ namespace Fifth.Tests
     using Fifth.Parser;
     using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
+    using Symbols;
 
     [TestFixture, Category("Symbol Table"), Category("Parsing")]
     public class SymbolTableBuilderVisitorTests : ParserTestBase
@@ -17,12 +18,12 @@ namespace Fifth.Tests
             void myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AstScopeAnnotations(ast);
-            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
+            var globalScope = ast.NearestScope();
+            var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
-            Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
+            Assert.That(globalScope.SymbolTable.Count, Is.EqualTo(2));
             var mainfuncdecl = ast.Functions.First(f => f.Name == "main");
-            var mainScope = annotatedAst.NodeToScopeMappings[mainfuncdecl];
+            var mainScope = mainfuncdecl.NearestScope();
             Assert.That(mainScope, Is.Not.Null);
             Assert.That(mainScope.SymbolTable.Count, Is.EqualTo(2));
         }
@@ -35,10 +36,11 @@ namespace Fifth.Tests
             void blah() => int result = 5, result;";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AstScopeAnnotations(ast);
-            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
+            var globalScope = ast.NearestScope();
+            
+            var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
-            var symtab = visitor.GlobalScope.SymbolTable;
+            var symtab = globalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(3));
             foreach (var v in symtab.Values)
             {
@@ -52,10 +54,11 @@ namespace Fifth.Tests
             var TestProgram = @"void main() => myprint(""hello world"");";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AstScopeAnnotations(ast);
-            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
+            var globalScope = ast.NearestScope();
+
+            var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
-            var symtab = visitor.GlobalScope.SymbolTable;
+            var symtab = globalScope.SymbolTable;
             Assert.That(symtab.Count, Is.EqualTo(1));
             Assert.That(symtab.Resolve("main"), Is.Not.Null);
         }
@@ -68,13 +71,12 @@ namespace Fifth.Tests
             void myprint(int x) => std.print(""the answer is "" + x);";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
-            var annotatedAst = new AstScopeAnnotations(ast);
-            var visitor = new SymbolTableBuilderVisitor(annotatedAst);
+            var globalScope = ast.NearestScope();
+            
+            var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
-            Assert.That(visitor.GlobalScope.SymbolTable.Count, Is.EqualTo(2));
-            var astRoot = annotatedAst.AstRoot as FifthProgram;
-            var mainfuncdecl = astRoot.Functions.First(f => f.Name == "main");
-            Assert.That(annotatedAst.NodeToScopeMappings.ContainsKey(mainfuncdecl), Is.True);
+            Assert.That(globalScope.SymbolTable.Count, Is.EqualTo(2));
+            Assert.That(globalScope.SymbolTable.ContainsKey("main"), Is.True);
         }
     }
 }
