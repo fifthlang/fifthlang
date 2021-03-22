@@ -5,4 +5,4 @@ void main() =>
     int[] odds  = [x | x <- nums, x % 2 == 1],
     int[] recombined = evens + odds,
     int[] fifths = [x*5 | x <- recombined],
-    for x in fifths => write(x, '\n');
+    map fifths \(x) => write(x, '\n');

@@ -1,0 +1,7 @@
+void main() =>
+    int[] seq = quicksort([16,52,12,68,74,9,8,9,37,6,17,65,3]),
+    map seq \(x) => write(x, '\n');
+int[] quicksort(int[] seq)
+    ([]) => seq,
+    ([p|tail]) =>
+        quicksort([x | x <- seq, x <= p]) + p + quicksort([x | x <- seq, x > p]);
