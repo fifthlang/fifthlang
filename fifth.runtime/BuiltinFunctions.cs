@@ -4,6 +4,7 @@
 namespace Fifth.Runtime
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
@@ -31,5 +32,14 @@ namespace Fifth.Runtime
         public static void write(string s) => Console.WriteLine(s);
         [Builtin(Keyword = "sqrt")]
         public static double sqrt(double f) => Math.Sqrt(f);
+
+        [Builtin(Keyword = "map")]
+        public static void map(List<object> l, FuncWrapper f)
+        {
+            foreach (var item in l)
+            {
+                f.Invoke(item);
+            }
+        }
     }
 }
