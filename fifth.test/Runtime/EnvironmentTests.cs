@@ -1,4 +1,5 @@
 #pragma warning disable IDE0058 // Expression value is never used
+
 namespace Fifth.Tests.Runtime
 {
     using System;
@@ -7,6 +8,7 @@ namespace Fifth.Tests.Runtime
     using FluentAssertions;
     using NUnit.Framework;
     using PrimitiveTypes;
+    using TypeSystem;
     using Environment = Fifth.Runtime.Environment;
 
     [TestFixture(Category = "Environment")]
@@ -29,7 +31,7 @@ namespace Fifth.Tests.Runtime
             var sut = new Environment(null);
             _ = sut.Should().NotBeNull();
             _ = sut.IsEmpty.Should().BeTrue();
-            sut["hello"] = new ValueObject(t, t.GetTypeName(), o);
+            sut["hello"] = new ValueObject(t, t.ShortName, o);
             _ = sut.IsEmpty.Should().BeFalse();
             var x = sut["hello"];
             _ = x.GetValueOfValueObject().Should().Be(o);
@@ -45,4 +47,5 @@ namespace Fifth.Tests.Runtime
         }
     }
 }
+
 #pragma warning restore IDE0058 // Expression value is never used

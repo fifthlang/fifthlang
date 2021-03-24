@@ -1,5 +1,7 @@
 namespace Fifth.AST
 {
+    using TypeSystem;
+
     public abstract class LiteralExpression<T> : Expression
     {
         protected LiteralExpression(T value, AstNode parentNode, IFifthType type)

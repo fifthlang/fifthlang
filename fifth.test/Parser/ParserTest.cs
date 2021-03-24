@@ -1,7 +1,7 @@
 namespace Fifth.Tests
 {
-    using static FifthParser;
     using NUnit.Framework;
+    using static FifthParser;
 
     [TestFixture]
     [Category("Parser")]

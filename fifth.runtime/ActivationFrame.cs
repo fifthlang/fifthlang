@@ -49,7 +49,7 @@ namespace Fifth.Runtime
 
         public ActivationFrame CreateChildFrame()
         {
-            var result = new ActivationFrame {ParentFrame = this};
+            var result = new ActivationFrame { ParentFrame = this };
             result.Environment.Parent = Environment;
             result.KnowledgeGraph.ParentGraph = KnowledgeGraph;
             return result;

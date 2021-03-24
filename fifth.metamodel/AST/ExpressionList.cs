@@ -3,6 +3,7 @@ namespace Fifth.AST
     using System;
     using System.Collections.Generic;
     using Fifth.Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class ExpressionList : TypedAstNode
     {

@@ -1,10 +1,10 @@
 #pragma warning disable IDE0058 // Expression value is never used
+
 namespace Fifth.Test.Serialisation
 {
     using System.IO;
     using Fifth.Serialisation;
     using FluentAssertions;
-    using FluentAssertions.Common;
     using NUnit.Framework;
 
     [TestFixture, Category("Serialisation")]
@@ -56,4 +56,5 @@ namespace Fifth.Test.Serialisation
         }
     }
 }
+
 #pragma warning restore IDE0058 // Expression value is never used

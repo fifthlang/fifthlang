@@ -1,12 +1,14 @@
 namespace Fifth.AST
 {
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class UnaryExpression : Expression
     {
         public UnaryExpression(IFifthType fifthType) : base(fifthType)
         {
         }
+
         public UnaryExpression(AstNode parentNode, IFifthType fifthType) : base(parentNode, fifthType)
         {
         }
@@ -17,12 +19,14 @@ namespace Fifth.AST
             Operand = operand;
             Op = op;
         }
+
         public UnaryExpression(Expression operand, Operator op, IFifthType fifthType)
             : this(fifthType)
         {
             Operand = operand;
             Op = op;
         }
+
         public UnaryExpression(Expression operand, Operator op)
             : this(operand, op, operand.FifthType)
         {

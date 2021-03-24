@@ -1,4 +1,4 @@
-﻿namespace Fifth.AST
+namespace Fifth.AST
 {
     public interface IAnnotated
     {
@@ -9,6 +9,7 @@
         }
 
         bool HasAnnotation(string key);
+
         bool TryGetAnnotation<T>(string name, out T result);
     }
 }

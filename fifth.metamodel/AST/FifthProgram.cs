@@ -23,7 +23,7 @@ namespace Fifth.AST
             visitor.LeaveFifthProgram(this);
         }
 
-        public FifthProgram() : base(null, PrimitiveVoid.Default, null)
+        public FifthProgram() : base(null, null, null)
         {
         }
     }

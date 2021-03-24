@@ -2,9 +2,10 @@ namespace Fifth.Runtime
 {
     using System;
     using System.Collections.Generic;
+    using TypeSystem;
 
     /// <summary>
-    ///   The runtime component responsible for invoking functions on the stack, 
+    ///   The runtime component responsible for invoking functions on the stack,
     ///   and resolving values on the stack.
     /// </summary>
     public class Dispatcher : IDispatcher
@@ -45,9 +46,9 @@ namespace Fifth.Runtime
         /// </summary>
         /// <remarks>
         ///   If the element at the top of the stack is not a function of some sort, then it is left alone.
-        ///   If it is a meta function then the dispatcher itself, including the activation frame, is passed 
+        ///   If it is a meta function then the dispatcher itself, including the activation frame, is passed
         ///   to the meta function, giving it much more power over the runtime environment.
-        ///   If it is a function, then metadata for the function wrapper is gathered, and used to resolves 
+        ///   If it is a function, then metadata for the function wrapper is gathered, and used to resolves
         ///   values from the stack.
         /// </summary>
         public void Dispatch()
@@ -59,9 +60,11 @@ namespace Fifth.Runtime
                 case ValueStackElement vse:
                     Stack.Push(vse);
                     break;
+
                 case MetaFunctionStackElement mfe:
                     _ = mfe.MetaFunction.Invoke(this); // what would it mean to reassign the frame here...
                     break;
+
                 case FunctionStackElement fe:
                     // if x is a func requiring (m) params: resolve m values into values
                     var args = new List<object>();
@@ -85,7 +88,6 @@ namespace Fifth.Runtime
                     _ = Stack.PushConstantValue(result); // TODO: can't assume this will always be a value
                     break;
             }
-
         }
 
         /// <summary>
@@ -109,6 +111,7 @@ namespace Fifth.Runtime
             {
                 case ValueStackElement vse:
                     return vse.Value;
+
                 case VariableReferenceStackElement vrse:
                     var valueObject = Frame.Environment[vrse.VariableName];
                     var referencedVariableValue = ResolveTypedVariable(valueObject);
@@ -126,7 +129,7 @@ namespace Fifth.Runtime
             return result?.Value;
         }
 
-        public T Resolve<T>() where T:class => Resolve() as T;
+        public T Resolve<T>() where T : class => Resolve() as T;
 
         /// <summary>
         ///     try to resolve the type of the value and get its internal value

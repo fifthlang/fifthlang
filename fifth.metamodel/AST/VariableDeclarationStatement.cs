@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class VariableDeclarationStatement : Statement
     {
@@ -18,7 +19,7 @@ namespace Fifth.AST
 
         public Expression Expression { get; set; }
         public Identifier Name { get; set; }
-        public string TypeName => FifthType.GetTypeName();
+        public string TypeName => FifthType.ShortName;
 
         public override void Accept(IAstVisitor visitor)
         {

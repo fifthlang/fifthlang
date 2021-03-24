@@ -3,6 +3,7 @@ namespace Fifth.Runtime
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using TypeSystem;
 
     /// <summary>
     ///     A class providing functions that operate on the IDispatcher itself.
@@ -89,6 +90,7 @@ namespace Fifth.Runtime
             dispatcher.Frame = newFrame.ParentFrame;
             return dispatcher;
         }
+
         /// <summary>
         ///     A wrapper function encompassing all the activity needed to make a function call.
         /// </summary>
@@ -125,7 +127,7 @@ namespace Fifth.Runtime
             return dispatcher;
         }
 
-        static T InvokeFunctionDefinition<T>(IDispatcher dispatcher, ActivationFrame parentFrame, IFunctionDefinition fd)
+        private static T InvokeFunctionDefinition<T>(IDispatcher dispatcher, ActivationFrame parentFrame, IFunctionDefinition fd)
         {
             try
             {

@@ -1,4 +1,5 @@
 #pragma warning disable IDE0058 // Expression value is never used
+
 namespace Fifth.Tests
 {
     using FluentAssertions;
@@ -83,4 +84,5 @@ namespace Fifth.Tests
         }
     }
 }
+
 #pragma warning restore IDE0058 // Expression value is never used

@@ -5,6 +5,7 @@ namespace Fifth.Symbols
     public interface ISymbolTable : IDictionary<string, ISymbolTableEntry>
     {
         IEnumerable<ISymbolTableEntry> All();
+
         ISymbolTableEntry Resolve(string v);
     }
 }

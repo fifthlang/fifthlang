@@ -11,6 +11,7 @@ namespace Fifth.Tests
     public class ParserTestBase
     {
         #region Core Drivers
+
         protected static IAstNode ParseToAst<T>(string fragment)
             where T : IAstNode
         {
@@ -77,14 +78,16 @@ namespace Fifth.Tests
             return parser;
         }
 
-        #endregion
+        #endregion Core Drivers
 
         #region Parsing into Parse Tree
+
         protected static ParserRuleContext ParseIri(string fragment)
                     => GetParserFor(fragment).iri();
 
         protected static FifthContext ParseProgram(string fragment)
             => GetParserFor(fragment).fifth();
+
         protected static ParserRuleContext ParseExpression(string fragment)
             => GetParserFor(fragment).exp();
 
@@ -96,10 +99,11 @@ namespace Fifth.Tests
 
         protected static ParserRuleContext ParseFunctionDecl(string fragment)
             => GetParserFor(fragment).function_declaration();
+
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
             => GetParserFor(fragment).exp();
 
-        #endregion
+        #endregion Parsing into Parse Tree
 
         #region Parsing into AST Node
 
@@ -109,7 +113,6 @@ namespace Fifth.Tests
             var visitor = new AstBuilderVisitor();
             return visitor.Visit(parseTree);
         }
-
 
         protected static IAstNode ParseExpressionListToAst(string fragment)
         {
@@ -122,7 +125,7 @@ namespace Fifth.Tests
         {
             var parseTree = ParseBlock(fragment);
             var visitor = new AstBuilderVisitor();
-            return new Block(null, (ExpressionList) visitor.Visit(parseTree));
+            return new Block(null, (ExpressionList)visitor.Visit(parseTree));
         }
 
         protected static IAstNode ParseFunctionDeclToAst(string fragment)
@@ -139,7 +142,6 @@ namespace Fifth.Tests
             return visitor.Visit(parseTree);
         }
 
-
         protected static IAstNode ParseProgramToAst(string fragment)
         {
             var parseTree = ParseProgram(fragment);
@@ -148,19 +150,23 @@ namespace Fifth.Tests
             ast.Accept(new VerticalLinkageVisitor());
             return ast;
         }
-        
 
-        #endregion
+        #endregion Parsing into AST Node
 
         #region Parsing and Generation
+
         protected static ActivationFrame ParseAndGenerateFunctionDecl(string functionString)
             => ParseAndGenerate<FunctionDefinition>(functionString);
+
         protected static ActivationFrame ParseAndGenerateProgram(string functionString)
             => ParseAndGenerate<FifthProgram>(functionString);
+
         protected static ActivationStack ParseAndGenerateExpression(string expressionString)
             => ParseAndGenerate<Expression>(expressionString).Stack;
+
         protected static ActivationStack ParseAndGenerateExpressionFragment(string expressionString)
             => ParseAndGenerate<Expression>(expressionString).Stack;
-        #endregion
+
+        #endregion Parsing and Generation
     }
 }

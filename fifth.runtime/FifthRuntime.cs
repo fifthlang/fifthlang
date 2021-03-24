@@ -1,12 +1,13 @@
 namespace Fifth.Runtime
 {
     using System;
-    using System.Linq;
     using Antlr4.Runtime;
     using AST;
     using Fifth.LangProcessingPhases;
     using LangProcessingPhases;
     using Parser.LangProcessingPhases;
+    using PrimitiveTypes;
+    using TypeSystem;
 
     /// <summary>
     ///     Class that co-ordinates the execution of a Fifth Program
@@ -15,10 +16,12 @@ namespace Fifth.Runtime
     {
         public string Execute(string fifthProgram, params object[] args)
         {
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
+            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
             var astNode = ParseAndAnnotateProgram(fifthProgram, out var rootActivationFrame);
             var fpe = new FifthProgramEmitter(astNode as FifthProgram);
             fpe.Emit(new StackEmitter(), rootActivationFrame);
-            _ = BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
+            BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
 
             var result = String.Empty;
 
@@ -37,7 +40,7 @@ namespace Fifth.Runtime
                 {
                     var tmp = d.Stack.Pop() as ValueStackElement;
                     // whatever the result may be, we have to try to convert it to string, since that is the default return type of main
-                    result = Convert.ToString(tmp?.GetValueOfValueObject()) ;
+                    result = Convert.ToString(tmp?.GetValueOfValueObject());
                 }
             }
 
@@ -46,7 +49,7 @@ namespace Fifth.Runtime
 
         internal void LoadArgs(Environment e, IFunctionDefinition fd, object[] args)
         {
-            for(var i = 0; i < fd.Arguments.Count; i++)
+            for (var i = 0; i < fd.Arguments.Count; i++)
             {
                 var argType = args[i].GetType();
                 if (TypeHelpers.TryGetNearestFifthTypeToNativeType(argType, out var ft))
@@ -55,7 +58,6 @@ namespace Fifth.Runtime
                     e[name] = new ValueObject(ft, name, args[i]);
                 }
             }
-
         }
 
         public string Execute(string fifthProgram) => Execute(fifthProgram, null);
@@ -79,6 +81,7 @@ namespace Fifth.Runtime
             var astNode = visitor.Visit(parseTree);
             rootActivationFrame = new ActivationFrame();
             astNode.Accept(new VerticalLinkageVisitor());
+            astNode.Accept(new DesugaringVisitor());
             astNode.Accept(new SymbolTableBuilderVisitor());
             astNode.Accept(new TypeAnnotatorVisitor());
             return astNode;

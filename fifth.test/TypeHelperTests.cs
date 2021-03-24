@@ -4,15 +4,17 @@ namespace Fifth.Tests
     using Fifth.PrimitiveTypes;
     using FluentAssertions;
     using NUnit.Framework;
+    using TypeSystem;
 
     [TestFixture, Category("Helper Code"), Category("Type Checking")]
     public class TypeHelperTests
     {
+
         [Test]
-        public void TestBuiltinTypesAreFound()
+        public void TestLoadsBuiltinOperations()
         {
-            var builtins = TypeHelpers.TypesHavingAttribute<TypeTraitsAttribute, IFifthType>();
-            _ = builtins.Should().NotBeEmpty();
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes().Should().BeTrue();
+            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
         }
 
         [TestCase("char", typeof(PrimitiveChar))]

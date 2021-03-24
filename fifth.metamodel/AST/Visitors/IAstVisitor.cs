@@ -6,12 +6,15 @@ namespace Fifth.Parser.LangProcessingPhases
     {
         // void Accept(AstNode astNode);
         void EnterAbsoluteUri(AbsoluteIri absoluteIri);
+
         void EnterAlias(AliasDeclaration ctx);
 
         void EnterAssignmentStmt(AssignmentStmt ctx);
 
         void EnterBinaryExpression(BinaryExpression ctx);
+
         void EnterBlock(Block ctx);
+
         void EnterBooleanExpression(BooleanExpression ctx);
 
         void EnterExpression(Expression expression);
@@ -53,7 +56,9 @@ namespace Fifth.Parser.LangProcessingPhases
         void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx);
 
         void EnterVariableReference(VariableReference variableRef);
+
         void EnterWhileExp(WhileExp ctx);
+
         void LeaveAbsoluteUri(AbsoluteIri absoluteIri);
 
         void LeaveAlias(AliasDeclaration ctx);
@@ -63,6 +68,7 @@ namespace Fifth.Parser.LangProcessingPhases
         void LeaveBinaryExpression(BinaryExpression ctx);
 
         void LeaveBlock(Block ctx);
+
         void LeaveBooleanExpression(BooleanExpression ctx);
 
         void LeaveExpression(Expression expression);
@@ -104,6 +110,7 @@ namespace Fifth.Parser.LangProcessingPhases
         void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx);
 
         void LeaveVariableReference(VariableReference variableRef);
+
         void LeaveWhileExp(WhileExp ctx);
     }
 }
