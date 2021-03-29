@@ -3,7 +3,6 @@ namespace Fifth.Serialisation
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     /// <summary>
     /// A builder for serialisation and deserialisation of the IL related to an ActivationScope

@@ -2,6 +2,7 @@ namespace Fifth.AST
 {
     using Fifth;
     using Fifth.Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class BinaryExpression : Expression
     {

@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Fifth.Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class IntValueExpression : LiteralExpression<int>
     {
@@ -8,6 +9,7 @@ namespace Fifth.AST
             : base(value, parentNode, type)
         {
         }
+
         public IntValueExpression(int value, IFifthType type)
             : base(value, type)
         {

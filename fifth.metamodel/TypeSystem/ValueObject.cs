@@ -1,7 +1,6 @@
-namespace Fifth.Runtime
+namespace Fifth.TypeSystem
 {
     using System.Collections.Generic;
-    using Antlr4.Runtime.Misc;
 
     /// <summary>
     ///     A runtime value that can be stored in an environment and shared between variable bindings
@@ -15,11 +14,10 @@ namespace Fifth.Runtime
             NamesInScope.Add(name);
         }
 
-
         /// <summary>
         ///     A list of names by which this variable is known
         /// </summary>
-        public List<string> NamesInScope { get; set; } = new ArrayList<string>(1);
+        public List<string> NamesInScope { get; set; } = new List<string>(1);
 
         public object Value { get; set; }
         public IFifthType ValueType { get; }
@@ -42,12 +40,11 @@ namespace Fifth.Runtime
         /// <summary>
         ///     A list of names by which this variable is known
         /// </summary>
-        public List<string> NamesInScope { get; set; } = new ArrayList<string>(1);
+        public List<string> NamesInScope { get; set; } = new List<string>(1);
 
         /// <summary>
         ///     The value in the environment, shared between each of the names defined in scope.
         /// </summary>
         public T Value { get; set; }
-
     }
 }

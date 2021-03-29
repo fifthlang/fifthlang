@@ -1,6 +1,5 @@
 namespace Fifth.Test.Parser
 {
-    using AST;
     using Fifth.Parser.LangProcessingPhases;
     using FluentAssertions;
     using NUnit.Framework;

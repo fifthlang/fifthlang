@@ -2,10 +2,10 @@ namespace Fifth.Tests
 {
     using System.Linq;
     using Fifth.AST;
-    using Fifth.Parser;
     using Fifth.Parser.LangProcessingPhases;
     using NUnit.Framework;
     using Symbols;
+    using TypeSystem;
 
     [TestFixture, Category("Symbol Table"), Category("Parsing")]
     public class SymbolTableBuilderVisitorTests : ParserTestBase
@@ -37,7 +37,7 @@ namespace Fifth.Tests
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var globalScope = ast.NearestScope();
-            
+
             var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
             var symtab = globalScope.SymbolTable;
@@ -72,7 +72,7 @@ namespace Fifth.Tests
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var globalScope = ast.NearestScope();
-            
+
             var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
             Assert.That(globalScope.SymbolTable.Count, Is.EqualTo(2));

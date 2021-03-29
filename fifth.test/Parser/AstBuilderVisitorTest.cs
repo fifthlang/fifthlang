@@ -7,6 +7,7 @@ namespace Fifth.Tests.Parser
     using Fifth.Tests;
     using FluentAssertions;
     using NUnit.Framework;
+    using TypeSystem;
 
     [TestFixture, Category("AST"), Category("Visitors")]
     public class AstBuilderVisitorTest : ParserTestBase
@@ -29,6 +30,8 @@ namespace Fifth.Tests.Parser
         [TestCase(@"y / x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Divide)]
         public void TestCanBuildBinaryExpression(string fragment, Type leftOperandType, Type rightOperandType, Operator op)
         {
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes().Should().BeTrue();
+            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
             var ctx = ParseExpression(fragment);
             var sut = new AstBuilderVisitor();
             var ast = sut.Visit(ctx);
@@ -54,13 +57,14 @@ void foo()=>43;", 2)]
             _ = ast.Functions.Should().NotBeNull().And.HaveCount(funcCount);
         }
 
-        [TestCase(@"alias <http://tempuri.com/blah/> as tu; void main(int x) => int x = 234, x + 1;", 1)]
-        [TestCase(@"
-alias <http://tempuri.com/blah/> as a1;
-alias <http://tempuri.com/bob> as a2;
-void main(int x) => int x = 234, x + 1;", 2)]
+        [TestCase(@"alias tu as http://tempuri.com/blah/; void main(int x) => int x = 234, x + 1;", 1)]
+        [TestCase(@"alias a1 as http://tempuri.com/blah/;
+                    alias a2 as http://tempuri.com/bob;
+                    void main(int x) => int x = 234, x + 1;", 2)]
         public void TestCanConstructAliasesFromProgram(string programText, int aliasCount)
         {
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
+            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
             var ctx = ParseProgram(programText);
             var sut = new AstBuilderVisitor();
             var ast = sut.VisitFifth(ctx) as FifthProgram;

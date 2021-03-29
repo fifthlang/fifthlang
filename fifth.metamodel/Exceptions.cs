@@ -19,6 +19,7 @@ namespace Fifth
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+
     public class RuntimeException : Exception
     {
         public RuntimeException()
@@ -37,6 +38,7 @@ namespace Fifth
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+
     public class InvalidVariableReferenceException : RuntimeException
     {
         public InvalidVariableReferenceException()

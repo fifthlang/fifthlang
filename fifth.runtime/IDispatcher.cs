@@ -7,8 +7,11 @@ namespace Fifth.Runtime
         void Dispatch();
 
         object Resolve();
+
         T Resolve<T>() where T : class;
+
         void DispatchWhileNotEmpty();
+
         void DispatchWhileOperationIsAtTopOfStack();
     }
 }

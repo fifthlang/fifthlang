@@ -1,38 +1,39 @@
 namespace Fifth.PrimitiveTypes
 {
+    using TypeSystem;
+
 #pragma warning disable IDE1006 // Naming Styles
 
-    [TypeTraits(IsPrimitive = true, IsNumeric = true, Keyword = "int")]
-    public class PrimitiveInteger : IFifthType
+    public class PrimitiveInteger : PrimitiveAny
     {
-        private PrimitiveInteger()
+        private PrimitiveInteger():base(true, true, "int")
         {
         }
 
         public static PrimitiveInteger Default { get; set; } = new PrimitiveInteger();
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "+")]
+        [Operation(Operator.Add)]
         public static int add_int_int(int left, int right) => left + right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "/")]
+        [Operation(Operator.Divide)]
         public static int divide_int_int(int left, int right) => left / right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "*")]
+        [Operation(Operator.Multiply)]
         public static int multiply_int_int(int left, int right) => left * right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "-")]
+        [Operation(Operator.Subtract)]
         public static int subtract_int_int(int left, int right) => left - right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = ">=")]
+        [Operation(Operator.GreaterThanOrEqual)]
         public static bool greater_than_or_equal_int_int(int left, int right) => left >= right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "<=")]
+        [Operation(Operator.LessThanOrEqual)]
         public static bool less_than_or_equal_int_int(int left, int right) => left <= right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = ">")]
+        [Operation(Operator.GreaterThan)]
         public static bool greater_than_int_int(int left, int right) => left > right;
 
-        [OperatorTraits(Position = OperatorPosition.Infix, OperatorRepresentation = "<")]
+        [Operation(Operator.LessThan)]
         public static bool less_than_int_int(int left, int right) => left < right;
     }
 

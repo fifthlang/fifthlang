@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Symbols;
+    using TypeSystem;
 
     public abstract class ScopeAstNode : TypedAstNode, IScope
     {
@@ -34,7 +35,7 @@ namespace Fifth.AST
             SymbolTable[name] = symTabEntry;
         }
 
-        public bool TryResolve(string name, out ISymbolTableEntry result )
+        public bool TryResolve(string name, out ISymbolTableEntry result)
         {
             result = null;
             var tmp = SymbolTable.Resolve(name);
@@ -44,10 +45,10 @@ namespace Fifth.AST
                 return true;
             }
 
-            return this?.ParentNode.NearestScope()?.TryResolve(name, out result)??false;
+            return this?.ParentNode.NearestScope()?.TryResolve(name, out result) ?? false;
         }
 
         public ISymbolTableEntry Resolve(string name)
-            => SymbolTable.Resolve(name);
+            => SymbolTable.Resolve(name); // needs to recurse up
     }
 }

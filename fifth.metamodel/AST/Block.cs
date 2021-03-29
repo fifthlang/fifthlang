@@ -4,6 +4,7 @@ namespace Fifth.AST
     using Fifth.Parser.LangProcessingPhases;
     using PrimitiveTypes;
     using Symbols;
+    using TypeSystem;
 
     public class Block : ScopeAstNode
     {
@@ -25,7 +26,7 @@ namespace Fifth.AST
         }
 
         public Block(AstNode parentNode)
-            : this(parentNode, PrimitiveVoid.Default)
+            : this(parentNode, (IFifthType)null)
         {
         }
 

@@ -5,6 +5,7 @@ namespace Fifth.Runtime.LangProcessingPhases
     using System.Linq;
     using AST;
     using PrimitiveTypes;
+    using TypeSystem;
 
     /*
     public class EmitBuilder
@@ -42,16 +43,15 @@ namespace Fifth.Runtime.LangProcessingPhases
 
         public void Operator(IRuntimeStack stack, BinaryExpression ctx)
         {
-            var lhsType = ctx.Left.FifthType.GetType();
-            var rhsType = ctx.Right.FifthType.GetType();
-
-            if (!TypeHelpers.TryGetOperatorByNameAndTypes(ctx.Op, lhsType, rhsType, out var operatorFunction))
+            if (ctx.TryEncode(out var opid))
             {
-                throw new TypeCheckingException(
-                    $"operator {ctx.Op} not supported between {lhsType.Name} and {rhsType.Name}.");
+                var operatorFunction = InbuiltOperatorRegistry.DefaultRegistry[new OperatorId(opid)];
+                Emit(stack, new FunctionStackElement(operatorFunction));
+                return;
             }
 
-            Emit(stack, new FunctionStackElement(operatorFunction));
+            throw new TypeCheckingException(
+                $"operator {ctx.Op} not supported between {ctx.Left.FifthType.ShortName} and {ctx.Right.FifthType.ShortName}.");
         }
 
         public void Value(IRuntimeStack stack, object v)
@@ -121,13 +121,13 @@ namespace Fifth.Runtime.LangProcessingPhases
         public FunctionDefinitionEmitter(AST.FunctionDefinition function)
         {
             this.function = function;
-            runtimeFunction = new RuntimeFunctionDefinition { Name = function.Name };
+            runtimeFunction = new RuntimeFunctionDefinition {Name = function.Name};
             if (this.function.ParameterDeclarations != null &&
                 this.function.ParameterDeclarations.ParameterDeclarations.Any())
             {
                 runtimeFunction.Arguments.AddRange(this.function.ParameterDeclarations.ParameterDeclarations.Select(
                     (p, i) =>
-                        new FunctionArgument { ArgOrdinal = i, Name = p.ParameterName, Type = p.ParameterType }));
+                        new FunctionArgument {ArgOrdinal = i, Name = p.ParameterName, Type = p.ParameterType}));
             }
         }
 
@@ -138,7 +138,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             frame.Environment.AddFunctionDefinition(runtimeFunction);
             foreach (var kvp in runtimeFunction.Environment.Definitions)
             {
-                frame.Environment.AddFunctionDefinition(kvp.Value,kvp.Key);
+                frame.Environment.AddFunctionDefinition(kvp.Value, kvp.Key);
             }
         }
     }
@@ -165,33 +165,43 @@ namespace Fifth.Runtime.LangProcessingPhases
                 case FuncCallExpression fce:
                     EmitFuncCallExpression(fce, emitter, frame);
                     break;
+
                 case AssignmentStmt ae:
                     EmitAssignmentExpression(ae, emitter, frame);
                     break;
+
                 case IdentifierExpression ie:
                     EmitIdentifierExpression(ie, emitter, frame);
                     break;
+
                 case BinaryExpression be:
                     EmitBinaryExpression(be, emitter, frame);
                     break;
+
                 case BooleanExpression boole:
                     EmitBooleanExpression(boole, emitter, frame);
                     break;
+
                 case IntValueExpression ie:
                     EmitIntValueExpression(ie, emitter, frame);
                     break;
+
                 case FloatValueExpression fe:
                     EmitFloatValueExpression(fe, emitter, frame);
                     break;
+
                 case StringValueExpression se:
                     EmitStringValueExpression(se, emitter, frame);
                     break;
+
                 case VariableDeclarationStatement vde:
                     EmitVariableDeclarationExpression(vde, emitter, frame);
                     break;
+
                 case IfElseExp ifElseExp:
                     EmitIfElseExpression(ifElseExp, emitter, frame);
                     break;
+
                 case WhileExp whileExp:
                     EmitWhileExpression(whileExp, emitter, frame);
                     break;
@@ -210,7 +220,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             // TODO: steps to generate code for IfElseExp:
             //   create new anon function for if part
             //   create new anon function for else part
-            //   emit function names 
+            //   emit function names
             //   emit the condition
             //   emit the metafunction to choose which to call
             EmitBlock(e.ElseBlock, emitter, frame);
@@ -221,16 +231,13 @@ namespace Fifth.Runtime.LangProcessingPhases
 
             emitter.MetaFunction(frame.Stack, MetaFunction.BranchIfTrue);
         }
+
         private void EmitWhileExpression(WhileExp e, IStackEmitter emitter, IActivationFrame frame)
         {
             EmitBlock(e.LoopBlock, emitter, frame);
 
             var condFunName = Guid.NewGuid().ToString();
-            var condFun = new RuntimeFunctionDefinition(frame)
-            {
-                Name = condFunName,
-                Type = PrimitiveBool.Default
-            };
+            var condFun = new RuntimeFunctionDefinition(frame) {Name = condFunName, Type = PrimitiveBool.Default};
 
             var condEmitter = new ExpressionStackEmitter(e.Condition);
             condEmitter.Emit(emitter, condFun);
@@ -244,10 +251,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         {
             var blockEmitter = new BlockEmitter(b);
             var functionName = Guid.NewGuid().ToString();
-            var fd = new RuntimeFunctionDefinition(frame)
-            {
-                Name = functionName
-            };
+            var fd = new RuntimeFunctionDefinition(frame) {Name = functionName};
             blockEmitter.Emit(emitter, fd);
             //   create new anon function for block
             frame.Environment.AddFunctionDefinition(fd);
@@ -330,6 +334,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         private readonly IEnumerable<Expression> expressionList;
 
         public ExpressionListStackEmitter(Block b) => expressionList = b.Expressions;
+
         public ExpressionListStackEmitter(ExpressionList el) => expressionList = el.Expressions;
 
         public void Emit(IStackEmitter emitter, IActivationFrame frame)

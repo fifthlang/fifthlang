@@ -1,4 +1,4 @@
-﻿namespace Fifth.Serialisation
+namespace Fifth.Serialisation
 {
     public enum FunctionTableEntryType : uint
     {

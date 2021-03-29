@@ -1,0 +1,86 @@
+namespace Fifth.TypeSystem
+{
+    using System;
+    using System.Collections.Concurrent;
+    using System.Threading;
+    using Fifth.PrimitiveTypes;
+
+    public sealed class TypeRegistry : ITypeRegistry
+    {
+        public static readonly TypeRegistry DefaultRegistry = new();
+        private static long typeIdDispenser;
+        private readonly ConcurrentDictionary<TypeId, IFifthType> typeRegister = new();
+
+        private TypeRegistry()
+        {
+        }
+
+        public bool TryGetType(TypeId typeId, out IFifthType type) => typeRegister.TryGetValue(typeId, out type);
+
+        public bool TryGetTypeByName(string typeName, out IFifthType type)
+        {
+            foreach (var fifthType in typeRegister.Values)
+            {
+                if (fifthType.ShortName == typeName)
+                {
+                    type = fifthType;
+                    return true;
+                }
+            }
+
+            type = null;
+            return false;
+        }
+
+        public bool TrySetType(IFifthType type, out TypeId typeId)
+        {
+            var existingTypeId = type.TypeId;
+            if (typeRegister.ContainsKey(existingTypeId))
+            {
+                typeId = existingTypeId;
+                return true;
+            }
+            var newTypeId = (ushort) Interlocked.Increment(ref typeIdDispenser);
+            typeId = new TypeId(newTypeId);
+            return typeRegister.TryAdd(typeId, type);
+        }
+
+        public bool RegisterType(IFifthType type)
+        {
+            if (TrySetType(type, out var id))
+            {
+                type.TypeId = id;
+                return true;
+            }
+            return false;
+        }
+
+        public bool LoadPrimitiveTypes()
+        {
+            var result = true;
+            foreach (var t in PrimitiveTypes)
+            {
+                result &= RegisterType(t);
+            }
+
+            return result;
+        }
+
+        public static readonly IFifthType[] PrimitiveTypes = new IFifthType[]
+        {
+            PrimitiveBool.Default,
+            PrimitiveBool.Default,
+            PrimitiveChar.Default,
+            PrimitiveDate.Default,
+            PrimitiveDecimal.Default,
+            PrimitiveDouble.Default,
+            PrimitiveFloat.Default,
+            PrimitiveFunction.Default,
+            PrimitiveInteger.Default,
+            PrimitiveLong.Default,
+            PrimitiveShort.Default,
+            PrimitiveString.Default,
+            PrimitiveTriple.Default
+        };
+    }
+}

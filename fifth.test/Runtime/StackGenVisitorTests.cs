@@ -1,7 +1,7 @@
 #pragma warning disable IDE0058 // Expression value is never used
+
 namespace Fifth.Test.Runtime
 {
-    using System.Diagnostics.CodeAnalysis;
     using AST;
     using Fifth.Parser.LangProcessingPhases;
     using Fifth.Runtime;
@@ -10,6 +10,7 @@ namespace Fifth.Test.Runtime
     using NUnit.Framework;
     using PrimitiveTypes;
     using Tests;
+    using TypeSystem;
 
     [TestFixture(Category = "Code Generation")]
     internal class StackGenVisitorTests : ParserTestBase
@@ -71,7 +72,6 @@ namespace Fifth.Test.Runtime
             stack.Matches(matchList).Should().BeTrue();
         }
 
-
         [Test, Ignore("Requires massive refactoring to work out of context")]
         public void TestFunctionDeclaration()
         {
@@ -86,9 +86,7 @@ namespace Fifth.Test.Runtime
             if (af.Environment.TryGetFunctionDefinition("main", out var fd))
             {
                 (fd as Fifth.Runtime.RuntimeFunctionDefinition)?.Matches(matchList).Should().BeTrue();
-                
             }
-
         }
 
         [Test, Ignore("Requires massive refactoring to work out of context")]
@@ -162,4 +160,5 @@ namespace Fifth.Test.Runtime
             );
     }
 }
+
 #pragma warning restore IDE0058 // Expression value is never used

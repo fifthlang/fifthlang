@@ -3,6 +3,7 @@ namespace Fifth.Runtime
     using System.Collections.Generic;
     using System.Reflection;
     using Antlr4.Runtime.Misc;
+    using TypeSystem;
 
     /// <summary>
     ///     The container for the runtime registration of variable values associated with some scope
@@ -10,6 +11,7 @@ namespace Fifth.Runtime
     public class Environment : IEnvironment
     {
         public Environment(IEnvironment parent) => Parent = parent;
+
         public Dictionary<string, IValueObject> Variables { get; } = new Dictionary<string, IValueObject>();
 
         public Dictionary<string, IFunctionDefinition> Definitions { get; } =
@@ -47,7 +49,7 @@ namespace Fifth.Runtime
                 return true;
             }
 
-            return Parent?.TryGetFunctionDefinition(index, out value)??false;
+            return Parent?.TryGetFunctionDefinition(index, out value) ?? false;
         }
 
         public void AddFunctionDefinition(IFunctionDefinition fd, string name)
@@ -61,6 +63,7 @@ namespace Fifth.Runtime
         }
 
         public void AddFunctionDefinition(IFunctionDefinition fd) => AddFunctionDefinition(fd, fd.Name);
+
         public IValueObject this[string index]
         {
             get
@@ -114,7 +117,7 @@ namespace Fifth.Runtime
                     throw new TypeCheckingException("Unable to find type");
                 }
 
-                Arguments.Add(new FunctionArgument {ArgOrdinal = ord++, Name = parameter.Name, Type = fifthType});
+                Arguments.Add(new FunctionArgument { ArgOrdinal = ord++, Name = parameter.Name, Type = fifthType });
             }
 
             if (!TypeHelpers.TryGetNearestFifthTypeToNativeType(mi.ReturnType, out var returnType))
@@ -140,12 +143,14 @@ namespace Fifth.Runtime
         public RuntimeFunctionDefinition()
         {
         }
+
         public RuntimeFunctionDefinition(IActivationFrame parent)
         {
             ParentFrame = parent as ActivationFrame;
             Environment.Parent = parent.Environment;
             KnowledgeGraph.ParentGraph = parent.KnowledgeGraph;
         }
+
         public string Name { get; set; }
         public IFifthType Type { get; set; }
         public ArrayList<IFunctionArgument> Arguments { get; } = new ArrayList<IFunctionArgument>();

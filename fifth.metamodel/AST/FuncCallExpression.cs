@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Fifth.Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class FuncCallExpression : Expression
     {
@@ -23,12 +24,14 @@ namespace Fifth.AST
             Name = name;
             ActualParameters = actualParameters;
         }
+
         public FuncCallExpression(string name, ExpressionList actualParameters, IFifthType fifthType)
             : base(fifthType)
         {
             Name = name;
             ActualParameters = actualParameters;
         }
+
         public FuncCallExpression(string name, ExpressionList actualParameters)
             : base(null)
         {

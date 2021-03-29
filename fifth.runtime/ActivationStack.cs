@@ -4,6 +4,7 @@ namespace Fifth.Runtime
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using TypeSystem;
 
     public enum StackElementType
     {
@@ -80,10 +81,15 @@ namespace Fifth.Runtime
     {
         bool IsEmpty { get; }
         bool IsValueOnTop { get; }
+
         StackElement Pop();
+
         void Push(StackElement element);
+
         IRuntimeStack PushConstantValue<T>(T value);
+
         IRuntimeStack PushFunction(FuncWrapper f);
+
         IRuntimeStack PushMetaFunction(FuncWrapper f);
     }
 
@@ -149,7 +155,6 @@ namespace Fifth.Runtime
             {
                 return false;
             }
-
 
             return other.GetHashCode() == GetHashCode();
         }

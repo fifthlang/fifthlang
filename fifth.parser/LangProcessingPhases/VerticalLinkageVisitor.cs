@@ -3,30 +3,36 @@ namespace Fifth.LangProcessingPhases
     using System.Collections.Generic;
     using AST;
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class VerticalLinkageVisitor : IAstVisitor
     {
         public Stack<AstNode> Parents = new Stack<AstNode>();
-        void EnterNonTerminal(AstNode ctx)
+
+        private void EnterNonTerminal(AstNode ctx)
         {
             ctx.ParentNode = Parents.PeekOrDefault();
             Parents.Push(ctx);
         }
-        void EnterTerminal(AstNode ctx)
+
+        private void EnterTerminal(AstNode ctx)
         {
             ctx.ParentNode = Parents.PeekOrDefault();
         }
-        void LeaveNonTerminal(AstNode ctx)
+
+        private void LeaveNonTerminal(AstNode ctx)
         {
             Parents.Pop();
         }
-        void LeaveTerminal(AstNode ctx) { }
+
+        private void LeaveTerminal(AstNode ctx)
+        { }
 
         public void EnterAbsoluteUri(AbsoluteIri ctx) => EnterTerminal(ctx);
 
         public void LeaveAbsoluteUri(AbsoluteIri ctx) => LeaveNonTerminal(ctx);
 
-        public void EnterAlias(AliasDeclaration  ctx) => EnterNonTerminal(ctx);
+        public void EnterAlias(AliasDeclaration ctx) => EnterNonTerminal(ctx);
 
         public void EnterAssignmentStmt(AssignmentStmt ctx) => EnterNonTerminal(ctx);
 
@@ -130,6 +136,5 @@ namespace Fifth.LangProcessingPhases
         public void LeaveVariableReference(VariableReference ctx) => LeaveTerminal(ctx);
 
         public void LeaveWhileExp(WhileExp ctx) => LeaveNonTerminal(ctx);
-
     }
 }

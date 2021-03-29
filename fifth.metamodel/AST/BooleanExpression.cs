@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class BooleanExpression : LiteralExpression<bool>
     {
@@ -8,6 +9,7 @@ namespace Fifth.AST
             : base(value, parentNode, type)
         {
         }
+
         public BooleanExpression(bool value, IFifthType type)
             : base(value, type)
         {

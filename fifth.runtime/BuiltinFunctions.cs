@@ -4,7 +4,10 @@
 namespace Fifth.Runtime
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using Symbols;
+    using TypeSystem;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
     public static class BuiltinFunctions
@@ -27,9 +30,26 @@ namespace Fifth.Runtime
 
         [Builtin(Keyword = "read")]
         public static string read() => Console.ReadLine();
+
         [Builtin(Keyword = "write")]
-        public static void write(string s) => Console.WriteLine(s);
+        public static string write(string s)
+        {
+            Console.WriteLine(s);
+            return s;
+        }
+
         [Builtin(Keyword = "sqrt")]
         public static double sqrt(double f) => Math.Sqrt(f);
+
+        /*[Builtin(Keyword = "map")]
+        public static List<object> map(List<object> l, FuncWrapper f)
+        {
+            foreach (var item in l)
+            {
+                f.Invoke(item);
+            }
+
+            return l;
+        }*/
     }
 }

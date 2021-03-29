@@ -1,4 +1,4 @@
-namespace Fifth.Runtime
+namespace Fifth.TypeSystem
 {
     using System.Collections.Generic;
 

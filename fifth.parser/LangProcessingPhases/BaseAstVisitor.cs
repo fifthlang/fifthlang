@@ -1,6 +1,5 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
-    using System;
     using AST;
 
     public abstract class BaseAstVisitor : IAstVisitor
@@ -213,8 +212,12 @@ namespace Fifth.Parser.LangProcessingPhases
         {
         }
 
-        public void EnterWhileExp(WhileExp ctx) { }
+        public void EnterWhileExp(WhileExp ctx)
+        {
+        }
 
-        public void LeaveWhileExp(WhileExp ctx) { }
+        public void LeaveWhileExp(WhileExp ctx)
+        {
+        }
     }
 }

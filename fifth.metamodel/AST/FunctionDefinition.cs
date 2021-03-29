@@ -1,11 +1,12 @@
 namespace Fifth.AST
 {
-    using System.Linq;
     using Fifth.Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class FunctionDefinition : ScopeAstNode
     {
         public ExpressionList Body { get; set; }
+        public string Typename { get; }
         public string Name { get; set; }
         public ParameterDeclarationList ParameterDeclarations { get; set; }
         public IFifthType ReturnType => FifthType;
@@ -18,11 +19,13 @@ namespace Fifth.AST
             visitor.LeaveFunctionDefinition(this);
         }
 
-        public FunctionDefinition(string name, ParameterDeclarationList parameterDeclarations, ExpressionList body, IFifthType fifthType) : base(fifthType)
+        public FunctionDefinition(string name, ParameterDeclarationList parameterDeclarations, ExpressionList body,
+            string typename, IFifthType fifthType) : base(fifthType)
         {
             Name = name;
             ParameterDeclarations = parameterDeclarations;
             Body = body;
+            Typename = typename;
         }
     }
 }

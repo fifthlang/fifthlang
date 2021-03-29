@@ -1,6 +1,7 @@
 namespace Fifth.AST
 {
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class AssignmentStmt : Statement
     {
@@ -8,6 +9,7 @@ namespace Fifth.AST
             : base(parentNode, fifthType)
         {
         }
+
         public AssignmentStmt(IFifthType fifthType)
             : base(fifthType)
         {

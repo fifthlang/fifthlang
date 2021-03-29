@@ -2,6 +2,7 @@ namespace Fifth.AST
 {
     using System;
     using Parser.LangProcessingPhases;
+    using TypeSystem;
 
     public class IfElseExp : Statement
     {
