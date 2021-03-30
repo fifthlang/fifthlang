@@ -35,7 +35,7 @@ namespace Fifth.Tests.Runtime
             _ = sut.IsEmpty.Should().BeFalse();
             var x = sut["hello"];
             _ = x.GetValueOfValueObject().Should().Be(o);
-            _ = x.ValueType.Should().Be(t);
+            _ = x.ValueType.Should().Be(t.TypeId);
         }
 
         [Test]

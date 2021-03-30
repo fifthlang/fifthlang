@@ -1,6 +1,7 @@
 namespace Fifth.Tests
 {
     using System;
+    using System.Collections.Generic;
     using Fifth.PrimitiveTypes;
     using FluentAssertions;
     using NUnit.Framework;
@@ -9,7 +10,6 @@ namespace Fifth.Tests
     [TestFixture, Category("Helper Code"), Category("Type Checking")]
     public class TypeHelperTests
     {
-
         [Test]
         public void TestLoadsBuiltinOperations()
         {
@@ -17,14 +17,22 @@ namespace Fifth.Tests
             InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
         }
 
-        [TestCase("char", typeof(PrimitiveChar))]
-        [TestCase("string", typeof(PrimitiveString))]
-        [TestCase("int", typeof(PrimitiveInteger))]
-        [TestCase("float", typeof(PrimitiveFloat))]
-        public void TestCanGetPrimitiveType(string typename, Type expectedType)
+        [Test]
+        public void TestCanGetPrimitiveType()
         {
-            var fifthType = TypeHelpers.LookupBuiltinType(typename);
-            _ = fifthType.Should().NotBeNull().And.BeOfType(expectedType);
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes().Should().BeTrue();
+            var cases = new Dictionary<string, IFifthType>
+            {
+                {"char", PrimitiveChar.Default},
+                {"string", PrimitiveString.Default},
+                {"int", PrimitiveInteger.Default},
+                {"float", PrimitiveFloat.Default}
+            };
+            foreach (var kvp in cases)
+            {
+                var typeId = TypeHelpers.LookupBuiltinType(kvp.Key);
+                _ = typeId.Should().NotBeNull().And.Be(kvp.Value.TypeId);
+            }
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Fifth.TypeSystem
         public bool TrySetType(IFifthType type, out TypeId typeId)
         {
             var existingTypeId = type.TypeId;
-            if (typeRegister.ContainsKey(existingTypeId))
+            if (existingTypeId != null &&typeRegister.ContainsKey(existingTypeId))
             {
                 typeId = existingTypeId;
                 return true;
