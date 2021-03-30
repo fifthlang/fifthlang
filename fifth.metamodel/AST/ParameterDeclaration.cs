@@ -14,7 +14,7 @@ namespace Fifth.AST
 
         public string ParameterName { get; set; }
         public string TypeName { get; }
-        public TypeId ParameterType => FifthType;
+        public TypeId ParameterType => TypeId;
 
         public override void Accept(IAstVisitor visitor)
         {

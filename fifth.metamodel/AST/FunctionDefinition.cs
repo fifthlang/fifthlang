@@ -9,7 +9,7 @@ namespace Fifth.AST
         public string Typename { get; }
         public string Name { get; set; }
         public ParameterDeclarationList ParameterDeclarations { get; set; }
-        public TypeId ReturnType => FifthType;
+        public TypeId ReturnType => TypeId;
 
         public override void Accept(IAstVisitor visitor)
         {

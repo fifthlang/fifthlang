@@ -31,7 +31,7 @@ namespace Fifth.AST
         }
 
         public Block(AstNode parentNode, ExpressionList expressionList)
-            : this(parentNode, expressionList?.FifthType)
+            : this(parentNode, expressionList?.TypeId)
         {
             Expressions = expressionList.Expressions;
         }

@@ -36,7 +36,7 @@ namespace Fifth.AST
             _ = ifBlock ?? throw new ArgumentNullException(nameof(ifBlock));
             _ = elseBlock ?? throw new ArgumentNullException(nameof(elseBlock));
 
-            if (ifBlock.FifthType != elseBlock.FifthType)
+            if (ifBlock.TypeId != elseBlock.TypeId)
             {
                 throw new TypeCheckingException("Unable to create if statement with different types in its blocks");
             }
@@ -44,7 +44,7 @@ namespace Fifth.AST
             Condition = condition;
             IfBlock = ifBlock;
             ElseBlock = elseBlock;
-            FifthType = IfBlock.FifthType; // just to be sure
+            TypeId = IfBlock.TypeId; // just to be sure
         }
     }
 }

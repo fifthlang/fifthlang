@@ -29,7 +29,7 @@ namespace Fifth.LangProcessingPhases
             {
                 if (ctx.Expressions[i] is FuncCallExpression fce)
                 {
-                    var x = new AssignmentStmt(ctx, fce.FifthType);
+                    var x = new AssignmentStmt(ctx, fce.TypeId);
                     x.VariableRef = new VariableReference(ctx, null)
                         {
                             Name = "__discard__",

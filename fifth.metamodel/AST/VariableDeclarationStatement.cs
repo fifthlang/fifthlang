@@ -19,7 +19,7 @@ namespace Fifth.AST
 
         public Expression Expression { get; set; }
         public Identifier Name { get; set; }
-        public string TypeName => FifthType.Lookup()?.ShortName;
+        public string TypeName => TypeId.Lookup()?.ShortName;
 
         public override void Accept(IAstVisitor visitor)
         {

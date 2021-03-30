@@ -13,7 +13,7 @@ namespace Fifth.Parser.LangProcessingPhases
             enclosingScope.Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.Typename, out var t))
             {
-                ctx.FifthType = t.TypeId;
+                ctx.TypeId = t.TypeId;
             }
         }
 

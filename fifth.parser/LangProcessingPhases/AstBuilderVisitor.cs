@@ -265,7 +265,7 @@ namespace Fifth.Parser.LangProcessingPhases
             var astOperand = (Expression)Visit(operand);
             var result = new UnaryExpression(astOperand, op, null);
             // var resultType = TypeChecker.Infer(result.NearestScope(), result);
-            // result.FifthType = resultType;
+            // result.TypeId = resultType;
             return result;
         }
     }

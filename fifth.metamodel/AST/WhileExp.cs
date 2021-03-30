@@ -27,7 +27,7 @@ namespace Fifth.AST
         }
 
         public WhileExp(Expression condition, Block loopBlock, AstNode parentNode)
-            : this(parentNode, loopBlock?.FifthType)
+            : this(parentNode, loopBlock?.TypeId)
         {
             _ = condition ?? throw new ArgumentNullException(nameof(condition));
             _ = loopBlock ?? throw new ArgumentNullException(nameof(loopBlock));
@@ -37,7 +37,7 @@ namespace Fifth.AST
         }
 
         public WhileExp(Expression condition, Block loopBlock)
-            : this(condition, loopBlock, null, loopBlock?.FifthType)
+            : this(condition, loopBlock, null, loopBlock?.TypeId)
         {
         }
 

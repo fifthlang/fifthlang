@@ -7,7 +7,7 @@ namespace Fifth.AST
     {
         public IdentifierExpression(Identifier identifier, TypeId fifthType) : base(fifthType) => Identifier = identifier;
 
-        public IdentifierExpression(Identifier identifier) : base(identifier.FifthType) => Identifier = identifier;
+        public IdentifierExpression(Identifier identifier) : base(identifier.TypeId) => Identifier = identifier;
 
         public Identifier Identifier { get; set; }
 

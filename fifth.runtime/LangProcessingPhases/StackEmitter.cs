@@ -51,7 +51,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             }
 
             throw new TypeCheckingException(
-                $"operator {ctx.Op} not supported between {ctx.Left.FifthType} and {ctx.Right.FifthType}.");
+                $"operator {ctx.Op} not supported between {ctx.Left.TypeId} and {ctx.Right.TypeId}.");
         }
 
         public void Value(IRuntimeStack stack, object v)

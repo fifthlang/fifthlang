@@ -5,11 +5,11 @@ namespace Fifth.AST
     public abstract class TypedAstNode : AstNode, ITypedAstNode
     {
         protected TypedAstNode(AstNode parentNode, TypeId fifthType)
-            : base(parentNode) => FifthType = fifthType;
+            : base(parentNode) => TypeId = fifthType;
 
         protected TypedAstNode(TypeId fifthType)
-            : base() => FifthType = fifthType;
+            : base() => TypeId = fifthType;
 
-        public TypeId FifthType { get; set; }
+        public TypeId TypeId { get; set; }
     }
 }

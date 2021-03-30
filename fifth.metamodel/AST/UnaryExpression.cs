@@ -28,7 +28,7 @@ namespace Fifth.AST
         }
 
         public UnaryExpression(Expression operand, Operator op)
-            : this(operand, op, operand.FifthType)
+            : this(operand, op, operand.TypeId)
         {
         }
 

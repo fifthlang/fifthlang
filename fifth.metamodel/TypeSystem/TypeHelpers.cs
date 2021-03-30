@@ -103,10 +103,10 @@ namespace Fifth.TypeSystem
         }
 
         public static bool TryEncode(this BinaryExpression be, out ulong encoded)
-            => TryPack(out encoded, (ushort)be.Op, be.Left.FifthType.Value, be.Right.FifthType.Value);
+            => TryPack(out encoded, (ushort)be.Op, be.Left.TypeId.Value, be.Right.TypeId.Value);
 
         public static bool TryEncode(this UnaryExpression ue, out ulong encoded)
-            => TryPack(out encoded, (ushort)ue.Op, ue.Operand.FifthType.Value);
+            => TryPack(out encoded, (ushort)ue.Op, ue.Operand.TypeId.Value);
 
         public static bool TryGetAttribute<T>(this Type t, out T attr)
         {

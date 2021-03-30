@@ -55,7 +55,7 @@ namespace Fifth.TypeSystem
             {
                 if (ste.SymbolKind == SymbolKind.FunctionDeclaration && ste.Context is ITypedAstNode tn)
                 {
-                    return tn.FifthType;
+                    return tn.TypeId;
                 }
             }
             // if it cant be resolved, then perhaps it is a builtin
@@ -117,7 +117,7 @@ namespace Fifth.TypeSystem
             if (scope.TryResolve(ie.Identifier.Value, out var ste))
             {
                 var originTyped = ste.Context as ITypedAstNode;
-                return originTyped.FifthType;
+                return originTyped.TypeId;
             }
 
             return null;
