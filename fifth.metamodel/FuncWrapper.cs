@@ -94,14 +94,14 @@ namespace Fifth
 
     public class FunctionType : IFunctionType
     {
-        public FunctionType(IFifthType returnType, IFifthType[] formalParameterTypes)
+        public FunctionType(TypeId returnType, TypeId[] formalParameterTypes)
         {
             ReturnType = returnType;
             FormalParameterTypes = formalParameterTypes;
         }
 
-        public IFifthType ReturnType { get; }
-        public IFifthType[] FormalParameterTypes { get; }
+        public TypeId ReturnType { get; }
+        public TypeId[] FormalParameterTypes { get; }
         public bool IsNumeric { get; }
         public bool IsGeneric { get; }
         public string ShortName { get; }

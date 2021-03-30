@@ -5,12 +5,12 @@ namespace Fifth.AST
 
     public class AssignmentStmt : Statement
     {
-        public AssignmentStmt(AstNode parentNode, IFifthType fifthType)
+        public AssignmentStmt(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }
 
-        public AssignmentStmt(IFifthType fifthType)
+        public AssignmentStmt(TypeId fifthType)
             : base(fifthType)
         {
         }

@@ -5,12 +5,12 @@ namespace Fifth.AST
 
     public class VariableDeclarationStatement : Statement
     {
-        public VariableDeclarationStatement(AstNode parentNode, IFifthType fifthType)
+        public VariableDeclarationStatement(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }
 
-        public VariableDeclarationStatement(Identifier name, Expression value, IFifthType fifthType)
+        public VariableDeclarationStatement(Identifier name, Expression value, TypeId fifthType)
             : base(fifthType)
         {
             Name = name;
@@ -19,7 +19,7 @@ namespace Fifth.AST
 
         public Expression Expression { get; set; }
         public Identifier Name { get; set; }
-        public string TypeName => FifthType.ShortName;
+        public string TypeName => FifthType.Lookup()?.ShortName;
 
         public override void Accept(IAstVisitor visitor)
         {

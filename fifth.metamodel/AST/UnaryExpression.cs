@@ -5,22 +5,22 @@ namespace Fifth.AST
 
     public class UnaryExpression : Expression
     {
-        public UnaryExpression(IFifthType fifthType) : base(fifthType)
+        public UnaryExpression(TypeId fifthType) : base(fifthType)
         {
         }
 
-        public UnaryExpression(AstNode parentNode, IFifthType fifthType) : base(parentNode, fifthType)
+        public UnaryExpression(AstNode parentNode, TypeId fifthType) : base(parentNode, fifthType)
         {
         }
 
-        public UnaryExpression(Expression operand, Operator op, AstNode parentNode, IFifthType fifthType)
+        public UnaryExpression(Expression operand, Operator op, AstNode parentNode, TypeId fifthType)
             : this(parentNode, fifthType)
         {
             Operand = operand;
             Op = op;
         }
 
-        public UnaryExpression(Expression operand, Operator op, IFifthType fifthType)
+        public UnaryExpression(Expression operand, Operator op, TypeId fifthType)
             : this(fifthType)
         {
             Operand = operand;

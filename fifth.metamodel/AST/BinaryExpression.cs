@@ -18,11 +18,11 @@ namespace Fifth.AST
             visitor.LeaveBinaryExpression(this);
         }
 
-        public BinaryExpression(AstNode parentNode, IFifthType fifthType) : base(parentNode, fifthType)
+        public BinaryExpression(AstNode parentNode, TypeId fifthType) : base(parentNode, fifthType)
         {
         }
 
-        public BinaryExpression(Expression left, Expression right, Operator op, IFifthType resultType)
+        public BinaryExpression(Expression left, Expression right, Operator op, TypeId resultType)
             : base(resultType)
         {
             Left = left;

@@ -5,7 +5,7 @@ namespace Fifth.TypeSystem.PrimitiveTypes
 
     public class PrimitiveList : PrimitiveAnyGeneric
     {
-        public PrimitiveList(IFifthType typeParameter)
+        public PrimitiveList(TypeId typeParameter)
             : base(false, false, "list", typeParameter)
         {
         }

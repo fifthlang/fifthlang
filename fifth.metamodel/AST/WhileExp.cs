@@ -6,12 +6,12 @@ namespace Fifth.AST
 
     public class WhileExp : Statement
     {
-        public WhileExp(AstNode parentNode, IFifthType fifthType)
+        public WhileExp(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }
 
-        public WhileExp(Expression condition, Block loopBlock, AstNode parentNode, IFifthType fifthType)
+        public WhileExp(Expression condition, Block loopBlock, AstNode parentNode, TypeId fifthType)
             : this(parentNode, fifthType)
         {
             _ = condition ?? throw new ArgumentNullException(nameof(condition));
@@ -21,7 +21,7 @@ namespace Fifth.AST
             LoopBlock = loopBlock;
         }
 
-        public WhileExp(Expression condition, Block loopBlock, IFifthType fifthType)
+        public WhileExp(Expression condition, Block loopBlock, TypeId fifthType)
             : this(condition, loopBlock, null, fifthType)
         {
         }

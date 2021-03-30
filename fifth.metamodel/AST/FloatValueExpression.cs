@@ -5,12 +5,12 @@ namespace Fifth.AST
 
     public class FloatValueExpression : LiteralExpression<float>
     {
-        public FloatValueExpression(float value, AstNode parentNode, IFifthType type)
+        public FloatValueExpression(float value, AstNode parentNode, TypeId type)
             : base(value, parentNode, type)
         {
         }
 
-        public FloatValueExpression(float value, IFifthType type)
+        public FloatValueExpression(float value, TypeId type)
             : base(value, type)
         {
         }

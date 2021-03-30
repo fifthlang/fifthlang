@@ -51,7 +51,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             }
 
             throw new TypeCheckingException(
-                $"operator {ctx.Op} not supported between {ctx.Left.FifthType.ShortName} and {ctx.Right.FifthType.ShortName}.");
+                $"operator {ctx.Op} not supported between {ctx.Left.FifthType} and {ctx.Right.FifthType}.");
         }
 
         public void Value(IRuntimeStack stack, object v)
@@ -237,7 +237,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             EmitBlock(e.LoopBlock, emitter, frame);
 
             var condFunName = Guid.NewGuid().ToString();
-            var condFun = new RuntimeFunctionDefinition(frame) {Name = condFunName, Type = PrimitiveBool.Default};
+            var condFun = new RuntimeFunctionDefinition(frame) {Name = condFunName, Type = PrimitiveBool.Default.TypeId};
 
             var condEmitter = new ExpressionStackEmitter(e.Condition);
             condEmitter.Emit(emitter, condFun);

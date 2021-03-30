@@ -20,13 +20,13 @@ namespace Fifth.AST
             visitor.LeaveBlock(this);
         }
 
-        public Block(AstNode parentNode, IFifthType fifthType)
+        public Block(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType, parentNode as IScope)
         {
         }
 
         public Block(AstNode parentNode)
-            : this(parentNode, (IFifthType)null)
+            : this(parentNode, (TypeId)null)
         {
         }
 

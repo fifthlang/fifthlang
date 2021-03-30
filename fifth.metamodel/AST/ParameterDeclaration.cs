@@ -5,7 +5,7 @@ namespace Fifth.AST
 
     public class ParameterDeclaration : TypedAstNode
     {
-        public ParameterDeclaration(string parameterName, string typeName, IFifthType fifthType)
+        public ParameterDeclaration(string parameterName, string typeName, TypeId fifthType)
             : base(fifthType)
         {
             ParameterName = parameterName;
@@ -14,7 +14,7 @@ namespace Fifth.AST
 
         public string ParameterName { get; set; }
         public string TypeName { get; }
-        public IFifthType ParameterType => FifthType;
+        public TypeId ParameterType => FifthType;
 
         public override void Accept(IAstVisitor visitor)
         {

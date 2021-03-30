@@ -9,7 +9,7 @@ namespace Fifth.AST
         public string Typename { get; }
         public string Name { get; set; }
         public ParameterDeclarationList ParameterDeclarations { get; set; }
-        public IFifthType ReturnType => FifthType;
+        public TypeId ReturnType => FifthType;
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -20,7 +20,7 @@ namespace Fifth.AST
         }
 
         public FunctionDefinition(string name, ParameterDeclarationList parameterDeclarations, ExpressionList body,
-            string typename, IFifthType fifthType) : base(fifthType)
+            string typename, TypeId fifthType) : base(fifthType)
         {
             Name = name;
             ParameterDeclarations = parameterDeclarations;

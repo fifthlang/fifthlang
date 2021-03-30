@@ -5,12 +5,12 @@ namespace Fifth.AST
 
     public class IntValueExpression : LiteralExpression<int>
     {
-        public IntValueExpression(int value, AstNode parentNode, IFifthType type)
+        public IntValueExpression(int value, AstNode parentNode, TypeId type)
             : base(value, parentNode, type)
         {
         }
 
-        public IntValueExpression(int value, IFifthType type)
+        public IntValueExpression(int value, TypeId type)
             : base(value, type)
         {
         }

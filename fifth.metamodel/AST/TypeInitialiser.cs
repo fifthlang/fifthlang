@@ -6,7 +6,7 @@ namespace Fifth.AST
 
     public class TypeInitialiser : Expression
     {
-        public TypeInitialiser(AstNode parentNode, IFifthType fifthType)
+        public TypeInitialiser(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }
@@ -19,7 +19,7 @@ namespace Fifth.AST
     }
     public class TypeDefinition : Expression
     {
-        public TypeDefinition(AstNode parentNode, IFifthType fifthType)
+        public TypeDefinition(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }

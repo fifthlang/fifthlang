@@ -2,6 +2,7 @@ namespace Fifth.TypeSystem
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Threading;
     using Fifth.PrimitiveTypes;
 
@@ -10,6 +11,21 @@ namespace Fifth.TypeSystem
         public static readonly TypeRegistry DefaultRegistry = new();
         private static long typeIdDispenser;
         private readonly ConcurrentDictionary<TypeId, IFifthType> typeRegister = new();
+        public static readonly Dictionary<Type, IFifthType> PrimitiveMappings = new()
+        {
+            // {typeof(IList), PrimitiveList.Default}, 
+            { typeof(string), PrimitiveString.Default },
+            { typeof(short), PrimitiveShort.Default },
+            { typeof(int), PrimitiveInteger.Default },
+            { typeof(long), PrimitiveLong.Default },
+            { typeof(bool), PrimitiveBool.Default },
+            { typeof(char), PrimitiveChar.Default },
+            { typeof(float), PrimitiveFloat.Default },
+            { typeof(double), PrimitiveDouble.Default },
+            { typeof(decimal), PrimitiveDecimal.Default },
+            { typeof(DateTimeOffset), PrimitiveDate.Default },
+            { typeof(DateTime), PrimitiveDate.Default }
+        };
 
         private TypeRegistry()
         {

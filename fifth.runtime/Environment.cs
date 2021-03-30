@@ -52,16 +52,6 @@ namespace Fifth.Runtime
             return Parent?.TryGetFunctionDefinition(index, out value) ?? false;
         }
 
-        public void AddFunctionDefinition(IFunctionDefinition fd, string name)
-        {
-            if (Definitions.ContainsKey(name))
-            {
-                throw new TypeCheckingException("Duplication Function Definition");
-            }
-
-            Definitions[name] = fd;
-        }
-
         public void AddFunctionDefinition(IFunctionDefinition fd) => AddFunctionDefinition(fd, fd.Name);
 
         public IValueObject this[string index]
@@ -77,12 +67,22 @@ namespace Fifth.Runtime
             }
             set => Variables[index] = value;
         }
+
+        public void AddFunctionDefinition(IFunctionDefinition fd, string name)
+        {
+            if (Definitions.ContainsKey(name))
+            {
+                throw new TypeCheckingException("Duplication Function Definition");
+            }
+
+            Definitions[name] = fd;
+        }
     }
 
     public interface ITypedThing
     {
         public string Name { get; set; }
-        public IFifthType Type { get; set; }
+        public TypeId Type { get; set; }
     }
 
     public interface IFunctionArgument : ITypedThing
@@ -93,7 +93,7 @@ namespace Fifth.Runtime
     public class FunctionArgument : IFunctionArgument
     {
         public string Name { get; set; }
-        public IFifthType Type { get; set; }
+        public TypeId Type { get; set; }
         public int ArgOrdinal { get; set; }
     }
 
@@ -117,7 +117,7 @@ namespace Fifth.Runtime
                     throw new TypeCheckingException("Unable to find type");
                 }
 
-                Arguments.Add(new FunctionArgument { ArgOrdinal = ord++, Name = parameter.Name, Type = fifthType });
+                Arguments.Add(new FunctionArgument {ArgOrdinal = ord++, Name = parameter.Name, Type = fifthType});
             }
 
             if (!TypeHelpers.TryGetNearestFifthTypeToNativeType(mi.ReturnType, out var returnType))
@@ -129,13 +129,13 @@ namespace Fifth.Runtime
             Function = mi.Wrap();
         }
 
-        public string Name { get; set; }
-        public IFifthType Type { get; set; }
-
-        public ArrayList<IFunctionArgument> Arguments { get; }
-
         //TODO: most of the properties can hang off of the Function's metadata
         public FuncWrapper Function { get; set; }
+
+        public string Name { get; set; }
+        public TypeId Type { get; set; }
+
+        public ArrayList<IFunctionArgument> Arguments { get; }
     }
 
     public class RuntimeFunctionDefinition : ActivationFrame, IFunctionDefinition
@@ -152,7 +152,7 @@ namespace Fifth.Runtime
         }
 
         public string Name { get; set; }
-        public IFifthType Type { get; set; }
+        public TypeId Type { get; set; }
         public ArrayList<IFunctionArgument> Arguments { get; } = new ArrayList<IFunctionArgument>();
     }
 }

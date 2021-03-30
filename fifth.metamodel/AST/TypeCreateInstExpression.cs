@@ -5,7 +5,7 @@ namespace Fifth.AST
 
     public class TypeCreateInstExpression : Expression
     {
-        public TypeCreateInstExpression(AstNode parentNode, IFifthType fifthType)
+        public TypeCreateInstExpression(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }

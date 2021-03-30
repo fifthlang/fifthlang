@@ -13,12 +13,12 @@ namespace Fifth.TypeSystem
 
     public interface IGenericFifthType : IFifthType
     {
-        public IFifthType[] TypeParameters { get; }
+        public TypeId[] TypeParameters { get; }
     }
 
     public interface IFunctionType : IFifthType
     {
-        public IFifthType[] FormalParameterTypes { get; }
-        IFifthType ReturnType { get; }
+        public TypeId[] FormalParameterTypes { get; }
+        TypeId ReturnType { get; }
     }
 }

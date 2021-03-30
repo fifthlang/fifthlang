@@ -4,11 +4,11 @@ namespace Fifth.PrimitiveTypes
 
     public abstract class PrimitiveAnyGeneric : PrimitiveAny, IGenericFifthType
     {
-        protected PrimitiveAnyGeneric(bool isPrimitive, bool isNumeric, string shortName, params IFifthType[] typeParameters)
+        protected PrimitiveAnyGeneric(bool isPrimitive, bool isNumeric, string shortName, params TypeId[] typeParameters)
             : base(isPrimitive, isNumeric, shortName)
         {
         }
 
-        public IFifthType[] TypeParameters { get; }
+        public TypeId[] TypeParameters { get; }
     }
 }

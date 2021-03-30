@@ -55,7 +55,7 @@ namespace Fifth.TypeSystem
                                 var t = args[0].ParameterType;
                                 if (TypeChecker.PrimitiveMappings.TryGetValue(t, out var operand))
                                 {
-                                    if (TypeHelpers.TryPack(out var ord, (ushort)attr.Op, operand.TypeId.Value))
+                                    if (TypeHelpers.TryPack(out var ord, (ushort)attr.Op, operand.Value))
                                     {
                                         opId = new OperatorId(ord);
                                         operationRegister[opId] = m.Wrap();
@@ -79,8 +79,8 @@ namespace Fifth.TypeSystem
 
                                 if (TypeHelpers.TryPack(out var ord,
                                     (ushort)attr.Op,
-                                    leftFifthType.TypeId.Value,
-                                    rightFifthType.TypeId.Value))
+                                    leftFifthType.Value,
+                                    rightFifthType.Value))
                                 {
                                     opId = new OperatorId(ord);
                                     operationRegister[opId] = m.Wrap();
@@ -103,7 +103,7 @@ namespace Fifth.TypeSystem
             }
         }
 
-        public bool TryGetOperationType(Expression e, out IFifthType t)
+        public bool TryGetOperationType(Expression e, out TypeId t)
         {
             if (TryGetOperation(e, out var fw))
             {

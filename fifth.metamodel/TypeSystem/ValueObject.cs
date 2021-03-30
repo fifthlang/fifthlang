@@ -7,7 +7,7 @@ namespace Fifth.TypeSystem
     /// </summary>
     public class ValueObject : IValueObject<object>
     {
-        public ValueObject(IFifthType fifthType, string name, object value)
+        public ValueObject(TypeId fifthType, string name, object value)
         {
             ValueType = fifthType;
             Value = value;
@@ -20,7 +20,7 @@ namespace Fifth.TypeSystem
         public List<string> NamesInScope { get; set; } = new List<string>(1);
 
         public object Value { get; set; }
-        public IFifthType ValueType { get; }
+        public TypeId ValueType { get; }
     }
 
     /// <summary>
@@ -28,14 +28,14 @@ namespace Fifth.TypeSystem
     /// </summary>
     public class ValueObject<T> : IValueObject<T>
     {
-        public ValueObject(IFifthType fifthType, string name, T value)
+        public ValueObject(TypeId fifthType, string name, T value)
         {
             ValueType = fifthType;
             NamesInScope.Add(name);
             Value = value;
         }
 
-        public IFifthType ValueType { get; }
+        public TypeId ValueType { get; }
 
         /// <summary>
         ///     A list of names by which this variable is known

@@ -29,7 +29,7 @@ namespace Fifth.Parser.LangProcessingPhases
             VisitExplist(context.explist());
 
         public override IAstNode VisitBoolean(FifthParser.BooleanContext context)
-            => new BooleanExpression(bool.Parse(context.value.Text), PrimitiveBool.Default);
+            => new BooleanExpression(bool.Parse(context.value.Text), PrimitiveBool.Default.TypeId);
 
         public override IAstNode VisitChildren(IRuleNode node) => base.VisitChildren(node);
 
@@ -46,7 +46,7 @@ namespace Fifth.Parser.LangProcessingPhases
             => BinExp(context.left, context.right, Operator.Divide);
 
         public override IAstNode VisitEDouble([NotNull] FifthParser.EDoubleContext context) =>
-            new FloatValueExpression(float.Parse(context.value.Text), PrimitiveFloat.Default);
+            new FloatValueExpression(float.Parse(context.value.Text), PrimitiveFloat.Default.TypeId);
 
         public override IAstNode VisitEFuncCall([NotNull] FifthParser.EFuncCallContext context)
         {
@@ -62,7 +62,7 @@ namespace Fifth.Parser.LangProcessingPhases
             => BinExp(context.left, context.right, Operator.GreaterThan);
 
         public override IAstNode VisitEInt([NotNull] FifthParser.EIntContext context) =>
-            new IntValueExpression(int.Parse(context.value.Text), PrimitiveInteger.Default);
+            new IntValueExpression(int.Parse(context.value.Text), PrimitiveInteger.Default.TypeId);
 
         public override IAstNode VisitELEQ([NotNull] FifthParser.ELEQContext context)
             => BinExp(context.left, context.right, Operator.LessThanOrEqual);
@@ -88,7 +88,7 @@ namespace Fifth.Parser.LangProcessingPhases
                 s = s.Substring(1, s.Length - 2);
             }
 
-            return new StringValueExpression(s, PrimitiveString.Default);
+            return new StringValueExpression(s, PrimitiveString.Default.TypeId);
         }
 
         public override IAstNode VisitESub([NotNull] FifthParser.ESubContext context)

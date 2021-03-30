@@ -14,7 +14,7 @@ namespace Fifth.AST
             visitor.LeaveAbsoluteUri(this);
         }
 
-        public AbsoluteIri(AstNode parentNode) : base(parentNode, PrimitiveUri.Default)
+        public AbsoluteIri(AstNode parentNode) : base(parentNode, PrimitiveUri.Default.TypeId)
         {
         }
     }

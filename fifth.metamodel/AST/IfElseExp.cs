@@ -6,12 +6,12 @@ namespace Fifth.AST
 
     public class IfElseExp : Statement
     {
-        public IfElseExp(IFifthType fifthType)
+        public IfElseExp(TypeId fifthType)
             : base(fifthType)
         {
         }
 
-        public IfElseExp(Expression condition, Block ifBlock, Block elseBlock, IFifthType fifthType)
+        public IfElseExp(Expression condition, Block ifBlock, Block elseBlock, TypeId fifthType)
             : base(fifthType) =>
             Construct(condition, ifBlock, elseBlock);
 

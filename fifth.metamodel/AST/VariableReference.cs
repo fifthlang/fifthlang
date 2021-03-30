@@ -5,7 +5,7 @@ namespace Fifth.AST
 
     public class VariableReference : TypedAstNode
     {
-        public VariableReference(AstNode parentNode, IFifthType fifthType)
+        public VariableReference(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }

@@ -15,8 +15,8 @@ namespace Fifth.LangProcessingPhases
 
                 var newExpressions = new List<Expression>()
                 {
-                    new VariableDeclarationStatement(new Identifier("__discard__"), new StringValueExpression("__discard__", PrimitiveString.Default),
-                        PrimitiveString.Default) {ParentNode = ctx.Body}
+                    new VariableDeclarationStatement(new Identifier("__discard__"), new StringValueExpression("__discard__", PrimitiveString.Default.TypeId),
+                        PrimitiveString.Default.TypeId) {ParentNode = ctx.Body}
                 };
                 newExpressions.AddRange(ctx.Body.Expressions);
                 ctx.Body.Expressions = newExpressions;

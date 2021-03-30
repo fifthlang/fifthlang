@@ -4,12 +4,12 @@ namespace Fifth.AST
 
     public abstract class Statement : Expression
     {
-        protected Statement(AstNode parentNode, IFifthType fifthType)
+        protected Statement(AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
         }
 
-        protected Statement(IFifthType fifthType)
+        protected Statement(TypeId fifthType)
             : base(fifthType)
         {
         }

@@ -10,7 +10,7 @@ namespace Fifth.AST
             Value = value;
         }
 
-        public Identifier(string value, IFifthType type) : base(type)
+        public Identifier(string value, TypeId type) : base(type)
         {
             Value = value;
         }

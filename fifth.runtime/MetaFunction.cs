@@ -223,7 +223,7 @@ namespace Fifth.Runtime
             _ = typeReferencedByTypeName ?? throw new TypeCheckingException("Unable to find type, or no type provided");
 
             dispatcher.Frame.Environment[varName] =
-                new ValueObject<string>(typeReferencedByTypeName, varName, string.Empty);
+                new ValueObject<string>(typeReferencedByTypeName.TypeId, varName, string.Empty);
 
             // create var ref in place of string, to prove its been created in env
             // dispatcher.Frame.Stack.PushVariableReference(dispatcher.Frame.Environment[varName]);
@@ -254,7 +254,7 @@ namespace Fifth.Runtime
         }
 
         public static IFifthType LookupTypeDefinitionByName(string typeName) =>
-            TypeHelpers.LookupType(typeName);
+            TypeHelpers.LookupType(typeName).Lookup();
 
         private static void InvokeBuiltinFunction(IDispatcher dispatcher, IFunctionDefinition functionDefinition)
         {

@@ -8,20 +8,20 @@ namespace Fifth.TypeSystem
 
     public static class TypeChecker
     {
-        public static readonly Dictionary<Type, IFifthType> PrimitiveMappings = new()
+        public static readonly Dictionary<Type, TypeId> PrimitiveMappings = new()
         {
             // {typeof(IList), PrimitiveList.Default}, 
-            {typeof(string), PrimitiveString.Default},
-            {typeof(short), PrimitiveShort.Default},
-            {typeof(int), PrimitiveInteger.Default},
-            {typeof(long), PrimitiveLong.Default},
-            {typeof(bool), PrimitiveBool.Default},
-            {typeof(char), PrimitiveChar.Default},
-            {typeof(float), PrimitiveFloat.Default},
-            {typeof(double), PrimitiveDouble.Default},
-            {typeof(decimal), PrimitiveDecimal.Default},
-            {typeof(DateTimeOffset), PrimitiveDate.Default},
-            {typeof(DateTime), PrimitiveDate.Default}
+            {typeof(string), PrimitiveString.Default.TypeId },
+            {typeof(short), PrimitiveShort.Default.TypeId},
+            {typeof(int), PrimitiveInteger.Default.TypeId},
+            {typeof(long), PrimitiveLong.Default.TypeId},
+            {typeof(bool), PrimitiveBool.Default.TypeId},
+            {typeof(char), PrimitiveChar.Default.TypeId},
+            {typeof(float), PrimitiveFloat.Default.TypeId},
+            {typeof(double), PrimitiveDouble.Default.TypeId},
+            {typeof(decimal), PrimitiveDecimal.Default.TypeId},
+            {typeof(DateTimeOffset), PrimitiveDate.Default.TypeId},
+            {typeof(DateTime), PrimitiveDate.Default.TypeId}
         };
 
         public static void Check(IScope scope, Expression exp, IFifthType type) => throw new NotImplementedException();
@@ -37,11 +37,11 @@ namespace Fifth.TypeSystem
 
         public static IScope Extend(IScope scope, TypeDefinition typeDef) => throw new NotImplementedException();
 
-        public static IFifthType Infer(IScope scope, Expression exp)
+        public static TypeId Infer(IScope scope, Expression exp)
             => exp switch
             {
-                IntValueExpression i => PrimitiveInteger.Default,
-                StringValueExpression s => PrimitiveString.Default,
+                IntValueExpression i => PrimitiveInteger.Default.TypeId,
+                StringValueExpression s => PrimitiveString.Default.TypeId,
                 BinaryExpression be => InferBinaryExpression(scope, be),
                 UnaryExpression ue => InferUnaryExpression(scope, ue),
                 IdentifierExpression ie => InferIdentifierExpression(scope, ie),
@@ -49,7 +49,7 @@ namespace Fifth.TypeSystem
                 { } => null //throw new NotImplementedException("Need to implement other exception types")
             };
 
-        private static IFifthType InferFuncCallExpression(IScope scope, FuncCallExpression fce)
+        private static TypeId InferFuncCallExpression(IScope scope, FuncCallExpression fce)
         {
             if (scope.TryResolve(fce.Name, out var ste))
             {
@@ -64,23 +64,23 @@ namespace Fifth.TypeSystem
         }
 
 
-        public static IFifthType Lookup(this object o)
+        public static TypeId Lookup(this object o)
             => PrimitiveMappings[o.GetType()];
 
-        public static IFifthType LookupFunctionResultType(string identifier, IScope scope) =>
+        public static TypeId LookupFunctionResultType(string identifier, IScope scope) =>
             throw new NotImplementedException();
 
-        public static IFifthType LookupType(this Type t)
+        public static TypeId LookupType(this Type t)
             => PrimitiveMappings[t];
 
-        public static IFifthType LookupType(string identifier, IScope scope) => throw new NotImplementedException();
+        public static TypeId LookupType(string identifier, IScope scope) => throw new NotImplementedException();
 
         public static IScope NewBlock(IScope scope) => throw new NotImplementedException();
 
-        public static bool TryInferOperationResultType(Operator op, IFifthType lhsType, IFifthType rhsType,
-            out IFifthType resultType)
+        public static bool TryInferOperationResultType(Operator op, TypeId lhsType, TypeId rhsType,
+            out TypeId resultType)
         {
-            if (TypeHelpers.TryPack(out var id, (ushort)op, lhsType.TypeId.Value, rhsType.TypeId.Value))
+            if (TypeHelpers.TryPack(out var id, (ushort)op, lhsType.Value, rhsType.Value))
             {
                 var opId = new OperatorId(id);
                 var funType = InbuiltOperatorRegistry.DefaultRegistry.LookupOperationType(opId);
@@ -96,7 +96,7 @@ namespace Fifth.TypeSystem
             return false;
         }
 
-        private static IFifthType InferBinaryExpression(IScope scope, BinaryExpression be)
+        private static TypeId InferBinaryExpression(IScope scope, BinaryExpression be)
         {
             var lhsType = Infer(scope, be.Left);
             var rhsType = Infer(scope, be.Right);
@@ -112,7 +112,7 @@ namespace Fifth.TypeSystem
             return null;
         }
 
-        private static IFifthType InferIdentifierExpression(IScope scope, IdentifierExpression ie)
+        private static TypeId InferIdentifierExpression(IScope scope, IdentifierExpression ie)
         {
             if (scope.TryResolve(ie.Identifier.Value, out var ste))
             {
@@ -123,9 +123,9 @@ namespace Fifth.TypeSystem
             return null;
         }
 
-        private static IFifthType InferUnaryExpression(IScope scope, UnaryExpression ue)
+        private static TypeId InferUnaryExpression(IScope scope, UnaryExpression ue)
         {
-            IFifthType result;
+            TypeId result;
             var type = Infer(scope, ue.Operand);
             _ = ue.TryEncode(out var id);
             var fw = InbuiltOperatorRegistry.DefaultRegistry[new OperatorId(id)];

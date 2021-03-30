@@ -19,7 +19,7 @@ namespace Fifth.AST
             visitor.LeaveExpressionList(this);
         }
 
-        public ExpressionList(List<Expression> expressions, IFifthType fifthType) : base(fifthType)
+        public ExpressionList(List<Expression> expressions, TypeId fifthType) : base(fifthType)
         {
             _ = expressions ?? throw new ArgumentNullException(nameof(expressions));
             Expressions = expressions;

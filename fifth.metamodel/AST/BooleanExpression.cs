@@ -5,12 +5,12 @@ namespace Fifth.AST
 
     public class BooleanExpression : LiteralExpression<bool>
     {
-        public BooleanExpression(bool value, AstNode parentNode, IFifthType type)
+        public BooleanExpression(bool value, AstNode parentNode, TypeId type)
             : base(value, parentNode, type)
         {
         }
 
-        public BooleanExpression(bool value, IFifthType type)
+        public BooleanExpression(bool value, TypeId type)
             : base(value, type)
         {
         }

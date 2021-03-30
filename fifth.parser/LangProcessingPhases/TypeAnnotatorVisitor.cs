@@ -2,7 +2,6 @@ namespace Fifth.Parser.LangProcessingPhases
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using AST;
     using PrimitiveTypes;
     using Symbols;
@@ -13,17 +12,16 @@ namespace Fifth.Parser.LangProcessingPhases
         private readonly Stack<IAstNode> currentFunctionDef = new();
 
         public override void EnterFloatValueExpression(FloatValueExpression ctx)
-            => ctx.FifthType = PrimitiveFloat.Default;
+            => ctx.FifthType = PrimitiveFloat.Default.TypeId;
+
+        public override void EnterFuncCallExpression(FuncCallExpression ctx)
+        {
+            var scope = ctx.NearestScope();
+            var t = TypeChecker.Infer(scope, ctx);
+            ctx.FifthType = t;
+        }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Push(ctx);
-
-        public override void EnterParameterDeclaration(ParameterDeclaration ctx)
-        {
-            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.TypeName, out var paramType))
-            {
-                ctx.FifthType = paramType;
-            }
-        }
 
         public override void EnterIdentifierExpression(IdentifierExpression ctx)
         {
@@ -36,12 +34,26 @@ namespace Fifth.Parser.LangProcessingPhases
             }
         }
 
+        public override void EnterIntValueExpression(IntValueExpression ctx)
+            => ctx.FifthType = PrimitiveInteger.Default.TypeId;
+
+        public override void EnterParameterDeclaration(ParameterDeclaration ctx)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.TypeName, out var paramType))
+            {
+                ctx.FifthType = paramType.TypeId;
+            }
+        }
+
+        public override void EnterStringValueExpression(StringValueExpression ctx)
+            => ctx.FifthType = PrimitiveString.Default.TypeId;
+
         public override void EnterVariableReference(VariableReference ctx)
         {
             var scope = ctx.NearestScope();
             if (scope.TryResolve(ctx.Name, out var symtabEntry))
             {
-                IFifthType fifthType = null;
+                TypeId fifthType = null;
                 switch (symtabEntry.SymbolKind)
                 {
                     case SymbolKind.VariableDeclaration:
@@ -76,12 +88,6 @@ namespace Fifth.Parser.LangProcessingPhases
             }
         }
 
-        public override void EnterIntValueExpression(IntValueExpression ctx)
-            => ctx.FifthType = PrimitiveInteger.Default;
-
-        public override void EnterStringValueExpression(StringValueExpression ctx)
-            => ctx.FifthType = PrimitiveString.Default;
-
         public override void LeaveAssignmentStmt(AssignmentStmt ctx)
         {
             _ = ctx ?? throw new ArgumentNullException(nameof(ctx));
@@ -102,12 +108,6 @@ namespace Fifth.Parser.LangProcessingPhases
         }
 
         public override void LeaveFunctionDefinition(FunctionDefinition ctx) => currentFunctionDef.Pop();
-        public override void EnterFuncCallExpression(FuncCallExpression ctx)
-        {
-            var scope = ctx.NearestScope();
-            var t = TypeChecker.Infer(scope, ctx);
-            ctx.FifthType = t;
-        }
 
         private void AnnotateIfIdentifierInSymtab(Expression expression)
         {
@@ -117,7 +117,7 @@ namespace Fifth.Parser.LangProcessingPhases
                     var scope = id.NearestScope();
                     if (scope.SymbolTable.TryGetValue(id.Identifier.Value, out var symtabEntry))
                     {
-                        IFifthType fifthType = null;
+                        TypeId fifthType = null;
                         switch (symtabEntry.SymbolKind)
                         {
                             case SymbolKind.VariableDeclaration:
@@ -148,7 +148,6 @@ namespace Fifth.Parser.LangProcessingPhases
                 case ITypedAstNode tn:
                     if (tn.FifthType != null)
                     {
-                        return;
                     }
 
                     break;

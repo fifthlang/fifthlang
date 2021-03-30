@@ -47,11 +47,11 @@ namespace Fifth.TypeSystem
             => LookupBuiltinType(typename) != null;
 
 
-        public static IFifthType LookupBuiltinType(string typename)
+        public static TypeId LookupBuiltinType(string typename)
         {
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(typename, out var type))
             {
-                return type;
+                return type.TypeId;
             }
 
             return null;
@@ -68,7 +68,7 @@ namespace Fifth.TypeSystem
             throw new TypeCheckingException("Unrecognised Operation");
         }
 
-        public static IFifthType LookupType(string typename)
+        public static TypeId LookupType(string typename)
         {
             if (IsBuiltinType(typename))
             {
@@ -103,10 +103,10 @@ namespace Fifth.TypeSystem
         }
 
         public static bool TryEncode(this BinaryExpression be, out ulong encoded)
-            => TryPack(out encoded, (ushort)be.Op, be.Left.FifthType.TypeId.Value, be.Right.FifthType.TypeId.Value);
+            => TryPack(out encoded, (ushort)be.Op, be.Left.FifthType.Value, be.Right.FifthType.Value);
 
         public static bool TryEncode(this UnaryExpression ue, out ulong encoded)
-            => TryPack(out encoded, (ushort)ue.Op, ue.Operand.FifthType.TypeId.Value);
+            => TryPack(out encoded, (ushort)ue.Op, ue.Operand.FifthType.Value);
 
         public static bool TryGetAttribute<T>(this Type t, out T attr)
         {
@@ -155,7 +155,7 @@ namespace Fifth.TypeSystem
             return false;
         }
 
-        public static bool TryGetNearestFifthTypeToNativeType(Type nt, out IFifthType ft)
+        public static bool TryGetNearestFifthTypeToNativeType(Type nt, out TypeId ft)
         {
             ft = nt.LookupType();
             return true;
@@ -204,5 +204,15 @@ namespace Fifth.TypeSystem
             => new FunctionType(method.ReturnType.LookupType(), method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
         public static IFunctionType GetFuncType(this FuncWrapper method)
             => new FunctionType(method.ResultType.LookupType(), method.ArgTypes.Select(p => p.LookupType()).ToArray());
+
+        public static IFifthType Lookup(this TypeId tid)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetType(tid, out var ft))
+            {
+                return ft;
+            }
+
+            return null;
+        }
     }
 }

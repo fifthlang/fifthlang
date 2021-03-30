@@ -18,14 +18,14 @@ namespace Fifth.AST
             visitor.LeaveFuncCallExpression(this);
         }
 
-        public FuncCallExpression(string name, ExpressionList actualParameters, AstNode parentNode, IFifthType fifthType)
+        public FuncCallExpression(string name, ExpressionList actualParameters, AstNode parentNode, TypeId fifthType)
             : base(parentNode, fifthType)
         {
             Name = name;
             ActualParameters = actualParameters;
         }
 
-        public FuncCallExpression(string name, ExpressionList actualParameters, IFifthType fifthType)
+        public FuncCallExpression(string name, ExpressionList actualParameters, TypeId fifthType)
             : base(fifthType)
         {
             Name = name;

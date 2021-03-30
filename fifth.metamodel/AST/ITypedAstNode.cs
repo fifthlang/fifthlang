@@ -4,6 +4,6 @@ namespace Fifth.AST
 
     public interface ITypedAstNode
     {
-        IFifthType FifthType { get; set; }
+        TypeId FifthType { get; set; }
     }
 }

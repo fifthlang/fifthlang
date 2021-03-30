@@ -31,7 +31,7 @@ namespace Fifth.Tests.Runtime
             var sut = new Environment(null);
             _ = sut.Should().NotBeNull();
             _ = sut.IsEmpty.Should().BeTrue();
-            sut["hello"] = new ValueObject(t, t.ShortName, o);
+            sut["hello"] = new ValueObject(t.TypeId, t.ShortName, o);
             _ = sut.IsEmpty.Should().BeFalse();
             var x = sut["hello"];
             _ = x.GetValueOfValueObject().Should().Be(o);

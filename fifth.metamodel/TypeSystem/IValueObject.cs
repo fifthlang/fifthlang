@@ -8,7 +8,7 @@ namespace Fifth.TypeSystem
         ///     Gets the type of the value
         /// </summary>
         /// <value>The type of the value.</value>
-        IFifthType ValueType { get; }
+        TypeId ValueType { get; }
 
         /// <summary>
         ///     A list of names by which this variable is known

@@ -5,13 +5,13 @@ namespace Fifth.AST
 
     public abstract class ScopeAstNode : TypedAstNode, IScope
     {
-        protected ScopeAstNode(AstNode parentNode, IFifthType fifthType, IScope enclosingScope) : base(parentNode, fifthType)
+        protected ScopeAstNode(AstNode parentNode, TypeId fifthType, IScope enclosingScope) : base(parentNode, fifthType)
         {
             SymbolTable = new SymbolTable();
             EnclosingScope = enclosingScope;
         }
 
-        protected ScopeAstNode(IFifthType fifthType) : base(fifthType)
+        protected ScopeAstNode(TypeId fifthType) : base(fifthType)
         {
             SymbolTable = new SymbolTable();
         }
