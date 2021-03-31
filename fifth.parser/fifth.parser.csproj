@@ -5,8 +5,8 @@
     <RootNamespace>Fifth</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.8.0" />
-    <PackageReference Include="log4net" Version="2.0.11" />
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
+    <PackageReference Include="log4net" Version="2.0.12" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />

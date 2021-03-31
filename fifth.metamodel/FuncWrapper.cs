@@ -3,7 +3,6 @@ namespace Fifth
     using System;
     using System.Collections.Generic;
     using PrimitiveTypes;
-    using TypeSystem;
 
     /// <summary>
     ///     A wrapper around any sort of function, to make it easier to extract and perform type
@@ -90,22 +89,5 @@ namespace Fifth
         public object Invoke(params object[] args) => Function.DynamicInvoke(args);
 
         public override string ToString() => $"\\{Function.Method.Name}";
-    }
-
-    public class FunctionType : IFunctionType
-    {
-        public FunctionType(TypeId returnType, TypeId[] formalParameterTypes)
-        {
-            ReturnType = returnType;
-            FormalParameterTypes = formalParameterTypes;
-        }
-
-        public TypeId ReturnType { get; }
-        public TypeId[] FormalParameterTypes { get; }
-        public bool IsNumeric { get; }
-        public bool IsGeneric { get; }
-        public string ShortName { get; }
-        public TypeId TypeId { get; set; }
-        public bool IsPrimitive { get; }
     }
 }
