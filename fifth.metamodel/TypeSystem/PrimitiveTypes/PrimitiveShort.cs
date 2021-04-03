@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveShort : PrimitiveAny
     {
-        private PrimitiveShort() : base(true, true, "short")
+        private PrimitiveShort() : base("short")
         {
         }
 

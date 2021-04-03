@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveDate : PrimitiveAny
     {
-        private PrimitiveDate():base(true, false, "date")
+        private PrimitiveDate():base("date")
         {
         }
 

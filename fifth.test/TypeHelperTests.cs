@@ -21,7 +21,7 @@ namespace Fifth.Tests
         public void TestCanGetPrimitiveType()
         {
             TypeRegistry.DefaultRegistry.LoadPrimitiveTypes().Should().BeTrue();
-            var cases = new Dictionary<string, IFifthType>
+            var cases = new Dictionary<string, IType>
             {
                 {"char", PrimitiveChar.Default},
                 {"string", PrimitiveString.Default},

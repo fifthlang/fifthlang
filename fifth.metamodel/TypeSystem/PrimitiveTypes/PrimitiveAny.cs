@@ -1,21 +1,12 @@
-namespace Fifth.PrimitiveTypes
+namespace Fifth.TypeSystem.PrimitiveTypes
 {
-    using System.Collections.Generic;
     using TypeSystem;
 
-    public abstract class PrimitiveAny : IFifthType
+    public abstract class PrimitiveAny : IType
     {
-        public bool IsPrimitive { get; }
-        protected PrimitiveAny(bool isPrimitive, bool isNumeric, string shortName)
-        {
-            IsPrimitive = isPrimitive;
-            IsNumeric = isNumeric;
-            ShortName = shortName;
-        }
+        protected PrimitiveAny(string name) => Name = name;
 
-        public bool IsNumeric { get; }
-        public bool IsGeneric { get; }
-        public string ShortName { get; }
+        public string Name { get; }
         public TypeId TypeId { get; set; }
     }
 }

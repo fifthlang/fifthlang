@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveDouble : PrimitiveAny
     {
-        private PrimitiveDouble():base(true, true, "double")
+        private PrimitiveDouble():base("double")
         {
         }
         public static PrimitiveDouble Default { get; set; } = new PrimitiveDouble();

@@ -24,7 +24,7 @@ namespace Fifth.TypeSystem
             {typeof(DateTime), PrimitiveDate.Default.TypeId}
         };
 
-        public static void Check(IScope scope, Expression exp, IFifthType type) => throw new NotImplementedException();
+        public static void Check(IScope scope, Expression exp, IType type) => throw new NotImplementedException();
 
         public static void Check(IScope scope, TypeDefinition typeDef) => throw new NotImplementedException();
 
@@ -32,7 +32,7 @@ namespace Fifth.TypeSystem
 
         public static IScope EmptyEnv() => throw new NotImplementedException();
 
-        public static IScope Extend(IScope scope, string identifier, IFifthType type) =>
+        public static IScope Extend(IScope scope, string identifier, IType type) =>
             throw new NotImplementedException();
 
         public static IScope Extend(IScope scope, TypeDefinition typeDef) => throw new NotImplementedException();
@@ -86,7 +86,7 @@ namespace Fifth.TypeSystem
                 var funType = InbuiltOperatorRegistry.DefaultRegistry.LookupOperationType(opId);
                 if (TypeRegistry.DefaultRegistry.TryGetType(funType, out var ft))
                 {
-                    var x = ft as IFunctionType;
+                    var x = ft as IFunctionSignature;
                     resultType = x.ReturnType;
                     return true;
                 }

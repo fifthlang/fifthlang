@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveString : PrimitiveAny
     {
-        private PrimitiveString():base(true, false, "string")
+        private PrimitiveString():base("string")
         {
         }
 

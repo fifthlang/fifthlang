@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveBool : PrimitiveAny
     {
-        private PrimitiveBool():base(true, false, "bool")
+        private PrimitiveBool():base("bool")
         {
         }
 

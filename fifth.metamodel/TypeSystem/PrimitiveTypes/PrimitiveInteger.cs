@@ -1,12 +1,13 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
 #pragma warning disable IDE1006 // Naming Styles
 
     public class PrimitiveInteger : PrimitiveAny
     {
-        private PrimitiveInteger():base(true, true, "int")
+        private PrimitiveInteger():base("int")
         {
         }
 

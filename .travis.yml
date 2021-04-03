@@ -1,8 +1,8 @@
 language: csharp
 mono: none
+os: linux
 dist: bionic
-sudo: required 
-dotnet: 5
+dotnet: 5.0
 install:
   - dotnet restore
 script:

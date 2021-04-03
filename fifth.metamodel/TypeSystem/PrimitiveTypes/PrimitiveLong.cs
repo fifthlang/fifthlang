@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveLong : PrimitiveAny
     {
-        private PrimitiveLong():base(true, true, "long")
+        private PrimitiveLong():base("long")
         {
         }
 

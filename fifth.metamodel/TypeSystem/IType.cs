@@ -2,21 +2,22 @@ namespace Fifth.TypeSystem
 {
     using System.Collections.Generic;
 
-    public interface IFifthType
+    public interface IType
     {
-        public bool IsNumeric { get; }
-        public bool IsGeneric { get; }
-        public string ShortName { get; }
+        public string Name { get; }
         public TypeId TypeId { get; set; } // no more than 64K types
-        bool IsPrimitive { get; }
     }
 
-    public interface IGenericFifthType : IFifthType
+    public interface ITypeAlias : IType
+    {
+        public TypeId AliasedTypeId { get; }
+    }
+    public interface IGenericType : IType
     {
         public TypeId[] TypeParameters { get; }
     }
 
-    public interface IFunctionType : IFifthType
+    public interface IFunctionSignature : IGenericType
     {
         public TypeId[] FormalParameterTypes { get; }
         TypeId ReturnType { get; }

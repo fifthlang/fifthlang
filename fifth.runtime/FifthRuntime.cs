@@ -74,7 +74,7 @@ namespace Fifth.Runtime
             return parser;
         }
 
-        private static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
+        public static IAstNode ParseAndAnnotateProgram(string fifthProgram, out ActivationFrame rootActivationFrame)
         {
             var parseTree = GetParserFor(fifthProgram).fifth();
             var visitor = new AstBuilderVisitor();

@@ -83,7 +83,7 @@ namespace Fifth.Runtime.LangProcessingPhases
         public StackElement WrapMetaFunction(Func<IDispatcher, IDispatcher> metafunc)
             => new MetaFunctionStackElement(Fun.Wrap(metafunc));
 
-        private IFifthType LookupType(Expression e) => e["type"] as IFifthType;
+        private IType LookupType(Expression e) => e["type"] as IType;
     }
 
     public interface ISpecialFormEmitter

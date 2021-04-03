@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "expressions", "expressions"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth", "fifth\fifth.csproj", "{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.codegenerator", "fifth.codegenerator\fifth.codegenerator.csproj", "{938CC183-D05B-49A0-89E9-BBE10A620E59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{938CC183-D05B-49A0-89E9-BBE10A620E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938CC183-D05B-49A0-89E9-BBE10A620E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938CC183-D05B-49A0-89E9-BBE10A620E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938CC183-D05B-49A0-89E9-BBE10A620E59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

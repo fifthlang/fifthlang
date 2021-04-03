@@ -36,7 +36,7 @@ namespace Fifth.TypeSystem
             LoadBuiltinOperators(PrimitiveDate.Default);
         }
 
-        public void LoadBuiltinOperators(IFifthType primitiveType)
+        public void LoadBuiltinOperators(IType primitiveType)
         {
             _ = primitiveType ?? throw new ArgumentNullException(nameof(primitiveType));
             var methods = primitiveType.GetType().MethodsHavingAttribute<OperationAttribute>();

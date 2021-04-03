@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveTriple : PrimitiveAny
     {
-        private PrimitiveTriple():base(true, false, "triple")
+        private PrimitiveTriple():base("triple")
         {
         }
 

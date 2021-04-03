@@ -5,11 +5,11 @@ namespace Fifth.TypeSystem
     using Fifth.PrimitiveTypes;
     using Symbols;
 
-    public delegate void TypeInferred(IAstNode node, IFifthType type);
+    public delegate void TypeInferred(IAstNode node, IType type);
 
     public delegate void TypeNotFound(IAstNode node);
 
-    public delegate void TypeMismatch(IAstNode node, IFifthType type1, IFifthType type2);
+    public delegate void TypeMismatch(IAstNode node, IType type1, IType type2);
 
     /// <summary>
     /// A framework for handling tasks related to type checking and type inference
@@ -40,7 +40,7 @@ namespace Fifth.TypeSystem
 
         #region Type Inference
 
-        public IFifthType Infer(IScope scope, IAstNode exp)
+        public IType Infer(IScope scope, IAstNode exp)
             => exp switch
             {
                 IntValueExpression i => PrimitiveInteger.Default,
@@ -52,13 +52,13 @@ namespace Fifth.TypeSystem
                 { } => null //throw new NotImplementedException("Need to implement other exception types")
             };
 
-        public IFifthType Infer(IScope scope, AbsoluteIri node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, AliasDeclaration node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, AnnotatedThing node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, AssignmentStmt node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, AstNode node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, AbsoluteIri node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, AliasDeclaration node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, AnnotatedThing node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, AssignmentStmt node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, AstNode node) => throw new NotImplementedException();
 
-        public IFifthType Infer(IScope scope, BinaryExpression be)
+        public IType Infer(IScope scope, BinaryExpression be)
         {
             Infer(scope, be.Left);
             Infer(scope, be.Right);
@@ -74,37 +74,37 @@ namespace Fifth.TypeSystem
             return null;
         }
 
-        public IFifthType Infer(IScope scope, Block node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, BooleanExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, Expression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, ExpressionList node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, FifthProgram node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, FloatValueExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, FuncCallExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, FunctionDefinition node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, Identifier node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, IdentifierExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, IfElseExp node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, IntValueExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, ModuleImport node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, ParameterDeclaration node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, ParameterDeclarationList node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, ScopeAstNode node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, Statement node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, StringValueExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, TypeCreateInstExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, TypeInitialiser node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, TypedAstNode node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, UnaryExpression node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, VariableDeclarationStatement node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, VariableReference node) => throw new NotImplementedException();
-        public IFifthType Infer(IScope scope, WhileExp node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, Block node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, BooleanExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, Expression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ExpressionList node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, FifthProgram node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, FloatValueExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, FuncCallExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, FunctionDefinition node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, Identifier node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, IdentifierExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, IfElseExp node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, IntValueExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ModuleImport node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ParameterDeclaration node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ParameterDeclarationList node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ScopeAstNode node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, Statement node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, StringValueExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, TypeCreateInstExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, TypeInitialiser node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, TypedAstNode node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, UnaryExpression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, VariableDeclarationStatement node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, VariableReference node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, WhileExp node) => throw new NotImplementedException();
 
         #endregion
 
         #region Type Checking
 
-        public void Check(IScope scope, Expression exp, IFifthType type) => throw new NotImplementedException();
+        public void Check(IScope scope, Expression exp, IType type) => throw new NotImplementedException();
         public void Check(IScope scope, TypeDefinition typeDef) => throw new NotImplementedException();
         public void Check(IScope scope, FifthProgram prog) => throw new NotImplementedException();
 
@@ -113,18 +113,18 @@ namespace Fifth.TypeSystem
         #region Helper Functions
 
         public IScope EmptyEnv() => throw new NotImplementedException();
-        public IScope Extend(IScope scope, string identifier, IFifthType type) => throw new NotImplementedException();
+        public IScope Extend(IScope scope, string identifier, IType type) => throw new NotImplementedException();
         public IScope Extend(IScope scope, TypeDefinition typeDef) => throw new NotImplementedException();
 
-        public IFifthType Lookup(object o) => throw new NotImplementedException();
+        public IType Lookup(object o) => throw new NotImplementedException();
 
-        public IFifthType LookupFunctionResultType(string identifier, IScope scope) =>
+        public IType LookupFunctionResultType(string identifier, IScope scope) =>
             throw new NotImplementedException();
 
         public IScope NewBlock(IScope scope) => throw new NotImplementedException();
 
-        public bool TryInferOperationResultType(Operator op, IFifthType lhsType, IFifthType rhsType,
-            out IFifthType resultType) => throw new NotImplementedException();
+        public bool TryInferOperationResultType(Operator op, IType lhsType, IType rhsType,
+            out IType resultType) => throw new NotImplementedException();
 
         #endregion
 

@@ -183,7 +183,11 @@ exp :
 boolean: value=TRUE | value=FALSE ;
 
 var_decl:
-    type_name var_name
+    (
+      type_name
+    | list_type_signature
+    )
+    var_name
 ;
 
 var_name: IDENTIFIER

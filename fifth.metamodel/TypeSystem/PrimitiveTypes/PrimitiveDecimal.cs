@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveDecimal : PrimitiveAny
     {
-        private PrimitiveDecimal():base(true, true, "decimal")
+        private PrimitiveDecimal():base("decimal")
         {
         }
 

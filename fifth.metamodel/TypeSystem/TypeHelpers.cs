@@ -137,7 +137,7 @@ namespace Fifth.TypeSystem
             return fw != null;
         }
 
-        public static bool TryGetNearestFifthTypeToListType(Type nt, out IFifthType ft)
+        public static bool TryGetNearestFifthTypeToListType(Type nt, out IType ft)
         {
             if (typeof(IList).IsAssignableFrom(nt) && nt.IsGenericType)
             {
@@ -200,12 +200,12 @@ namespace Fifth.TypeSystem
             return result;
         }
 
-        public static IFunctionType GetFuncType(this MethodInfo method)
-            => new FunctionType(method.ReturnType.LookupType(), method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
-        public static IFunctionType GetFuncType(this FuncWrapper method)
-            => new FunctionType(method.ResultType.LookupType(), method.ArgTypes.Select(p => p.LookupType()).ToArray());
+        public static IFunctionSignature GetFuncType(this MethodInfo method)
+            => new FunctionSignature(method.ReturnType.LookupType(), method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
+        public static IFunctionSignature GetFuncType(this FuncWrapper method)
+            => new FunctionSignature(method.ResultType.LookupType(), method.ArgTypes.Select(p => p.LookupType()).ToArray());
 
-        public static IFifthType Lookup(this TypeId tid)
+        public static IType Lookup(this TypeId tid)
         {
             if (TypeRegistry.DefaultRegistry.TryGetType(tid, out var ft))
             {

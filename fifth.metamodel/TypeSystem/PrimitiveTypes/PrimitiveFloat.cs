@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveFloat : PrimitiveAny
     {
-        private PrimitiveFloat():base(true, true, "float")
+        private PrimitiveFloat():base("float")
         {
         }
 

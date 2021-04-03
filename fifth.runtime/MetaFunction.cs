@@ -253,7 +253,7 @@ namespace Fifth.Runtime
             return dispatcher;
         }
 
-        public static IFifthType LookupTypeDefinitionByName(string typeName) =>
+        public static IType LookupTypeDefinitionByName(string typeName) =>
             TypeHelpers.LookupType(typeName).Lookup();
 
         private static void InvokeBuiltinFunction(IDispatcher dispatcher, IFunctionDefinition functionDefinition)

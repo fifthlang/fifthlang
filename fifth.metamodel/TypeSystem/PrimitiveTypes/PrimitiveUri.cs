@@ -4,7 +4,7 @@ namespace Fifth.TypeSystem.PrimitiveTypes
 
     public class PrimitiveUri : PrimitiveAny
     {
-        private PrimitiveUri() : base(true, false, "uri")
+        private PrimitiveUri() : base("uri")
         {
         }
 

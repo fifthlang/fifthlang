@@ -2,10 +2,10 @@ namespace Fifth.TypeSystem
 {
     public interface ITypeRegistry
     {
-        public bool TryGetType(TypeId typeId, out IFifthType type);
+        public bool TryGetType(TypeId typeId, out IType type);
 
-        public bool TrySetType(IFifthType type, out TypeId typeId);
+        public bool TrySetType(IType type, out TypeId typeId);
 
-        public bool RegisterType(IFifthType type);
+        public bool RegisterType(IType type);
     }
 }

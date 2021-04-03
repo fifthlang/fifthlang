@@ -10,8 +10,8 @@ namespace Fifth.TypeSystem
     {
         public static readonly TypeRegistry DefaultRegistry = new();
         private static long typeIdDispenser;
-        private readonly ConcurrentDictionary<TypeId, IFifthType> typeRegister = new();
-        public static readonly Dictionary<Type, IFifthType> PrimitiveMappings = new()
+        private readonly ConcurrentDictionary<TypeId, IType> typeRegister = new();
+        public static readonly Dictionary<Type, IType> PrimitiveMappings = new()
         {
             // {typeof(IList), PrimitiveList.Default}, 
             { typeof(string), PrimitiveString.Default },
@@ -31,13 +31,13 @@ namespace Fifth.TypeSystem
         {
         }
 
-        public bool TryGetType(TypeId typeId, out IFifthType type) => typeRegister.TryGetValue(typeId, out type);
+        public bool TryGetType(TypeId typeId, out IType type) => typeRegister.TryGetValue(typeId, out type);
 
-        public bool TryGetTypeByName(string typeName, out IFifthType type)
+        public bool TryGetTypeByName(string typeName, out IType type)
         {
             foreach (var fifthType in typeRegister.Values)
             {
-                if (fifthType.ShortName == typeName)
+                if (fifthType.Name == typeName)
                 {
                     type = fifthType;
                     return true;
@@ -48,7 +48,7 @@ namespace Fifth.TypeSystem
             return false;
         }
 
-        public bool TrySetType(IFifthType type, out TypeId typeId)
+        public bool TrySetType(IType type, out TypeId typeId)
         {
             var existingTypeId = type.TypeId;
             if (existingTypeId != null &&typeRegister.ContainsKey(existingTypeId))
@@ -61,7 +61,7 @@ namespace Fifth.TypeSystem
             return typeRegister.TryAdd(typeId, type);
         }
 
-        public bool RegisterType(IFifthType type)
+        public bool RegisterType(IType type)
         {
             if (TrySetType(type, out var id))
             {
@@ -82,7 +82,7 @@ namespace Fifth.TypeSystem
             return result;
         }
 
-        public static readonly IFifthType[] PrimitiveTypes = new IFifthType[]
+        public static readonly IType[] PrimitiveTypes = new IType[]
         {
             PrimitiveBool.Default,
             PrimitiveBool.Default,

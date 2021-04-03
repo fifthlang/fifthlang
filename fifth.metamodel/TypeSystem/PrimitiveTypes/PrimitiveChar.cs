@@ -1,10 +1,11 @@
 namespace Fifth.PrimitiveTypes
 {
     using TypeSystem;
+    using TypeSystem.PrimitiveTypes;
 
     public class PrimitiveChar : PrimitiveAny
     {
-        private PrimitiveChar():base(true, false, "char")
+        private PrimitiveChar():base("char")
         {
         }
 
