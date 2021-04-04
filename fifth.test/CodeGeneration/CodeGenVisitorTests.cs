@@ -1,5 +1,7 @@
 namespace Fifth.Test.CodeGeneration
 {
+    using System.IO;
+    using System.Text;
     using AST;
     using Fifth.CodeGeneration;
     using Fifth.Runtime;
@@ -7,23 +9,21 @@ namespace Fifth.Test.CodeGeneration
     using NUnit.Framework;
     using TypeSystem;
 
-    [TestFixture, Category("IL"), Category("Code Generation")]
-    public class ILGeneratorTests
+    [TestFixture]
+    public class CodeGenVisitorTests
     {
         [Test]
-        public void CanLoadTemplateCollection()
-        {
-            TemplateLoader.LoadTemplates().Should().NotBeNull();
-        }
-        [Test]
-        public void CanReferenceMultipleTemplates()
+        public void CanGenerateFromAst()
         {
             var prog = @"int main()=>print('hello world'); int print(string s)=>5+6;";
             TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
             InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
             var ast = FifthRuntime.ParseAndAnnotateProgram(prog, out var rootFrame) as FifthProgram;
-            var code = CodeGenerator.GenerateCode(ast);
-            code.Should().NotBeNullOrEmpty();
+            var sb = new StringBuilder();
+            var sut = new CodeGenVisitor(new StringWriter(sb));
+            ast.Accept(sut);
+            var generatedCode = sb.ToString();
+            generatedCode.Should().NotBeNullOrWhiteSpace();
         }
     }
 }

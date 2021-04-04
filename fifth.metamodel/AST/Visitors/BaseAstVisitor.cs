@@ -1,4 +1,4 @@
-namespace Fifth.Parser.LangProcessingPhases
+namespace Fifth.AST.Visitors
 {
     using AST;
 

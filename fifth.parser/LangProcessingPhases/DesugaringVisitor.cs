@@ -2,6 +2,7 @@ namespace Fifth.LangProcessingPhases
 {
     using System.Collections.Generic;
     using AST;
+    using AST.Visitors;
     using Parser.LangProcessingPhases;
     using PrimitiveTypes;
 

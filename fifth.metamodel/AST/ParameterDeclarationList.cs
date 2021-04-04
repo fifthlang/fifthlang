@@ -1,7 +1,7 @@
 namespace Fifth.AST
 {
     using System.Collections.Generic;
-    using Parser.LangProcessingPhases;
+    using Visitors;
 
     public class ParameterDeclarationList : AstNode
     {

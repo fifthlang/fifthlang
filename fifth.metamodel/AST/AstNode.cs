@@ -1,6 +1,6 @@
 namespace Fifth.AST
 {
-    using Parser.LangProcessingPhases;
+    using Visitors;
 
     public abstract class AstNode : AnnotatedThing, IAstNode
     {

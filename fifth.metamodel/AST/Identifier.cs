@@ -1,7 +1,7 @@
 namespace Fifth.AST
 {
-    using Parser.LangProcessingPhases;
     using TypeSystem;
+    using Visitors;
 
     public class Identifier : TypedAstNode
     {

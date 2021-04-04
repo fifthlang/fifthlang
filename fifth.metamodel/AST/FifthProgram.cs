@@ -1,8 +1,8 @@
 namespace Fifth.AST
 {
     using System.Collections.Generic;
-    using Fifth.Parser.LangProcessingPhases;
     using PrimitiveTypes;
+    using Visitors;
 
     public class FifthProgram : ScopeAstNode
     {

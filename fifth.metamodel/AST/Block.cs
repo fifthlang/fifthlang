@@ -1,10 +1,10 @@
 namespace Fifth.AST
 {
     using System.Collections.Generic;
-    using Fifth.Parser.LangProcessingPhases;
     using PrimitiveTypes;
     using Symbols;
     using TypeSystem;
+    using Visitors;
 
     public class Block : ScopeAstNode
     {

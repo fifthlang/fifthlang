@@ -1,8 +1,8 @@
 namespace Fifth.AST
 {
-    using Parser.LangProcessingPhases;
     using PrimitiveTypes;
     using TypeSystem.PrimitiveTypes;
+    using Visitors;
 
     public class AbsoluteIri : TypedAstNode
     {

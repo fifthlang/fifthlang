@@ -1,6 +1,6 @@
 namespace Fifth.AST
 {
-    using Fifth.Parser.LangProcessingPhases;
+    using Visitors;
 
     public interface IVisitable
     {

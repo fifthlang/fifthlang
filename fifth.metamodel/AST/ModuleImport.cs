@@ -1,6 +1,6 @@
 namespace Fifth.AST
 {
-    using Parser.LangProcessingPhases;
+    using Visitors;
 
     public class ModuleImport : AstNode
     {

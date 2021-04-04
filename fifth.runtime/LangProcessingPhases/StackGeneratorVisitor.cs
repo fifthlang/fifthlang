@@ -1,6 +1,7 @@
 namespace Fifth.Runtime.LangProcessingPhases
 {
     using AST;
+    using AST.Visitors;
     using Parser.LangProcessingPhases;
 
     public class StackGeneratorVisitor : BaseAstVisitor

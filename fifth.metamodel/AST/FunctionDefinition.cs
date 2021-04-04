@@ -1,13 +1,15 @@
 namespace Fifth.AST
 {
-    using Fifth.Parser.LangProcessingPhases;
+    using System;
     using TypeSystem;
+    using Visitors;
 
     public class FunctionDefinition : ScopeAstNode
     {
         public ExpressionList Body { get; set; }
         public string Typename { get; }
         public string Name { get; set; }
+        public bool IsEntryPoint { get; set; }
         public ParameterDeclarationList ParameterDeclarations { get; set; }
         public TypeId ReturnType => TypeId;
 
@@ -26,6 +28,7 @@ namespace Fifth.AST
             ParameterDeclarations = parameterDeclarations;
             Body = body;
             Typename = typename;
+            IsEntryPoint = name.Equals("main", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

@@ -1,7 +1,7 @@
 namespace Fifth.AST
 {
-    using Fifth.Parser.LangProcessingPhases;
     using TypeSystem;
+    using Visitors;
 
     public class FuncCallExpression : Expression
     {

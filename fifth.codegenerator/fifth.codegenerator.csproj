@@ -7,38 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="templates\CIL\class.st" />
-    <None Remove="templates\CIL\function.st" />
-    <None Remove="templates\CIL\namespace.st" />
-    <None Remove="templates\CIL\program.st" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="templates\CIL\*.st" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.4" />
-    <PackageReference Include="StringTemplate4" Version="4.0.8" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="templates\CIL\class.st">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="templates\CIL\function.st">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="templates\CIL\namespace.st">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="templates\CIL\program.st">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

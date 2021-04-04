@@ -1,5 +1,6 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using AST.Visitors;
     using Fifth.AST;
     using Symbols;
     using TypeSystem;

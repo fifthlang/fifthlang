@@ -3,6 +3,7 @@ namespace Fifth.Parser.LangProcessingPhases
     using System;
     using System.Collections.Generic;
     using AST;
+    using AST.Visitors;
     using PrimitiveTypes;
     using Symbols;
     using TypeSystem;
