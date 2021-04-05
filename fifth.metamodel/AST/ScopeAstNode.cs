@@ -3,17 +3,12 @@ namespace Fifth.AST
     using Symbols;
     using TypeSystem;
 
-    public abstract class ScopeAstNode : TypedAstNode, IScope
+    public abstract class ScopeAstNode : AstNode, IScope
     {
-        protected ScopeAstNode(AstNode parentNode, TypeId fifthType, IScope enclosingScope) : base(parentNode, fifthType)
+        protected ScopeAstNode()
         {
             SymbolTable = new SymbolTable();
-            EnclosingScope = enclosingScope;
-        }
-
-        protected ScopeAstNode(TypeId fifthType) : base(fifthType)
-        {
-            SymbolTable = new SymbolTable();
+            EnclosingScope = default;
         }
 
         public IScope EnclosingScope { get; set; }
@@ -21,17 +16,12 @@ namespace Fifth.AST
 
         public void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)
         {
-            var symTabEntry = new SymTabEntry
-            {
-                Name = name,
-                SymbolKind = kind,
-                Line = Line,
-                Context = ctx
-            };
-            foreach ((var x, var y) in properties)
+            var symTabEntry = new SymTabEntry {Name = name, SymbolKind = kind, Line = Line, Context = ctx};
+            foreach (var (x, y) in properties)
             {
                 symTabEntry[x] = y;
             }
+
             SymbolTable[name] = symTabEntry;
         }
 

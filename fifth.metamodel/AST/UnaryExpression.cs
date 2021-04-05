@@ -1,35 +1,13 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class UnaryExpression : Expression
     {
-        public UnaryExpression(TypeId fifthType) : base(fifthType)
-        {
-        }
-
-        public UnaryExpression(AstNode parentNode, TypeId fifthType) : base(parentNode, fifthType)
-        {
-        }
-
-        public UnaryExpression(Expression operand, Operator op, AstNode parentNode, TypeId fifthType)
-            : this(parentNode, fifthType)
-        {
-            Operand = operand;
-            Op = op;
-        }
-
-        public UnaryExpression(Expression operand, Operator op, TypeId fifthType)
-            : this(fifthType)
-        {
-            Operand = operand;
-            Op = op;
-        }
-
         public UnaryExpression(Expression operand, Operator op)
-            : this(operand, op, operand.TypeId)
         {
+            Operand = operand;
+            Op = op;
         }
 
         public Operator Op { get; set; }

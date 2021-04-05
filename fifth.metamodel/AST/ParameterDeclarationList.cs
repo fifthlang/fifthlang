@@ -5,10 +5,8 @@ namespace Fifth.AST
 
     public class ParameterDeclarationList : AstNode
     {
-        public ParameterDeclarationList(List<ParameterDeclaration> parameterDeclarations) : base()
-        {
+        public ParameterDeclarationList(List<ParameterDeclaration> parameterDeclarations) =>
             ParameterDeclarations = parameterDeclarations;
-        }
 
         public List<ParameterDeclaration> ParameterDeclarations { get; set; }
 

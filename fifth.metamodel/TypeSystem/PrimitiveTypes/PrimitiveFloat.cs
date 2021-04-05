@@ -3,13 +3,13 @@ namespace Fifth.PrimitiveTypes
     using TypeSystem;
     using TypeSystem.PrimitiveTypes;
 
-    public class PrimitiveFloat : PrimitiveAny
+    public class PrimitiveFloat : PrimitiveNumeric
     {
-        private PrimitiveFloat():base("float")
+        private PrimitiveFloat() : base("float", 3)
         {
         }
 
-        public static PrimitiveFloat Default { get; set; } = new PrimitiveFloat();
+        public static PrimitiveFloat Default { get; set; } = new();
 
         [Operation(Operator.Add)]
         public static float add_float_float(float left, float right) => left + right;

@@ -1,33 +1,23 @@
+// ReSharper disable InconsistentNaming
+
 namespace Fifth.LangProcessingPhases
 {
     using System.Collections.Generic;
     using AST;
     using AST.Visitors;
-    using Parser.LangProcessingPhases;
     using TypeSystem;
 
     public class VerticalLinkageVisitor : IAstVisitor
     {
-        public Stack<AstNode> Parents = new Stack<AstNode>();
+        private readonly Stack<AstNode> parents = new();
 
-        private void EnterNonTerminal(AstNode ctx)
-        {
-            ctx.ParentNode = Parents.PeekOrDefault();
-            Parents.Push(ctx);
-        }
+        public void EnterReturnStatement(ReturnStatement ctx) => EnterNonTerminal(ctx);
 
-        private void EnterTerminal(AstNode ctx)
-        {
-            ctx.ParentNode = Parents.PeekOrDefault();
-        }
+        public void LeaveReturnStatement(ReturnStatement ctx) =>  LeaveNonTerminal(ctx);
 
-        private void LeaveNonTerminal(AstNode ctx)
-        {
-            Parents.Pop();
-        }
+        public void EnterStatementList(StatementList ctx) => EnterNonTerminal(ctx);
 
-        private void LeaveTerminal(AstNode ctx)
-        { }
+        public void LeaveStatementList(StatementList ctx) => LeaveNonTerminal(ctx);
 
         public void EnterAbsoluteUri(AbsoluteIri ctx) => EnterTerminal(ctx);
 
@@ -43,7 +33,7 @@ namespace Fifth.LangProcessingPhases
 
         public void EnterBooleanExpression(BooleanExpression ctx) => EnterTerminal(ctx);
 
-        public void EnterExpression(Expression ctx) => EnterNonTerminal(ctx);//??
+        public void EnterExpression(Expression ctx) => EnterNonTerminal(ctx); //??
 
         public void EnterExpressionList(ExpressionList ctx) => EnterNonTerminal(ctx);
 
@@ -59,7 +49,7 @@ namespace Fifth.LangProcessingPhases
 
         public void EnterIdentifierExpression(IdentifierExpression ctx) => EnterNonTerminal(ctx);
 
-        public void EnterIfElseExp(IfElseExp ctx) => EnterNonTerminal(ctx);
+        public void EnterIfElseExp(IfElseStatement ctx) => EnterNonTerminal(ctx);
 
         public void EnterIntValueExpression(IntValueExpression ctx) => EnterTerminal(ctx);
 
@@ -112,7 +102,7 @@ namespace Fifth.LangProcessingPhases
 
         public void LeaveIdentifierExpression(IdentifierExpression ctx) => LeaveNonTerminal(ctx);
 
-        public void LeaveIfElseExp(IfElseExp ctx) => LeaveNonTerminal(ctx);
+        public void LeaveIfElseExp(IfElseStatement ctx) => LeaveNonTerminal(ctx);
 
         public void LeaveIntValueExpression(IntValueExpression ctx) => LeaveTerminal(ctx);
 
@@ -137,5 +127,38 @@ namespace Fifth.LangProcessingPhases
         public void LeaveVariableReference(VariableReference ctx) => LeaveTerminal(ctx);
 
         public void LeaveWhileExp(WhileExp ctx) => LeaveNonTerminal(ctx);
+        public void EnterLongValueExpression(LongValueExpression ctx) => EnterTerminal(ctx);
+
+        public void LeaveLongValueExpression(LongValueExpression ctx) => LeaveTerminal(ctx);
+
+        public void EnterShortValueExpression(ShortValueExpression ctx) => EnterTerminal(ctx);
+
+        public void LeaveShortValueExpression(ShortValueExpression ctx) => LeaveTerminal(ctx);
+
+        public void EnterDoubleValueExpression(DoubleValueExpression ctx) => EnterTerminal(ctx);
+
+        public void LeaveDoubleValueExpression(DoubleValueExpression ctx) => LeaveTerminal(ctx);
+
+        public void EnterDecimalValueExpression(DecimalValueExpression ctx) => EnterTerminal(ctx);
+
+        public void LeaveDecimalValueExpression(DecimalValueExpression ctx) => LeaveTerminal(ctx);
+
+        public void EnterDateValueExpression(DateValueExpression ctx) => EnterTerminal(ctx);
+
+        public void LeaveDateValueExpression(DateValueExpression ctx) => LeaveTerminal(ctx);
+
+        private void EnterNonTerminal(AstNode ctx)
+        {
+            ctx.ParentNode = parents.PeekOrDefault();
+            parents.Push(ctx);
+        }
+
+        private void EnterTerminal(AstNode ctx) => ctx.ParentNode = parents.PeekOrDefault();
+
+        private void LeaveNonTerminal(AstNode ctx) => parents.Pop();
+
+        private void LeaveTerminal(AstNode ctx)
+        {
+        }
     }
 }

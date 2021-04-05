@@ -1,11 +1,15 @@
 namespace Fifth.AST
 {
     using System.Collections.Generic;
-    using PrimitiveTypes;
+    using Symbols;
     using Visitors;
 
     public class FifthProgram : ScopeAstNode
     {
+        public FifthProgram(IScope _)
+        {
+        }
+
         public IList<AliasDeclaration> Aliases { get; set; }
         public IList<FunctionDefinition> Functions { get; set; }
 
@@ -16,15 +20,13 @@ namespace Fifth.AST
             {
                 a.Accept(visitor);
             }
+
             foreach (var f in Functions)
             {
                 f.Accept(visitor);
             }
-            visitor.LeaveFifthProgram(this);
-        }
 
-        public FifthProgram() : base(null, null, null)
-        {
+            visitor.LeaveFifthProgram(this);
         }
     }
 }

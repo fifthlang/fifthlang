@@ -2,11 +2,16 @@ namespace Fifth.AST
 {
     using System;
     using System.Collections.Generic;
-    using TypeSystem;
     using Visitors;
 
     public class ExpressionList : TypedAstNode
     {
+        public ExpressionList(List<Expression> expressions, TypeId fifthType) : base(fifthType)
+        {
+            _ = expressions ?? throw new ArgumentNullException(nameof(expressions));
+            Expressions = expressions;
+        }
+
         public List<Expression> Expressions { get; set; }
 
         public override void Accept(IAstVisitor visitor)
@@ -16,13 +21,8 @@ namespace Fifth.AST
             {
                 e.Accept(visitor);
             }
-            visitor.LeaveExpressionList(this);
-        }
 
-        public ExpressionList(List<Expression> expressions, TypeId fifthType) : base(fifthType)
-        {
-            _ = expressions ?? throw new ArgumentNullException(nameof(expressions));
-            Expressions = expressions;
+            visitor.LeaveExpressionList(this);
         }
     }
 }

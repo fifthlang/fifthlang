@@ -4,6 +4,10 @@ namespace Fifth.AST
 
     public class AliasDeclaration : AstNode
     {
+        public AliasDeclaration(AstNode parentNode) : base(parentNode)
+        {
+        }
+
         public AbsoluteIri IRI { get; set; }
         public string Name { get; set; }
 
@@ -11,10 +15,6 @@ namespace Fifth.AST
         {
             visitor.EnterAlias(this);
             visitor.LeaveAlias(this);
-        }
-
-        public AliasDeclaration(AstNode parentNode) : base(parentNode)
-        {
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Fifth.PrimitiveTypes
 
     public class PrimitiveString : PrimitiveAny
     {
-        private PrimitiveString():base("string")
+        private PrimitiveString() : base("string")
         {
         }
 

@@ -14,7 +14,9 @@ namespace Fifth.Test.Runtime
         [TestCase("int main() => greet('world'), 0; string greet(string s) => write('hello, ' + s);", "0")]
         [TestCase("int main() => greet('world'), 1+2; string greet(string s) => write('hello, ' + s);", "3")]
         [TestCase("int main() => doSomeCalculation(13, 17); int doSomeCalculation(int x, int y) => x + y;", "30")]
-        [TestCase("int main() => int a = doSomeCalculation(13, 17), a + 10; int doSomeCalculation(int x, int y) => x + y;", "40")]
+        [TestCase(
+            "int main() => int a = doSomeCalculation(13, 17), a + 10; int doSomeCalculation(int x, int y) => x + y;",
+            "40")]
         [TestCase("int main() => int a = doSomeCalculation(13, 17), int b = a + 10, b + 11; " +
                   "int doSomeCalculation(int x, int y) => x + y;", "51")]
         [TestCase("int main(int a, int b) => a+b;", "11", 5, 6)]
@@ -28,7 +30,7 @@ namespace Fifth.Test.Runtime
         [TestCase("int main(int a, int b) => max(a,b); " +
                   "int max(int a, int b) => if(a < b){a} else {b};", "5", 5, 6)]
         [TestCase("int main() => int a = 0, " +
-                    "while (a < 10){a = a + 1}, a;", "10")]
+                  "while (a < 10){a = a + 1}, a;", "10")]
         [TestCase("int main() => int[] mylist = [1,2,3,4,5], head(mylist);", "1")]
         public void TestProgram(string fragment, string expectedResult, params object[] args)
         {

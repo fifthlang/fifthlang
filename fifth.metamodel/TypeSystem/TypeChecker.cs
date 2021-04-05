@@ -11,7 +11,7 @@ namespace Fifth.TypeSystem
         public static readonly Dictionary<Type, TypeId> PrimitiveMappings = new()
         {
             // {typeof(IList), PrimitiveList.Default}, 
-            {typeof(string), PrimitiveString.Default.TypeId },
+            {typeof(string), PrimitiveString.Default.TypeId},
             {typeof(short), PrimitiveShort.Default.TypeId},
             {typeof(int), PrimitiveInteger.Default.TypeId},
             {typeof(long), PrimitiveLong.Default.TypeId},
@@ -46,8 +46,21 @@ namespace Fifth.TypeSystem
                 UnaryExpression ue => InferUnaryExpression(scope, ue),
                 IdentifierExpression ie => InferIdentifierExpression(scope, ie),
                 FuncCallExpression fce => InferFuncCallExpression(scope, fce),
+                // VariableDeclarationStatement vds => InferVariableDeclaration(scope, vds),
                 { } => null //throw new NotImplementedException("Need to implement other exception types")
             };
+
+        private static TypeId InferVariableDeclaration(IScope scope, VariableDeclarationStatement vds)
+        {
+            if (vds.TypeName != "var" && TypeRegistry.DefaultRegistry.TryGetTypeByName(vds.TypeName, out var tid))
+            {
+                vds.TypeId = tid.TypeId;
+                return tid.TypeId;
+            } 
+            var expTid = Infer(scope, vds.Expression);
+            vds.TypeId = expTid;
+            return expTid;
+        }
 
         private static TypeId InferFuncCallExpression(IScope scope, FuncCallExpression fce)
         {

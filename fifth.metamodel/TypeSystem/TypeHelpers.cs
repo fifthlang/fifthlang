@@ -6,9 +6,7 @@ namespace Fifth.TypeSystem
     using System.Linq;
     using System.Reflection;
     using AST;
-    using Fifth.PrimitiveTypes;
     using PrimitiveTypes;
-    using Exception = Fifth.Exception;
     using Expression = System.Linq.Expressions.Expression;
 
     public static class TypeHelpers
@@ -182,9 +180,8 @@ namespace Fifth.TypeSystem
         {
             var type = typeof(TInterfaceType);
             return AppDomain.CurrentDomain.GetAssemblies()
-                                 .SelectMany(s => s.GetTypes())
-                                 .Where(p => type.IsAssignableFrom(p));
-
+                            .SelectMany(s => s.GetTypes())
+                            .Where(p => type.IsAssignableFrom(p));
         }
 
         public static FuncWrapper Wrap(this MethodInfo method) => WrapMethodInfo(method);
@@ -201,9 +198,12 @@ namespace Fifth.TypeSystem
         }
 
         public static IFunctionSignature GetFuncType(this MethodInfo method)
-            => new FunctionSignature(method.ReturnType.LookupType(), method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
+            => new FunctionSignature(method.ReturnType.LookupType(),
+                method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
+
         public static IFunctionSignature GetFuncType(this FuncWrapper method)
-            => new FunctionSignature(method.ResultType.LookupType(), method.ArgTypes.Select(p => p.LookupType()).ToArray());
+            => new FunctionSignature(method.ResultType.LookupType(),
+                method.ArgTypes.Select(p => p.LookupType()).ToArray());
 
         public static IType Lookup(this TypeId tid)
         {

@@ -1,7 +1,5 @@
 namespace Fifth.TypeSystem
 {
-    using System.Collections.Generic;
-
     public interface IType
     {
         public string Name { get; }
@@ -12,6 +10,7 @@ namespace Fifth.TypeSystem
     {
         public TypeId AliasedTypeId { get; }
     }
+
     public interface IGenericType : IType
     {
         public TypeId[] TypeParameters { get; }

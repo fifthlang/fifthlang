@@ -1,6 +1,5 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class ParameterDeclaration : TypedAstNode

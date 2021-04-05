@@ -1,7 +1,7 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using AST;
     using AST.Visitors;
-    using Fifth.AST;
     using Symbols;
     using TypeSystem;
 
@@ -14,7 +14,7 @@ namespace Fifth.Parser.LangProcessingPhases
             enclosingScope.Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.Typename, out var t))
             {
-                ctx.TypeId = t.TypeId;
+                ctx.ReturnType = t.TypeId;
             }
         }
 
@@ -25,7 +25,7 @@ namespace Fifth.Parser.LangProcessingPhases
             => Declare(ctx.Name.Value, SymbolKind.VariableDeclaration, ctx);
 
         private void Declare<T>(string name, SymbolKind kind, T ctx, params (string, object)[] properties)
-        where T : AstNode
+            where T : AstNode
         {
             var enclosingScope = ctx.NearestScope();
             enclosingScope.Declare(name, kind, ctx, properties);

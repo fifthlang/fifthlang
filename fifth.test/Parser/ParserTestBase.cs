@@ -125,7 +125,7 @@ namespace Fifth.Tests
         {
             var parseTree = ParseBlock(fragment);
             var visitor = new AstBuilderVisitor();
-            return new Block(null, (ExpressionList)visitor.Visit(parseTree));
+            return new Block((StatementList)visitor.Visit(parseTree));
         }
 
         protected static IAstNode ParseFunctionDeclToAst(string fragment)

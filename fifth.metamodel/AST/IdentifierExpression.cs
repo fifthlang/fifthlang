@@ -1,13 +1,11 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class IdentifierExpression : Expression
     {
-        public IdentifierExpression(Identifier identifier, TypeId fifthType) : base(fifthType) => Identifier = identifier;
-
-        public IdentifierExpression(Identifier identifier) : base(identifier.TypeId) => Identifier = identifier;
+        public IdentifierExpression(Identifier identifier)
+            => Identifier = identifier;
 
         public Identifier Identifier { get; set; }
 

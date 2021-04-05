@@ -1,9 +1,15 @@
 namespace Fifth.AST.Visitors
 {
-    using AST;
-
     public abstract class BaseAstVisitor : IAstVisitor
     {
+        public void EnterReturnStatement(ReturnStatement ctx) { }
+
+        public void LeaveReturnStatement(ReturnStatement ctx) { }
+
+        public void EnterStatementList(StatementList ctx) { }
+
+        public void LeaveStatementList(StatementList ctx) { }
+
         public virtual void EnterAbsoluteUri(AbsoluteIri absoluteIri)
         {
         }
@@ -64,7 +70,7 @@ namespace Fifth.AST.Visitors
         {
         }
 
-        public virtual void EnterIfElseExp(IfElseExp ctx)
+        public virtual void EnterIfElseExp(IfElseStatement ctx)
         {
         }
 
@@ -164,7 +170,7 @@ namespace Fifth.AST.Visitors
         {
         }
 
-        public virtual void LeaveIfElseExp(IfElseExp ctx)
+        public virtual void LeaveIfElseExp(IfElseStatement ctx)
         {
         }
 
@@ -219,5 +225,25 @@ namespace Fifth.AST.Visitors
         public void LeaveWhileExp(WhileExp ctx)
         {
         }
+
+        public void EnterLongValueExpression(LongValueExpression ctx) { }
+
+        public void LeaveLongValueExpression(LongValueExpression ctx) {}
+
+        public void EnterShortValueExpression(ShortValueExpression cts) {}
+
+        public void LeaveShortValueExpression(ShortValueExpression ctx) {}
+
+        public void EnterDoubleValueExpression(DoubleValueExpression ctx) {}
+
+        public void LeaveDoubleValueExpression(DoubleValueExpression ctx) {}
+
+        public void EnterDecimalValueExpression(DecimalValueExpression ctx) {}
+
+        public void LeaveDecimalValueExpression(DecimalValueExpression ctx) {}
+
+        public void EnterDateValueExpression(DateValueExpression ctx) {}
+
+        public void LeaveDateValueExpression(DateValueExpression ctx) {}
     }
 }

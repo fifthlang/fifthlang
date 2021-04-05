@@ -12,7 +12,6 @@
         - ParameterDeclarationList
         - TypedAstNode : ITypedAstNode
             - Expression
-                - AssignmentStmt
                 - BinaryExpression
                 - FuncCallExpression
                 - IdentifierExpression
@@ -22,9 +21,10 @@
                     - IntValueExpression
                     - StringValueExpression
                 - Statement
-                    - IfElseExp
+                    - AssignmentStatement
+                    - IfElseStatement
                     - VariableDeclarationStatement (?????)
-                    - WhileExp
+                    - WhileStatement
                 - TypeCreateInstExpression
                 - UnaryExpression
                 - VariableReference

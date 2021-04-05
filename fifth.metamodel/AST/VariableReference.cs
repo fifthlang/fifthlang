@@ -1,14 +1,10 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class VariableReference : TypedAstNode
     {
-        public VariableReference(AstNode parentNode, TypeId fifthType)
-            : base(parentNode, fifthType)
-        {
-        }
+        public VariableReference(string name) : base(null) => Name = name;
 
         public string Name { get; set; }
 

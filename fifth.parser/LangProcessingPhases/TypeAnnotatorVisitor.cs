@@ -99,7 +99,6 @@ namespace Fifth.Parser.LangProcessingPhases
 
             // 3. annotate the type of the symbol in the symtab
             // 4. annotate the type of the assignment expression
-            ctx.TypeId = lhsType;
         }
 
         public override void LeaveBinaryExpression(BinaryExpression ctx)

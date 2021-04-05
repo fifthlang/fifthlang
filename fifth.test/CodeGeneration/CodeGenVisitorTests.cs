@@ -15,10 +15,17 @@ namespace Fifth.Test.CodeGeneration
         [Test]
         public void CanGenerateFromAst()
         {
-            var prog = @"int main()=>print('hello world'); int print(string s)=>5+6;";
-            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
-            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
-            var ast = FifthRuntime.ParseAndAnnotateProgram(prog, out var rootFrame) as FifthProgram;
+            var prog = @"
+int main(){
+    return print('hello world');
+}
+
+long print(string s){
+    long a = 5;
+    long b = 6;
+    return a+b;
+}";
+            var ast = FifthParserManager.ParseProgram(prog);
             var sb = new StringBuilder();
             var sut = new CodeGenVisitor(new StringWriter(sb));
             ast.Accept(sut);

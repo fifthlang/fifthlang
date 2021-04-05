@@ -43,6 +43,7 @@ namespace Fifth.Runtime
             {
                 throw new RuntimeException($"Unable to make sense of type for {varName}");
             }
+
             return dispatcher;
         }
 
@@ -107,6 +108,7 @@ namespace Fifth.Runtime
             {
                 throw new RuntimeException($"Unable to resolve function '{condFunName}' by name");
             }
+
             if (!dispatcher.Frame.Environment.TryGetFunctionDefinition(loopBlockFunName, out var loopBlockFunDef))
             {
                 throw new RuntimeException($"Unable to resolve function '{loopBlockFunName}' by name");
@@ -122,12 +124,14 @@ namespace Fifth.Runtime
             {
                 goto end;
             }
+
             goto start;
             end:
             return dispatcher;
         }
 
-        private static T InvokeFunctionDefinition<T>(IDispatcher dispatcher, ActivationFrame parentFrame, IFunctionDefinition fd)
+        private static T InvokeFunctionDefinition<T>(IDispatcher dispatcher, ActivationFrame parentFrame,
+            IFunctionDefinition fd)
         {
             try
             {
@@ -250,6 +254,7 @@ namespace Fifth.Runtime
             {
                 throw new RuntimeException($"Unable to find variable {varName}");
             }
+
             return dispatcher;
         }
 
@@ -279,7 +284,8 @@ namespace Fifth.Runtime
             // push result onto stack
             if (f.Function.ResultType != typeof(void))
             {
-                _ = dispatcher.Frame.Stack.PushConstantValue(resultValue); // TODO: can't assume this will always be a value
+                _ = dispatcher.Frame.Stack
+                              .PushConstantValue(resultValue); // TODO: can't assume this will always be a value
             }
         }
 

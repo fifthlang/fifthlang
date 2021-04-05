@@ -1,17 +1,12 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
+    using PrimitiveTypes;
     using Visitors;
 
     public class IntValueExpression : LiteralExpression<int>
     {
-        public IntValueExpression(int value, AstNode parentNode, TypeId type)
-            : base(value, parentNode, type)
-        {
-        }
-
-        public IntValueExpression(int value, TypeId type)
-            : base(value, type)
+        public IntValueExpression(int value)
+            : base(value, PrimitiveInteger.Default.TypeId)
         {
         }
 

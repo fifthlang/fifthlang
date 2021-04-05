@@ -5,11 +5,11 @@ namespace Fifth.PrimitiveTypes
 
     public class PrimitiveBool : PrimitiveAny
     {
-        private PrimitiveBool():base("bool")
+        private PrimitiveBool() : base("bool")
         {
         }
 
-        public static PrimitiveBool Default { get; } = new PrimitiveBool();
+        public static PrimitiveBool Default { get; } = new();
 
         [Operation(Operator.And)]
         public static bool logical_and_bool_bool(bool left, bool right) => left && right;

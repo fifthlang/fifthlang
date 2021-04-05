@@ -5,13 +5,13 @@ namespace Fifth.PrimitiveTypes
 
 #pragma warning disable IDE1006 // Naming Styles
 
-    public class PrimitiveInteger : PrimitiveAny
+    public class PrimitiveInteger : PrimitiveNumeric
     {
-        private PrimitiveInteger():base("int")
+        private PrimitiveInteger() : base("int", 1)
         {
         }
 
-        public static PrimitiveInteger Default { get; set; } = new PrimitiveInteger();
+        public static PrimitiveInteger Default { get; set; } = new();
 
         [Operation(Operator.Add)]
         public static int add_int_int(int left, int right) => left + right;

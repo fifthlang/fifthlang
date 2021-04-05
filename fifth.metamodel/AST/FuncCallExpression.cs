@@ -1,10 +1,15 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class FuncCallExpression : Expression
     {
+        public FuncCallExpression(string name, ExpressionList actualParameters)
+        {
+            Name = name;
+            ActualParameters = actualParameters;
+        }
+
         public ExpressionList ActualParameters { get; set; }
         public string Name { get; set; }
 
@@ -15,28 +20,8 @@ namespace Fifth.AST
             {
                 e.Accept(visitor);
             }
+
             visitor.LeaveFuncCallExpression(this);
-        }
-
-        public FuncCallExpression(string name, ExpressionList actualParameters, AstNode parentNode, TypeId fifthType)
-            : base(parentNode, fifthType)
-        {
-            Name = name;
-            ActualParameters = actualParameters;
-        }
-
-        public FuncCallExpression(string name, ExpressionList actualParameters, TypeId fifthType)
-            : base(fifthType)
-        {
-            Name = name;
-            ActualParameters = actualParameters;
-        }
-
-        public FuncCallExpression(string name, ExpressionList actualParameters)
-            : base(null)
-        {
-            Name = name;
-            ActualParameters = actualParameters;
         }
     }
 }

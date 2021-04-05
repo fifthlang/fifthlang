@@ -1,17 +1,29 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Visitors;
 
-    public abstract class Statement : Expression
+    public abstract class Statement : AstNode
     {
-        protected Statement(AstNode parentNode, TypeId fifthType)
-            : base(parentNode, fifthType)
-        {
-        }
+    }
 
-        protected Statement(TypeId fifthType)
-            : base(fifthType)
+    public class StatementList : AstNode
+    {
+        public List<Statement> Statements { get; }
+
+        public StatementList(IEnumerable<Statement> statements)
+            => Statements = statements as List<Statement> ?? statements.ToList();
+
+        public override void Accept(IAstVisitor visitor)
         {
+            visitor.EnterStatementList(this);
+            foreach (var e in Statements)
+            {
+                e.Accept(visitor);
+            }
+
+            visitor.LeaveStatementList(this);
         }
     }
 }

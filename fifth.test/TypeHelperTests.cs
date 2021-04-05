@@ -1,13 +1,14 @@
 namespace Fifth.Tests
 {
-    using System;
     using System.Collections.Generic;
-    using Fifth.PrimitiveTypes;
     using FluentAssertions;
     using NUnit.Framework;
+    using PrimitiveTypes;
     using TypeSystem;
 
-    [TestFixture, Category("Helper Code"), Category("Type Checking")]
+    [TestFixture]
+    [Category("Helper Code")]
+    [Category("Type Checking")]
     public class TypeHelperTests
     {
         [Test]

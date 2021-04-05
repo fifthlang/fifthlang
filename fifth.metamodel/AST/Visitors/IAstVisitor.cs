@@ -1,10 +1,17 @@
 namespace Fifth.AST.Visitors
 {
-    using AST;
-
     public interface IAstVisitor
     {
         // void Accept(AstNode astNode);
+
+        void EnterReturnStatement(ReturnStatement ctx);
+
+        void LeaveReturnStatement(ReturnStatement ctx);
+
+        void EnterStatementList(StatementList ctx);
+
+        void LeaveStatementList(StatementList ctx);
+
         void EnterAbsoluteUri(AbsoluteIri absoluteIri);
 
         void EnterAlias(AliasDeclaration ctx);
@@ -33,7 +40,7 @@ namespace Fifth.AST.Visitors
 
         void EnterIdentifierExpression(IdentifierExpression identifierExpression);
 
-        void EnterIfElseExp(IfElseExp ctx);
+        void EnterIfElseExp(IfElseStatement ctx);
 
         void EnterIntValueExpression(IntValueExpression ctx);
 
@@ -87,7 +94,7 @@ namespace Fifth.AST.Visitors
 
         void LeaveIdentifierExpression(IdentifierExpression identifierExpression);
 
-        void LeaveIfElseExp(IfElseExp ctx);
+        void LeaveIfElseExp(IfElseStatement ctx);
 
         void LeaveIntValueExpression(IntValueExpression ctx);
 
@@ -112,5 +119,15 @@ namespace Fifth.AST.Visitors
         void LeaveVariableReference(VariableReference variableRef);
 
         void LeaveWhileExp(WhileExp ctx);
+        void EnterLongValueExpression(LongValueExpression ctx);
+        void LeaveLongValueExpression(LongValueExpression ctx);
+        void EnterShortValueExpression(ShortValueExpression cts);
+        void LeaveShortValueExpression(ShortValueExpression ctx);
+        void EnterDoubleValueExpression(DoubleValueExpression ctx);
+        void LeaveDoubleValueExpression(DoubleValueExpression ctx);
+        void EnterDecimalValueExpression(DecimalValueExpression ctx);
+        void LeaveDecimalValueExpression(DecimalValueExpression ctx);
+        void EnterDateValueExpression(DateValueExpression ctx);
+        void LeaveDateValueExpression(DateValueExpression ctx);
     }
 }

@@ -3,12 +3,13 @@ namespace Fifth.PrimitiveTypes
     using TypeSystem;
     using TypeSystem.PrimitiveTypes;
 
-    public class PrimitiveDouble : PrimitiveAny
+    public class PrimitiveDouble : PrimitiveNumeric
     {
-        private PrimitiveDouble():base("double")
+        private PrimitiveDouble() : base("double", 4)
         {
         }
-        public static PrimitiveDouble Default { get; set; } = new PrimitiveDouble();
+
+        public static PrimitiveDouble Default { get; set; } = new();
 
         [Operation(Operator.Add)]
         public static double Add(double left, double right) => left + right;

@@ -1,18 +1,13 @@
 namespace Fifth.AST
 {
-    using TypeSystem;
     using Visitors;
 
     public class AssignmentStmt : Statement
     {
-        public AssignmentStmt(AstNode parentNode, TypeId fifthType)
-            : base(parentNode, fifthType)
+        public AssignmentStmt(VariableReference variableRef, Expression expression)
         {
-        }
-
-        public AssignmentStmt(TypeId fifthType)
-            : base(fifthType)
-        {
+            VariableRef = variableRef;
+            Expression = expression;
         }
 
         public Expression Expression { get; set; }

@@ -3,7 +3,6 @@ namespace Fifth.TypeSystem
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
-    using System.Reflection.Emit;
     using AST;
     using Fifth.PrimitiveTypes;
 
@@ -13,13 +12,11 @@ namespace Fifth.TypeSystem
         private readonly ConcurrentDictionary<OperatorId, FuncWrapper> operationRegister = new();
         private readonly ConcurrentDictionary<OperatorId, TypeId> operationTypes = new();
 
-        public FuncWrapper this[OperatorId index]
-        {
-            get => operationRegister[index];
-        }
         private InbuiltOperatorRegistry()
         {
         }
+
+        public FuncWrapper this[OperatorId index] => operationRegister[index];
 
         public void LoadBuiltinOperators()
         {
@@ -123,6 +120,7 @@ namespace Fifth.TypeSystem
             {
                 return operationRegister.TryGetValue(new OperatorId(ueEncoding), out f);
             }
+
             if (e is BinaryExpression be && be.TryEncode(out var beEncoding))
             {
                 return operationRegister.TryGetValue(new OperatorId(beEncoding), out f);

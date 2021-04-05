@@ -3,13 +3,13 @@ namespace Fifth.PrimitiveTypes
     using TypeSystem;
     using TypeSystem.PrimitiveTypes;
 
-    public class PrimitiveLong : PrimitiveAny
+    public class PrimitiveLong : PrimitiveNumeric
     {
-        private PrimitiveLong():base("long")
+        private PrimitiveLong() : base("long", 2)
         {
         }
 
-        public static PrimitiveLong Default { get; set; } = new PrimitiveLong();
+        public static PrimitiveLong Default { get; set; } = new();
 
         [Operation(Operator.Add)]
         public static long Add(long left, long right) => left + right;

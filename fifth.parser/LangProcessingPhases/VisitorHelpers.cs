@@ -1,7 +1,7 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using AST;
     using AST.Visitors;
-    using Fifth.AST;
 
     public static class VisitorHelpers
     {

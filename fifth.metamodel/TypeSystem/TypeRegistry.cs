@@ -10,28 +10,63 @@ namespace Fifth.TypeSystem
     {
         public static readonly TypeRegistry DefaultRegistry = new();
         private static long typeIdDispenser;
-        private readonly ConcurrentDictionary<TypeId, IType> typeRegister = new();
+
         public static readonly Dictionary<Type, IType> PrimitiveMappings = new()
         {
             // {typeof(IList), PrimitiveList.Default}, 
-            { typeof(string), PrimitiveString.Default },
-            { typeof(short), PrimitiveShort.Default },
-            { typeof(int), PrimitiveInteger.Default },
-            { typeof(long), PrimitiveLong.Default },
-            { typeof(bool), PrimitiveBool.Default },
-            { typeof(char), PrimitiveChar.Default },
-            { typeof(float), PrimitiveFloat.Default },
-            { typeof(double), PrimitiveDouble.Default },
-            { typeof(decimal), PrimitiveDecimal.Default },
-            { typeof(DateTimeOffset), PrimitiveDate.Default },
-            { typeof(DateTime), PrimitiveDate.Default }
+            {typeof(string), PrimitiveString.Default},
+            {typeof(short), PrimitiveShort.Default},
+            {typeof(int), PrimitiveInteger.Default},
+            {typeof(long), PrimitiveLong.Default},
+            {typeof(bool), PrimitiveBool.Default},
+            {typeof(char), PrimitiveChar.Default},
+            {typeof(float), PrimitiveFloat.Default},
+            {typeof(double), PrimitiveDouble.Default},
+            {typeof(decimal), PrimitiveDecimal.Default},
+            {typeof(DateTimeOffset), PrimitiveDate.Default},
+            {typeof(DateTime), PrimitiveDate.Default}
         };
+
+        public static readonly IType[] PrimitiveTypes =
+        {
+            PrimitiveBool.Default, PrimitiveBool.Default, PrimitiveChar.Default, PrimitiveDate.Default,
+            PrimitiveDecimal.Default, PrimitiveDouble.Default, PrimitiveFloat.Default, PrimitiveFunction.Default,
+            PrimitiveInteger.Default, PrimitiveLong.Default, PrimitiveShort.Default, PrimitiveString.Default,
+            PrimitiveTriple.Default
+        };
+
+        private readonly ConcurrentDictionary<TypeId, IType> typeRegister = new();
 
         private TypeRegistry()
         {
         }
 
         public bool TryGetType(TypeId typeId, out IType type) => typeRegister.TryGetValue(typeId, out type);
+
+        public bool TrySetType(IType type, out TypeId typeId)
+        {
+            var existingTypeId = type.TypeId;
+            if (existingTypeId != null && typeRegister.ContainsKey(existingTypeId))
+            {
+                typeId = existingTypeId;
+                return true;
+            }
+
+            var newTypeId = (ushort)Interlocked.Increment(ref typeIdDispenser);
+            typeId = new TypeId(newTypeId);
+            return typeRegister.TryAdd(typeId, type);
+        }
+
+        public bool RegisterType(IType type)
+        {
+            if (TrySetType(type, out var id))
+            {
+                type.TypeId = id;
+                return true;
+            }
+
+            return false;
+        }
 
         public bool TryGetTypeByName(string typeName, out IType type)
         {
@@ -48,29 +83,6 @@ namespace Fifth.TypeSystem
             return false;
         }
 
-        public bool TrySetType(IType type, out TypeId typeId)
-        {
-            var existingTypeId = type.TypeId;
-            if (existingTypeId != null &&typeRegister.ContainsKey(existingTypeId))
-            {
-                typeId = existingTypeId;
-                return true;
-            }
-            var newTypeId = (ushort) Interlocked.Increment(ref typeIdDispenser);
-            typeId = new TypeId(newTypeId);
-            return typeRegister.TryAdd(typeId, type);
-        }
-
-        public bool RegisterType(IType type)
-        {
-            if (TrySetType(type, out var id))
-            {
-                type.TypeId = id;
-                return true;
-            }
-            return false;
-        }
-
         public bool LoadPrimitiveTypes()
         {
             var result = true;
@@ -81,22 +93,5 @@ namespace Fifth.TypeSystem
 
             return result;
         }
-
-        public static readonly IType[] PrimitiveTypes = new IType[]
-        {
-            PrimitiveBool.Default,
-            PrimitiveBool.Default,
-            PrimitiveChar.Default,
-            PrimitiveDate.Default,
-            PrimitiveDecimal.Default,
-            PrimitiveDouble.Default,
-            PrimitiveFloat.Default,
-            PrimitiveFunction.Default,
-            PrimitiveInteger.Default,
-            PrimitiveLong.Default,
-            PrimitiveShort.Default,
-            PrimitiveString.Default,
-            PrimitiveTriple.Default
-        };
     }
 }
