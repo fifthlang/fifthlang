@@ -30,37 +30,47 @@ namespace Fifth.Tests.Parser
         [TestCase(@"y / x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Divide)]
         public void TestCanBuildBinaryExpression(string fragment, Type leftOperandType, Type rightOperandType, Operator op)
         {
-            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes().Should().BeTrue();
-            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
-            var ctx = ParseExpression(fragment);
-            var sut = new AstBuilderVisitor();
-            var ast = sut.Visit(ctx);
-            _ = ast.Should().BeOfType(typeof(BinaryExpression));
-            var binexp = ast as BinaryExpression;
-            _ = binexp.Should().NotBeNull();
-            _ = binexp.Left.Should().NotBeNull().And.BeOfType(leftOperandType);
-            _ = binexp.Right.Should().NotBeNull().And.BeOfType(rightOperandType);
-            _ = binexp.Op.Should().Be(op);
+            if (FifthParserManager.TryParse<Expression>(fragment, out var ast, out var errors))
+            {
+                errors.Should().NotBeNull().And.BeEmpty();
+                ast.Should().NotBeNull();
+                _ = ast.Should().BeOfType(typeof(BinaryExpression));
+                var binexp = ast as BinaryExpression;
+                _ = binexp.Should().NotBeNull();
+                _ = binexp.Left.Should().NotBeNull().And.BeOfType(leftOperandType);
+                _ = binexp.Right.Should().NotBeNull().And.BeOfType(rightOperandType);
+                _ = binexp.Op.Should().Be(op);
+            }
+            else
+            {
+                Assert.Fail("failed to parse expression");
+            }
         }
 
-        [TestCase(@"void main(int x) => x + 1;")]
-        [TestCase(@"void main(int x) => int x = 234, x + 1;")]
-        [TestCase(@"void main(int x) => int x = 234, x + 1;int foo()=>43;", 2)]
-        [TestCase(@"void main(int x) => int x = 234, x + 1;
-void foo()=>43;", 2)]
+        [TestCase(@"void main(int x){return x + 1;}")]
+        [TestCase(@"void main(int x){int x = 234; return x + 1;}")]
+        [TestCase(@"void main(int x){int x = 234; return x + 1;} int foo(){return 43;}", 2)]
+        [TestCase(@"void main(int x){int x = 234; return x + 1;}
+void foo(){return 43;}", 2)]
         public void TestCanBuildProgram(string programText, int funcCount = 1)
         {
-            var ctx = ParseProgram(programText);
-            var sut = new AstBuilderVisitor();
-            var ast = sut.VisitFifth(ctx) as FifthProgram;
-            _ = ast.Should().NotBeNull();
-            _ = ast.Functions.Should().NotBeNull().And.HaveCount(funcCount);
+            if (FifthParserManager.TryParse<FifthProgram>(programText, out var ast, out var errors))
+            {
+                errors.Should().NotBeNull().And.BeEmpty();
+                ast.Should().NotBeNull();
+                _ = ast.Should().NotBeNull();
+                _ = ast.Functions.Should().NotBeNull().And.HaveCount(funcCount);
+            }
+            else
+            {
+                Assert.Fail("failed to parse expression");
+            }
         }
 
-        [TestCase(@"alias tu as http://tempuri.com/blah/; void main(int x) => int x = 234, x + 1;", 1)]
+        [TestCase(@"alias tu as http://tempuri.com/blah/; void main(int x){int x = 234; return x + 1;}", 1)]
         [TestCase(@"alias a1 as http://tempuri.com/blah/;
                     alias a2 as http://tempuri.com/bob;
-                    void main(int x) => int x = 234, x + 1;", 2)]
+                    void main(int x){int x = 234; return x + 1;}", 2)]
         public void TestCanConstructAliasesFromProgram(string programText, int aliasCount)
         {
             TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
@@ -84,5 +94,18 @@ void foo()=>43;", 2)]
         [TestCase(@"http://tempuri.com#fragid")]
         [TestCase(@"http://tempuri.com/blah#fragid")]
         public void TestCanParseIri(string iriText) => _ = ParseIri(iriText).Should().NotBeNull();
+
+
+        [TestCase(@"
+void main(int x){
+int a = 5;
+long b = 490;
+return (long)a + b;
+}")]
+        public void TestCanCast(string programText)
+        {
+            var ast = FifthParserManager.ParseProgram(programText);
+            ast.Should().NotBeNull();
+        }
     }
 }

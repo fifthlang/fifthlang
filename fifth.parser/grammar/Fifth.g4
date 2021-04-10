@@ -102,26 +102,27 @@ explist
     ;
 
 exp :
-      left=exp LT right=exp                                                     # ELT
-    | left=exp GT right=exp                                                     # EGT
-    | left=exp LEQ right=exp                                                    # ELEQ
-    | left=exp GEQ right=exp                                                    # EGEQ
-    | left=exp AND right=exp                                                    # EAnd
-    | left=exp PLUS right=exp                                                   # EAdd
-    | left=exp MINUS right=exp                                                  # ESub
-    | left=exp TIMES right=exp                                                  # EMul
-    | left=exp DIVIDE right=exp                                                 # EDiv
-    | MINUS operand=exp                                                         # EArithNegation
-    | boolean                                                                   # EBool
-    | value=INT                                                                 # EInt
-    | value=FLOAT                                                               # EDouble
-    | value=STRING                                                              # EString
-    | var_name                                                                  # EVarname
-    | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN               # EFuncCall
-    | OPENPAREN innerexp=exp CLOSEPAREN                                         # EParen
-    | NOT operand=exp                                                           # ELogicNegation
-    | NEW type_initialiser                                                      # ETypeCreateInst
-    | value=list                                                                # EList
+      OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
+    | left=exp LT right=exp                                         # ELT
+    | left=exp GT right=exp                                         # EGT
+    | left=exp LEQ right=exp                                        # ELEQ
+    | left=exp GEQ right=exp                                        # EGEQ
+    | left=exp AND right=exp                                        # EAnd
+    | left=exp PLUS right=exp                                       # EAdd
+    | left=exp MINUS right=exp                                      # ESub
+    | left=exp TIMES right=exp                                      # EMul
+    | left=exp DIVIDE right=exp                                     # EDiv
+    | MINUS operand=exp                                             # EArithNegation
+    | boolean                                                       # EBool
+    | value=INT                                                     # EInt
+    | value=FLOAT                                                   # EDouble
+    | value=STRING                                                  # EString
+    | var_name                                                      # EVarname
+    | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN   # EFuncCall
+    | OPENPAREN innerexp=exp CLOSEPAREN                             # EParen
+    | NOT operand=exp                                               # ELogicNegation
+    | NEW type_initialiser                                          # ETypeCreateInst
+    | value=list                                                    # EList
 ;
 
 boolean: value=TRUE | value=FALSE ;

@@ -13,8 +13,8 @@ namespace Fifth.AST
 
         public override void Accept(IAstVisitor visitor)
         {
-            visitor.EnterAlias(this);
-            visitor.LeaveAlias(this);
+            visitor.EnterAliasDeclaration(this);
+            visitor.LeaveAliasDeclaration(this);
         }
     }
 }

@@ -13,8 +13,8 @@ namespace Fifth.AST
 
         public override void Accept(IAstVisitor visitor)
         {
-            visitor.EnterAbsoluteUri(this);
-            visitor.LeaveAbsoluteUri(this);
+            visitor.EnterAbsoluteIri(this);
+            visitor.LeaveAbsoluteIri(this);
         }
     }
 }

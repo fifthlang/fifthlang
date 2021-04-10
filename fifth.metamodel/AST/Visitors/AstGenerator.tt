@@ -1,0 +1,101 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<# var astElements = new string[]{
+"TypeCast",
+"ReturnStatement",
+"StatementList",
+"AbsoluteIri",
+"AliasDeclaration",
+"AssignmentStmt",
+"BinaryExpression",
+"Block",
+"BooleanExpression",
+"ExpressionList",
+"FifthProgram",
+"FuncCallExpression",
+"FunctionDefinition",
+"Identifier",
+"IdentifierExpression",
+"IfElseStatement",
+"ModuleImport",
+"ParameterDeclaration",
+"ParameterDeclarationList",
+"TypeCreateInstExpression",
+"TypeInitialiser",
+"UnaryExpression",
+"VariableDeclarationStatement",
+"VariableReference",
+"WhileExp",
+"ExpressionStatement",
+"StringValueExpression",
+"ShortValueExpression",
+"IntValueExpression",
+"LongValueExpression",
+"FloatValueExpression",
+"DoubleValueExpression",
+"DecimalValueExpression",
+"DateValueExpression",
+"Expression",
+};
+
+#>
+
+namespace Fifth.AST.Visitors
+{
+    using Symbols;
+    using TypeSystem;
+
+    public interface IAstVisitor
+    {
+<# foreach (string astNodeType in astElements.OrderBy(p=>p))  { #>
+        public void Enter<#= astNodeType #>(<#= astNodeType #> ctx);
+        public void Leave<#= astNodeType #>(<#= astNodeType #> ctx);
+<# } #>
+    }
+
+    public partial class BaseAstVisitor : IAstVisitor
+    {
+<# foreach (string astNodeType in astElements.OrderBy(p=>p))  { #>
+        public virtual void Enter<#= astNodeType #>(<#= astNodeType #> ctx){}
+        public virtual void Leave<#= astNodeType #>(<#= astNodeType #> ctx){}
+<# } #>
+    }
+}
+
+namespace Fifth.TypeSystem
+{
+    using AST;
+    using Symbols;
+
+    public interface ITypeChecker
+    {
+<# foreach (string astNodeType in astElements.OrderBy(p=>p))  { #>
+        public IType Infer(IScope scope, <#= astNodeType #> node);
+<# } #>
+    }
+
+    public partial class FunctionalTypeChecker
+    {
+
+        public IType Infer(AstNode exp)
+        {
+            var scope = exp.NearestScope();
+            return exp switch
+            {
+<# foreach (string astNodeType in astElements)  { #>
+                <#= astNodeType #> node => Infer(scope, node),
+<# } #>
+
+                { } node => Infer(scope, node),
+            };
+        }
+
+
+    }
+}
+

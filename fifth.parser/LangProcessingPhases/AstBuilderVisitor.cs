@@ -11,6 +11,16 @@ namespace Fifth.Parser.LangProcessingPhases
     public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
     {
         public override IAstNode Visit(IParseTree tree) => base.Visit(tree);
+        public override IAstNode VisitETypeCast(FifthParser.ETypeCastContext context)
+        {
+            var sexp = Visit(context.subexp) as Expression;
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(context.type.GetText(), out var type))
+            {
+                return new TypeCast(sexp, type.TypeId);
+            }
+
+            throw new TypeCheckingException("Unable to find target type for cast");
+        }
 
         public override IAstNode VisitAlias([NotNull] FifthParser.AliasContext context) => base.VisitAlias(context);
 
@@ -33,6 +43,10 @@ namespace Fifth.Parser.LangProcessingPhases
             foreach (var e in context.statement())
             {
                 var node = base.Visit(e);
+                if (node is Expression exp)
+                {
+                    node = new ExpressionStatement(exp);
+                }
                 statements.Add((Statement)node);
             }
 
@@ -235,8 +249,11 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var nameId = base.Visit(context.var_name()) as Identifier;
             var typename = context.type_name().GetText();
-            var varType = TypeHelpers.LookupType(typename);
-            return new VariableDeclarationStatement(nameId, null);
+            var decl = new VariableDeclarationStatement(nameId, null)
+            {
+                TypeName = typename // the setter will do the tid lookup internally
+            };
+            return decl;
         }
 
         public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context) =>

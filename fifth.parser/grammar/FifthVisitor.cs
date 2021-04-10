@@ -229,6 +229,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEArithNegation([NotNull] FifthParser.EArithNegationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>ETypeCast</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitETypeCast([NotNull] FifthParser.ETypeCastContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EInt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>

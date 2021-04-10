@@ -55,7 +55,7 @@ namespace Fifth.CodeGeneration
             ctx.Accept(locals);
             if (locals.Decls.Any())
             {
-                var localsList = locals.Decls.Join(vd => $"{MapType(vd.TypeId)} {vd.Name}");
+                var localsList = locals.Decls.Join(vd => $"{MapType(vd.TypeId)} {vd.Name.Value}");
                 writer.WriteLine($".locals init({localsList})");
             }
         }

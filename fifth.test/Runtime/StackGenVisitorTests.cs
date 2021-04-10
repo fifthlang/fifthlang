@@ -12,12 +12,13 @@ namespace Fifth.Test.Runtime
     using Tests;
     using TypeSystem;
 
+    [Ignore("deprecated")]
     [TestFixture(Category = "Code Generation")]
     internal class StackGenVisitorTests : ParserTestBase
     {
         private readonly StackEmitter em = new StackEmitter();
 
-        [TestCase("{int x = 5 * 1, x}", "x", 5)]
+        [TestCase("{int x = 5 * 1; return x;}", "x", 5)]
         public void TestCanAssignAndDereferenceValue(string code, string varName, object resolvedValue)
         {
             var af = ParseAndGenerate<Block>(code);
@@ -79,9 +80,7 @@ namespace Fifth.Test.Runtime
             var af = ParseAndGenerateFunctionDecl(expression);
             var matchList = new[]
             {
-                em.WrapValue("5 + 6"),
-                em.WrapValue("write"),
-                em.WrapMetaFunction(MetaFunction.CallFunction),
+                em.WrapValue("5 + 6"), em.WrapValue("write"), em.WrapMetaFunction(MetaFunction.CallFunction),
             };
             if (af.Environment.TryGetFunctionDefinition("main", out var fd))
             {

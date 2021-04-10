@@ -11,19 +11,25 @@ namespace Fifth.LangProcessingPhases
     {
         private readonly Stack<AstNode> parents = new();
 
+        public void EnterTypeCast(TypeCast ctx) => EnterNonTerminal(ctx);
+
+        public void LeaveTypeCast(TypeCast ctx) => LeaveNonTerminal(ctx);
+
         public void EnterReturnStatement(ReturnStatement ctx) => EnterNonTerminal(ctx);
 
-        public void LeaveReturnStatement(ReturnStatement ctx) =>  LeaveNonTerminal(ctx);
+        public void LeaveReturnStatement(ReturnStatement ctx) => LeaveNonTerminal(ctx);
 
         public void EnterStatementList(StatementList ctx) => EnterNonTerminal(ctx);
 
         public void LeaveStatementList(StatementList ctx) => LeaveNonTerminal(ctx);
 
-        public void EnterAbsoluteUri(AbsoluteIri ctx) => EnterTerminal(ctx);
+        public void EnterAbsoluteIri(AbsoluteIri ctx) => EnterTerminal(ctx);
 
-        public void LeaveAbsoluteUri(AbsoluteIri ctx) => LeaveNonTerminal(ctx);
+        public void LeaveAbsoluteIri(AbsoluteIri ctx) => LeaveTerminal(ctx);
 
-        public void EnterAlias(AliasDeclaration ctx) => EnterNonTerminal(ctx);
+        public void EnterAliasDeclaration(AliasDeclaration ctx) => EnterNonTerminal(ctx);
+
+        public void LeaveAliasDeclaration(AliasDeclaration ctx) => LeaveNonTerminal(ctx);
 
         public void EnterAssignmentStmt(AssignmentStmt ctx) => EnterNonTerminal(ctx);
 
@@ -49,13 +55,11 @@ namespace Fifth.LangProcessingPhases
 
         public void EnterIdentifierExpression(IdentifierExpression ctx) => EnterNonTerminal(ctx);
 
-        public void EnterIfElseExp(IfElseStatement ctx) => EnterNonTerminal(ctx);
+        public void LeaveIfElseStatement(IfElseStatement ctx) => LeaveNonTerminal(ctx);
 
         public void EnterIntValueExpression(IntValueExpression ctx) => EnterTerminal(ctx);
 
         public void EnterModuleImport(ModuleImport ctx) => EnterTerminal(ctx);
-
-        public void EnterNotExpression(UnaryExpression ctx) => EnterNonTerminal(ctx);
 
         public void EnterParameterDeclaration(ParameterDeclaration ctx) => EnterTerminal(ctx);
 
@@ -75,8 +79,6 @@ namespace Fifth.LangProcessingPhases
         public void EnterVariableReference(VariableReference ctx) => EnterTerminal(ctx);
 
         public void EnterWhileExp(WhileExp ctx) => EnterNonTerminal(ctx);
-
-        public void LeaveAlias(AliasDeclaration ctx) => LeaveNonTerminal(ctx);
 
         public void LeaveAssignmentStmt(AssignmentStmt ctx) => LeaveNonTerminal(ctx);
 
@@ -101,8 +103,7 @@ namespace Fifth.LangProcessingPhases
         public void LeaveIdentifier(Identifier ctx) => LeaveTerminal(ctx);
 
         public void LeaveIdentifierExpression(IdentifierExpression ctx) => LeaveNonTerminal(ctx);
-
-        public void LeaveIfElseExp(IfElseStatement ctx) => LeaveNonTerminal(ctx);
+        public void EnterIfElseStatement(IfElseStatement ctx) => LeaveNonTerminal(ctx);
 
         public void LeaveIntValueExpression(IntValueExpression ctx) => LeaveTerminal(ctx);
 
@@ -127,6 +128,7 @@ namespace Fifth.LangProcessingPhases
         public void LeaveVariableReference(VariableReference ctx) => LeaveTerminal(ctx);
 
         public void LeaveWhileExp(WhileExp ctx) => LeaveNonTerminal(ctx);
+
         public void EnterLongValueExpression(LongValueExpression ctx) => EnterTerminal(ctx);
 
         public void LeaveLongValueExpression(LongValueExpression ctx) => LeaveTerminal(ctx);
@@ -146,6 +148,9 @@ namespace Fifth.LangProcessingPhases
         public void EnterDateValueExpression(DateValueExpression ctx) => EnterTerminal(ctx);
 
         public void LeaveDateValueExpression(DateValueExpression ctx) => LeaveTerminal(ctx);
+        public void EnterExpressionStatement(ExpressionStatement ctx) => EnterNonTerminal(ctx);
+
+        public void LeaveExpressionStatement(ExpressionStatement ctx) => LeaveNonTerminal(ctx);
 
         private void EnterNonTerminal(AstNode ctx)
         {

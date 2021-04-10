@@ -15,34 +15,36 @@ namespace Fifth.Runtime
     {
         public string Execute(string fifthProgram, params object[] args)
         {
-            var astNode = FifthParserManager.ParseProgram(fifthProgram);
-            var rootActivationFrame = new ActivationFrame();
-            var fpe = new FifthProgramEmitter(astNode as FifthProgram);
-            fpe.Emit(new StackEmitter(), rootActivationFrame);
-            BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
-
             var result = string.Empty;
 
-            if (rootActivationFrame.Environment.TryGetFunctionDefinition("main", out var fd))
+            if (FifthParserManager.TryParse<FifthProgram>(fifthProgram, out var ast, out var errors))
             {
-                var frame = fd as ActivationFrame;
-                frame.ParentFrame = rootActivationFrame;
-                frame.Environment.Parent = rootActivationFrame.Environment;
-                if (args != null && args.Length > 0)
+                var rootActivationFrame = new ActivationFrame();
+                var fpe = new FifthProgramEmitter(ast as FifthProgram);
+                fpe.Emit(new StackEmitter(), rootActivationFrame);
+                BuiltinFunctions.loadBuiltins(rootActivationFrame.Environment);
+ 
+                if (rootActivationFrame.Environment.TryGetFunctionDefinition("main", out var fd))
                 {
-                    LoadArgs(frame.Environment, fd, args);
+                    var frame = fd as ActivationFrame;
+                    frame.ParentFrame = rootActivationFrame;
+                    frame.Environment.Parent = rootActivationFrame.Environment;
+                    if (args != null && args.Length > 0)
+                    {
+                        LoadArgs(frame.Environment, fd, args);
+                    }
+
+                    var d = new Dispatcher(frame);
+                    d.DispatchWhileOperationIsAtTopOfStack();
+                    if (!d.Stack.IsEmpty)
+                    {
+                        var tmp = d.Stack.Pop() as ValueStackElement;
+                        // whatever the result may be, we have to try to convert it to string, since that is the default return type of main
+                        result = Convert.ToString(tmp?.GetValueOfValueObject());
+                    }
                 }
 
-                var d = new Dispatcher(frame);
-                d.DispatchWhileOperationIsAtTopOfStack();
-                if (!d.Stack.IsEmpty)
-                {
-                    var tmp = d.Stack.Pop() as ValueStackElement;
-                    // whatever the result may be, we have to try to convert it to string, since that is the default return type of main
-                    result = Convert.ToString(tmp?.GetValueOfValueObject());
-                }
             }
-
             return result;
         }
 

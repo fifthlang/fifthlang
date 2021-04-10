@@ -22,13 +22,13 @@ namespace Fifth.AST
 
         public override void Accept(IAstVisitor visitor)
         {
-            visitor.EnterIfElseExp(this);
+            visitor.EnterIfElseStatement(this);
 
             Condition.Accept(visitor);
             IfBlock.Accept(visitor);
             ElseBlock.Accept(visitor);
 
-            visitor.LeaveIfElseExp(this);
+            visitor.LeaveIfElseStatement(this);
         }
     }
 }

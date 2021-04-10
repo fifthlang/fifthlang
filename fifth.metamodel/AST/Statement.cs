@@ -8,6 +8,20 @@ namespace Fifth.AST
     {
     }
 
+    public class ExpressionStatement : Statement
+    {
+        public ExpressionStatement(Expression expression)
+        {
+            Expression = expression;
+        }
+        public Expression Expression { get; set; }
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterExpressionStatement(this);
+            Expression.Accept(visitor);
+            visitor.LeaveExpressionStatement(this);
+        }
+    }
     public class StatementList : AstNode
     {
         public List<Statement> Statements { get; }

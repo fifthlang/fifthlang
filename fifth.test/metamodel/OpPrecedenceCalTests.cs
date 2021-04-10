@@ -8,6 +8,7 @@ namespace Fifth.Test.metamodel
     [TestFixture]
     public class OpPrecedenceCalTests
     {
+        #region setup
         private TypeId boolTid;
         private TypeId shortTid;
         private TypeId intTid;
@@ -27,6 +28,7 @@ namespace Fifth.Test.metamodel
             doubleTid = PrimitiveDouble.Default.TypeId;
             decimalTid = PrimitiveDecimal.Default.TypeId;
         }
+        #endregion
 
         [TestCase(Operator.Add)]
         [TestCase(Operator.Subtract)]
@@ -91,5 +93,6 @@ namespace Fifth.Test.metamodel
             var (actual, lhsCoercion, rhsCoercion) = OperatorPrecedenceCalculator.GetResultType(op, lhs, rhs);
             Assert.That(actual == expectedTid);
         }
+
     }
 }

@@ -39,6 +39,13 @@ namespace Fifth.AST
         }
 
         public ISymbolTableEntry Resolve(string name)
-            => SymbolTable.Resolve(name); // needs to recurse up
+        {
+            if (TryResolve(name, out var ste))
+            {
+                return ste;
+            }
+
+            throw new CompilationException($"Unable to resolve symbol {name}");
+        }
     }
 }

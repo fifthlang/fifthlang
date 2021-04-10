@@ -363,6 +363,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEArithNegation([NotNull] FifthParser.EArithNegationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>ETypeCast</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterETypeCast([NotNull] FifthParser.ETypeCastContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ETypeCast</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitETypeCast([NotNull] FifthParser.ETypeCastContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EInt</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>

@@ -25,12 +25,14 @@ long print(string s){
     long b = 6;
     return a+b;
 }";
-            var ast = FifthParserManager.ParseProgram(prog);
-            var sb = new StringBuilder();
-            var sut = new CodeGenVisitor(new StringWriter(sb));
-            ast.Accept(sut);
-            var generatedCode = sb.ToString();
-            generatedCode.Should().NotBeNullOrWhiteSpace();
+            if (FifthParserManager.TryParse<FifthProgram>(prog, out var ast, out var errors))
+            {
+                var sb = new StringBuilder();
+                var sut = new CodeGenVisitor(new StringWriter(sb));
+                ast.Accept(sut);
+                var generatedCode = sb.ToString();
+                generatedCode.Should().NotBeNullOrWhiteSpace();
+            }
         }
     }
 }

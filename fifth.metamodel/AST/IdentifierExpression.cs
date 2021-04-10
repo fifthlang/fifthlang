@@ -12,6 +12,7 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterIdentifierExpression(this);
+            Identifier.Accept(visitor);
             visitor.LeaveIdentifierExpression(this);
         }
     }

@@ -9,4 +9,23 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AST\Visitors\AstGenerator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AstGenerator.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="AST\Visitors\AstGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AstGenerator.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

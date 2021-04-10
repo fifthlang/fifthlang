@@ -8,6 +8,7 @@ namespace Fifth.Test.Runtime
     using Tests;
 
     [TestFixture(Category = "End to End")]
+    [Ignore("deprecated")]
     internal class EndToEndTests : ParserTestBase
     {
         [TestCase("string main() => write('hello world');", "hello world")]

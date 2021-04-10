@@ -113,6 +113,7 @@ namespace Fifth.TypeSystem
         {
             var lhsType = Infer(scope, be.Left);
             var rhsType = Infer(scope, be.Right);
+
             if (be.TryEncode(out var id))
             {
                 var fw = InbuiltOperatorRegistry.DefaultRegistry[new OperatorId(id)];
