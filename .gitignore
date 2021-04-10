@@ -392,3 +392,4 @@ src/fifth.parser/Parser/grammar/old/.antlr/FifthParser.java
 src/fifth.parser/Parser/grammar/old/.antlr/FifthParser.tokens
 src/fifth.parser/Parser/grammar/.antlr/fifthParser.java
 /fifth.parser/grammar/.antlr
+*.favdoc
