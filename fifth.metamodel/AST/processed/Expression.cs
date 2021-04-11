@@ -1,4 +1,4 @@
-namespace Fifth.AST
+namespace Fifth.AST.Deprecated
 {
     public abstract class Expression : TypedAstNode
     {

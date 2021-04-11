@@ -14,7 +14,7 @@
 "AssignmentStmt",
 "BinaryExpression",
 "Block",
-"BooleanExpression",
+"BoolValueExpression",
 "ExpressionList",
 "FifthProgram",
 "FuncCallExpression",
@@ -45,7 +45,7 @@
 
 #>
 
-namespace Fifth.AST.Visitors
+namespace Fifth.AST.Visitors.Deprecated
 {
     using Symbols;
     using TypeSystem;

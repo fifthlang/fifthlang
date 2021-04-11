@@ -1,6 +1,6 @@
 
 
-namespace Fifth.AST.Visitors
+namespace Fifth.AST.Visitors.Deprecated
 {
     using Symbols;
     using TypeSystem;
@@ -17,8 +17,8 @@ namespace Fifth.AST.Visitors
         public void LeaveBinaryExpression(BinaryExpression ctx);
         public void EnterBlock(Block ctx);
         public void LeaveBlock(Block ctx);
-        public void EnterBooleanExpression(BooleanExpression ctx);
-        public void LeaveBooleanExpression(BooleanExpression ctx);
+        public void EnterBoolValueExpression(BoolValueExpression ctx);
+        public void LeaveBoolValueExpression(BoolValueExpression ctx);
         public void EnterDateValueExpression(DateValueExpression ctx);
         public void LeaveDateValueExpression(DateValueExpression ctx);
         public void EnterDecimalValueExpression(DecimalValueExpression ctx);
@@ -91,8 +91,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveBinaryExpression(BinaryExpression ctx){}
         public virtual void EnterBlock(Block ctx){}
         public virtual void LeaveBlock(Block ctx){}
-        public virtual void EnterBooleanExpression(BooleanExpression ctx){}
-        public virtual void LeaveBooleanExpression(BooleanExpression ctx){}
+        public virtual void EnterBoolValueExpression(BoolValueExpression ctx){}
+        public virtual void LeaveBoolValueExpression(BoolValueExpression ctx){}
         public virtual void EnterDateValueExpression(DateValueExpression ctx){}
         public virtual void LeaveDateValueExpression(DateValueExpression ctx){}
         public virtual void EnterDecimalValueExpression(DecimalValueExpression ctx){}
@@ -166,7 +166,7 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, AssignmentStmt node);
         public IType Infer(IScope scope, BinaryExpression node);
         public IType Infer(IScope scope, Block node);
-        public IType Infer(IScope scope, BooleanExpression node);
+        public IType Infer(IScope scope, BoolValueExpression node);
         public IType Infer(IScope scope, DateValueExpression node);
         public IType Infer(IScope scope, DecimalValueExpression node);
         public IType Infer(IScope scope, DoubleValueExpression node);
@@ -214,7 +214,7 @@ namespace Fifth.TypeSystem
                 AssignmentStmt node => Infer(scope, node),
                 BinaryExpression node => Infer(scope, node),
                 Block node => Infer(scope, node),
-                BooleanExpression node => Infer(scope, node),
+                BoolValueExpression node => Infer(scope, node),
                 ExpressionList node => Infer(scope, node),
                 FifthProgram node => Infer(scope, node),
                 FuncCallExpression node => Infer(scope, node),

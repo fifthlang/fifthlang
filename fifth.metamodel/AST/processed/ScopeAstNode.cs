@@ -1,9 +1,9 @@
-namespace Fifth.AST
+namespace Fifth.AST.Deprecated
 {
     using Symbols;
     using TypeSystem;
 
-    public abstract class ScopeAstNode : AstNode, IScope
+    public abstract class ScopeAstNode : AstNode, Symbols.IScope
     {
         protected ScopeAstNode()
         {
@@ -11,7 +11,7 @@ namespace Fifth.AST
             EnclosingScope = default;
         }
 
-        public IScope EnclosingScope { get; set; }
+        public Symbols.IScope EnclosingScope { get; set; }
         public ISymbolTable SymbolTable { get; set; }
 
         public void Declare(string name, SymbolKind kind, IAstNode ctx, params (string, object)[] properties)

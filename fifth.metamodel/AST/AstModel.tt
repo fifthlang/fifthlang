@@ -1,0 +1,551 @@
+<#@ template debug="false" hostspecific="false" language="C#" compilerOptions="/langversion:9"  #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="Microsoft.CSharp" #>
+<#@ import namespace="System.Dynamic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<#
+
+var asts = new dynamic[]
+{
+new
+{
+    Name = "TypeCast",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "ReturnStatement",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "StatementList",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "AbsoluteIri",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor=": base(PrimitiveUri.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "Uri", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "AliasDeclaration",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "IRI", Type = "AbsoluteIri", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "AssignmentStmt",
+    Parent = "Statement",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "VariableRef", Type = "VariableReference", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "BinaryExpression",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Left", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Op", Type = "Operator?", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Right", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+    }
+},
+new
+{
+    Name = "Block",
+    Parent = "ScopeAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Statements", Type = "List<Statement>", IsCollection=true, IgnoreDuringVisit = false},
+    }
+},
+new
+{
+    Name = "BoolValueExpression",
+    Parent = "LiteralExpression<bool>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveBool.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "bool", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "ShortValueExpression",
+    Parent = "LiteralExpression<short>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveShort.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "short", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "IntValueExpression",
+    Parent = "LiteralExpression<int>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveInteger.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "int", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "LongValueExpression",
+    Parent = "LiteralExpression<long>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveLong.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "long", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "FloatValueExpression",
+    Parent = "LiteralExpression<float>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveFloat.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "float", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "DoubleValueExpression",
+    Parent = "LiteralExpression<double>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveDouble.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "double", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "DecimalValueExpression",
+    Parent = "LiteralExpression<decimal>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveDecimal.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "decimal", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "StringValueExpression",
+    Parent = "LiteralExpression<string>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveString.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "DateValueExpression",
+    Parent = "LiteralExpression<DateTimeOffset>",
+    CustomCode=@"",
+    PostCtor=": base(TheValue, PrimitiveDate.Default.TypeId)",
+    Props = new dynamic[]
+    {
+        new {Name = "TheValue", Type = "DateTimeOffset", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+
+
+
+
+
+new
+{
+    Name = "ExpressionList",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Expressions", Type = "List<Expression>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "FifthProgram",
+    Parent = "ScopeAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Aliases", Type = "List<AliasDeclaration>", IsCollection=true, IgnoreDuringVisit = false},
+        new {Name = "Functions", Type = "List<FunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "FuncCallExpression",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ActualParameters", Type = "ExpressionList", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "FunctionDefinition",
+    Parent = "ScopeAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Type="ParameterDeclarationList", Name="ParameterDeclarations", IsCollection=false, IgnoreDuringVisit=false},
+        new {Type="Block", Name="Body", IsCollection=false, IgnoreDuringVisit=false},
+        new {Type="string", Name="Typename", IsCollection=false, IgnoreDuringVisit=true},
+        new {Type="string", Name="Name", IsCollection=false, IgnoreDuringVisit=true},
+        new {Type="bool", Name="IsEntryPoint", IsCollection=false, IgnoreDuringVisit=true},
+        new {Type="TypeId", Name="ReturnType", IsCollection=false, IgnoreDuringVisit=true},
+    }
+},
+new
+{
+    Name = "Identifier",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Value", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "IdentifierExpression",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Identifier", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "IfElseStatement",
+    Parent = "Statement",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "IfBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "ElseBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Condition", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "ModuleImport",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ModuleName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "ParameterDeclaration",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ParameterName", Type = "Expression", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "TypeName", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "ParameterType", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "ParameterDeclarationList",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ParameterDeclarations", Type = "List<ParameterDeclaration>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "TypeCreateInstExpression",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+    }
+},
+new
+{
+    Name = "TypeInitialiser",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+    }
+},
+new
+{
+    Name = "UnaryExpression",
+    Parent = "Expression",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Operand", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Op", Type = "Operator", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "VariableDeclarationStatement",
+    Parent = "Statement, ITypedAstNode",
+    CustomCode=@"
+        private string typeName;
+        public string TypeName
+        {
+            get
+            {
+                if (TypeId != null)
+                {
+                    return TypeId.Lookup().Name;
+                }
+                return typeName;
+            }
+            set
+            {
+                if (!TypeRegistry.DefaultRegistry.TryGetTypeByName(value, out var type))
+                {
+                    throw new TypeCheckingException(""Setting unrecognised type for variable"");
+                }
+
+                typeName = type.Name; // in case we want to use some sort of mapping onto a canonical name
+                TypeId = type.TypeId;
+            }
+        }
+        public TypeId TypeId { get; set; }
+
+    ",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "Name", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "VariableReference",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "WhileExp",
+    Parent = "Statement",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Condition", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "LoopBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "ExpressionStatement",
+    Parent = "Statement",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "Expression",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+    }
+}
+};
+
+#>
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable IDE0021 // Use expression body for constructors
+
+namespace Fifth.AST.Visitors
+{
+    using System;
+    using Symbols;
+    using Fifth.AST;
+    using TypeSystem;
+    using PrimitiveTypes;
+    using TypeSystem.PrimitiveTypes;
+    using System.Collections.Generic;
+
+    public interface IAstVisitor
+    {
+<# foreach (var ast in asts)  { #>
+        public void Enter<#= ast.Name #>(<#= ast.Name #> ctx);
+        public void Leave<#= ast.Name #>(<#= ast.Name #> ctx);
+<# } #>
+    }
+    public partial class BaseAstVisitor : IAstVisitor
+    {
+<# foreach (var ast in asts)  { #>
+        public void Enter<#= ast.Name #>(<#= ast.Name #> ctx){}
+        public void Leave<#= ast.Name #>(<#= ast.Name #> ctx){}
+<# } #>
+    }
+
+}
+
+namespace Fifth.AST
+{
+    using System;
+    using Symbols;
+    using Visitors;
+    using TypeSystem;
+    using PrimitiveTypes;
+    using TypeSystem.PrimitiveTypes;
+    using System.Collections.Generic;
+
+#region AST Nodes
+
+
+<# foreach (var ast in asts)  { #>
+    public class <#= ast.Name #> : <#= ast.Parent #>
+    {
+        public <#= ast.Name #>(<#
+var sep = "";
+foreach (var prop in ast.Props)  {
+#>
+<#= sep #><#= prop.Type  #> <#=prop.Name#><#
+sep=", ";
+} #>
+)<#= ast.PostCtor #>
+        {
+<#
+sep = "";
+foreach (var prop in ast.Props)  {
+#>
+            //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
+            this.<#=prop.Name#> = <#=prop.Name#>;
+<#
+sep=", ";
+} #>
+        }
+
+<# foreach (var prop in ast.Props)  { #>
+        public <#= prop.Type  #> <#= prop.Name #>{get;set;}
+<# } #>
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.Enter<#= ast.Name #>(this);
+<# foreach (var prop in ast.Props)  {
+    if(!prop.IgnoreDuringVisit){
+        if(prop.IsCollection){
+#>
+            foreach (var e in <#=prop.Name#>)
+            {
+                e.Accept(visitor);
+            }
+<#
+        }else{
+#>
+            <#=prop.Name#>.Accept(visitor);
+<#
+        }
+    }
+} #>
+            visitor.Leave<#= ast.Name #>(this);
+        }
+
+        <#= ast.CustomCode #>
+    }
+
+<# } #>
+
+#endregion // AST Nodes
+
+}
+#pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore IDE0021 // Use expression body for constructors

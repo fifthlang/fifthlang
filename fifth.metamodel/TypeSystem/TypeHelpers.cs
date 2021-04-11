@@ -89,6 +89,7 @@ namespace Fifth.TypeSystem
 
             return node?.ParentNode.NearestScope();
         }
+        // tmp
 
         public static T PeekOrDefault<T>(this Stack<T> s)
         {

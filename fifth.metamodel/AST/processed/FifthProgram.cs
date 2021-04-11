@@ -1,4 +1,4 @@
-namespace Fifth.AST
+namespace Fifth.AST.Deprecated
 {
     using System.Collections.Generic;
     using Symbols;
@@ -6,7 +6,7 @@ namespace Fifth.AST
 
     public class FifthProgram : ScopeAstNode
     {
-        public FifthProgram(IScope _)
+        public FifthProgram(Symbols.IScope _)
         {
         }
 
