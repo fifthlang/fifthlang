@@ -13,41 +13,15 @@
     <Compile Remove="AST\IdentifierExpression.cs" />
     <Compile Remove="AST\IfElseStatement.cs" />
     <Compile Remove="AST\IntValueExpression.cs" />
-    <Compile Remove="AST\ModuleImport.cs" />
-    <Compile Remove="AST\ParameterDeclaration.cs" />
-    <Compile Remove="AST\ParameterDeclarationList.cs" />
-    <Compile Remove="AST\ReturnStatement.cs" />
-    <Compile Remove="AST\Statement.cs" />
-    <Compile Remove="AST\StringValueExpression.cs" />
-    <Compile Remove="AST\TypeCreateInstExpression.cs" />
-    <Compile Remove="AST\TypedAstNode.cs" />
-    <Compile Remove="AST\TypeInitialiser.cs" />
-    <Compile Remove="AST\UnaryExpression.cs" />
-    <Compile Remove="AST\VariableDeclarationStatement.cs" />
-    <Compile Remove="AST\VariableReference.cs" />
     <Compile Remove="AST\Visitors\AstGenerator.cs" />
-    <Compile Remove="AST\WhileExp.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="AST\ModuleImport.cs" />
-    <None Include="AST\ParameterDeclaration.cs" />
-    <None Include="AST\ParameterDeclarationList.cs" />
-    <None Include="AST\ReturnStatement.cs" />
-    <None Include="AST\Statement.cs" />
-    <None Include="AST\StringValueExpression.cs" />
-    <None Include="AST\TypeCreateInstExpression.cs" />
-    <None Include="AST\TypedAstNode.cs" />
-    <None Include="AST\TypeInitialiser.cs" />
-    <None Include="AST\UnaryExpression.cs" />
-    <None Include="AST\VariableDeclarationStatement.cs" />
-    <None Include="AST\VariableReference.cs" />
     <None Include="AST\Visitors\AstGenerator.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AstGenerator.tt</DependentUpon>
     </None>
-    <None Include="AST\WhileExp.cs" />
   </ItemGroup>
 
   <ItemGroup>
