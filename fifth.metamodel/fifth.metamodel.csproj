@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Fifth</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,25 +14,12 @@
     <Compile Remove="AST\IdentifierExpression.cs" />
     <Compile Remove="AST\IfElseStatement.cs" />
     <Compile Remove="AST\IntValueExpression.cs" />
-    <Compile Remove="AST\Visitors\AstGenerator.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="AST\Visitors\AstGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AstGenerator.tt</DependentUpon>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="AST\AstModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AstModel.cs</LastGenOutput>
-    </None>
-    <None Update="AST\Visitors\AstGenerator.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AstGenerator.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
