@@ -1,0 +1,9 @@
+int main(){
+    return print('hello world');
+}
+
+long print(string s){
+    long a = 5;
+    long b = 6;
+    return a+b;
+}

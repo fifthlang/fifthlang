@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\fifth.codegenerator\fifth.codegenerator.csproj" />
     <ProjectReference Include="..\fifth.runtime\fifth.runtime.csproj" />
   </ItemGroup>
 

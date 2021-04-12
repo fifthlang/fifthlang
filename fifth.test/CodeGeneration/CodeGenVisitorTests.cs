@@ -1,15 +1,16 @@
 namespace Fifth.Test.CodeGeneration
 {
+    using System;
     using System.IO;
     using System.Text;
     using AST;
     using Fifth.CodeGeneration;
-    using Fifth.Runtime;
     using FluentAssertions;
     using NUnit.Framework;
-    using TypeSystem;
 
     [TestFixture]
+    [Category("Code Generation")]
+    [Category("CIL")]
     public class CodeGenVisitorTests
     {
         [Test]
@@ -32,6 +33,7 @@ long print(string s){
                 ast.Accept(sut);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
+                Console.WriteLine(generatedCode);
             }
         }
     }
