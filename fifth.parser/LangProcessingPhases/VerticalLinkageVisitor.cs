@@ -37,7 +37,6 @@ namespace Fifth.LangProcessingPhases
 
         public void EnterBlock(Block ctx) => EnterNonTerminal(ctx);
 
-        public void EnterBooleanExpression(BooleanExpression ctx) => EnterTerminal(ctx);
 
         public void EnterExpression(Expression ctx) => EnterNonTerminal(ctx); //??
 
@@ -85,8 +84,9 @@ namespace Fifth.LangProcessingPhases
         public void LeaveBinaryExpression(BinaryExpression ctx) => LeaveNonTerminal(ctx);
 
         public void LeaveBlock(Block ctx) => LeaveNonTerminal(ctx);
+        public void EnterBoolValueExpression(BoolValueExpression ctx) => EnterTerminal(ctx);
 
-        public void LeaveBooleanExpression(BooleanExpression ctx) => LeaveTerminal(ctx);
+        public void LeaveBoolValueExpression(BoolValueExpression ctx) => LeaveTerminal(ctx);
 
         public void LeaveExpression(Expression ctx) => LeaveNonTerminal(ctx);
 

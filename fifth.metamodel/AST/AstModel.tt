@@ -26,7 +26,7 @@ new
 new
 {
     Name = "ReturnStatement",
-    Parent = "AstNode",
+    Parent = "Statement",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
@@ -43,8 +43,7 @@ new
     PostCtor="",
     Props = new dynamic[]
     {
-        new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-        new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+        new {Name = "Statements", Type = "List<Statement>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
@@ -99,7 +98,9 @@ new
 {
     Name = "Block",
     Parent = "ScopeAstNode",
-    CustomCode=@"",
+    CustomCode=@"
+    public Block(StatementList sl):this(sl.Statements){}
+    ",
     PostCtor="",
     Props = new dynamic[]
     {
@@ -310,14 +311,13 @@ new
 new
 {
     Name = "ParameterDeclaration",
-    Parent = "AstNode",
+    Parent = "TypedAstNode",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
     {
-        new {Name = "ParameterName", Type = "Expression", IsCollection=false, IgnoreDuringVisit = true},
-        new {Name = "TypeName", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true},
-        new {Name = "ParameterType", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+        new {Name = "ParameterName", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
     }
 },
 new
@@ -470,8 +470,8 @@ namespace Fifth.AST.Visitors
     public partial class BaseAstVisitor : IAstVisitor
     {
 <# foreach (var ast in asts)  { #>
-        public void Enter<#= ast.Name #>(<#= ast.Name #> ctx){}
-        public void Leave<#= ast.Name #>(<#= ast.Name #> ctx){}
+        public virtual void Enter<#= ast.Name #>(<#= ast.Name #> ctx){}
+        public virtual void Leave<#= ast.Name #>(<#= ast.Name #> ctx){}
 <# } #>
     }
 
@@ -547,5 +547,39 @@ sep=", ";
 #endregion // AST Nodes
 
 }
+
+namespace Fifth.TypeSystem
+{
+    using AST;
+    using Symbols;
+
+    public interface ITypeChecker
+    {
+<# foreach (string astNodeType in asts.Select(a=>a.Name))  { #>
+        public IType Infer(IScope scope, <#= astNodeType #> node);
+<# } #>
+    }
+
+    public partial class FunctionalTypeChecker
+    {
+
+        public IType Infer(AstNode exp)
+        {
+            var scope = exp.NearestScope();
+            return exp switch
+            {
+<# foreach (string astNodeType in asts.Select(a=>a.Name))  { #>
+                <#= astNodeType #> node => Infer(scope, node),
+<# } #>
+
+                { } node => Infer(scope, node),
+            };
+        }
+
+
+    }
+}
+
+
 #pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore IDE0021 // Use expression body for constructors

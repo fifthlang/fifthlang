@@ -93,5 +93,8 @@ namespace Fifth.TypeSystem
 
             return result;
         }
+
+        public bool TryLookupType(Type t, out IType result)
+            => PrimitiveMappings.TryGetValue(t, out result);
     }
 }

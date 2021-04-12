@@ -127,7 +127,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             {
                 runtimeFunction.Arguments.AddRange(this.function.ParameterDeclarations.ParameterDeclarations.Select(
                     (p, i) =>
-                        new FunctionArgument {ArgOrdinal = i, Name = p.ParameterName, Type = p.ParameterType}));
+                        new FunctionArgument {ArgOrdinal = i, Name = p.ParameterName.Value, Type = p.TypeId}));
             }
         }
 
@@ -174,7 +174,7 @@ namespace Fifth.Runtime.LangProcessingPhases
                     EmitBinaryExpression(be, emitter, frame);
                     break;
 
-                case BooleanExpression boole:
+                case BoolValueExpression boole:
                     EmitBooleanExpression(boole, emitter, frame);
                     break;
 
@@ -253,7 +253,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             emitter.Operator(frame.Stack, be);
         }
 
-        public void EmitBooleanExpression(BooleanExpression be, IStackEmitter emitter, IActivationFrame frame) =>
+        public void EmitBooleanExpression(BoolValueExpression be, IStackEmitter emitter, IActivationFrame frame) =>
             emitter.Value(frame.Stack, be.Value);
 
         public void EmitFloatValueExpression(FloatValueExpression fe, IStackEmitter emitter, IActivationFrame frame) =>

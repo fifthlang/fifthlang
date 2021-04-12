@@ -1,5 +1,6 @@
 namespace Fifth.TypeSystem
 {
+    using System;
     using Fifth.PrimitiveTypes;
     using PrimitiveTypes;
 
@@ -12,6 +13,15 @@ namespace Fifth.TypeSystem
         /// <param name="lhs">the tid of the lhs operand</param>
         /// <param name="rhs">the tid of the rhs operand</param>
         /// <returns>tuple (result tid, coercion type for lhs, coercion type for rhs)</returns>
+        public static (TypeId, TypeId?, TypeId?) GetResultType(Operator? op, TypeId lhs, TypeId rhs)
+        {
+            if (!op.HasValue)
+            {
+                throw new ArgumentNullException(nameof(op));
+            }
+
+            return GetResultType(op.Value, lhs, rhs);
+        }
         public static (TypeId, TypeId?, TypeId?) GetResultType(Operator op, TypeId lhs, TypeId rhs)
         {
             if (IsRelational(op))

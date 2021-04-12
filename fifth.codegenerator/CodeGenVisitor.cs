@@ -45,7 +45,7 @@ namespace Fifth.CodeGeneration
             writer.Write(ctx.Name);
             writer.Write('(');
             writer.Write(ctx.ParameterDeclarations.ParameterDeclarations
-                            .Join(pd => MapType(pd.ParameterType)));
+                            .Join(pd => MapType(pd.TypeId)));
             writer.WriteLine(") cil managed {");
             if (ctx.IsEntryPoint)
             {

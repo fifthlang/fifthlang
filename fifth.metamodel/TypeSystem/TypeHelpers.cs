@@ -11,6 +11,14 @@ namespace Fifth.TypeSystem
 
     public static class TypeHelpers
     {
+        public static IFunctionSignature GetFuncType(this MethodInfo method)
+            => new FunctionSignature(method.ReturnType.LookupType(),
+                method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
+
+        public static IFunctionSignature GetFuncType(this FuncWrapper method)
+            => new FunctionSignature(method.ResultType.LookupType(),
+                method.ArgTypes.Select(p => p.LookupType()).ToArray());
+
         /// <summary>
         ///     try to resolve the type of the value and get its internal value
         /// </summary>
@@ -44,6 +52,16 @@ namespace Fifth.TypeSystem
         public static bool IsBuiltinType(string typename)
             => LookupBuiltinType(typename) != null;
 
+        public static IType Lookup(this TypeId tid)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetType(tid, out var ft))
+            {
+                return ft;
+            }
+
+            return null;
+        }
+
 
         public static TypeId LookupBuiltinType(string typename)
         {
@@ -76,6 +94,15 @@ namespace Fifth.TypeSystem
             throw new TypeCheckingException("no way to lookup non native types yet");
         }
 
+        public static TypeId LookupType(this Type type)
+        {
+            if (TypeRegistry.DefaultRegistry.TryLookupType(type, out var result))
+            {
+                return result.TypeId;
+            }
+
+            throw new TypeCheckingException("no way to lookup non native types yet");
+        }
 
         public static IEnumerable<MethodInfo> MethodsHavingAttribute<TAttribute>(this Type t)
             => t.GetMethods().Where(mi => mi.GetCustomAttributes(true).Any(attr => attr is TAttribute));
@@ -196,24 +223,6 @@ namespace Fifth.TypeSystem
             var result = new FuncWrapper(parameters.Select(p => p.ParameterType).ToList(), method.ReturnType,
                 Expression.Lambda(call, formalParams).Compile(), method.MetadataToken);
             return result;
-        }
-
-        public static IFunctionSignature GetFuncType(this MethodInfo method)
-            => new FunctionSignature(method.ReturnType.LookupType(),
-                method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
-
-        public static IFunctionSignature GetFuncType(this FuncWrapper method)
-            => new FunctionSignature(method.ResultType.LookupType(),
-                method.ArgTypes.Select(p => p.LookupType()).ToArray());
-
-        public static IType Lookup(this TypeId tid)
-        {
-            if (TypeRegistry.DefaultRegistry.TryGetType(tid, out var ft))
-            {
-                return ft;
-            }
-
-            return null;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Fifth.Parser.LangProcessingPhases
         }
 
         public override void EnterParameterDeclaration(ParameterDeclaration ctx)
-            => Declare(ctx.ParameterName, SymbolKind.FormalParameter, ctx);
+            => Declare(ctx.ParameterName.Value, SymbolKind.FormalParameter, ctx);
 
         public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
             => Declare(ctx.Name.Value, SymbolKind.VariableDeclaration, ctx);

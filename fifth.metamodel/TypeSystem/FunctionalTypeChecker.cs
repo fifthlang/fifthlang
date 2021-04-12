@@ -136,7 +136,7 @@ namespace Fifth.TypeSystem
             return default;
         }
 
-        public IType Infer(IScope scope, BooleanExpression node)
+        public IType Infer(IScope scope, BoolValueExpression node) 
         {
             var result = PrimitiveBool.Default;
             TypeInferred(node, result);
@@ -324,12 +324,11 @@ namespace Fifth.TypeSystem
             return default;
         }
 
-        public IType Infer(IScope scope, ScopeAstNode node) => default;
-
         public IType Infer(IScope scope, ReturnStatement node)
         {
-            var result = Infer(node.Expression);
+            var result = Infer(node.SubExpression);
             TypeInferred(node, result);
+            node.TargetTid = result.TypeId;
             return result;
         }
 
@@ -347,7 +346,6 @@ namespace Fifth.TypeSystem
             // do some check that the coercion is possible
             return coercionType;
         }
-        public IType Infer(IScope scope, TypedAstNode node) => default;
 
         public IType Infer(IScope scope, UnaryExpression node) => default;
 
@@ -367,20 +365,24 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, WhileExp node) => default;
 
+        public IType Infer(IScope scope, TypedAstNode node) => default;
+        public IType Infer(IScope scope, ScopeAstNode node) => default;
+
         #endregion Type Inference
 
         #region Type Checking
 
+        /*
         public void Check(IScope scope, Expression exp, IType type) { }
 
         public void Check(IScope scope, TypeDefinition typeDef) { }
 
         public void Check(IScope scope, FifthProgram prog) { }
-
+        */
         #endregion Type Checking
 
         #region Helper Functions
-
+        /*
         public IScope EmptyEnv() => default;
 
         public IScope Extend(IScope scope, string identifier, IType type) => default;
@@ -393,7 +395,6 @@ namespace Fifth.TypeSystem
             throw new NotImplementedException();
 
         public IScope NewBlock(IScope scope) => default;
-
         public bool TryInferOperationResultType(Operator op, IType lhsType, IType rhsType,
             out IType result)
         {
@@ -410,6 +411,7 @@ namespace Fifth.TypeSystem
                 return false;
             }
         }
+        */
 
         #endregion Helper Functions
 

@@ -30,12 +30,14 @@ namespace Fifth.Parser.LangProcessingPhases
             var expression = Visit(context.exp()) as Expression;
             var varName = id.Value;
             var variableReference = new VariableReference(varName);
-            var result = new AssignmentStmt(variableReference, expression);
+            var result = new AssignmentStmt(expression, variableReference);
             return result;
         }
 
         public override IAstNode VisitSReturn(FifthParser.SReturnContext context)
-            => new ReturnStatement((Expression)Visit(context.exp()));
+        {
+            return new ReturnStatement((Expression)Visit(context.exp()), null);
+        }
 
         public override IAstNode VisitBlock([NotNull] FifthParser.BlockContext context)
         {
@@ -54,7 +56,7 @@ namespace Fifth.Parser.LangProcessingPhases
         }
 
         public override IAstNode VisitBoolean(FifthParser.BooleanContext context)
-            => new BooleanExpression(bool.Parse(context.value.Text), PrimitiveBool.Default.TypeId);
+            => new BoolValueExpression(bool.Parse(context.value.Text));
 
         public override IAstNode VisitChildren(IRuleNode node) => base.VisitChildren(node);
 
@@ -77,7 +79,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var name = context.funcname.GetText();
             var actualParams = (ExpressionList)VisitExplist(context.args);
-            return new FuncCallExpression(name, actualParams); // TODO: I need to supply the type, perhaps via symtab
+            return new FuncCallExpression(actualParams, name); // TODO: I need to supply the type, perhaps via symtab
         }
 
         public override IAstNode VisitEGEQ([NotNull] FifthParser.EGEQContext context)
@@ -142,7 +144,7 @@ namespace Fifth.Parser.LangProcessingPhases
                 exps.Add((Expression)base.Visit(e));
             }
 
-            return new ExpressionList(exps, null);
+            return new ExpressionList(exps);
         }
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
@@ -155,7 +157,7 @@ namespace Fifth.Parser.LangProcessingPhases
                                            .Select(actx => VisitAlias(actx))
                                            .Cast<AliasDeclaration>()
                                            .ToList();
-            return new FifthProgram(null) {Functions = functionDeclarations, Aliases = aliasDeclarations};
+            return new FifthProgram(aliasDeclarations, functionDeclarations);
         }
 
         public override IAstNode VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context)
@@ -186,15 +188,15 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
         {
-            var formals = context.function_args().formal_parameters();
+            var formals = context.args.formal_parameters();
             var parameterList = VisitFormal_parameters(formals) as ParameterDeclarationList;
             var tmp = VisitFunction_body(context.function_body());
             var body = tmp as Block;
-            var name = context.function_name().IDENTIFIER().GetText();
+            var name = context.name.IDENTIFIER().GetText();
             var parameterDeclarationList =
                 parameterList ?? new ParameterDeclarationList(new List<ParameterDeclaration>());
             var typename = context.result_type.GetText();
-            var result = new FunctionDefinition(name, parameterDeclarationList, body, typename, null);
+            var result = new FunctionDefinition(parameterDeclarationList, body, typename, name, name == "main", null);
             return result;
         }
 
@@ -203,7 +205,7 @@ namespace Fifth.Parser.LangProcessingPhases
             var condNode = Visit(context.condition) as Expression;
             var ifBlockEL = VisitBlock(context.ifpart) as StatementList;
             var elseBlockEL = VisitBlock(context.elsepart) as StatementList;
-            var result = new IfElseStatement(condNode, new Block(ifBlockEL), new Block(elseBlockEL));
+            var result = new IfElseStatement(new Block(ifBlockEL), new Block(elseBlockEL), condNode);
             return result;
         }
 
@@ -225,7 +227,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var type = context.parameter_type().IDENTIFIER().GetText();
             var name = context.parameter_name().IDENTIFIER().GetText();
-            return new ParameterDeclaration(name, type, null);
+            return new ParameterDeclaration(new Identifier(name), type);
         }
 
         public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>
@@ -249,7 +251,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var nameId = base.Visit(context.var_name()) as Identifier;
             var typename = context.type_name().GetText();
-            var decl = new VariableDeclarationStatement(nameId, null)
+            var decl = new VariableDeclarationStatement(null, nameId)
             {
                 TypeName = typename // the setter will do the tid lookup internally
             };
@@ -284,7 +286,7 @@ namespace Fifth.Parser.LangProcessingPhases
         {
             var astLeft = (Expression)Visit(left);
             var astRight = (Expression)Visit(right);
-            return new BinaryExpression(astLeft, astRight, op);
+            return new BinaryExpression(astLeft, op, astRight);
         }
 
         private UnaryExpression UnExp(FifthParser.ExpContext operand, Operator op)

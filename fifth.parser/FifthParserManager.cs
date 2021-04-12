@@ -97,7 +97,8 @@ public static class FifthParserManager
     {
         var parseTree = ParseBlock(fragment);
         var visitor = new AstBuilderVisitor();
-        return new Block((StatementList)visitor.Visit(parseTree));
+        var statementList = (StatementList)visitor.Visit(parseTree);
+        return new Block(statementList);
     }
 
     public static IAstNode ParseFunctionDeclToAst(string fragment)

@@ -3,7 +3,6 @@ namespace Fifth.TypeSystem
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
-    using AST;
     using Fifth.PrimitiveTypes;
 
     public sealed class InbuiltOperatorRegistry
@@ -50,9 +49,9 @@ namespace Fifth.TypeSystem
                             case 1:
                             {
                                 var t = args[0].ParameterType;
-                                if (TypeChecker.PrimitiveMappings.TryGetValue(t, out var operand))
+                                if (TypeRegistry.PrimitiveMappings.TryGetValue(t, out var operand))
                                 {
-                                    if (TypeHelpers.TryPack(out var ord, (ushort)attr.Op, operand.Value))
+                                    if (TypeHelpers.TryPack(out var ord, (ushort)attr.Op, operand.TypeId.Value))
                                     {
                                         opId = new OperatorId(ord);
                                         operationRegister[opId] = m.Wrap();
@@ -64,20 +63,20 @@ namespace Fifth.TypeSystem
                             {
                                 var t1 = args[0].ParameterType;
                                 var t2 = args[1].ParameterType;
-                                if (!TypeChecker.PrimitiveMappings.TryGetValue(t1, out var leftFifthType))
+                                if (!TypeRegistry.PrimitiveMappings.TryGetValue(t1, out var leftFifthType))
                                 {
                                     throw new TypeCheckingException("unable to resolve type details for left operand");
                                 }
 
-                                if (!TypeChecker.PrimitiveMappings.TryGetValue(t2, out var rightFifthType))
+                                if (!TypeRegistry.PrimitiveMappings.TryGetValue(t2, out var rightFifthType))
                                 {
                                     throw new TypeCheckingException("unable to resolve type details for right operand");
                                 }
 
                                 if (TypeHelpers.TryPack(out var ord,
                                     (ushort)attr.Op,
-                                    leftFifthType.Value,
-                                    rightFifthType.Value))
+                                    leftFifthType.TypeId.Value,
+                                    rightFifthType.TypeId.Value))
                                 {
                                     opId = new OperatorId(ord);
                                     operationRegister[opId] = m.Wrap();
@@ -98,36 +97,6 @@ namespace Fifth.TypeSystem
                     }
                 }
             }
-        }
-
-        public bool TryGetOperationType(Expression e, out TypeId t)
-        {
-            if (TryGetOperation(e, out var fw))
-            {
-                t = fw.ResultType.LookupType();
-                return true;
-            }
-
-            t = null;
-            return false;
-        }
-
-        public TypeId LookupOperationType(OperatorId id) => operationTypes[id];
-
-        public bool TryGetOperation(Expression e, out FuncWrapper f)
-        {
-            if (e is UnaryExpression ue && ue.TryEncode(out var ueEncoding))
-            {
-                return operationRegister.TryGetValue(new OperatorId(ueEncoding), out f);
-            }
-
-            if (e is BinaryExpression be && be.TryEncode(out var beEncoding))
-            {
-                return operationRegister.TryGetValue(new OperatorId(beEncoding), out f);
-            }
-
-            f = null;
-            return false;
         }
     }
 }

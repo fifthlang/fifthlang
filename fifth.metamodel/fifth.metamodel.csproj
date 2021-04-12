@@ -12,35 +12,10 @@
     <Compile Remove="AST\Identifier.cs" />
     <Compile Remove="AST\IdentifierExpression.cs" />
     <Compile Remove="AST\IfElseStatement.cs" />
-    <Compile Remove="AST\IFromSourceFile.cs" />
     <Compile Remove="AST\IntValueExpression.cs" />
     <Compile Remove="AST\ModuleImport.cs" />
     <Compile Remove="AST\ParameterDeclaration.cs" />
     <Compile Remove="AST\ParameterDeclarationList.cs" />
-    <Compile Remove="AST\processed\AbsoluteIri.cs" />
-    <Compile Remove="AST\processed\AliasDeclaration.cs" />
-    <Compile Remove="AST\processed\AnnotatedThing.cs" />
-    <Compile Remove="AST\processed\AssignmentStmt.cs" />
-    <Compile Remove="AST\processed\AstNode.cs" />
-    <Compile Remove="AST\processed\BinaryExpression.cs" />
-    <Compile Remove="AST\processed\Block.cs" />
-    <Compile Remove="AST\processed\BooleanExpression.cs" />
-    <Compile Remove="AST\processed\Expression.cs" />
-    <Compile Remove="AST\processed\ExpressionList.cs" />
-    <Compile Remove="AST\processed\FifthProgram.cs" />
-    <Compile Remove="AST\processed\FloatValueExpression.cs" />
-    <Compile Remove="AST\processed\FuncCallExpression.cs" />
-    <Compile Remove="AST\processed\FunctionDefinition.cs" />
-    <Compile Remove="AST\processed\IAnnotated.cs" />
-    <Compile Remove="AST\processed\IAstNode.cs" />
-    <Compile Remove="AST\processed\Identifier.cs" />
-    <Compile Remove="AST\processed\IdentifierExpression.cs" />
-    <Compile Remove="AST\processed\IfElseStatement.cs" />
-    <Compile Remove="AST\processed\IntValueExpression.cs" />
-    <Compile Remove="AST\processed\ITypedAstNode.cs" />
-    <Compile Remove="AST\processed\IVisitable.cs" />
-    <Compile Remove="AST\processed\ScopeAstNode.cs" />
-    <Compile Remove="AST\processed\TypeCast.cs" />
     <Compile Remove="AST\ReturnStatement.cs" />
     <Compile Remove="AST\Statement.cs" />
     <Compile Remove="AST\StringValueExpression.cs" />
@@ -50,39 +25,14 @@
     <Compile Remove="AST\UnaryExpression.cs" />
     <Compile Remove="AST\VariableDeclarationStatement.cs" />
     <Compile Remove="AST\VariableReference.cs" />
+    <Compile Remove="AST\Visitors\AstGenerator.cs" />
     <Compile Remove="AST\WhileExp.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="AST\processed\FunctionDefinition.cs" />
-    <None Include="AST\processed\FunctionDefinition.cs" />
-    <None Include="AST\IFromSourceFile.cs" />
     <None Include="AST\ModuleImport.cs" />
     <None Include="AST\ParameterDeclaration.cs" />
     <None Include="AST\ParameterDeclarationList.cs" />
-    <None Include="AST\processed\AbsoluteIri.cs" />
-    <None Include="AST\processed\AliasDeclaration.cs" />
-    <None Include="AST\processed\AnnotatedThing.cs" />
-    <None Include="AST\processed\AssignmentStmt.cs" />
-    <None Include="AST\processed\AstNode.cs" />
-    <None Include="AST\processed\BinaryExpression.cs" />
-    <None Include="AST\processed\Block.cs" />
-    <None Include="AST\processed\BooleanExpression.cs" />
-    <None Include="AST\processed\Expression.cs" />
-    <None Include="AST\processed\ExpressionList.cs" />
-    <None Include="AST\processed\FifthProgram.cs" />
-    <None Include="AST\processed\FloatValueExpression.cs" />
-    <None Include="AST\processed\FuncCallExpression.cs" />
-    <None Include="AST\processed\IAnnotated.cs" />
-    <None Include="AST\processed\IAstNode.cs" />
-    <None Include="AST\processed\Identifier.cs" />
-    <None Include="AST\processed\IdentifierExpression.cs" />
-    <None Include="AST\processed\IfElseStatement.cs" />
-    <None Include="AST\processed\IntValueExpression.cs" />
-    <None Include="AST\processed\ITypedAstNode.cs" />
-    <None Include="AST\processed\IVisitable.cs" />
-    <None Include="AST\processed\ScopeAstNode.cs" />
-    <None Include="AST\processed\TypeCast.cs" />
     <None Include="AST\ReturnStatement.cs" />
     <None Include="AST\Statement.cs" />
     <None Include="AST\StringValueExpression.cs" />
@@ -92,6 +42,11 @@
     <None Include="AST\UnaryExpression.cs" />
     <None Include="AST\VariableDeclarationStatement.cs" />
     <None Include="AST\VariableReference.cs" />
+    <None Include="AST\Visitors\AstGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AstGenerator.tt</DependentUpon>
+    </None>
     <None Include="AST\WhileExp.cs" />
   </ItemGroup>
 
@@ -115,11 +70,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AstModel.tt</DependentUpon>
-    </Compile>
-    <Compile Update="AST\Visitors\AstGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AstGenerator.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
