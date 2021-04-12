@@ -22,7 +22,7 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/test/fifth.test/fifth.test.csproj"
+                "${workspaceFolder}/fifth.test/fifth.test.csproj"
             ]
         }
     ]
