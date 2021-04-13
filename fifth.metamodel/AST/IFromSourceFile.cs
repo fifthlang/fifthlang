@@ -7,5 +7,6 @@ namespace Fifth.AST
         string Filename { get; set; }
 
         int Line { get; set; }
+        string OriginalText { get; set; }
     }
 }

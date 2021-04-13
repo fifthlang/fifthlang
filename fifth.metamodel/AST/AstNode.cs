@@ -12,6 +12,7 @@ namespace Fifth.AST
         public int Column { get; set; }
         public string Filename { get; set; }
         public int Line { get; set; }
+        public string OriginalText { get; set; }
 
         public abstract void Accept(IAstVisitor visitor);
     }

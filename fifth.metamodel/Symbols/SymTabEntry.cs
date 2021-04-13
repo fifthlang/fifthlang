@@ -12,6 +12,7 @@ namespace Fifth.Symbols
         public IAstNode Context { get; set; }
         public string Filename { get; set; }
         public int Line { get; set; }
+        public string OriginalText { get; set; }
         public string Name { get; set; }
         public SymbolKind SymbolKind { get; set; }
     }

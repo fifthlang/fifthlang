@@ -1,16 +1,22 @@
 namespace Fifth.Parser.LangProcessingPhases
 {
+    using Antlr4.Runtime;
     using AST;
-    using AST.Visitors;
 
     public static class VisitorHelpers
     {
-        public static void Accept(this IAstVisitor visitor, IAstNode node)
+        public static T CaptureLocation<T>(this T n, IToken t)
+        where T:IFromSourceFile
         {
-            if (node != null)
+            if (n == null || t == null)
             {
-                node.Accept(visitor);
+                return n;
             }
+            n.Column = t.Column;
+            n.Line = t.Line;
+            n.Filename = t.TokenSource.SourceName;
+            n.OriginalText = t.Text;
+            return n;
         }
     }
 }
