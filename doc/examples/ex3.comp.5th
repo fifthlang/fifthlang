@@ -2,8 +2,8 @@ int main(){
     return print('hello world');
 }
 
-long print(string s){
-    long a = 5;
-    long b = 6;
+int print(string s){
+    int a = 5;
+    int b = 6;
     return a+b;
 }

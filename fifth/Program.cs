@@ -18,7 +18,7 @@ namespace Fifth
             var source = File.ReadAllText(fileName);
             if (FifthParserManager.TryParse<FifthProgram>(source, out var ast, out var errors))
             {
-                var path = Path.GetTempFileName();
+                var path = @"C:\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il";
                 var sb = new StringBuilder();
                 using (var writer = File.CreateText(path))
                 {

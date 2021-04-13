@@ -14,16 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47E4C047-F8B2-4E63-BC44-40A0B5C24D31}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		.travis.yml = .travis.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		doc\examples\ex3.comp.5th = doc\examples\ex3.comp.5th
 		fifth.parser\grammar\Fifth.g4 = fifth.parser\grammar\Fifth.g4
-		fifth.parser\grammar\FifthExpressions.g4 = fifth.parser\grammar\FifthExpressions.g4
-		fifth.parser\grammar\FifthFunctionDefinitions.g4 = fifth.parser\grammar\FifthFunctionDefinitions.g4
-		fifth.parser\grammar\FifthKeywords.g4 = fifth.parser\grammar\FifthKeywords.g4
-		fifth.parser\grammar\FifthKnowledgeGraphs.g4 = fifth.parser\grammar\FifthKnowledgeGraphs.g4
-		fifth.parser\grammar\FifthLexicalRules.g4 = fifth.parser\grammar\FifthLexicalRules.g4
-		fifth.parser\grammar\FifthLists.g4 = fifth.parser\grammar\FifthLists.g4
-		fifth.parser\grammar\FifthPrimitives.g4 = fifth.parser\grammar\FifthPrimitives.g4
-		fifth.parser\grammar\FifthTypeDefinition.g4 = fifth.parser\grammar\FifthTypeDefinition.g4
+		..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_il_sample.il = ..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_il_sample.il
+		..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il = ..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il
 		Makefile = Makefile
 		readme.md = readme.md
 	EndProjectSection
@@ -47,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "expressions", "expressions"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth", "fifth\fifth.csproj", "{EC0A15B3-903C-4997-87B2-9DE7AD86B6DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.codegenerator", "fifth.codegenerator\fifth.codegenerator.csproj", "{938CC183-D05B-49A0-89E9-BBE10A620E59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.codegenerator", "fifth.codegenerator\fifth.codegenerator.csproj", "{938CC183-D05B-49A0-89E9-BBE10A620E59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
