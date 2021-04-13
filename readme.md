@@ -1,6 +1,7 @@
 # The Fifth Programming Languge
 
 ![Twitter Follow](https://img.shields.io/twitter/follow/aabs?style=social)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/aabs/fifthlang/.NET?label=GH%20Workflow)
 ![Travis (.com)](https://img.shields.io/travis/com/aabs/fifthlang)
 ![GitHub](https://img.shields.io/github/license/aabs/fifthlang)
 ![GitHub forks](https://img.shields.io/github/forks/aabs/fifthlang?style=social)
