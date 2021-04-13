@@ -1,7 +1,14 @@
 # The Fifth Programming Languge
 
+![Twitter Follow](https://img.shields.io/twitter/follow/aabs?style=social)
 ![Travis (.com)](https://img.shields.io/travis/com/aabs/fifthlang)
 ![GitHub](https://img.shields.io/github/license/aabs/fifthlang)
+![GitHub forks](https://img.shields.io/github/forks/aabs/fifthlang?style=social)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/aabs?style=social)
+![GitHub language count](https://img.shields.io/github/languages/count/aabs/fifthlang)
+![GitHub repo file count](https://img.shields.io/github/directory-file-count/aabs/fifthlang)
+
+
 
 Fifth is (to be) a general purpose programming language running on the .NET tech stack that makes it easy to work with RDF knowledge Graphs.
 
