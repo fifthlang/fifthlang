@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Fifth.System</RootNamespace>
+    <AssemblyName>Fifth.System</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>0.1.0</Version>
+    <Description>Core system functionality for the Fifth Programming language</Description>
+    <Copyright>Andrew Matthews</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://fifthlang.org</PackageProjectUrl>
+    <RepositoryUrl>github.com/aabs/fifthlang</RepositoryUrl>
+    <PackageReleaseNotes>Please ignore this for now.  Fifth is still an early work in progress.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

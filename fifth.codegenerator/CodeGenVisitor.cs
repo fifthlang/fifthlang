@@ -40,11 +40,6 @@ namespace Fifth.CodeGeneration
             GenerateBuiltinFunctions();
         }
 
-        public override void EnterFuncCallExpression(FuncCallExpression ctx)
-        {
-            writer.WriteLine(@"    // compute actual params");
-        }
-
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
             writer.Write($".method public static {MapType(ctx.ReturnType)} ");
@@ -78,9 +73,6 @@ namespace Fifth.CodeGeneration
 
         public override void EnterStringValueExpression(StringValueExpression ctx)
             => writer.WriteLine($"ldstr \"{ctx.Value}\"");
-
-        public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx) =>
-            writer.WriteLine(@"    // EnterVariableDeclarationStatement");
 
         public override void LeaveBinaryExpression(BinaryExpression ctx)
         {
@@ -152,8 +144,5 @@ namespace Fifth.CodeGeneration
 
         public string MapType(TypeId tid)
             => toDotnet[tid];
-
-        private void GenerateBuiltinFunctions() =>
-            writer.WriteLine(@"    // Builtin Function Definitions go here");
     }
 }
