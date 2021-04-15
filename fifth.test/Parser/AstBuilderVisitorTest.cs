@@ -1,6 +1,7 @@
 namespace Fifth.Tests.Parser
 {
     using System;
+    using Antlr4.Runtime;
     using Fifth;
     using Fifth.AST;
     using Fifth.Parser.LangProcessingPhases;
@@ -104,7 +105,7 @@ return (long)a + b;
 }")]
         public void TestCanCast(string programText)
         {
-            var ast = FifthParserManager.ParseProgram(programText);
+            var ast = FifthParserManager.ParseProgram(CharStreams.fromString(programText));
             ast.Should().NotBeNull();
         }
     }

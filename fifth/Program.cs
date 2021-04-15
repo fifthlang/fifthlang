@@ -15,11 +15,9 @@ namespace Fifth
     {
         private static async Task<int> Main(string fileName)
         {
-            var source = File.ReadAllText(fileName);
-            if (FifthParserManager.TryParse<FifthProgram>(source, out var ast, out var errors))
+            if (FifthParserManager.TryParseFile<FifthProgram>(fileName, out var ast, out var errors))
             {
                 var path = @"C:\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il";
-                var sb = new StringBuilder();
                 using (var writer = File.CreateText(path))
                 {
                     var sut = new CodeGenVisitor(writer);

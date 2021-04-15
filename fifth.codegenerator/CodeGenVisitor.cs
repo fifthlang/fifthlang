@@ -37,7 +37,6 @@ namespace Fifth.CodeGeneration
 .module fifth_test.exe
 .class public Program {
             ");
-            GenerateBuiltinFunctions();
         }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)

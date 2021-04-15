@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Antlr4.Runtime;
 using Fifth.AST;
 using Fifth.LangProcessingPhases;
@@ -6,17 +7,28 @@ using Fifth.Parser.LangProcessingPhases;
 using Fifth.TypeSystem;
 
 /*
- * ParseAndAnnotate -> ParseToAst<T> -> GetParserFor 
+ * ParseAndAnnotate -> ParseToAst<T> -> GetParserFor
  */
 public static class FifthParserManager
 {
 
-    public static bool TryParse<T>(string fragment, out T ast, out List<FifthCompilationError> errors)
+    public static bool TryParseFile<T>(string fileName, out T ast, out List<FifthCompilationError> errors)
         where T : IAstNode
     {
         TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
         InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
-        ast = (T) ParseAndAnnotate<T>(fragment);
+        ast = (T)ParseAndAnnotate<T>(CharStreams.fromPath(fileName));
+        errors = new List<FifthCompilationError>();
+        return true;
+
+    }
+
+    public static bool TryParse<T>(string source, out T ast, out List<FifthCompilationError> errors)
+        where T : IAstNode
+    {
+        TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
+        InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
+        ast = (T)ParseAndAnnotate<T>(CharStreams.fromString(source));
         errors = new List<FifthCompilationError>();
         return true;
     }
@@ -24,10 +36,10 @@ public static class FifthParserManager
     #region Core Drivers
 
 
-    public static IAstNode ParseAndAnnotate<T>(string fragment)
+    public static IAstNode ParseAndAnnotate<T>(ICharStream source)
         where T : IAstNode
     {
-        var ast = ParseToAst<T>(fragment);
+        var ast = ParseToAst<T>(source);
 
         if (ast != null)
         {
@@ -39,40 +51,40 @@ public static class FifthParserManager
 
         return ast;
     }
-    public static IAstNode ParseToAst<T>(string fragment)
+    public static IAstNode ParseToAst<T>(ICharStream source)
         where T : IAstNode
     {
         if (typeof(T) == typeof(FifthProgram))
         {
-            return (T)ParseProgramToAst(fragment);
+            return (T)ParseProgramToAst(source);
         }
 
         if (typeof(T) == typeof(ExpressionList))
         {
-            return (T)ParseExpressionListToAst(fragment);
+            return (T)ParseExpressionListToAst(source);
         }
 
         if (typeof(T) == typeof(Expression))
         {
-            return (T)ParseExpressionToAst(fragment);
+            return (T)ParseExpressionToAst(source);
         }
 
         if (typeof(T) == typeof(FunctionDefinition))
         {
-            return (T)ParseFunctionDeclToAst(fragment);
+            return (T)ParseFunctionDeclToAst(source);
         }
 
         if (typeof(T) == typeof(Block))
         {
-            return (T)ParseBlockToAst(fragment);
+            return (T)ParseBlockToAst(source);
         }
 
         return null;
     }
 
-    private static FifthParser GetParserFor(string fragment)
+    private static FifthParser GetParserFor(ICharStream source)
     {
-        var lexer = new FifthLexer(new AntlrInputStream(fragment));
+        var lexer = new FifthLexer(source);
         lexer.RemoveErrorListeners();
         lexer.AddErrorListener(new ThrowingErrorListener<int>());
 
@@ -86,38 +98,38 @@ public static class FifthParserManager
 
     #region Parsing into AST Node
 
-    public static IAstNode ParseExpressionListToAst(string fragment)
+    public static IAstNode ParseExpressionListToAst(ICharStream source)
     {
-        var parseTree = ParseExpressionList(fragment);
+        var parseTree = ParseExpressionList(source);
         var visitor = new AstBuilderVisitor();
         return visitor.Visit(parseTree);
     }
 
-    public static IAstNode ParseBlockToAst(string fragment)
+    public static IAstNode ParseBlockToAst(ICharStream source)
     {
-        var parseTree = ParseBlock(fragment);
+        var parseTree = ParseBlock(source);
         var visitor = new AstBuilderVisitor();
         var statementList = (StatementList)visitor.Visit(parseTree);
         return new Block(statementList);
     }
 
-    public static IAstNode ParseFunctionDeclToAst(string fragment)
+    public static IAstNode ParseFunctionDeclToAst(ICharStream source)
     {
-        var parseTree = ParseFunctionDecl(fragment);
+        var parseTree = ParseFunctionDecl(source);
         var visitor = new AstBuilderVisitor();
         return visitor.Visit(parseTree);
     }
 
-    public static IAstNode ParseExpressionToAst(string fragment)
+    public static IAstNode ParseExpressionToAst(ICharStream source)
     {
-        var parseTree = ParseExpression(fragment);
+        var parseTree = ParseExpression(source);
         var visitor = new AstBuilderVisitor();
         return visitor.Visit(parseTree);
     }
 
-    public static IAstNode ParseProgramToAst(string fragment)
+    public static IAstNode ParseProgramToAst(ICharStream source)
     {
-        var parseTree = ParseProgram(fragment);
+        var parseTree = ParseProgram(source);
         var visitor = new AstBuilderVisitor();
         var ast = visitor.Visit(parseTree);
         return ast;
@@ -127,20 +139,20 @@ public static class FifthParserManager
 
     #region Parsing into Parse Tree
 
-    public static FifthParser.FifthContext ParseProgram(string fragment)
-        => GetParserFor(fragment).fifth();
+    public static FifthParser.FifthContext ParseProgram(ICharStream source)
+        => GetParserFor(source).fifth();
 
-    public static ParserRuleContext ParseExpression(string fragment)
-        => GetParserFor(fragment).exp();
+    public static ParserRuleContext ParseExpression(ICharStream source)
+        => GetParserFor(source).exp();
 
-    public static ParserRuleContext ParseExpressionList(string fragment)
-        => GetParserFor(fragment).explist();
+    public static ParserRuleContext ParseExpressionList(ICharStream source)
+        => GetParserFor(source).explist();
 
-    public static ParserRuleContext ParseBlock(string fragment)
-        => GetParserFor(fragment).block();
+    public static ParserRuleContext ParseBlock(ICharStream source)
+        => GetParserFor(source).block();
 
-    public static ParserRuleContext ParseFunctionDecl(string fragment)
-        => GetParserFor(fragment).function_declaration();
+    public static ParserRuleContext ParseFunctionDecl(ICharStream source)
+        => GetParserFor(source).function_declaration();
 
     #endregion Parsing into Parse Tree
 }

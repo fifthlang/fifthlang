@@ -140,14 +140,15 @@ Note: The `license` badge image link at the top of this file should be updated w
 
 ## Contributing
 
-See [the contributing file](CONTRIBUTING.md)!
+Feel free to dive in! [Open an issue](https://github.com/aabs/fifthlang/issues/new) or submit PRs.
 
-PRs accepted.
+Standard Readme follows the [Contributor Covenant](http://contributor-covenant.org/version/1/3/0/) Code of Conduct.
 
-Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+### Contributors
 
-### Any optional sections
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/aabs/fifthlang/graphs/contributors"><img src="https://opencollective.com/standard-readme/contributors.svg?width=890&button=false" /></a>
 
 ## License
 
-[MIT © Richard McRichface.](../LICENSE)
+[GPL3.0 © Andrew Matthews.](../LICENSE)
