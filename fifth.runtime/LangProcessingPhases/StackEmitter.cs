@@ -195,7 +195,14 @@ namespace Fifth.Runtime.LangProcessingPhases
         private void EmitAssignmentExpression(AssignmentStmt ae, IStackEmitter emitter, IActivationFrame frame)
         {
             new ExpressionStackEmitter(ae.Expression).Emit(emitter, frame);
-            emitter.Value(frame.Stack, ae.VariableRef.Name);
+            if (ae.VariableRef is VariableReference vr)
+            {
+                emitter.Value(frame.Stack, vr.Name);
+            }
+            if (ae.VariableRef is CompoundVariableReference cvr)
+            {
+                emitter.Value(frame.Stack, string.Join('.', cvr.ComponentReferences));
+            }
             emitter.MetaFunction(frame.Stack, MetaFunction.BindVariable);
         }
 
@@ -332,7 +339,14 @@ namespace Fifth.Runtime.LangProcessingPhases
         private void EmitAssignmentExpression(AssignmentStmt ae, IStackEmitter emitter, IActivationFrame frame)
         {
             new ExpressionStackEmitter(ae.Expression).Emit(emitter, frame);
-            emitter.Value(frame.Stack, ae.VariableRef.Name);
+            if (ae.VariableRef is VariableReference vr)
+            {
+                emitter.Value(frame.Stack, vr.Name);
+            }
+            if (ae.VariableRef is CompoundVariableReference cvr)
+            {
+                emitter.Value(frame.Stack, string.Join('.', cvr.ComponentReferences));
+            }
             emitter.MetaFunction(frame.Stack, MetaFunction.BindVariable);
         }
 

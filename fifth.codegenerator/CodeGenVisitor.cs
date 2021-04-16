@@ -34,7 +34,7 @@ namespace Fifth.CodeGeneration
             writer.WriteLine(@"
 .assembly extern mscorlib { .ver 4:0:0:0 auto }
 .assembly fifth { }
-.module fifth_test.exe
+.module "+ctx.TargetAssemblyFileName+@"
             ");
         }
 
@@ -50,12 +50,11 @@ namespace Fifth.CodeGeneration
 
         public override void EnterPropertyDefinition(PropertyDefinition ctx)
         {
-            base.EnterPropertyDefinition(ctx);
+            writer.WriteLine($"//{ctx.Name} {ctx.TypeName}");
         }
 
         public override void LeavePropertyDefinition(PropertyDefinition ctx)
         {
-            base.LeavePropertyDefinition(ctx);
         }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
@@ -166,6 +165,18 @@ namespace Fifth.CodeGeneration
             => writer.WriteLine(@"ret");
 
         public string MapType(TypeId tid)
-            => toDotnet[tid];
+        {
+            if (tid == null)
+            {
+                return "void";
+            }
+
+            if (toDotnet.ContainsKey(tid))
+            {
+                return toDotnet[tid];
+            }
+
+            return tid.Lookup().Name;
+        }
     }
 }

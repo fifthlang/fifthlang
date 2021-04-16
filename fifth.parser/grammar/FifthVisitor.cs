@@ -74,6 +74,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitProperty_declaration([NotNull] FifthParser.Property_declarationContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -234,6 +240,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEBoolean([NotNull] FifthParser.EBooleanContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>EArithNegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -324,6 +337,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEParen([NotNull] FifthParser.EParenContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>EMemberAccess</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEMemberAccess([NotNull] FifthParser.EMemberAccessContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

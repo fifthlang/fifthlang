@@ -119,6 +119,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitProperty_declaration([NotNull] FifthParser.Property_declarationContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMember_access([NotNull] FifthParser.Member_accessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMember_access([NotNull] FifthParser.Member_accessContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -439,6 +451,20 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEVarname([NotNull] FifthParser.EVarnameContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEBoolean([NotNull] FifthParser.EBooleanContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEBoolean([NotNull] FifthParser.EBooleanContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EArithNegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -620,6 +646,20 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitEParen([NotNull] FifthParser.EParenContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EMemberAccess</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEMemberAccess([NotNull] FifthParser.EMemberAccessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EMemberAccess</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEMemberAccess([NotNull] FifthParser.EMemberAccessContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

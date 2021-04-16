@@ -101,6 +101,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitProperty_declaration([NotNull] FifthParser.Property_declarationContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -371,6 +381,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEVarname([NotNull] FifthParser.EVarnameContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEBoolean([NotNull] FifthParser.EBooleanContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEBoolean([NotNull] FifthParser.EBooleanContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>EArithNegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
 	/// </summary>
@@ -526,6 +548,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEParen([NotNull] FifthParser.EParenContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EMemberAccess</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEMemberAccess([NotNull] FifthParser.EMemberAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EMemberAccess</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEMemberAccess([NotNull] FifthParser.EMemberAccessContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>ESub</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.

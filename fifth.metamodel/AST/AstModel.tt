@@ -14,7 +14,7 @@ var asts = new dynamic[]
 new
 {
     Name = "ClassDefinition",
-    Parent = "AstNode",
+    Parent = "ScopeAstNode, ITypedAstNode",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
@@ -26,7 +26,7 @@ new
 },
 new {
     Name = "PropertyDefinition",
-    Parent = "AstNode",
+    Parent = "TypedAstNode",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
@@ -102,7 +102,7 @@ new
     Props = new dynamic[]
     {
         new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-        new {Name = "VariableRef", Type = "VariableReference", IsCollection=false, IgnoreDuringVisit = false}
+        new {Name = "VariableRef", Type = "BaseVarReference", IsCollection=false, IgnoreDuringVisit = false}
     }
 },
 new
@@ -374,6 +374,19 @@ new
     PostCtor="",
     Props = new dynamic[]
     {
+        new {Name = "PropertyInitialisers", Type = "List<TypePropertyInit>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "TypePropertyInit",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Value", Type = "Expression", IsCollection=true, IgnoreDuringVisit = true}
     }
 },
 new
@@ -428,12 +441,23 @@ new
 new
 {
     Name = "VariableReference",
-    Parent = "TypedAstNode",
+    Parent = "BaseVarReference",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
     {
         new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "CompoundVariableReference",
+    Parent = "BaseVarReference",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ComponentReferences", Type = "List<VariableReference>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
@@ -516,7 +540,7 @@ namespace Fifth.AST
 
 
 <# foreach (var ast in asts)  { #>
-    public class <#= ast.Name #> : <#= ast.Parent #>
+    public partial class <#= ast.Name #> : <#= ast.Parent #>
     {
         public <#= ast.Name #>(<#
 var sep = "";

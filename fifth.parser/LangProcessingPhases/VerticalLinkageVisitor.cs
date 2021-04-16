@@ -2,6 +2,7 @@
 
 namespace Fifth.LangProcessingPhases
 {
+    using System;
     using System.Collections.Generic;
     using AST;
     using AST.Visitors;
@@ -85,6 +86,9 @@ namespace Fifth.LangProcessingPhases
 
         public void EnterVariableReference(VariableReference ctx) => EnterTerminal(ctx);
 
+        public void LeaveCompoundVariableReference(CompoundVariableReference ctx)
+            => LeaveNonTerminal(ctx);
+
         public void EnterWhileExp(WhileExp ctx) => EnterNonTerminal(ctx);
 
         public void LeaveAssignmentStmt(AssignmentStmt ctx) => LeaveNonTerminal(ctx);
@@ -117,8 +121,6 @@ namespace Fifth.LangProcessingPhases
 
         public void LeaveModuleImport(ModuleImport ctx) => LeaveTerminal(ctx);
 
-        public void LeaveNotExpression(UnaryExpression ctx) => LeaveNonTerminal(ctx);
-
         public void LeaveParameterDeclaration(ParameterDeclaration ctx) => LeaveTerminal(ctx);
 
         public void LeaveParameterDeclarationList(ParameterDeclarationList ctx) => LeaveNonTerminal(ctx);
@@ -134,6 +136,8 @@ namespace Fifth.LangProcessingPhases
         public void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx) => LeaveNonTerminal(ctx);
 
         public void LeaveVariableReference(VariableReference ctx) => LeaveTerminal(ctx);
+        public void EnterCompoundVariableReference(CompoundVariableReference ctx)
+            => EnterNonTerminal(ctx);
 
         public void LeaveWhileExp(WhileExp ctx) => LeaveNonTerminal(ctx);
 
@@ -159,6 +163,11 @@ namespace Fifth.LangProcessingPhases
         public void EnterExpressionStatement(ExpressionStatement ctx) => EnterNonTerminal(ctx);
 
         public void LeaveExpressionStatement(ExpressionStatement ctx) => LeaveNonTerminal(ctx);
+
+        public void EnterTypePropertyInit(TypePropertyInit ctx) => EnterNonTerminal(ctx);
+        public void LeaveTypePropertyInit(TypePropertyInit ctx)  => LeaveNonTerminal(ctx);
+
+        public void LeaveNotExpression(UnaryExpression ctx) => LeaveNonTerminal(ctx);
 
         private void EnterNonTerminal(AstNode ctx)
         {

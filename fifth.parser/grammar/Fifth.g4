@@ -26,7 +26,6 @@ packagename
     ;
 
 // ========[TYPE DEFINITIONS]=========
-
 class_definition
     : CLASS name=IDENTIFIER OPENBRACE
     ( functions += function_declaration
@@ -38,8 +37,17 @@ property_declaration
     : name=IDENTIFIER  COLON type=IDENTIFIER SEMICOLON
     ;
 
+member_access
+    : DOT IDENTIFIER
+    ;
+
 type_initialiser
-    : type_name OPENBRACE type_property_init* CLOSEBRACE
+    : typename=type_name OPENBRACE
+        properties+=type_property_init
+        (COMMA
+            properties+=type_property_init
+        )*
+      CLOSEBRACE
     ;
 
 type_name
@@ -51,7 +59,6 @@ type_property_init
     ;
 
 // ========[FUNC DEFS]=========
-
 formal_parameters
     : parameter_declaration (COMMA parameter_declaration)*
     ;
@@ -107,13 +114,23 @@ var_decl
     : ( type_name | list_type_signature ) var_name
     ;
 
-// ========[EXPRESSIONS]=========
 
+// ========[EXPRESSIONS]=========
 explist
     : exp (COMMA exp)*
     ;
 
-exp : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
+exp
+    : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
+    | value=truth_value                                             # EBool
+    | value=INT                                                     # EInt
+    | value=FLOAT                                                   # EDouble
+    | value=STRING                                                  # EString
+    | value=truth_value                                             # EBoolean
+    | value=list                                                    # EList
+    | var_name member_access                                        # EMemberAccess
+    | NOT operand=exp                                               # ELogicNegation
+    | MINUS operand=exp                                             # EArithNegation
     | left=exp LT right=exp                                         # ELT
     | left=exp GT right=exp                                         # EGT
     | left=exp LEQ right=exp                                        # ELEQ
@@ -123,17 +140,10 @@ exp : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
     | left=exp MINUS right=exp                                      # ESub
     | left=exp TIMES right=exp                                      # EMul
     | left=exp DIVIDE right=exp                                     # EDiv
-    | MINUS operand=exp                                             # EArithNegation
-    | value=truth_value                                             # EBool
-    | value=INT                                                     # EInt
-    | value=FLOAT                                                   # EDouble
-    | value=STRING                                                  # EString
     | var_name                                                      # EVarname
     | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN   # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN                             # EParen
-    | NOT operand=exp                                               # ELogicNegation
     | NEW type_initialiser                                          # ETypeCreateInst
-    | value=list                                                    # EList
     ;
 
 truth_value
@@ -147,7 +157,6 @@ var_name
 
 
 // ========[KNOWLEDGE GRAPHS]=========
-
 alias
     : ALIAS name=packagename AS uri=absoluteIri SEMICOLON
     ;

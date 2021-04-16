@@ -1,9 +1,7 @@
 namespace Fifth.LangProcessingPhases
 {
-    using System.Collections.Generic;
     using AST;
     using AST.Visitors;
-    using PrimitiveTypes;
 
     public class DesugaringVisitor : BaseAstVisitor
     {

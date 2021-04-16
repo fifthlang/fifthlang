@@ -44,6 +44,7 @@ public static class FifthParserManager
         if (ast != null)
         {
             ast.Accept(new VerticalLinkageVisitor());
+            ast.Accept(new CompoundVariableSplitterVisitor());
             ast.Accept(new DesugaringVisitor());
             ast.Accept(new SymbolTableBuilderVisitor());
             ast.Accept(new TypeAnnotatorVisitor());

@@ -7,6 +7,12 @@ namespace Fifth.Parser.LangProcessingPhases
 
     public class SymbolTableBuilderVisitor : BaseAstVisitor
     {
+        public override void EnterPropertyDefinition(PropertyDefinition ctx)
+        {
+            var enclosingScope = ctx.ParentNode.NearestScope();
+            enclosingScope.Declare(ctx.Name, SymbolKind.PropertyDefinition, ctx);
+        }
+
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
             // Declare(ctx.Name, SymbolKind.FunctionDeclaration, ctx);

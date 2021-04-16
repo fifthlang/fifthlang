@@ -76,12 +76,16 @@ namespace Fifth.AST.Visitors
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
         public void LeaveTypeInitialiser(TypeInitialiser ctx);
+        public void EnterTypePropertyInit(TypePropertyInit ctx);
+        public void LeaveTypePropertyInit(TypePropertyInit ctx);
         public void EnterUnaryExpression(UnaryExpression ctx);
         public void LeaveUnaryExpression(UnaryExpression ctx);
         public void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx);
         public void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx);
         public void EnterVariableReference(VariableReference ctx);
         public void LeaveVariableReference(VariableReference ctx);
+        public void EnterCompoundVariableReference(CompoundVariableReference ctx);
+        public void LeaveCompoundVariableReference(CompoundVariableReference ctx);
         public void EnterWhileExp(WhileExp ctx);
         public void LeaveWhileExp(WhileExp ctx);
         public void EnterExpressionStatement(ExpressionStatement ctx);
@@ -153,12 +157,16 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
         public virtual void LeaveTypeInitialiser(TypeInitialiser ctx){}
+        public virtual void EnterTypePropertyInit(TypePropertyInit ctx){}
+        public virtual void LeaveTypePropertyInit(TypePropertyInit ctx){}
         public virtual void EnterUnaryExpression(UnaryExpression ctx){}
         public virtual void LeaveUnaryExpression(UnaryExpression ctx){}
         public virtual void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx){}
         public virtual void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx){}
         public virtual void EnterVariableReference(VariableReference ctx){}
         public virtual void LeaveVariableReference(VariableReference ctx){}
+        public virtual void EnterCompoundVariableReference(CompoundVariableReference ctx){}
+        public virtual void LeaveCompoundVariableReference(CompoundVariableReference ctx){}
         public virtual void EnterWhileExp(WhileExp ctx){}
         public virtual void LeaveWhileExp(WhileExp ctx){}
         public virtual void EnterExpressionStatement(ExpressionStatement ctx){}
@@ -182,7 +190,7 @@ namespace Fifth.AST
 #region AST Nodes
 
 
-    public class ClassDefinition : AstNode
+    public partial class ClassDefinition : ScopeAstNode, ITypedAstNode
     {
         public ClassDefinition(string Name, List<PropertyDefinition> Properties, List<FunctionDefinition> Functions)
         {
@@ -215,7 +223,7 @@ namespace Fifth.AST
         
     }
 
-    public class PropertyDefinition : AstNode
+    public partial class PropertyDefinition : TypedAstNode
     {
         public PropertyDefinition(string Name, string TypeName)
         {
@@ -237,7 +245,7 @@ namespace Fifth.AST
         
     }
 
-    public class TypeCast : Expression
+    public partial class TypeCast : Expression
     {
         public TypeCast(Expression SubExpression, TypeId TargetTid)
         {
@@ -260,7 +268,7 @@ namespace Fifth.AST
         
     }
 
-    public class ReturnStatement : Statement
+    public partial class ReturnStatement : Statement
     {
         public ReturnStatement(Expression SubExpression, TypeId TargetTid)
         {
@@ -283,7 +291,7 @@ namespace Fifth.AST
         
     }
 
-    public class StatementList : AstNode
+    public partial class StatementList : AstNode
     {
         public StatementList(List<Statement> Statements)
         {
@@ -306,7 +314,7 @@ namespace Fifth.AST
         
     }
 
-    public class AbsoluteIri : TypedAstNode
+    public partial class AbsoluteIri : TypedAstNode
     {
         public AbsoluteIri(string Uri): base(PrimitiveUri.Default.TypeId)
         {
@@ -325,7 +333,7 @@ namespace Fifth.AST
         
     }
 
-    public class AliasDeclaration : AstNode
+    public partial class AliasDeclaration : AstNode
     {
         public AliasDeclaration(AbsoluteIri IRI, string Name)
         {
@@ -348,9 +356,9 @@ namespace Fifth.AST
         
     }
 
-    public class AssignmentStmt : Statement
+    public partial class AssignmentStmt : Statement
     {
-        public AssignmentStmt(Expression Expression, VariableReference VariableRef)
+        public AssignmentStmt(Expression Expression, BaseVarReference VariableRef)
         {
             //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
             this.Expression = Expression;
@@ -359,7 +367,7 @@ namespace Fifth.AST
         }
 
         public Expression Expression{get;set;}
-        public VariableReference VariableRef{get;set;}
+        public BaseVarReference VariableRef{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -372,7 +380,7 @@ namespace Fifth.AST
         
     }
 
-    public class BinaryExpression : Expression
+    public partial class BinaryExpression : Expression
     {
         public BinaryExpression(Expression Left, Operator? Op, Expression Right)
         {
@@ -399,7 +407,7 @@ namespace Fifth.AST
         
     }
 
-    public class Block : ScopeAstNode
+    public partial class Block : ScopeAstNode
     {
         public Block(List<Statement> Statements)
         {
@@ -424,7 +432,7 @@ namespace Fifth.AST
     
     }
 
-    public class BoolValueExpression : LiteralExpression<bool>
+    public partial class BoolValueExpression : LiteralExpression<bool>
     {
         public BoolValueExpression(bool TheValue): base(TheValue, PrimitiveBool.Default.TypeId)
         {
@@ -443,7 +451,7 @@ namespace Fifth.AST
         
     }
 
-    public class ShortValueExpression : LiteralExpression<short>
+    public partial class ShortValueExpression : LiteralExpression<short>
     {
         public ShortValueExpression(short TheValue): base(TheValue, PrimitiveShort.Default.TypeId)
         {
@@ -462,7 +470,7 @@ namespace Fifth.AST
         
     }
 
-    public class IntValueExpression : LiteralExpression<int>
+    public partial class IntValueExpression : LiteralExpression<int>
     {
         public IntValueExpression(int TheValue): base(TheValue, PrimitiveInteger.Default.TypeId)
         {
@@ -481,7 +489,7 @@ namespace Fifth.AST
         
     }
 
-    public class LongValueExpression : LiteralExpression<long>
+    public partial class LongValueExpression : LiteralExpression<long>
     {
         public LongValueExpression(long TheValue): base(TheValue, PrimitiveLong.Default.TypeId)
         {
@@ -500,7 +508,7 @@ namespace Fifth.AST
         
     }
 
-    public class FloatValueExpression : LiteralExpression<float>
+    public partial class FloatValueExpression : LiteralExpression<float>
     {
         public FloatValueExpression(float TheValue): base(TheValue, PrimitiveFloat.Default.TypeId)
         {
@@ -519,7 +527,7 @@ namespace Fifth.AST
         
     }
 
-    public class DoubleValueExpression : LiteralExpression<double>
+    public partial class DoubleValueExpression : LiteralExpression<double>
     {
         public DoubleValueExpression(double TheValue): base(TheValue, PrimitiveDouble.Default.TypeId)
         {
@@ -538,7 +546,7 @@ namespace Fifth.AST
         
     }
 
-    public class DecimalValueExpression : LiteralExpression<decimal>
+    public partial class DecimalValueExpression : LiteralExpression<decimal>
     {
         public DecimalValueExpression(decimal TheValue): base(TheValue, PrimitiveDecimal.Default.TypeId)
         {
@@ -557,7 +565,7 @@ namespace Fifth.AST
         
     }
 
-    public class StringValueExpression : LiteralExpression<string>
+    public partial class StringValueExpression : LiteralExpression<string>
     {
         public StringValueExpression(string TheValue): base(TheValue, PrimitiveString.Default.TypeId)
         {
@@ -576,7 +584,7 @@ namespace Fifth.AST
         
     }
 
-    public class DateValueExpression : LiteralExpression<DateTimeOffset>
+    public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
     {
         public DateValueExpression(DateTimeOffset TheValue): base(TheValue, PrimitiveDate.Default.TypeId)
         {
@@ -595,7 +603,7 @@ namespace Fifth.AST
         
     }
 
-    public class ExpressionList : TypedAstNode
+    public partial class ExpressionList : TypedAstNode
     {
         public ExpressionList(List<Expression> Expressions)
         {
@@ -618,7 +626,7 @@ namespace Fifth.AST
         
     }
 
-    public class FifthProgram : ScopeAstNode
+    public partial class FifthProgram : ScopeAstNode
     {
         public FifthProgram(List<AliasDeclaration> Aliases, List<ClassDefinition> Classes, List<FunctionDefinition> Functions)
         {
@@ -655,7 +663,7 @@ namespace Fifth.AST
         
     }
 
-    public class FuncCallExpression : Expression
+    public partial class FuncCallExpression : Expression
     {
         public FuncCallExpression(ExpressionList ActualParameters, string Name)
         {
@@ -678,7 +686,7 @@ namespace Fifth.AST
         
     }
 
-    public class FunctionDefinition : ScopeAstNode
+    public partial class FunctionDefinition : ScopeAstNode
     {
         public FunctionDefinition(ParameterDeclarationList ParameterDeclarations, Block Body, string Typename, string Name, bool IsEntryPoint, TypeId ReturnType)
         {
@@ -714,7 +722,7 @@ namespace Fifth.AST
         
     }
 
-    public class Identifier : TypedAstNode
+    public partial class Identifier : TypedAstNode
     {
         public Identifier(string Value)
         {
@@ -733,7 +741,7 @@ namespace Fifth.AST
         
     }
 
-    public class IdentifierExpression : Expression
+    public partial class IdentifierExpression : Expression
     {
         public IdentifierExpression(Identifier Identifier)
         {
@@ -753,7 +761,7 @@ namespace Fifth.AST
         
     }
 
-    public class IfElseStatement : Statement
+    public partial class IfElseStatement : Statement
     {
         public IfElseStatement(Block IfBlock, Block ElseBlock, Expression Condition)
         {
@@ -781,7 +789,7 @@ namespace Fifth.AST
         
     }
 
-    public class ModuleImport : AstNode
+    public partial class ModuleImport : AstNode
     {
         public ModuleImport(string ModuleName)
         {
@@ -800,7 +808,7 @@ namespace Fifth.AST
         
     }
 
-    public class ParameterDeclaration : TypedAstNode
+    public partial class ParameterDeclaration : TypedAstNode
     {
         public ParameterDeclaration(Identifier ParameterName, string TypeName)
         {
@@ -823,7 +831,7 @@ namespace Fifth.AST
         
     }
 
-    public class ParameterDeclarationList : AstNode
+    public partial class ParameterDeclarationList : AstNode
     {
         public ParameterDeclarationList(List<ParameterDeclaration> ParameterDeclarations)
         {
@@ -846,7 +854,7 @@ namespace Fifth.AST
         
     }
 
-    public class TypeCreateInstExpression : Expression
+    public partial class TypeCreateInstExpression : Expression
     {
         public TypeCreateInstExpression()
         {
@@ -862,23 +870,52 @@ namespace Fifth.AST
         
     }
 
-    public class TypeInitialiser : Expression
+    public partial class TypeInitialiser : Expression
     {
-        public TypeInitialiser()
+        public TypeInitialiser(List<TypePropertyInit> PropertyInitialisers)
         {
+            //_ = PropertyInitialisers ?? throw new ArgumentNullException(nameof(PropertyInitialisers));
+            this.PropertyInitialisers = PropertyInitialisers;
         }
 
+        public List<TypePropertyInit> PropertyInitialisers{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterTypeInitialiser(this);
+            foreach (var e in PropertyInitialisers)
+            {
+                e.Accept(visitor);
+            }
             visitor.LeaveTypeInitialiser(this);
         }
 
         
     }
 
-    public class UnaryExpression : Expression
+    public partial class TypePropertyInit : AstNode
+    {
+        public TypePropertyInit(string Name, Expression Value)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = Value ?? throw new ArgumentNullException(nameof(Value));
+            this.Value = Value;
+        }
+
+        public string Name{get;set;}
+        public Expression Value{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterTypePropertyInit(this);
+            visitor.LeaveTypePropertyInit(this);
+        }
+
+        
+    }
+
+    public partial class UnaryExpression : Expression
     {
         public UnaryExpression(Expression Operand, Operator Op)
         {
@@ -901,7 +938,7 @@ namespace Fifth.AST
         
     }
 
-    public class VariableDeclarationStatement : Statement, ITypedAstNode
+    public partial class VariableDeclarationStatement : Statement, ITypedAstNode
     {
         public VariableDeclarationStatement(Expression Expression, Identifier Name)
         {
@@ -950,7 +987,7 @@ namespace Fifth.AST
     
     }
 
-    public class VariableReference : TypedAstNode
+    public partial class VariableReference : BaseVarReference
     {
         public VariableReference(string Name)
         {
@@ -969,7 +1006,30 @@ namespace Fifth.AST
         
     }
 
-    public class WhileExp : Statement
+    public partial class CompoundVariableReference : BaseVarReference
+    {
+        public CompoundVariableReference(List<VariableReference> ComponentReferences)
+        {
+            //_ = ComponentReferences ?? throw new ArgumentNullException(nameof(ComponentReferences));
+            this.ComponentReferences = ComponentReferences;
+        }
+
+        public List<VariableReference> ComponentReferences{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterCompoundVariableReference(this);
+            foreach (var e in ComponentReferences)
+            {
+                e.Accept(visitor);
+            }
+            visitor.LeaveCompoundVariableReference(this);
+        }
+
+        
+    }
+
+    public partial class WhileExp : Statement
     {
         public WhileExp(Expression Condition, Block LoopBlock)
         {
@@ -992,7 +1052,7 @@ namespace Fifth.AST
         
     }
 
-    public class ExpressionStatement : Statement
+    public partial class ExpressionStatement : Statement
     {
         public ExpressionStatement(Expression Expression)
         {
@@ -1012,7 +1072,7 @@ namespace Fifth.AST
         
     }
 
-    public class Expression : TypedAstNode
+    public partial class Expression : TypedAstNode
     {
         public Expression()
         {
@@ -1071,9 +1131,11 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, ParameterDeclarationList node);
         public IType Infer(IScope scope, TypeCreateInstExpression node);
         public IType Infer(IScope scope, TypeInitialiser node);
+        public IType Infer(IScope scope, TypePropertyInit node);
         public IType Infer(IScope scope, UnaryExpression node);
         public IType Infer(IScope scope, VariableDeclarationStatement node);
         public IType Infer(IScope scope, VariableReference node);
+        public IType Infer(IScope scope, CompoundVariableReference node);
         public IType Infer(IScope scope, WhileExp node);
         public IType Infer(IScope scope, ExpressionStatement node);
         public IType Infer(IScope scope, Expression node);
@@ -1118,9 +1180,11 @@ namespace Fifth.TypeSystem
                 ParameterDeclarationList node => Infer(scope, node),
                 TypeCreateInstExpression node => Infer(scope, node),
                 TypeInitialiser node => Infer(scope, node),
+                TypePropertyInit node => Infer(scope, node),
                 UnaryExpression node => Infer(scope, node),
                 VariableDeclarationStatement node => Infer(scope, node),
                 VariableReference node => Infer(scope, node),
+                CompoundVariableReference node => Infer(scope, node),
                 WhileExp node => Infer(scope, node),
                 ExpressionStatement node => Infer(scope, node),
                 Expression node => Infer(scope, node),

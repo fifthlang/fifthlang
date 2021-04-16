@@ -8,9 +8,11 @@
   <ItemGroup>
     <None Remove="TestSampleCode\class-definition.5th" />
     <None Remove="TestSampleCode\ex5.pattern-matching.5th" />
+    <None Remove="TestSampleCode\property-access.5th" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TestSampleCode\class-definition.5th" />
+    <EmbeddedResource Include="TestSampleCode\property-access.5th" />
     <EmbeddedResource Include="TestSampleCode\ex5.pattern-matching.5th" />
   </ItemGroup>
   <ItemGroup>
