@@ -35,8 +35,27 @@ namespace Fifth.CodeGeneration
 .assembly extern mscorlib { .ver 4:0:0:0 auto }
 .assembly fifth { }
 .module fifth_test.exe
-.class public Program {
             ");
+        }
+
+        public override void EnterClassDefinition(ClassDefinition ctx)
+        {
+            writer.WriteLine($".class public  {ctx.Name}{{");
+        }
+
+        public override void LeaveClassDefinition(ClassDefinition ctx)
+        {
+            writer.WriteLine("}");
+        }
+
+        public override void EnterPropertyDefinition(PropertyDefinition ctx)
+        {
+            base.EnterPropertyDefinition(ctx);
+        }
+
+        public override void LeavePropertyDefinition(PropertyDefinition ctx)
+        {
+            base.LeavePropertyDefinition(ctx);
         }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
@@ -125,7 +144,12 @@ namespace Fifth.CodeGeneration
         }
 
         public override void LeaveFifthProgram(FifthProgram ctx)
-            => writer.WriteLine(@"}");
+        {
+            writer.WriteLine(@"
+.class public Program {
+            ");
+            writer.WriteLine(@"}");
+        }
 
         public override void LeaveFuncCallExpression(FuncCallExpression ctx)
         {

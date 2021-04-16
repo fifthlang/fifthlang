@@ -11,6 +11,14 @@ namespace Fifth.LangProcessingPhases
     {
         private readonly Stack<AstNode> parents = new();
 
+        public void EnterClassDefinition(ClassDefinition ctx) => EnterNonTerminal(ctx);
+
+        public void LeaveClassDefinition(ClassDefinition ctx) => LeaveNonTerminal(ctx);
+
+        public void EnterPropertyDefinition(PropertyDefinition ctx) => EnterTerminal(ctx);
+
+        public void LeavePropertyDefinition(PropertyDefinition ctx) => LeaveTerminal(ctx);
+
         public void EnterTypeCast(TypeCast ctx) => EnterNonTerminal(ctx);
 
         public void LeaveTypeCast(TypeCast ctx) => LeaveNonTerminal(ctx);

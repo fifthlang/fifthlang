@@ -7,6 +7,7 @@ namespace Fifth.Tests.Parser
     using Fifth.Parser.LangProcessingPhases;
     using Fifth.Tests;
     using FluentAssertions;
+    using LangProcessingPhases;
     using NUnit.Framework;
     using TypeSystem;
 

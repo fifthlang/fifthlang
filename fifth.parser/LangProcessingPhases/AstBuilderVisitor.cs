@@ -1,15 +1,34 @@
-namespace Fifth.Parser.LangProcessingPhases
+namespace Fifth.LangProcessingPhases
 {
     using System.Collections.Generic;
     using System.Linq;
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using AST;
-    using PrimitiveTypes;
+    using Parser.LangProcessingPhases;
     using TypeSystem;
 
     public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
     {
+        public override IAstNode VisitClass_definition(FifthParser.Class_definitionContext context)
+        {
+            var name = context.name.Text;
+            var properties = context._properties
+                                           .Select(fctx => VisitProperty_declaration(fctx))
+                                           .Cast<PropertyDefinition>()
+                                           .ToList();
+
+            return new ClassDefinition(name, properties, new List<FunctionDefinition>()).CaptureLocation(context.Start);
+        }
+
+        public override IAstNode VisitProperty_declaration(FifthParser.Property_declarationContext context)
+        {
+            var name = context.name.Text;
+            var type = context.type.Text;
+
+            return new PropertyDefinition(name, type).CaptureLocation(context.Start);
+        }
+
         public override IAstNode Visit(IParseTree tree) => base.Visit(tree);
         public override IAstNode VisitETypeCast(FifthParser.ETypeCastContext context)
         {
@@ -55,7 +74,7 @@ namespace Fifth.Parser.LangProcessingPhases
             return new Block(new StatementList(statements)).CaptureLocation(context.Start);
         }
 
-        public override IAstNode VisitBoolean(FifthParser.BooleanContext context)
+        public override IAstNode VisitTruth_value(FifthParser.Truth_valueContext context)
             => new BoolValueExpression(bool.Parse(context.value.Text)).CaptureLocation(context.Start);
 
         public override IAstNode VisitChildren(IRuleNode node) => base.VisitChildren(node);
@@ -149,6 +168,10 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
+            var classDeclarations = context._classes
+                                              .Select(fctx => VisitClass_definition(fctx))
+                                              .Cast<ClassDefinition>()
+                                              .ToList();
             var functionDeclarations = context._functions
                                               .Select(fctx => VisitFunction_declaration(fctx))
                                               .Cast<FunctionDefinition>()
@@ -157,7 +180,7 @@ namespace Fifth.Parser.LangProcessingPhases
                                            .Select(actx => VisitAlias(actx))
                                            .Cast<AliasDeclaration>()
                                            .ToList();
-            return new FifthProgram(aliasDeclarations, functionDeclarations).CaptureLocation(context.Start);
+            return new FifthProgram(aliasDeclarations, classDeclarations, functionDeclarations).CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context)

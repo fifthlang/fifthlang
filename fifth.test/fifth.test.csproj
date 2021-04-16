@@ -6,6 +6,14 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="TestSampleCode\class-definition.5th" />
+    <None Remove="TestSampleCode\ex5.pattern-matching.5th" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TestSampleCode\class-definition.5th" />
+    <EmbeddedResource Include="TestSampleCode\ex5.pattern-matching.5th" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.0.0-alpha0002" />
     <PackageReference Include="nunit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0-beta.1" />

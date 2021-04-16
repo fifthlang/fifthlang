@@ -14,6 +14,10 @@ namespace Fifth.AST.Visitors
 
     public interface IAstVisitor
     {
+        public void EnterClassDefinition(ClassDefinition ctx);
+        public void LeaveClassDefinition(ClassDefinition ctx);
+        public void EnterPropertyDefinition(PropertyDefinition ctx);
+        public void LeavePropertyDefinition(PropertyDefinition ctx);
         public void EnterTypeCast(TypeCast ctx);
         public void LeaveTypeCast(TypeCast ctx);
         public void EnterReturnStatement(ReturnStatement ctx);
@@ -87,6 +91,10 @@ namespace Fifth.AST.Visitors
     }
     public partial class BaseAstVisitor : IAstVisitor
     {
+        public virtual void EnterClassDefinition(ClassDefinition ctx){}
+        public virtual void LeaveClassDefinition(ClassDefinition ctx){}
+        public virtual void EnterPropertyDefinition(PropertyDefinition ctx){}
+        public virtual void LeavePropertyDefinition(PropertyDefinition ctx){}
         public virtual void EnterTypeCast(TypeCast ctx){}
         public virtual void LeaveTypeCast(TypeCast ctx){}
         public virtual void EnterReturnStatement(ReturnStatement ctx){}
@@ -173,6 +181,61 @@ namespace Fifth.AST
 
 #region AST Nodes
 
+
+    public class ClassDefinition : AstNode
+    {
+        public ClassDefinition(string Name, List<PropertyDefinition> Properties, List<FunctionDefinition> Functions)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = Properties ?? throw new ArgumentNullException(nameof(Properties));
+            this.Properties = Properties;
+            //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
+            this.Functions = Functions;
+        }
+
+        public string Name{get;set;}
+        public List<PropertyDefinition> Properties{get;set;}
+        public List<FunctionDefinition> Functions{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterClassDefinition(this);
+            foreach (var e in Properties)
+            {
+                e.Accept(visitor);
+            }
+            foreach (var e in Functions)
+            {
+                e.Accept(visitor);
+            }
+            visitor.LeaveClassDefinition(this);
+        }
+
+        
+    }
+
+    public class PropertyDefinition : AstNode
+    {
+        public PropertyDefinition(string Name, string TypeName)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
+            this.TypeName = TypeName;
+        }
+
+        public string Name{get;set;}
+        public string TypeName{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterPropertyDefinition(this);
+            visitor.LeavePropertyDefinition(this);
+        }
+
+        
+    }
 
     public class TypeCast : Expression
     {
@@ -557,21 +620,28 @@ namespace Fifth.AST
 
     public class FifthProgram : ScopeAstNode
     {
-        public FifthProgram(List<AliasDeclaration> Aliases, List<FunctionDefinition> Functions)
+        public FifthProgram(List<AliasDeclaration> Aliases, List<ClassDefinition> Classes, List<FunctionDefinition> Functions)
         {
             //_ = Aliases ?? throw new ArgumentNullException(nameof(Aliases));
             this.Aliases = Aliases;
+            //_ = Classes ?? throw new ArgumentNullException(nameof(Classes));
+            this.Classes = Classes;
             //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
             this.Functions = Functions;
         }
 
         public List<AliasDeclaration> Aliases{get;set;}
+        public List<ClassDefinition> Classes{get;set;}
         public List<FunctionDefinition> Functions{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterFifthProgram(this);
             foreach (var e in Aliases)
+            {
+                e.Accept(visitor);
+            }
+            foreach (var e in Classes)
             {
                 e.Accept(visitor);
             }
@@ -970,6 +1040,8 @@ namespace Fifth.TypeSystem
 
     public interface ITypeChecker
     {
+        public IType Infer(IScope scope, ClassDefinition node);
+        public IType Infer(IScope scope, PropertyDefinition node);
         public IType Infer(IScope scope, TypeCast node);
         public IType Infer(IScope scope, ReturnStatement node);
         public IType Infer(IScope scope, StatementList node);
@@ -1015,6 +1087,8 @@ namespace Fifth.TypeSystem
             var scope = exp.NearestScope();
             return exp switch
             {
+                ClassDefinition node => Infer(scope, node),
+                PropertyDefinition node => Infer(scope, node),
                 TypeCast node => Infer(scope, node),
                 ReturnStatement node => Infer(scope, node),
                 StatementList node => Infer(scope, node),

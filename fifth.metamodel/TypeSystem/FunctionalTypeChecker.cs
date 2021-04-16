@@ -338,6 +338,10 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypeInitialiser node) => default;
 
+        public IType Infer(IScope scope, ClassDefinition node) => default;
+
+        public IType Infer(IScope scope, PropertyDefinition node) => default;
+
         public IType Infer(IScope scope, TypeCast node)
         {
             // need to check that the type can be cast to the target type...
