@@ -18,18 +18,18 @@ namespace Fifth.Tests.Parser
         [TestCase(@"2 - 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Subtract)]
         [TestCase(@"2 * 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Multiply)]
         [TestCase(@"2 / 1", typeof(IntValueExpression), typeof(IntValueExpression), Operator.Divide)]
-        [TestCase(@"1 + x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Add)]
-        [TestCase(@"1 - x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Subtract)]
-        [TestCase(@"1 * x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Multiply)]
-        [TestCase(@"1 / x", typeof(IntValueExpression), typeof(IdentifierExpression), Operator.Divide)]
-        [TestCase(@"x + 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Add)]
-        [TestCase(@"x - 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Subtract)]
-        [TestCase(@"x * 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Multiply)]
-        [TestCase(@"x / 1", typeof(IdentifierExpression), typeof(IntValueExpression), Operator.Divide)]
-        [TestCase(@"y + x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Add)]
-        [TestCase(@"y - x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Subtract)]
-        [TestCase(@"y * x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Multiply)]
-        [TestCase(@"y / x", typeof(IdentifierExpression), typeof(IdentifierExpression), Operator.Divide)]
+        [TestCase(@"1 + x", typeof(IntValueExpression), typeof(VariableReference), Operator.Add)]
+        [TestCase(@"1 - x", typeof(IntValueExpression), typeof(VariableReference), Operator.Subtract)]
+        [TestCase(@"1 * x", typeof(IntValueExpression), typeof(VariableReference), Operator.Multiply)]
+        [TestCase(@"1 / x", typeof(IntValueExpression), typeof(VariableReference), Operator.Divide)]
+        [TestCase(@"x + 1", typeof(VariableReference), typeof(IntValueExpression), Operator.Add)]
+        [TestCase(@"x - 1", typeof(VariableReference), typeof(IntValueExpression), Operator.Subtract)]
+        [TestCase(@"x * 1", typeof(VariableReference), typeof(IntValueExpression), Operator.Multiply)]
+        [TestCase(@"x / 1", typeof(VariableReference), typeof(IntValueExpression), Operator.Divide)]
+        [TestCase(@"y + x", typeof(VariableReference), typeof(VariableReference), Operator.Add)]
+        [TestCase(@"y - x", typeof(VariableReference), typeof(VariableReference), Operator.Subtract)]
+        [TestCase(@"y * x", typeof(VariableReference), typeof(VariableReference), Operator.Multiply)]
+        [TestCase(@"y / x", typeof(VariableReference), typeof(VariableReference), Operator.Divide)]
         public void TestCanBuildBinaryExpression(string fragment, Type leftOperandType, Type rightOperandType, Operator op)
         {
             if (FifthParserManager.TryParse<Expression>(fragment, out var ast, out var errors))
@@ -52,8 +52,7 @@ namespace Fifth.Tests.Parser
         [TestCase(@"void main(int x){return x + 1;}")]
         [TestCase(@"void main(int x){int x = 234; return x + 1;}")]
         [TestCase(@"void main(int x){int x = 234; return x + 1;} int foo(){return 43;}", 2)]
-        [TestCase(@"void main(int x){int x = 234; return x + 1;}
-void foo(){return 43;}", 2)]
+        [TestCase(@"void main(int x){int x = 234; return x + 1;} void foo(){return 43;}", 2)]
         public void TestCanBuildProgram(string programText, int funcCount = 1)
         {
             if (FifthParserManager.TryParse<FifthProgram>(programText, out var ast, out var errors))

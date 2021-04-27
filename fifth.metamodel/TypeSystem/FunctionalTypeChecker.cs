@@ -418,7 +418,13 @@ namespace Fifth.TypeSystem
                 {
                     result = propDef.TypeId.Lookup();
                     TypeInferred(node, result);
-                }            }
+                }
+                if (ste.Context is ParameterDeclaration paramDef)
+                {
+                    result = paramDef.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+            }
             return result;
         }
 
