@@ -11,7 +11,7 @@ void calculate_bmi(Person{
     Height = height,
     Weight = weight
     }) {
-    return (height * weight) / age;
+    return weight / (height * height);
 }
 
 void main() {

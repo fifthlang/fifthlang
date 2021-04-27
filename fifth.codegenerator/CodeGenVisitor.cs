@@ -50,8 +50,11 @@ namespace Fifth.CodeGeneration
 
         public override void EnterPropertyDefinition(PropertyDefinition ctx)
         {
-            writer.WriteLine($"//{ctx.Name} {ctx.TypeName}");
-        }
+            writer.WriteLine($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
+            writer.WriteLine($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
+            writer.WriteLine($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
+            writer.WriteLine("  }");
+        }                        
 
         public override void LeavePropertyDefinition(PropertyDefinition ctx)
         {

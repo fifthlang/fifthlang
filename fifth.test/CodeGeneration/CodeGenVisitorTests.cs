@@ -40,7 +40,7 @@ long print(string s){
         [Test]
         public void CopesWithPatternMatchInFuncDef()
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.ex5.pattern-matching.5th"); 
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.pattern-matching.5th"); 
             if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
             {
                 var sb = new StringBuilder();
