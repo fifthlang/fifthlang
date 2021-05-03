@@ -60,6 +60,8 @@ namespace Fifth.AST.Visitors
         public void LeaveFuncCallExpression(FuncCallExpression ctx);
         public void EnterFunctionDefinition(FunctionDefinition ctx);
         public void LeaveFunctionDefinition(FunctionDefinition ctx);
+        public void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
+        public void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public void EnterIdentifier(Identifier ctx);
         public void LeaveIdentifier(Identifier ctx);
         public void EnterIdentifierExpression(IdentifierExpression ctx);
@@ -76,6 +78,8 @@ namespace Fifth.AST.Visitors
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
         public void LeaveTypeInitialiser(TypeInitialiser ctx);
+        public void EnterTypeInitParamDecl(TypeInitParamDecl ctx);
+        public void LeaveTypeInitParamDecl(TypeInitParamDecl ctx);
         public void EnterTypePropertyInit(TypePropertyInit ctx);
         public void LeaveTypePropertyInit(TypePropertyInit ctx);
         public void EnterUnaryExpression(UnaryExpression ctx);
@@ -141,6 +145,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveFuncCallExpression(FuncCallExpression ctx){}
         public virtual void EnterFunctionDefinition(FunctionDefinition ctx){}
         public virtual void LeaveFunctionDefinition(FunctionDefinition ctx){}
+        public virtual void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
+        public virtual void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
         public virtual void EnterIdentifier(Identifier ctx){}
         public virtual void LeaveIdentifier(Identifier ctx){}
         public virtual void EnterIdentifierExpression(IdentifierExpression ctx){}
@@ -157,6 +163,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
         public virtual void LeaveTypeInitialiser(TypeInitialiser ctx){}
+        public virtual void EnterTypeInitParamDecl(TypeInitParamDecl ctx){}
+        public virtual void LeaveTypeInitParamDecl(TypeInitParamDecl ctx){}
         public virtual void EnterTypePropertyInit(TypePropertyInit ctx){}
         public virtual void LeaveTypePropertyInit(TypePropertyInit ctx){}
         public virtual void EnterUnaryExpression(UnaryExpression ctx){}
@@ -192,7 +200,7 @@ namespace Fifth.AST
 
     public partial class ClassDefinition : ScopeAstNode, ITypedAstNode
     {
-        public ClassDefinition(string Name, List<PropertyDefinition> Properties, List<FunctionDefinition> Functions)
+        public ClassDefinition(string Name, List<PropertyDefinition> Properties, List<IFunctionDefinition> Functions)
         {
             //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
@@ -204,7 +212,7 @@ namespace Fifth.AST
 
         public string Name{get;set;}
         public List<PropertyDefinition> Properties{get;set;}
-        public List<FunctionDefinition> Functions{get;set;}
+        public List<IFunctionDefinition> Functions{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -628,7 +636,7 @@ namespace Fifth.AST
 
     public partial class FifthProgram : ScopeAstNode
     {
-        public FifthProgram(List<AliasDeclaration> Aliases, List<ClassDefinition> Classes, List<FunctionDefinition> Functions)
+        public FifthProgram(List<AliasDeclaration> Aliases, List<ClassDefinition> Classes, List<IFunctionDefinition> Functions)
         {
             //_ = Aliases ?? throw new ArgumentNullException(nameof(Aliases));
             this.Aliases = Aliases;
@@ -640,7 +648,7 @@ namespace Fifth.AST
 
         public List<AliasDeclaration> Aliases{get;set;}
         public List<ClassDefinition> Classes{get;set;}
-        public List<FunctionDefinition> Functions{get;set;}
+        public List<IFunctionDefinition> Functions{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -686,7 +694,7 @@ namespace Fifth.AST
         
     }
 
-    public partial class FunctionDefinition : ScopeAstNode
+    public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
     {
         public FunctionDefinition(ParameterDeclarationList ParameterDeclarations, Block Body, string Typename, string Name, bool IsEntryPoint, TypeId ReturnType)
         {
@@ -717,6 +725,32 @@ namespace Fifth.AST
             ParameterDeclarations.Accept(visitor);
             Body.Accept(visitor);
             visitor.LeaveFunctionDefinition(this);
+        }
+
+        
+    }
+
+    public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
+    {
+        public OverloadedFunctionDefinition(List<IFunctionDefinition> OverloadClauses, IFunctionSignature Signature)
+        {
+            //_ = OverloadClauses ?? throw new ArgumentNullException(nameof(OverloadClauses));
+            this.OverloadClauses = OverloadClauses;
+            //_ = Signature ?? throw new ArgumentNullException(nameof(Signature));
+            this.Signature = Signature;
+        }
+
+        public List<IFunctionDefinition> OverloadClauses{get;set;}
+        public IFunctionSignature Signature{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterOverloadedFunctionDefinition(this);
+            foreach (var e in OverloadClauses)
+            {
+                e.Accept(visitor);
+            }
+            visitor.LeaveOverloadedFunctionDefinition(this);
         }
 
         
@@ -808,7 +842,7 @@ namespace Fifth.AST
         
     }
 
-    public partial class ParameterDeclaration : TypedAstNode
+    public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
     {
         public ParameterDeclaration(Identifier ParameterName, string TypeName)
         {
@@ -833,13 +867,13 @@ namespace Fifth.AST
 
     public partial class ParameterDeclarationList : AstNode
     {
-        public ParameterDeclarationList(List<ParameterDeclaration> ParameterDeclarations)
+        public ParameterDeclarationList(List<IParameterListItem> ParameterDeclarations)
         {
             //_ = ParameterDeclarations ?? throw new ArgumentNullException(nameof(ParameterDeclarations));
             this.ParameterDeclarations = ParameterDeclarations;
         }
 
-        public List<ParameterDeclaration> ParameterDeclarations{get;set;}
+        public List<IParameterListItem> ParameterDeclarations{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -872,12 +906,15 @@ namespace Fifth.AST
 
     public partial class TypeInitialiser : Expression
     {
-        public TypeInitialiser(List<TypePropertyInit> PropertyInitialisers)
+        public TypeInitialiser(string TypeName, List<TypePropertyInit> PropertyInitialisers)
         {
+            //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
+            this.TypeName = TypeName;
             //_ = PropertyInitialisers ?? throw new ArgumentNullException(nameof(PropertyInitialisers));
             this.PropertyInitialisers = PropertyInitialisers;
         }
 
+        public string TypeName{get;set;}
         public List<TypePropertyInit> PropertyInitialisers{get;set;}
 
         public override void Accept(IAstVisitor visitor)
@@ -888,6 +925,29 @@ namespace Fifth.AST
                 e.Accept(visitor);
             }
             visitor.LeaveTypeInitialiser(this);
+        }
+
+        
+    }
+
+    public partial class TypeInitParamDecl : TypedAstNode, IParameterListItem
+    {
+        public TypeInitParamDecl(string Name, TypeInitialiser Pattern)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
+            this.Pattern = Pattern;
+        }
+
+        public string Name{get;set;}
+        public TypeInitialiser Pattern{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterTypeInitParamDecl(this);
+            Pattern.Accept(visitor);
+            visitor.LeaveTypeInitParamDecl(this);
         }
 
         
@@ -1123,6 +1183,7 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, FifthProgram node);
         public IType Infer(IScope scope, FuncCallExpression node);
         public IType Infer(IScope scope, FunctionDefinition node);
+        public IType Infer(IScope scope, OverloadedFunctionDefinition node);
         public IType Infer(IScope scope, Identifier node);
         public IType Infer(IScope scope, IdentifierExpression node);
         public IType Infer(IScope scope, IfElseStatement node);
@@ -1131,6 +1192,7 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, ParameterDeclarationList node);
         public IType Infer(IScope scope, TypeCreateInstExpression node);
         public IType Infer(IScope scope, TypeInitialiser node);
+        public IType Infer(IScope scope, TypeInitParamDecl node);
         public IType Infer(IScope scope, TypePropertyInit node);
         public IType Infer(IScope scope, UnaryExpression node);
         public IType Infer(IScope scope, VariableDeclarationStatement node);
@@ -1172,6 +1234,7 @@ namespace Fifth.TypeSystem
                 FifthProgram node => Infer(scope, node),
                 FuncCallExpression node => Infer(scope, node),
                 FunctionDefinition node => Infer(scope, node),
+                OverloadedFunctionDefinition node => Infer(scope, node),
                 Identifier node => Infer(scope, node),
                 IdentifierExpression node => Infer(scope, node),
                 IfElseStatement node => Infer(scope, node),
@@ -1180,6 +1243,7 @@ namespace Fifth.TypeSystem
                 ParameterDeclarationList node => Infer(scope, node),
                 TypeCreateInstExpression node => Infer(scope, node),
                 TypeInitialiser node => Infer(scope, node),
+                TypeInitParamDecl node => Infer(scope, node),
                 TypePropertyInit node => Infer(scope, node),
                 UnaryExpression node => Infer(scope, node),
                 VariableDeclarationStatement node => Infer(scope, node),

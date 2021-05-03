@@ -3,6 +3,7 @@ namespace Fifth.LangProcessingPhases
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Antlr4.Runtime;
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using AST;
@@ -42,7 +43,7 @@ namespace Fifth.LangProcessingPhases
                                     .Cast<PropertyDefinition>()
                                     .ToList();
 
-            var classDefinition = new ClassDefinition(name, properties, new List<FunctionDefinition>()).CaptureLocation(context.Start);
+            var classDefinition = new ClassDefinition(name, properties, new List<IFunctionDefinition>()).CaptureLocation(context.Start);
             TypeRegistry.DefaultRegistry.RegisterType(new UserDefinedType(classDefinition));
             return classDefinition;
         }
@@ -148,7 +149,7 @@ namespace Fifth.LangProcessingPhases
                                            .ToList();
             var functionDeclarations = context._functions
                                               .Select(fctx => VisitFunction_declaration(fctx))
-                                              .Cast<FunctionDefinition>()
+                                              .Cast<IFunctionDefinition>()
                                               .ToList();
             var aliasDeclarations = context.alias()
                                            .Select(actx => VisitAlias(actx))
@@ -167,13 +168,11 @@ namespace Fifth.LangProcessingPhases
                 return null;
             }
 
-            var parameters = new List<ParameterDeclaration>();
+            var parameters = new List<IParameterListItem>();
             parameters.AddRange(
-                context
-                    .children
-                    .Where(c => c is FifthParser.Parameter_declarationContext)
-                    .Select(c => VisitParameter_declaration((FifthParser.Parameter_declarationContext)c))
-                    .Cast<ParameterDeclaration>());
+                context.parameter_declaration()
+                    .Select(c => Visit(c))
+                    .Cast<IParameterListItem>());
             return new ParameterDeclarationList(parameters).CaptureLocation(context.Start);
         }
 
@@ -192,9 +191,12 @@ namespace Fifth.LangProcessingPhases
             var parameterList = VisitFormal_parameters(formals) as ParameterDeclarationList;
             var tmp = VisitFunction_body(context.function_body());
             var body = tmp as Block;
-            var name = context.name.IDENTIFIER().GetText();
+            var segments = from seg in context.name.identifier_chain()._segments
+                           select seg.Text;
+            var name =string.Join('.', segments);
+
             var parameterDeclarationList =
-                parameterList ?? new ParameterDeclarationList(new List<ParameterDeclaration>());
+                parameterList ?? new ParameterDeclarationList(new List<IParameterListItem>());
             var typename = context.result_type.GetText();
             var result = new FunctionDefinition(parameterDeclarationList, body, typename, name, name == "main", null);
             return result.CaptureLocation(context.Start);
@@ -215,11 +217,24 @@ namespace Fifth.LangProcessingPhases
         public override IAstNode VisitPackagename([NotNull] FifthParser.PackagenameContext context) =>
             base.VisitPackagename(context).CaptureLocation(context.Start);
 
-        public override IAstNode VisitParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context)
+        public override IAstNode VisitParamDecl(FifthParser.ParamDeclContext context)
         {
-            var type = context.parameter_type().IDENTIFIER().GetText();
+            var parameterType = context.parameter_type();
+            var identifierChain = parameterType.identifier_chain();
+            var segments = from seg in identifierChain._segments
+                           select seg.Text;
+            var type =string.Join('.', segments);
             var name = context.parameter_name().IDENTIFIER().GetText();
             return new ParameterDeclaration(new Identifier(name), type).CaptureLocation(context.Start);
+        }
+
+        public override IAstNode VisitParamDeclWithPatternMatcher(FifthParser.ParamDeclWithPatternMatcherContext context)
+        {
+            var parameterType = context.type_initialiser().typename.GetText();
+            var propInits = context.type_initialiser()._properties.Select(prop => (TypePropertyInit)Visit(prop));
+
+            var ti = new TypeInitialiser(parameterType, propInits.ToList());
+            return new TypeInitParamDecl(context.parameter_name().GetText(), ti);
         }
 
         public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>
@@ -276,7 +291,7 @@ namespace Fifth.LangProcessingPhases
             var propertyInits = from x in typeInitialiser._properties
                                 select VisitType_property_init(x);
             
-            var result = new TypeInitialiser(propertyInits.Cast<TypePropertyInit>().ToList());
+            var result = new TypeInitialiser(context.type_initialiser().typename.GetText(), propertyInits.Cast<TypePropertyInit>().ToList());
             return result;
         }
 
@@ -321,8 +336,12 @@ namespace Fifth.LangProcessingPhases
             return decl.CaptureLocation(context.Start);
         }
 
-        public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context) =>
-            new Identifier(context.IDENTIFIER().GetText()).CaptureLocation(context.Start);
+        public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context)
+        {
+            var segments = from seg in context.identifier_chain()._segments
+                           select seg.Text;
+            return new Identifier(string.Join('.', segments)).CaptureLocation(context.Start);
+        }
 
         protected override IAstNode AggregateResult(IAstNode aggregate, IAstNode nextResult) =>
             base.AggregateResult(aggregate, nextResult);

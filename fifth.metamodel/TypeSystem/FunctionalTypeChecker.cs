@@ -177,7 +177,14 @@ namespace Fifth.TypeSystem
 
             foreach (var functionDefinition in node.Functions)
             {
-                Infer(scope, functionDefinition);
+                if (functionDefinition is FunctionDefinition fd)
+                {
+                    Infer(scope, fd);
+                }
+                if (functionDefinition is OverloadedFunctionDefinition ofd)
+                {
+                    Infer(scope, ofd);
+                }
             }
 
             TypeNotRelevant(node);
@@ -224,6 +231,9 @@ namespace Fifth.TypeSystem
             TypeInferred(node, result);
             return result;
         }
+
+        public IType Infer(IScope scope, OverloadedFunctionDefinition node)
+            => throw new NotImplementedException();
 
         public IType Infer(IScope scope, Identifier node)
         {
@@ -328,9 +338,16 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, ParameterDeclarationList node)
         {
-            foreach (var pd in node.ParameterDeclarations)
+            foreach (var e in node.ParameterDeclarations)
             {
-                Infer(pd);
+                if (e is ParameterDeclaration pd)
+                {
+                    Infer(pd);
+                }
+                else if (e is TypeCreateInstExpression tcie)
+                {
+                    Infer(tcie);
+                }
             }
 
             TypeNotRelevant(node);
@@ -361,11 +378,36 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, TypeInitialiser node)
             => default;
 
+        public IType Infer(IScope scope, TypeInitParamDecl node)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
+            {
+                TypeInferred(node, t);
+                return t;
+            }
+
+            TypeNotFound(node);
+            return default;
+        }
         public IType Infer(IScope scope, ClassDefinition node)
         {
             node.Properties.ForEach(propDef => Infer(node, propDef));
             node.Functions.ForEach(propDef => Infer(node, propDef));
             return node.TypeId.Lookup();
+        }
+
+        public IType Infer(IScope scope, IFunctionDefinition node)
+        {
+            if (node is FunctionDefinition fd)
+            {
+                return Infer(scope, fd);
+            }
+            if (node is OverloadedFunctionDefinition ofd)
+            {
+                return Infer(scope, ofd);
+            }
+            TypeNotFound(node);
+            return default;
         }
 
         public IType Infer(IScope scope, PropertyDefinition node)

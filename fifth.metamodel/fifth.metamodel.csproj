@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Compile Remove="AST\FloatValueExpression.cs" />
-    <Compile Remove="AST\FunctionDefinition.cs" />
     <Compile Remove="AST\Identifier.cs" />
     <Compile Remove="AST\IdentifierExpression.cs" />
     <Compile Remove="AST\IfElseStatement.cs" />

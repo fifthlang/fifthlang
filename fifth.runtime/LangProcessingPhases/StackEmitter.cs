@@ -105,7 +105,7 @@ namespace Fifth.Runtime.LangProcessingPhases
                 aliasEmitter.Emit(emitter, frame);
             }
 
-            foreach (var astFunction in programAst.Functions)
+            foreach (var astFunction in programAst.Functions.Where(f => f is FunctionDefinition).Cast<FunctionDefinition>())
             {
                 var funEmitter = new FunctionDefinitionEmitter(astFunction);
                 funEmitter.Emit(emitter, frame);
@@ -125,7 +125,7 @@ namespace Fifth.Runtime.LangProcessingPhases
             if (this.function.ParameterDeclarations != null &&
                 this.function.ParameterDeclarations.ParameterDeclarations.Any())
             {
-                runtimeFunction.Arguments.AddRange(this.function.ParameterDeclarations.ParameterDeclarations.Select(
+                runtimeFunction.Arguments.AddRange(this.function.ParameterDeclarations.ParameterDeclarations.Cast<ParameterDeclaration>().Select(
                     (p, i) =>
                         new FunctionArgument {ArgOrdinal = i, Name = p.ParameterName.Value, Type = p.TypeId}));
             }

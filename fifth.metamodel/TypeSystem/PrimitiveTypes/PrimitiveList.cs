@@ -15,13 +15,13 @@ namespace Fifth.TypeSystem.PrimitiveTypes
         public IValueObject Head() => GetItemAt(0);
 
         public PrimitiveList Tail()
-            => new(TypeParameters[0]) {List = List.GetRange(1, List.Count - 1), TypeId = TypeId};
+            => new(GenericTypeParameters[0]) {List = List.GetRange(1, List.Count - 1), TypeId = TypeId};
 
         private IValueObject GetItemAt(int i)
         {
             if (List.Count > i)
             {
-                return new ValueObject(TypeParameters[0], string.Empty, List[i]);
+                return new ValueObject(GenericTypeParameters[0], string.Empty, List[i]);
             }
 
             return default;

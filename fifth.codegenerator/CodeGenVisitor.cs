@@ -62,7 +62,11 @@ namespace Fifth.CodeGeneration
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
-            var args = ctx.ParameterDeclarations.ParameterDeclarations
+            if (ctx.ParameterDeclarations.ParameterDeclarations.Any(pd => pd is TypeCreateInstExpression))
+            {
+                throw new NotImplementedException("Don't gen code for pattern matches yet");
+            }
+            var args = ctx.ParameterDeclarations.ParameterDeclarations.Cast<ParameterDeclaration>()
                             .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
             w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
             if (ctx.IsEntryPoint)

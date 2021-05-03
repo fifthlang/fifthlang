@@ -10,7 +10,7 @@ void calculate_bmi(Person{
     Age = age,
     Height = height,
     Weight = weight
-    }) {
+    } p) {
     return weight / (height * height);
 }
 

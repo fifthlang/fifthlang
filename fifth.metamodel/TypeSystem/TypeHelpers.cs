@@ -11,12 +11,28 @@ namespace Fifth.TypeSystem
 
     public static class TypeHelpers
     {
+        public static IFunctionSignature GetFunctionSignature(this IFunctionDefinition fd)
+        {
+            TypeRegistry.DefaultRegistry.TryGetTypeByName(fd.Typename, out var returnType);
+            List<TypeId> paramTypes = new List<TypeId>();
+            foreach (var paramTypeName in fd.ParameterDeclarations.ParameterDeclarations.Select(item => item.TypeName))
+            {
+                if (TypeRegistry.DefaultRegistry.TryGetTypeByName(paramTypeName, out var paramTid))
+                {
+                    paramTypes.Add(paramTid.TypeId);
+                }
+            }
+            return new FunctionSignature(fd.Name, returnType?.TypeId, paramTypes.ToArray());
+
+            throw new TypeCheckingException("unable to form type signature. Has type inference happened yet?");
+        }
+
         public static IFunctionSignature GetFuncType(this MethodInfo method)
-            => new FunctionSignature(method.ReturnType.LookupType(),
+            => new FunctionSignature(method.Name, method.ReturnType.LookupType(),
                 method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
 
         public static IFunctionSignature GetFuncType(this FuncWrapper method)
-            => new FunctionSignature(method.ResultType.LookupType(),
+            => new FunctionSignature(null, method.ResultType.LookupType(),
                 method.ArgTypes.Select(p => p.LookupType()).ToArray());
 
         /// <summary>
@@ -107,7 +123,7 @@ namespace Fifth.TypeSystem
         public static IEnumerable<MethodInfo> MethodsHavingAttribute<TAttribute>(this Type t)
             => t.GetMethods().Where(mi => mi.GetCustomAttributes(true).Any(attr => attr is TAttribute));
 
-        public static ScopeAstNode NearestScope(this AstNode node)
+        public static ScopeAstNode NearestScope(this IAstNode node)
         {
             if (node is ScopeAstNode astNode)
             {
@@ -116,6 +132,7 @@ namespace Fifth.TypeSystem
 
             return node?.ParentNode.NearestScope();
         }
+
         // tmp
 
         public static T PeekOrDefault<T>(this Stack<T> s)

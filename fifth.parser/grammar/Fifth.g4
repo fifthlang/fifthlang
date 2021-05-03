@@ -72,11 +72,12 @@ function_args
     ;
 
 parameter_declaration
-    : parameter_type parameter_name
+    : parameter_type parameter_name     # ParamDecl
+    | type_initialiser parameter_name   # ParamDeclWithPatternMatcher
     ;
 
 parameter_type
-    : IDENTIFIER
+    : identifier_chain
     ;
 
 parameter_name
@@ -88,7 +89,7 @@ function_body
     ;
 
 function_name
-    : IDENTIFIER
+    : identifier_chain
     ;
 
 function_type
@@ -128,7 +129,6 @@ exp
     | value=STRING                                                  # EString
     | value=truth_value                                             # EBoolean
     | value=list                                                    # EList
-    | var_name member_access                                        # EMemberAccess
     | NOT operand=exp                                               # ELogicNegation
     | MINUS operand=exp                                             # EArithNegation
     | left=exp LT right=exp                                         # ELT
@@ -150,9 +150,11 @@ truth_value
     : value=TRUE | value=FALSE
     ;
 
-
+identifier_chain
+    : segments+=IDENTIFIER (DOT segments+=IDENTIFIER)*
+    ;
 var_name
-    : IDENTIFIER
+    : identifier_chain
     ;
 
 
@@ -277,10 +279,11 @@ POWER: '^' ;
 QMARK: '?';
 SEMICOLON: ';' ;
 TIMES: '*';     // multiplication
+UNDERSCORE: '_' ;
 
 // CHARACTER CLASSES ETC
 // IRI_PARAM_VALUE: (LETTER|DIGIT|URI_PUNCT)+;
-IDENTIFIER: (LETTER|'_') (LETTER|DIGIT | '.')*;
+IDENTIFIER: (LETTER|UNDERSCORE) (LETTER|DIGIT|UNDERSCORE)*;
 fragment LETTER: [a-zA-Z];
 // fragment URI_PUNCT: [%\-_+];
 STRING:'"' (~["])* '"'  | '\'' (~['])* '\'';

@@ -10,6 +10,6 @@ namespace Fifth.PrimitiveTypes
         {
         }
 
-        public TypeId[] TypeParameters { get; }
+        public TypeId[] GenericTypeParameters { get; }
     }
 }
