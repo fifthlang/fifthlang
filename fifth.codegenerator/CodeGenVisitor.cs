@@ -66,7 +66,7 @@ namespace Fifth.CodeGeneration
             {
                 throw new NotImplementedException("Don't gen code for pattern matches yet");
             }
-            var args = ctx.ParameterDeclarations.ParameterDeclarations.Cast<ParameterDeclaration>()
+            var args = ctx.ParameterDeclarations.ParameterDeclarations.Cast<IParameterListItem>()
                             .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
             w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
             if (ctx.IsEntryPoint)
@@ -153,9 +153,39 @@ namespace Fifth.CodeGeneration
 
         public override void LeaveFuncCallExpression(FuncCallExpression ctx)
         {
+            if (ctx.TypeId == null)
+            {
+                if (ctx.HasAnnotation(Constants.FunctionImplementation))
+                {
+                    var funcImpl = ctx[Constants.FunctionImplementation] as IFunctionDefinition;
+                    if (funcImpl is BuiltinFunctionDefinition)
+                    {
+                        if(funcImpl.Name == "print")
+                            w($"call void System::Console.WriteLine(string)");
+                        return;
+                    }
+                }
+            }
             var return5thType = ctx.TypeId.Lookup();
             var x = toDotnet[return5thType.TypeId];
-            var argTypeNames = ctx.ActualParameters.Expressions.Select(e => toDotnet[e.TypeId]).Join(t => t);
+
+            List<string> dotnetTypes = new();
+            foreach (var e in ctx.ActualParameters.Expressions)
+            {
+                if (toDotnet.ContainsKey(e.TypeId))
+                {
+                    dotnetTypes.Add(toDotnet[e.TypeId]);
+                }
+                else
+                {
+                    if (e.TypeId.Lookup() is UserDefinedType udt)
+                    {
+                        dotnetTypes.Add(udt.Definition.Name);
+                    }
+                }
+            }
+
+            var argTypeNames = dotnetTypes.Join(t => t);
             w($"call {x} Program::{ctx.Name}({argTypeNames})");
         }
 

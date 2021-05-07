@@ -162,6 +162,12 @@ namespace Fifth.LangProcessingPhases
         public void LeaveFunctionDefinition(FunctionDefinition ctx)
             => LeaveNonTerminal(ctx);
 
+        public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
+            => EnterNonTerminal(ctx); // TODO: Should I just ignore this?
+
+        public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
+            => LeaveNonTerminal(ctx);
+
         public void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
             => EnterNonTerminal(ctx);
 
@@ -195,10 +201,16 @@ namespace Fifth.LangProcessingPhases
         public void LeaveTypeInitialiser(TypeInitialiser ctx)
             => LeaveNonTerminal(ctx);
 
-        public void EnterTypeInitParamDecl(TypeInitParamDecl ctx)
+        public void EnterDestructuringParamDecl(DestructuringParamDecl ctx)
             => EnterNonTerminal(ctx);
 
-        public void LeaveTypeInitParamDecl(TypeInitParamDecl ctx)
+        public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx)
+            => LeaveNonTerminal(ctx);
+
+        public void EnterPropertyBinding(PropertyBinding ctx)
+            => EnterNonTerminal(ctx);
+
+        public void LeavePropertyBinding(PropertyBinding ctx)
             => LeaveNonTerminal(ctx);
 
         public void LeaveUnaryExpression(UnaryExpression ctx)

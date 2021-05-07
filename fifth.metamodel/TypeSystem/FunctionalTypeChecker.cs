@@ -137,6 +137,7 @@ namespace Fifth.TypeSystem
                 Infer(statement);
             }
 
+            TypeNotRelevant(node); // TODO: either type is not relevant, or I should not be returning default
             return default;
         }
 
@@ -160,13 +161,31 @@ namespace Fifth.TypeSystem
                 ;
             }
 
-            var result = types.Last();
-            TypeInferred(node, result);
-            return result;
+            // var result = types.Last();
+            // I don't think there is a case where we either need, or can use, the type of an expression list.
+            TypeNotRelevant(node);
+            return default;
         }
 
         public IType Infer(IScope scope, ExpressionStatement node)
-            => throw new NotImplementedException();
+        {
+            var expTid = Infer(scope, node.Expression);
+            if (expTid == null)
+            {
+                if (node.Expression is FuncCallExpression)
+                {
+                    TypeNotRelevant(node);
+                }
+                else
+                {
+                    TypeNotFound(node);
+                }
+                return default;
+            }
+
+            TypeInferred(node, expTid);
+            return expTid;
+        }
 
         public IType Infer(IScope scope, FifthProgram node)
         {
@@ -202,18 +221,33 @@ namespace Fifth.TypeSystem
         {
             Infer(node.ActualParameters);
             var ste = scope.Resolve(node.Name);
-            if (ste.SymbolKind != SymbolKind.FunctionDeclaration)
-            {
-                TypeNotFound(node);
-            }
-            else
-            {
-                var type = Infer(ste.Context as AstNode);
-                TypeInferred(node, type);
-                return type;
-            }
 
-            return default;
+            switch (ste.SymbolKind)
+            {
+                case SymbolKind.FunctionDeclaration:
+                case SymbolKind.BuiltinFunctionDeclaration:
+                    node[Constants.FunctionImplementation] = ste.Context;
+                    var type = Infer(ste.Context as AstNode);
+                    if (type != null)
+                    {
+                        TypeInferred(node, type);
+                        return type;
+                    }
+                        
+                    if (ste.Context is IFunctionDefinition fd && fd.Typename == "void")
+                    {
+                        TypeNotRelevant(node);
+                    }
+                    else
+                    {
+                        TypeNotFound(node);
+                    }
+
+                    return default;
+                default:
+                    TypeNotFound(node);
+                    return default;
+            }
         }
 
         public IType Infer(IScope _, FunctionDefinition node)
@@ -230,6 +264,12 @@ namespace Fifth.TypeSystem
             var result = returnType.Lookup();
             TypeInferred(node, result);
             return result;
+        }
+
+        public IType Infer(IScope scope, BuiltinFunctionDefinition node)
+        {
+            TypeNotRelevant(node);
+            return default;
         }
 
         public IType Infer(IScope scope, OverloadedFunctionDefinition node)
@@ -378,7 +418,7 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, TypeInitialiser node)
             => default;
 
-        public IType Infer(IScope scope, TypeInitParamDecl node)
+        public IType Infer(IScope scope, DestructuringParamDecl node)
         {
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
             {
@@ -389,6 +429,22 @@ namespace Fifth.TypeSystem
             TypeNotFound(node);
             return default;
         }
+
+        public IType Infer(IScope scope, PropertyBinding node)
+        {
+            // resolve the base property definition that the node's unboundVariable is to be bound to.
+            var boundProperty = node.BoundProperty;
+            var boundPropertyTypeId = boundProperty?.TypeId;
+            if (boundProperty != null && boundPropertyTypeId != null)
+            {
+                var result = boundPropertyTypeId.Lookup();
+                TypeInferred(node, result);
+                return result;
+            }
+
+            return default;
+        }
+
         public IType Infer(IScope scope, ClassDefinition node)
         {
             node.Properties.ForEach(propDef => Infer(node, propDef));
@@ -451,6 +507,11 @@ namespace Fifth.TypeSystem
             IType result = default;
             if (scope.TryResolve(node.Name, out var ste) )
             {
+                if (ste.Context is PropertyBinding pb)
+                {
+                    result = pb.BoundProperty.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
                 if (ste.Context is VariableDeclarationStatement vds)
                 {
                     result = vds.TypeId.Lookup();

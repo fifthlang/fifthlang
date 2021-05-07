@@ -37,7 +37,7 @@ long print(string s){
             }
         }
 
-        [Test]
+        [Test, Category("WIP")]
         public void CopesWithPatternMatchInFuncDef()
         {
             using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.pattern-matching.5th"); 

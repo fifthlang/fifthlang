@@ -60,6 +60,8 @@ namespace Fifth.AST.Visitors
         public void LeaveFuncCallExpression(FuncCallExpression ctx);
         public void EnterFunctionDefinition(FunctionDefinition ctx);
         public void LeaveFunctionDefinition(FunctionDefinition ctx);
+        public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
+        public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
         public void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public void EnterIdentifier(Identifier ctx);
@@ -78,8 +80,10 @@ namespace Fifth.AST.Visitors
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
         public void LeaveTypeInitialiser(TypeInitialiser ctx);
-        public void EnterTypeInitParamDecl(TypeInitParamDecl ctx);
-        public void LeaveTypeInitParamDecl(TypeInitParamDecl ctx);
+        public void EnterDestructuringParamDecl(DestructuringParamDecl ctx);
+        public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx);
+        public void EnterPropertyBinding(PropertyBinding ctx);
+        public void LeavePropertyBinding(PropertyBinding ctx);
         public void EnterTypePropertyInit(TypePropertyInit ctx);
         public void LeaveTypePropertyInit(TypePropertyInit ctx);
         public void EnterUnaryExpression(UnaryExpression ctx);
@@ -145,6 +149,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveFuncCallExpression(FuncCallExpression ctx){}
         public virtual void EnterFunctionDefinition(FunctionDefinition ctx){}
         public virtual void LeaveFunctionDefinition(FunctionDefinition ctx){}
+        public virtual void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
+        public virtual void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
         public virtual void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
         public virtual void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
         public virtual void EnterIdentifier(Identifier ctx){}
@@ -163,8 +169,10 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
         public virtual void LeaveTypeInitialiser(TypeInitialiser ctx){}
-        public virtual void EnterTypeInitParamDecl(TypeInitParamDecl ctx){}
-        public virtual void LeaveTypeInitParamDecl(TypeInitParamDecl ctx){}
+        public virtual void EnterDestructuringParamDecl(DestructuringParamDecl ctx){}
+        public virtual void LeaveDestructuringParamDecl(DestructuringParamDecl ctx){}
+        public virtual void EnterPropertyBinding(PropertyBinding ctx){}
+        public virtual void LeavePropertyBinding(PropertyBinding ctx){}
         public virtual void EnterTypePropertyInit(TypePropertyInit ctx){}
         public virtual void LeaveTypePropertyInit(TypePropertyInit ctx){}
         public virtual void EnterUnaryExpression(UnaryExpression ctx){}
@@ -198,7 +206,7 @@ namespace Fifth.AST
 #region AST Nodes
 
 
-    public partial class ClassDefinition : ScopeAstNode, ITypedAstNode
+    public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCollection
     {
         public ClassDefinition(string Name, List<PropertyDefinition> Properties, List<IFunctionDefinition> Functions)
         {
@@ -217,13 +225,17 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterClassDefinition(this);
-            foreach (var e in Properties)
-            {
-                e.Accept(visitor);
+            if(Properties != null){
+                foreach (var e in Properties)
+                {
+                    e.Accept(visitor);
+                }
             }
-            foreach (var e in Functions)
-            {
-                e.Accept(visitor);
+            if(Functions != null){
+                foreach (var e in Functions)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveClassDefinition(this);
         }
@@ -269,7 +281,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterTypeCast(this);
-            SubExpression.Accept(visitor);
+            if(SubExpression != null) {
+                SubExpression.Accept(visitor);
+            }
             visitor.LeaveTypeCast(this);
         }
 
@@ -292,7 +306,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterReturnStatement(this);
-            SubExpression.Accept(visitor);
+            if(SubExpression != null) {
+                SubExpression.Accept(visitor);
+            }
             visitor.LeaveReturnStatement(this);
         }
 
@@ -312,9 +328,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterStatementList(this);
-            foreach (var e in Statements)
-            {
-                e.Accept(visitor);
+            if(Statements != null){
+                foreach (var e in Statements)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveStatementList(this);
         }
@@ -357,7 +375,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterAliasDeclaration(this);
-            IRI.Accept(visitor);
+            if(IRI != null) {
+                IRI.Accept(visitor);
+            }
             visitor.LeaveAliasDeclaration(this);
         }
 
@@ -380,8 +400,12 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterAssignmentStmt(this);
-            Expression.Accept(visitor);
-            VariableRef.Accept(visitor);
+            if(Expression != null) {
+                Expression.Accept(visitor);
+            }
+            if(VariableRef != null) {
+                VariableRef.Accept(visitor);
+            }
             visitor.LeaveAssignmentStmt(this);
         }
 
@@ -407,8 +431,12 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterBinaryExpression(this);
-            Left.Accept(visitor);
-            Right.Accept(visitor);
+            if(Left != null) {
+                Left.Accept(visitor);
+            }
+            if(Right != null) {
+                Right.Accept(visitor);
+            }
             visitor.LeaveBinaryExpression(this);
         }
 
@@ -428,9 +456,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterBlock(this);
-            foreach (var e in Statements)
-            {
-                e.Accept(visitor);
+            if(Statements != null){
+                foreach (var e in Statements)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveBlock(this);
         }
@@ -624,9 +654,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterExpressionList(this);
-            foreach (var e in Expressions)
-            {
-                e.Accept(visitor);
+            if(Expressions != null){
+                foreach (var e in Expressions)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveExpressionList(this);
         }
@@ -634,7 +666,7 @@ namespace Fifth.AST
         
     }
 
-    public partial class FifthProgram : ScopeAstNode
+    public partial class FifthProgram : ScopeAstNode, IFunctionCollection
     {
         public FifthProgram(List<AliasDeclaration> Aliases, List<ClassDefinition> Classes, List<IFunctionDefinition> Functions)
         {
@@ -653,17 +685,23 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterFifthProgram(this);
-            foreach (var e in Aliases)
-            {
-                e.Accept(visitor);
+            if(Aliases != null){
+                foreach (var e in Aliases)
+                {
+                    e.Accept(visitor);
+                }
             }
-            foreach (var e in Classes)
-            {
-                e.Accept(visitor);
+            if(Classes != null){
+                foreach (var e in Classes)
+                {
+                    e.Accept(visitor);
+                }
             }
-            foreach (var e in Functions)
-            {
-                e.Accept(visitor);
+            if(Functions != null){
+                foreach (var e in Functions)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveFifthProgram(this);
         }
@@ -687,7 +725,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterFuncCallExpression(this);
-            ActualParameters.Accept(visitor);
+            if(ActualParameters != null) {
+                ActualParameters.Accept(visitor);
+            }
             visitor.LeaveFuncCallExpression(this);
         }
 
@@ -722,12 +762,56 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterFunctionDefinition(this);
-            ParameterDeclarations.Accept(visitor);
-            Body.Accept(visitor);
+            if(ParameterDeclarations != null) {
+                ParameterDeclarations.Accept(visitor);
+            }
+            if(Body != null) {
+                Body.Accept(visitor);
+            }
             visitor.LeaveFunctionDefinition(this);
         }
 
         
+    }
+
+    public partial class BuiltinFunctionDefinition : AstNode, IFunctionDefinition
+    {
+        public BuiltinFunctionDefinition()
+        {
+        }
+
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterBuiltinFunctionDefinition(this);
+            visitor.LeaveBuiltinFunctionDefinition(this);
+        }
+
+        
+        public ParameterDeclarationList ParameterDeclarations { get; set; }
+        public string Typename { get; set; }
+        public string Name { get; set; }
+        public bool IsEntryPoint { get; set; }
+        public TypeId ReturnType { get; set; }
+
+       public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
+        {
+            Name = name;
+            Typename = typename;
+            var list = new List<IParameterListItem>();
+
+            foreach (var (pname, ptypename) in parameters)
+            {
+                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename);
+                list.Add(paramDef);
+            }
+                
+            var paramDeclList = new ParameterDeclarationList(list);
+
+            ParameterDeclarations = paramDeclList;
+            IsEntryPoint = false;
+        }
+    
     }
 
     public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
@@ -746,9 +830,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterOverloadedFunctionDefinition(this);
-            foreach (var e in OverloadClauses)
-            {
-                e.Accept(visitor);
+            if(OverloadClauses != null){
+                foreach (var e in OverloadClauses)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveOverloadedFunctionDefinition(this);
         }
@@ -788,7 +874,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterIdentifierExpression(this);
-            Identifier.Accept(visitor);
+            if(Identifier != null) {
+                Identifier.Accept(visitor);
+            }
             visitor.LeaveIdentifierExpression(this);
         }
 
@@ -814,9 +902,15 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterIfElseStatement(this);
-            IfBlock.Accept(visitor);
-            ElseBlock.Accept(visitor);
-            Condition.Accept(visitor);
+            if(IfBlock != null) {
+                IfBlock.Accept(visitor);
+            }
+            if(ElseBlock != null) {
+                ElseBlock.Accept(visitor);
+            }
+            if(Condition != null) {
+                Condition.Accept(visitor);
+            }
             visitor.LeaveIfElseStatement(this);
         }
 
@@ -858,7 +952,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterParameterDeclaration(this);
-            ParameterName.Accept(visitor);
+            if(ParameterName != null) {
+                ParameterName.Accept(visitor);
+            }
             visitor.LeaveParameterDeclaration(this);
         }
 
@@ -878,9 +974,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterParameterDeclarationList(this);
-            foreach (var e in ParameterDeclarations)
-            {
-                e.Accept(visitor);
+            if(ParameterDeclarations != null){
+                foreach (var e in ParameterDeclarations)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveParameterDeclarationList(this);
         }
@@ -920,9 +1018,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterTypeInitialiser(this);
-            foreach (var e in PropertyInitialisers)
-            {
-                e.Accept(visitor);
+            if(PropertyInitialisers != null){
+                foreach (var e in PropertyInitialisers)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveTypeInitialiser(this);
         }
@@ -930,27 +1030,65 @@ namespace Fifth.AST
         
     }
 
-    public partial class TypeInitParamDecl : TypedAstNode, IParameterListItem
+    public partial class DestructuringParamDecl : TypedAstNode, IParameterListItem
     {
-        public TypeInitParamDecl(string Name, TypeInitialiser Pattern)
+        public DestructuringParamDecl(string TypeName, Identifier ParameterName, List<PropertyBinding> PropertyBindings)
         {
-            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
-            this.Name = Name;
-            //_ = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
-            this.Pattern = Pattern;
+            //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
+            this.TypeName = TypeName;
+            //_ = ParameterName ?? throw new ArgumentNullException(nameof(ParameterName));
+            this.ParameterName = ParameterName;
+            //_ = PropertyBindings ?? throw new ArgumentNullException(nameof(PropertyBindings));
+            this.PropertyBindings = PropertyBindings;
         }
 
-        public string Name{get;set;}
-        public TypeInitialiser Pattern{get;set;}
+        public string TypeName{get;set;}
+        public Identifier ParameterName{get;set;}
+        public List<PropertyBinding> PropertyBindings{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
-            visitor.EnterTypeInitParamDecl(this);
-            Pattern.Accept(visitor);
-            visitor.LeaveTypeInitParamDecl(this);
+            visitor.EnterDestructuringParamDecl(this);
+            if(PropertyBindings != null){
+                foreach (var e in PropertyBindings)
+                {
+                    e.Accept(visitor);
+                }
+            }
+            visitor.LeaveDestructuringParamDecl(this);
         }
 
         
+    }
+
+    public partial class PropertyBinding : AstNode
+    {
+        public PropertyBinding(string BoundPropertyName, string BoundVariableName, Expression Constraint)
+        {
+            //_ = BoundPropertyName ?? throw new ArgumentNullException(nameof(BoundPropertyName));
+            this.BoundPropertyName = BoundPropertyName;
+            //_ = BoundVariableName ?? throw new ArgumentNullException(nameof(BoundVariableName));
+            this.BoundVariableName = BoundVariableName;
+            //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
+            this.Constraint = Constraint;
+        }
+
+        public string BoundPropertyName{get;set;}
+        public string BoundVariableName{get;set;}
+        public Expression Constraint{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterPropertyBinding(this);
+            if(Constraint != null) {
+                Constraint.Accept(visitor);
+            }
+            visitor.LeavePropertyBinding(this);
+        }
+
+        
+        public PropertyDefinition BoundProperty { get; set; }
+    
     }
 
     public partial class TypePropertyInit : AstNode
@@ -991,7 +1129,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterUnaryExpression(this);
-            Operand.Accept(visitor);
+            if(Operand != null) {
+                Operand.Accept(visitor);
+            }
             visitor.LeaveUnaryExpression(this);
         }
 
@@ -1014,8 +1154,12 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterVariableDeclarationStatement(this);
-            Expression.Accept(visitor);
-            Name.Accept(visitor);
+            if(Expression != null) {
+                Expression.Accept(visitor);
+            }
+            if(Name != null) {
+                Name.Accept(visitor);
+            }
             visitor.LeaveVariableDeclarationStatement(this);
         }
 
@@ -1079,9 +1223,11 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterCompoundVariableReference(this);
-            foreach (var e in ComponentReferences)
-            {
-                e.Accept(visitor);
+            if(ComponentReferences != null){
+                foreach (var e in ComponentReferences)
+                {
+                    e.Accept(visitor);
+                }
             }
             visitor.LeaveCompoundVariableReference(this);
         }
@@ -1105,7 +1251,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterWhileExp(this);
-            Condition.Accept(visitor);
+            if(Condition != null) {
+                Condition.Accept(visitor);
+            }
             visitor.LeaveWhileExp(this);
         }
 
@@ -1125,7 +1273,9 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterExpressionStatement(this);
-            Expression.Accept(visitor);
+            if(Expression != null) {
+                Expression.Accept(visitor);
+            }
             visitor.LeaveExpressionStatement(this);
         }
 
@@ -1183,6 +1333,7 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, FifthProgram node);
         public IType Infer(IScope scope, FuncCallExpression node);
         public IType Infer(IScope scope, FunctionDefinition node);
+        public IType Infer(IScope scope, BuiltinFunctionDefinition node);
         public IType Infer(IScope scope, OverloadedFunctionDefinition node);
         public IType Infer(IScope scope, Identifier node);
         public IType Infer(IScope scope, IdentifierExpression node);
@@ -1192,7 +1343,8 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, ParameterDeclarationList node);
         public IType Infer(IScope scope, TypeCreateInstExpression node);
         public IType Infer(IScope scope, TypeInitialiser node);
-        public IType Infer(IScope scope, TypeInitParamDecl node);
+        public IType Infer(IScope scope, DestructuringParamDecl node);
+        public IType Infer(IScope scope, PropertyBinding node);
         public IType Infer(IScope scope, TypePropertyInit node);
         public IType Infer(IScope scope, UnaryExpression node);
         public IType Infer(IScope scope, VariableDeclarationStatement node);
@@ -1234,6 +1386,7 @@ namespace Fifth.TypeSystem
                 FifthProgram node => Infer(scope, node),
                 FuncCallExpression node => Infer(scope, node),
                 FunctionDefinition node => Infer(scope, node),
+                BuiltinFunctionDefinition node => Infer(scope, node),
                 OverloadedFunctionDefinition node => Infer(scope, node),
                 Identifier node => Infer(scope, node),
                 IdentifierExpression node => Infer(scope, node),
@@ -1243,7 +1396,8 @@ namespace Fifth.TypeSystem
                 ParameterDeclarationList node => Infer(scope, node),
                 TypeCreateInstExpression node => Infer(scope, node),
                 TypeInitialiser node => Infer(scope, node),
-                TypeInitParamDecl node => Infer(scope, node),
+                DestructuringParamDecl node => Infer(scope, node),
+                PropertyBinding node => Infer(scope, node),
                 TypePropertyInit node => Infer(scope, node),
                 UnaryExpression node => Infer(scope, node),
                 VariableDeclarationStatement node => Infer(scope, node),

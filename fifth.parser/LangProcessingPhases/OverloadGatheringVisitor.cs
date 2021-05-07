@@ -7,25 +7,17 @@ namespace Fifth.LangProcessingPhases
     using AST.Visitors;
     using TypeSystem;
 
-    public class DesugaringVisitor : BaseAstVisitor
+    public class OverloadGatheringVisitor : BaseAstVisitor
     {
         public override void EnterFifthProgram(FifthProgram ctx)
-        {
-            var overloads = GatherOverloads(ctx.Functions);
-            foreach (var fs in overloads)
-            {
-                if (fs.Value.Count > 1)
-                {
-                    var overloadedFunction = TransformOverloadGroup(fs.Key, fs.Value);
-                    SubstituteFunctionDefinitions(ctx, fs.Value, overloadedFunction);
-                }
-            }
-        }
+            => Gather(ctx);
 
         public override void EnterClassDefinition(ClassDefinition ctx)
+            => Gather(ctx);
+
+        void Gather(IFunctionCollection ctx)
         {
-            var overloads = GatherOverloads(ctx.Functions);
-            var newFunctionList = new List<IFunctionDefinition>();
+            var overloads = GatherOverloads(ctx);
             foreach (var fs in overloads)
             {
                 if (fs.Value.Count > 1)
@@ -33,38 +25,13 @@ namespace Fifth.LangProcessingPhases
                     var overloadedFunction = TransformOverloadGroup(fs.Key, fs.Value);
                     SubstituteFunctionDefinitions(ctx, fs.Value, overloadedFunction);
                 }
-                else
-                {
-                    newFunctionList.AddRange(fs.Value);
-                }
             }
         }
 
-        public override void LeaveExpressionList(ExpressionList ctx)
-        {
-            /*
-            for (var i = 0; i < ctx.Expressions.Count - 1; i++)
-            {
-                if (ctx.Expressions[i] is FuncCallExpression fce)
-                {
-                    var x = new AssignmentStmt(ctx, fce.TypeId);
-                    var variableReference = new VariableReference(ctx, null)
-                    {
-                        Name = "__discard__", ParentNode = fce.ParentNode
-                    };
-                    x.VariableRef = variableReference;
-                    x.Expression = fce;
-                    fce.ParentNode = x;
-                    ctx.Expressions[i] = x;
-                }
-            }
-        */
-        }
-
-        private IDictionary<IFunctionSignature, List<IFunctionDefinition>> GatherOverloads(IEnumerable<IFunctionDefinition> funcs)
+        private IDictionary<IFunctionSignature, List<IFunctionDefinition>> GatherOverloads(IFunctionCollection classDefinition)
         {
             var result = new Dictionary<IFunctionSignature, List<IFunctionDefinition>>();
-            foreach (var f in funcs)
+            foreach (var f in classDefinition.Functions)
             {
                 var signature = f.GetFunctionSignature();
                 if (!result.ContainsKey(signature))
@@ -78,15 +45,7 @@ namespace Fifth.LangProcessingPhases
             return result;
         }
 
-        private void SubstituteFunctionDefinitions(ClassDefinition classDefinition, List<IFunctionDefinition> fdg, IFunctionDefinition combinedFunction)
-        {
-            foreach (var fd in fdg)
-            {
-                classDefinition.RemoveFunction(fd);
-            }
-            classDefinition.AddFunction(combinedFunction);
-        }
-        private void SubstituteFunctionDefinitions(FifthProgram classDefinition, List<IFunctionDefinition> fdg, IFunctionDefinition combinedFunction)
+        private void SubstituteFunctionDefinitions(IFunctionCollection classDefinition, List<IFunctionDefinition> fdg, IFunctionDefinition combinedFunction)
         {
             foreach (var fd in fdg)
             {

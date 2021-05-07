@@ -228,13 +228,33 @@ namespace Fifth.LangProcessingPhases
             return new ParameterDeclaration(new Identifier(name), type).CaptureLocation(context.Start);
         }
 
-        public override IAstNode VisitParamDeclWithPatternMatcher(FifthParser.ParamDeclWithPatternMatcherContext context)
+        public override IAstNode VisitParamDeclWithTypeDestructure(FifthParser.ParamDeclWithTypeDestructureContext context)
         {
-            var parameterType = context.type_initialiser().typename.GetText();
-            var propInits = context.type_initialiser()._properties.Select(prop => (TypePropertyInit)Visit(prop));
+            var destrCtx = context.type_destructuring_paramdecl();
+            var parameterType = destrCtx.parameter_type().GetText();
+            var parameterName = destrCtx.parameter_name().GetText();
+            var propInitList = new List<IAstNode>();
+            foreach (var pb in destrCtx._bindings)
+            {
+                propInitList.Add(Visit(pb));
+            }
+            var propInits = propInitList.Cast<PropertyBinding>().ToList();
 
-            var ti = new TypeInitialiser(parameterType, propInits.ToList());
-            return new TypeInitParamDecl(context.parameter_name().GetText(), ti);
+            return new DestructuringParamDecl(parameterType, new Identifier(parameterName), propInits)
+                .CaptureLocation(context.Start);
+        }
+
+        public override IAstNode VisitProperty_binding(FifthParser.Property_bindingContext ctx)
+        {
+            var varName = VisitVar_name(ctx.bound_variable_name) as Identifier;
+            var propName = VisitVar_name(ctx.property_name) as Identifier;
+            Expression constraint = default;
+            if (ctx.constraint != null)
+            {
+                constraint = (Expression)Visit(ctx.constraint);
+            }
+            return new PropertyBinding(propName.Value, varName.Value, constraint)
+                .CaptureLocation(ctx.Start);
         }
 
         public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>

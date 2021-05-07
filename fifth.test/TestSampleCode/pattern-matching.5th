@@ -5,12 +5,11 @@ class Person {
     Weight: float;
 }
 
-void calculate_bmi(Person{
-    Name = name,
-    Age = age,
+float calculate_bmi(Person p{
+    Age = age | age > 60,
     Height = height,
     Weight = weight
-    } p) {
+    }) {
     return weight / (height * height);
 }
 

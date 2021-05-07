@@ -12,7 +12,6 @@ function_call
     : function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
     ;
 
-
 module_import
     : USE module_name (COMMA module_name)* SEMICOLON
     ;
@@ -59,12 +58,12 @@ type_property_init
     ;
 
 // ========[FUNC DEFS]=========
-formal_parameters
-    : parameter_declaration (COMMA parameter_declaration)*
-    ;
-
 function_declaration
     : result_type=function_type name=function_name args=function_args body=function_body
+    ;
+
+formal_parameters
+    : parameter_declaration (COMMA parameter_declaration)*
     ;
 
 function_args
@@ -72,8 +71,26 @@ function_args
     ;
 
 parameter_declaration
-    : parameter_type parameter_name     # ParamDecl
-    | type_initialiser parameter_name   # ParamDeclWithPatternMatcher
+    : parameter_type parameter_name  # ParamDecl
+    | type_destructuring_paramdecl   # ParamDeclWithTypeDestructure
+    ;
+
+// an example of destructuring:
+// void Foo(Person p{Age = a | a >= 18 && a < 32, Name = name | string.IsNullOrWhitespace(name)}, int blah ){ . . . }
+// void Foo(Person p{Age = a | a < 18 || a >= 32, Name = name | !string.IsNullOrWhitespace(name)}, int blah ){ . . . }
+// void Foo(Person p, int blah ){ . . . }
+
+type_destructuring_paramdecl
+    : parameter_type
+      parameter_name
+      OPENBRACE
+        bindings+=property_binding
+        ( COMMA bindings+=property_binding )*
+      CLOSEBRACE
+    ;
+
+property_binding
+    : property_name=var_name ASSIGN bound_variable_name=var_name (BAR constraint=exp)?
     ;
 
 parameter_type

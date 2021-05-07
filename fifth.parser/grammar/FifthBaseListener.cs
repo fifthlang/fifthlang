@@ -167,18 +167,6 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitType_property_init([NotNull] FifthParser.Type_property_initContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFormal_parameters([NotNull] FifthParser.Formal_parametersContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.function_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -190,6 +178,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunction_declaration([NotNull] FifthParser.Function_declarationContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFormal_parameters([NotNull] FifthParser.Formal_parametersContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.function_args"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -217,19 +217,43 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParamDecl([NotNull] FifthParser.ParamDeclContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>ParamDeclWithPatternMatcher</c>
+	/// Enter a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
 	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterParamDeclWithPatternMatcher([NotNull] FifthParser.ParamDeclWithPatternMatcherContext context) { }
+	public virtual void EnterParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>ParamDeclWithPatternMatcher</c>
+	/// Exit a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
 	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitParamDeclWithPatternMatcher([NotNull] FifthParser.ParamDeclWithPatternMatcherContext context) { }
+	public virtual void ExitParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.type_destructuring_paramdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterType_destructuring_paramdecl([NotNull] FifthParser.Type_destructuring_paramdeclContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.type_destructuring_paramdecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitType_destructuring_paramdecl([NotNull] FifthParser.Type_destructuring_paramdeclContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.property_binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterProperty_binding([NotNull] FifthParser.Property_bindingContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.property_binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitProperty_binding([NotNull] FifthParser.Property_bindingContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// <para>The default implementation does nothing.</para>
