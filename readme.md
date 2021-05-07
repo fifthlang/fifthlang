@@ -10,40 +10,13 @@
 ![GitHub repo file count](https://img.shields.io/github/directory-file-count/aabs/fifthlang)
 
 
-
-Fifth is (to be) a general purpose programming language running on the .NET tech stack that makes it easy to work with RDF knowledge Graphs.
+Fifth is (growing to be) a general purpose programming language running on the .NET tech stack that makes it easy to work with RDF knowledge Graphs.
 
 ## Table of Contents
 
-- [Examples](#security)
-- [Background](#background)
-- [Install](#install)
-- [Usage](#usage)
-- [API](#api)
+- [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
-
-## Building the grammar from Powershell
-
-To be able to run ANTLR, you must have a copy of java to run the Jar file:
-
-```
-sudo apt install openjdk-15-jre-headless
-```
-
-go to the root of the development hierarchy:
-
-```
-make grammar
-```
-
-Alternatively, to build within windows:
-
-```powershell
-java -jar .\tools\antlr-4.8-complete.jar -Dlanguage=CSharp -visitor -listener -o .\fifth.parser\grammar\ .\fifth.parser\grammar\Fifth.g4
-```
-
-
 
 ## Examples
 
@@ -57,30 +30,26 @@ class Person {
     Weight: float;
 }
 
-float calculate_bmi(Person p{
-    Age = age | age > 60,
-    Height = height,
-    Weight = weight
-    }) {
-    return weight / (height * height);
-}
-
-void main() {
-    Person eric = new Person{
-        Name = 'Eric Morecombe',
+void main(){
+    Person p = new Person{
+        Name = "Eric Morecombe",
         Height = 1.93,
-        Age = 65,
-        Weight = 100
+        Age = 60,
+        Weight = 95
     };
-    print(calculate_bmi(eric));
+
+    p.Weight = p.Weight + 5;
+    return p.Weight;
 }
 ```
+
+See [more examples](https://github.com/fifthlang/fifthlang/wiki/Example-Code#example-code), along with other docs, over on the wiki.
 
 ## Contributing
 
 Feel free to dive in! [Open an issue](https://github.com/aabs/fifthlang/issues/new) or submit PRs.
 
-Standard Readme follows the [Contributor Covenant](http://contributor-covenant.org/version/1/3/0/) Code of Conduct.
+Fifthlang follows the [Contributor Covenant](http://contributor-covenant.org/version/1/3/0/) Code of Conduct.
 
 ### Contributors
 
