@@ -76,36 +76,6 @@ void main() {
 }
 ```
 
-### Any optional sections
-
-## Background
-
-### Any optional sections
-
-## Install
-
-This module depends upon a knowledge of [Markdown]().
-
-```
-```
-
-### Any optional sections
-
-## Usage
-
-```
-```
-
-Note: The `license` badge image link at the top of this file should be updated with the correct `:user` and `:repo`.
-
-### Any optional sections
-
-## API
-
-### Any optional sections
-
-## More optional sections
-
 ## Contributing
 
 Feel free to dive in! [Open an issue](https://github.com/aabs/fifthlang/issues/new) or submit PRs.
