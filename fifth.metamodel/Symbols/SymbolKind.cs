@@ -2,6 +2,14 @@ namespace Fifth.Symbols
 {
     public enum SymbolKind
     {
-        FunctionDeclaration, VariableDeclaration, FormalParameter, VariableReference, FunctionReference
+        FunctionDeclaration,
+        BuiltinFunctionDeclaration,
+        VariableDeclaration,
+        FormalParameter,
+        PatternMatchingFormalParameter,
+        PatternBinding,
+        VariableReference,
+        FunctionReference,
+        PropertyDefinition
     }
 }

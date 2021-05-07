@@ -1,108 +1,153 @@
 grammar Fifth;
 
-fifth:
-    module_import*
-    alias*
-    functions+=function_declaration*
-;
+fifth
+    : module_import* alias*
+    ( functions+=function_declaration
+    | classes += class_definition
+    )*
+    ;
 
 
-function_call:
-    function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
-   ;
+function_call
+    : function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
+    ;
 
+module_import
+    : USE module_name (COMMA module_name)* SEMICOLON
+    ;
 
-module_import: USE module_name (COMMA module_name)* SEMICOLON ;
+module_name
+    : IDENTIFIER
+    ;
 
-module_name: IDENTIFIER;
-
-packagename: IDENTIFIER ;
+packagename
+    : IDENTIFIER
+    ;
 
 // ========[TYPE DEFINITIONS]=========
+class_definition
+    : CLASS name=IDENTIFIER OPENBRACE
+    ( functions += function_declaration
+    | properties += property_declaration
+    )* CLOSEBRACE
+    ;
 
-type_initialiser: type_name OPENBRACE type_property_init* CLOSEBRACE
-;
+property_declaration
+    : name=IDENTIFIER  COLON type=IDENTIFIER SEMICOLON
+    ;
 
-type_name:  IDENTIFIER
-;
+member_access
+    : DOT IDENTIFIER
+    ;
 
-type_property_init: var_name ASSIGN exp
-;
+type_initialiser
+    : typename=type_name OPENBRACE
+        properties+=type_property_init
+        (COMMA
+            properties+=type_property_init
+        )*
+      CLOSEBRACE
+    ;
+
+type_name
+    :  IDENTIFIER
+    ;
+
+type_property_init
+    : var_name ASSIGN exp
+    ;
 
 // ========[FUNC DEFS]=========
+function_declaration
+    : result_type=function_type name=function_name args=function_args body=function_body
+    ;
 
-formal_parameters:
-    parameter_declaration (COMMA parameter_declaration)*
-;
+formal_parameters
+    : parameter_declaration (COMMA parameter_declaration)*
+    ;
 
-function_declaration:
-    result_type=function_type
-    name=function_name
-    args=function_args
-    body=function_body
-;
+function_args
+    : OPENPAREN formal_parameters? CLOSEPAREN
+    ;
 
-function_args:
-    OPENPAREN
-    formal_parameters?
-    CLOSEPAREN
-;
+parameter_declaration
+    : parameter_type parameter_name  # ParamDecl
+    | type_destructuring_paramdecl   # ParamDeclWithTypeDestructure
+    ;
 
-parameter_declaration:
-    parameter_type
-    parameter_name
-;
+// an example of destructuring:
+// void Foo(Person p{Age = a | a >= 18 && a < 32, Name = name | string.IsNullOrWhitespace(name)}, int blah ){ . . . }
+// void Foo(Person p{Age = a | a < 18 || a >= 32, Name = name | !string.IsNullOrWhitespace(name)}, int blah ){ . . . }
+// void Foo(Person p, int blah ){ . . . }
 
-parameter_type: IDENTIFIER
-;
+type_destructuring_paramdecl
+    : parameter_type
+      parameter_name
+      OPENBRACE
+        bindings+=property_binding
+        ( COMMA bindings+=property_binding )*
+      CLOSEBRACE
+    ;
 
-parameter_name: IDENTIFIER
-;
+property_binding
+    : property_name=var_name ASSIGN bound_variable_name=var_name (BAR constraint=exp)?
+    ;
 
-function_body:
-    block
-;
+parameter_type
+    : identifier_chain
+    ;
 
-function_name:
-    IDENTIFIER
-;
+parameter_name
+    : IDENTIFIER
+    ;
 
-function_type:
-    IDENTIFIER
-;
+function_body
+    : block
+    ;
 
+function_name
+    : identifier_chain
+    ;
+
+function_type
+    : IDENTIFIER
+    ;
 
 // ========[STATEMENTS]=========
-block:
-    OPENBRACE (statement SEMICOLON)* CLOSEBRACE
-;
+block
+    : OPENBRACE (statement SEMICOLON)* CLOSEBRACE
+    ;
 
-statement:
-      IF OPENPAREN condition=exp CLOSEPAREN ifpart=block (ELSE elsepart=block)? # SIfElse
+statement
+    : IF OPENPAREN condition=exp CLOSEPAREN ifpart=block (ELSE elsepart=block)? # SIfElse
     | WHILE OPENPAREN condition=exp CLOSEPAREN looppart=block                   # SWhile
     | WITH exp  block                                                           # SWith // this is not useful as is
     | decl=var_decl (ASSIGN exp)?                                               # SVarDecl
     | var_name ASSIGN exp                                                       # SAssignment
     | RETURN exp                                                                # SReturn
     | exp                                                                       # SBareExpression
-;
+    ;
 
-var_decl:
-    (
-      type_name
-    | list_type_signature
-    )
-    var_name
-;
+var_decl
+    : ( type_name | list_type_signature ) var_name
+    ;
+
 
 // ========[EXPRESSIONS]=========
-
 explist
     : exp (COMMA exp)*
     ;
 
-exp :
-      OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
+exp
+    : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
+    | value=truth_value                                             # EBool
+    | value=INT                                                     # EInt
+    | value=FLOAT                                                   # EDouble
+    | value=STRING                                                  # EString
+    | value=truth_value                                             # EBoolean
+    | value=list                                                    # EList
+    | NOT operand=exp                                               # ELogicNegation
+    | MINUS operand=exp                                             # EArithNegation
     | left=exp LT right=exp                                         # ELT
     | left=exp GT right=exp                                         # EGT
     | left=exp LEQ right=exp                                        # ELEQ
@@ -112,55 +157,51 @@ exp :
     | left=exp MINUS right=exp                                      # ESub
     | left=exp TIMES right=exp                                      # EMul
     | left=exp DIVIDE right=exp                                     # EDiv
-    | MINUS operand=exp                                             # EArithNegation
-    | boolean                                                       # EBool
-    | value=INT                                                     # EInt
-    | value=FLOAT                                                   # EDouble
-    | value=STRING                                                  # EString
     | var_name                                                      # EVarname
     | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN   # EFuncCall
     | OPENPAREN innerexp=exp CLOSEPAREN                             # EParen
-    | NOT operand=exp                                               # ELogicNegation
     | NEW type_initialiser                                          # ETypeCreateInst
-    | value=list                                                    # EList
-;
+    ;
 
-boolean: value=TRUE | value=FALSE ;
+truth_value
+    : value=TRUE | value=FALSE
+    ;
 
-
-var_name: IDENTIFIER
-;
+identifier_chain
+    : segments+=IDENTIFIER (DOT segments+=IDENTIFIER)*
+    ;
+var_name
+    : identifier_chain
+    ;
 
 
 // ========[KNOWLEDGE GRAPHS]=========
+alias
+    : ALIAS name=packagename AS uri=absoluteIri SEMICOLON
+    ;
 
-alias:
-    'alias'
-    name=packagename
-    'as'
-    uri=absoluteIri
-    SEMICOLON
-;
-
-iri:
-   qNameIri | absoluteIri
-   ;
+iri
+    : qNameIri | absoluteIri
+    ;
 
 
-qNameIri: prefix=IDENTIFIER? COLON fragname=IDENTIFIER ;
+qNameIri
+    : prefix=IDENTIFIER? COLON fragname=IDENTIFIER
+    ;
 
-absoluteIri :
-    iri_scheme=IDENTIFIER
-    COLON DIVIDE DIVIDE
-    iri_domain+=IDENTIFIER (DOT iri_domain+=IDENTIFIER)*
-    (DIVIDE iri_segment+=IDENTIFIER)*
-    DIVIDE?
-    (HASH IDENTIFIER?)?
-    // (QMARK iri_query_param (AMP iri_query_param)*)?
-;
+absoluteIri
+    : iri_scheme=IDENTIFIER
+      COLON DIVIDE DIVIDE
+      iri_domain+=IDENTIFIER (DOT iri_domain+=IDENTIFIER)*
+      (DIVIDE iri_segment+=IDENTIFIER)*
+      DIVIDE?
+      (HASH IDENTIFIER?)?
+      // (QMARK iri_query_param (AMP iri_query_param)*)?
+    ;
 
-iri_query_param:
-    name=IDENTIFIER ASSIGN val=IDENTIFIER;
+iri_query_param
+    : name=IDENTIFIER ASSIGN val=IDENTIFIER
+    ;
 
 
 
@@ -173,34 +214,34 @@ iri_query_param:
 // int[] fifths = [x*5 | x <- recombined],
 
 
-list_type_signature :
-    type_name OPENBRACK CLOSEBRACK
-;
+list_type_signature
+    : type_name OPENBRACK CLOSEBRACK
+    ;
 
-list :
-    OPENBRACK body=list_body CLOSEBRACK
-;
+list
+    : OPENBRACK body=list_body CLOSEBRACK
+    ;
 
-list_body:
-      list_literal          #EListLiteral
+list_body
+    : list_literal          #EListLiteral
     | list_comprehension    #EListComprehension
-;
+    ;
 
-list_literal:
-    explist
-;
+list_literal
+    : explist
+    ;
 
-list_comprehension:
-    varname=var_name BAR gen=list_comp_generator (COMMA constraints=list_comp_constraint)
-;
+list_comprehension
+    : varname=var_name BAR gen=list_comp_generator (COMMA constraints=list_comp_constraint)
+    ;
 
-list_comp_generator:
-    varname=var_name GEN value=var_name
-;
+list_comp_generator
+    : varname=var_name GEN value=var_name
+    ;
 
-list_comp_constraint:
-    exp // must be of type PrimitiveBoolean
-;
+list_comp_constraint
+    : exp // must be of type PrimitiveBoolean
+    ;
 
 
 
@@ -208,16 +249,17 @@ list_comp_constraint:
 // ========[RESERVED WORDS]=========
 ALIAS: 'alias';
 AS: 'as';
+CLASS: 'class' ;
 ELSE: 'else';
+FALSE: 'false' ;
 IF: 'if';
-WHILE: 'while';
+LIST: 'list' ;
 NEW: 'new';
-WITH: 'with';
 RETURN: 'return';
 USE: 'use';
 TRUE: 'true' ;
-FALSE: 'false' ;
-LIST: 'list' ;
+WHILE: 'while';
+WITH: 'with';
 
 
 
@@ -254,10 +296,11 @@ POWER: '^' ;
 QMARK: '?';
 SEMICOLON: ';' ;
 TIMES: '*';     // multiplication
+UNDERSCORE: '_' ;
 
 // CHARACTER CLASSES ETC
 // IRI_PARAM_VALUE: (LETTER|DIGIT|URI_PUNCT)+;
-IDENTIFIER: (LETTER|'_') (LETTER|DIGIT | '.')*;
+IDENTIFIER: (LETTER|UNDERSCORE) (LETTER|DIGIT|UNDERSCORE)*;
 fragment LETTER: [a-zA-Z];
 // fragment URI_PUNCT: [%\-_+];
 STRING:'"' (~["])* '"'  | '\'' (~['])* '\'';

@@ -41,7 +41,8 @@ namespace Fifth.TypeSystem
         {
         }
 
-        public bool TryGetType(TypeId typeId, out IType type) => typeRegister.TryGetValue(typeId, out type);
+        public bool TryGetType(TypeId typeId, out IType type)
+            => typeRegister.TryGetValue(typeId, out type);
 
         public bool TrySetType(IType type, out TypeId typeId)
         {
@@ -68,6 +69,17 @@ namespace Fifth.TypeSystem
             return false;
         }
 
+        public bool LoadPrimitiveTypes()
+        {
+            var result = true;
+            foreach (var t in PrimitiveTypes)
+            {
+                result &= RegisterType(t);
+            }
+
+            return result;
+        }
+
         public bool TryGetTypeByName(string typeName, out IType type)
         {
             foreach (var fifthType in typeRegister.Values)
@@ -81,17 +93,6 @@ namespace Fifth.TypeSystem
 
             type = null;
             return false;
-        }
-
-        public bool LoadPrimitiveTypes()
-        {
-            var result = true;
-            foreach (var t in PrimitiveTypes)
-            {
-                result &= RegisterType(t);
-            }
-
-            return result;
         }
 
         public bool TryLookupType(Type t, out IType result)

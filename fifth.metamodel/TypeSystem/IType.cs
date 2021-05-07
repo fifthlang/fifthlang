@@ -13,7 +13,7 @@ namespace Fifth.TypeSystem
 
     public interface IGenericType : IType
     {
-        public TypeId[] TypeParameters { get; }
+        public TypeId[] GenericTypeParameters { get; }
     }
 
     public interface IFunctionSignature : IGenericType

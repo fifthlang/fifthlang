@@ -62,6 +62,24 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitPackagename([NotNull] FifthParser.PackagenameContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.class_definition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitClass_definition([NotNull] FifthParser.Class_definitionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.property_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitProperty_declaration([NotNull] FifthParser.Property_declarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -80,17 +98,17 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitType_property_init([NotNull] FifthParser.Type_property_initContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.function_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.function_args"/>.
 	/// </summary>
@@ -98,11 +116,31 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunction_args([NotNull] FifthParser.Function_argsContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FifthParser.parameter_declaration"/>.
+	/// Visit a parse tree produced by the <c>ParamDecl</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context);
+	Result VisitParamDecl([NotNull] FifthParser.ParamDeclContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.type_destructuring_paramdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitType_destructuring_paramdecl([NotNull] FifthParser.Type_destructuring_paramdeclContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.property_binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitProperty_binding([NotNull] FifthParser.Property_bindingContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// </summary>
@@ -221,6 +259,13 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEVarname([NotNull] FifthParser.EVarnameContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitEBoolean([NotNull] FifthParser.EBooleanContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>EArithNegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -348,11 +393,17 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitEMul([NotNull] FifthParser.EMulContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// Visit a parse tree produced by <see cref="FifthParser.truth_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitBoolean([NotNull] FifthParser.BooleanContext context);
+	Result VisitTruth_value([NotNull] FifthParser.Truth_valueContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.identifier_chain"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifier_chain([NotNull] FifthParser.Identifier_chainContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.var_name"/>.
 	/// </summary>

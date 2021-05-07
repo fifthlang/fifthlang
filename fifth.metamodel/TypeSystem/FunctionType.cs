@@ -2,8 +2,9 @@ namespace Fifth.TypeSystem
 {
     public record FunctionSignature : IFunctionSignature
     {
-        public FunctionSignature(TypeId returnType, TypeId[] formalParameterTypes)
+        public FunctionSignature(string name, TypeId returnType, TypeId[] formalParameterTypes)
         {
+            Name = name;
             ReturnType = returnType;
             FormalParameterTypes = formalParameterTypes;
         }
@@ -12,6 +13,6 @@ namespace Fifth.TypeSystem
         public TypeId[] FormalParameterTypes { get; }
         public string Name { get; }
         public TypeId TypeId { get; set; }
-        public TypeId[] TypeParameters { get; }
+        public TypeId[] GenericTypeParameters { get; }
     }
 }

@@ -8,7 +8,9 @@ namespace Fifth.Parser.LangProcessingPhases
     {
         #region IAntlrErrorListener<TSymbol> Implementation
 
-        public void SyntaxError(TextWriter output, IRecognizer recognizer, TResult offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => throw new Exception($"line {line}:{charPositionInLine} {msg}");
+        public void SyntaxError(TextWriter output, IRecognizer recognizer, TResult offendingSymbol, int line,
+            int charPositionInLine, string msg, RecognitionException e)
+            => throw new Exception($"line {line}:{charPositionInLine} {msg}");
 
         #endregion IAntlrErrorListener<TSymbol> Implementation
     }

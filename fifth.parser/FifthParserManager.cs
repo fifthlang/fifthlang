@@ -43,8 +43,10 @@ public static class FifthParserManager
 
         if (ast != null)
         {
+            ast.Accept(new BuiltinInjectorVisitor());
             ast.Accept(new VerticalLinkageVisitor());
-            ast.Accept(new DesugaringVisitor());
+            ast.Accept(new CompoundVariableSplitterVisitor());
+            ast.Accept(new OverloadGatheringVisitor());
             ast.Accept(new SymbolTableBuilderVisitor());
             ast.Accept(new TypeAnnotatorVisitor());
         }

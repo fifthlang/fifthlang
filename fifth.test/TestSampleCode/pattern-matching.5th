@@ -1,0 +1,25 @@
+class Person {
+    Name: string;
+    Height: float;
+    Age: float;
+    Weight: float;
+}
+
+float calculate_bmi(Person p{
+    Age = age | age > 60,
+    Height = height,
+    Weight = weight
+    }) {
+    return weight / (height * height);
+}
+
+void main() {
+    Person eric = new Person{
+        Name = 'Eric Morecombe',
+        Height = 1.93,
+        Age = 65,
+        Weight = 100
+    };
+    print(calculate_bmi(eric));
+}
+

@@ -31,25 +31,47 @@ namespace Fifth.CodeGeneration
 
         public override void EnterFifthProgram(FifthProgram ctx)
         {
-            writer.WriteLine(@"
-.assembly extern mscorlib { .ver 4:0:0:0 auto }
-.assembly fifth { }
-.module fifth_test.exe
-.class public Program {
-            ");
+            w(".assembly extern mscorlib { .ver 4:0:0:0 auto }");
+            w(".assembly fifth { }");
+            w($".module {ctx.TargetAssemblyFileName}");
+        }
+
+        private void w(string s)
+            => writer.WriteLine(s);
+        public override void EnterClassDefinition(ClassDefinition ctx)
+        {
+            w($".class public  {ctx.Name}{{");
+        }
+
+        public override void LeaveClassDefinition(ClassDefinition ctx)
+        {
+            w("}");
+        }
+
+        public override void EnterPropertyDefinition(PropertyDefinition ctx)
+        {
+            w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
+            w($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
+            w($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
+            w("  }");
+        }                        
+
+        public override void LeavePropertyDefinition(PropertyDefinition ctx)
+        {
         }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
-            writer.Write($".method public static {MapType(ctx.ReturnType)} ");
-            writer.Write(ctx.Name);
-            writer.Write('(');
-            writer.Write(ctx.ParameterDeclarations.ParameterDeclarations
-                            .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}"));
-            writer.WriteLine(") cil managed {");
+            if (ctx.ParameterDeclarations.ParameterDeclarations.Any(pd => pd is TypeCreateInstExpression))
+            {
+                throw new NotImplementedException("Don't gen code for pattern matches yet");
+            }
+            var args = ctx.ParameterDeclarations.ParameterDeclarations.Cast<IParameterListItem>()
+                            .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
+            w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
             if (ctx.IsEntryPoint)
             {
-                writer.WriteLine(".entrypoint");
+                w(".entrypoint");
             }
 
             var locals = new LocalDeclsGatherer();
@@ -57,37 +79,37 @@ namespace Fifth.CodeGeneration
             if (locals.Decls.Any())
             {
                 var localsList = locals.Decls.Join(vd => $"{MapType(vd.TypeId)} {vd.Name.Value}");
-                writer.WriteLine($".locals init({localsList})");
+                w($".locals init({localsList})");
             }
         }
 
         public override void EnterIntValueExpression(IntValueExpression ctx)
-            => writer.WriteLine($"ldc.i4.{ctx.Value}");
+            => w($"ldc.i4.{ctx.Value}");
 
         public override void EnterLongValueExpression(LongValueExpression ctx)
-            => writer.WriteLine($"ldc.i8.{ctx.Value}");
+            => w($"ldc.i8.{ctx.Value}");
 
         public override void EnterShortValueExpression(ShortValueExpression ctx)
-            => writer.WriteLine($"ldc.i2.{ctx.Value}");
+            => w($"ldc.i2.{ctx.Value}");
 
         public override void EnterStringValueExpression(StringValueExpression ctx)
-            => writer.WriteLine($"ldstr \"{ctx.Value}\"");
+            => w($"ldstr \"{ctx.Value}\"");
 
         public override void LeaveBinaryExpression(BinaryExpression ctx)
         {
             switch (ctx.Op)
             {
                 case Operator.Add:
-                    writer.WriteLine(@"add");
+                    w(@"add");
                     break;
                 case Operator.Subtract:
-                    writer.WriteLine(@"sub");
+                    w(@"sub");
                     break;
                 case Operator.Multiply:
-                    writer.WriteLine(@"mul");
+                    w(@"mul");
                     break;
                 case Operator.Divide:
-                    writer.WriteLine(@"div");
+                    w(@"div");
                     break;
                 case Operator.Rem:
                     break;
@@ -125,23 +147,67 @@ namespace Fifth.CodeGeneration
         }
 
         public override void LeaveFifthProgram(FifthProgram ctx)
-            => writer.WriteLine(@"}");
+        {
+            w(@".class public Program { }");
+        }
 
         public override void LeaveFuncCallExpression(FuncCallExpression ctx)
         {
+            if (ctx.TypeId == null)
+            {
+                if (ctx.HasAnnotation(Constants.FunctionImplementation))
+                {
+                    var funcImpl = ctx[Constants.FunctionImplementation] as IFunctionDefinition;
+                    if (funcImpl is BuiltinFunctionDefinition)
+                    {
+                        if(funcImpl.Name == "print")
+                            w($"call void System::Console.WriteLine(string)");
+                        return;
+                    }
+                }
+            }
             var return5thType = ctx.TypeId.Lookup();
             var x = toDotnet[return5thType.TypeId];
-            var argTypeNames = ctx.ActualParameters.Expressions.Select(e => toDotnet[e.TypeId]).Join(t => t);
-            writer.WriteLine($"call {x} Program::{ctx.Name}({argTypeNames})");
+
+            List<string> dotnetTypes = new();
+            foreach (var e in ctx.ActualParameters.Expressions)
+            {
+                if (toDotnet.ContainsKey(e.TypeId))
+                {
+                    dotnetTypes.Add(toDotnet[e.TypeId]);
+                }
+                else
+                {
+                    if (e.TypeId.Lookup() is UserDefinedType udt)
+                    {
+                        dotnetTypes.Add(udt.Definition.Name);
+                    }
+                }
+            }
+
+            var argTypeNames = dotnetTypes.Join(t => t);
+            w($"call {x} Program::{ctx.Name}({argTypeNames})");
         }
 
         public override void LeaveFunctionDefinition(FunctionDefinition ctx)
-            => writer.WriteLine("}");
+            => w("}");
 
         public override void LeaveReturnStatement(ReturnStatement ctx)
-            => writer.WriteLine(@"ret");
+            => w(@"ret");
 
         public string MapType(TypeId tid)
-            => toDotnet[tid];
+        {
+            if (tid == null)
+            {
+                return "void";
+            }
+
+            if (toDotnet.ContainsKey(tid))
+            {
+                return toDotnet[tid];
+            }
+
+            return tid.Lookup().Name;
+        }
     }
 }

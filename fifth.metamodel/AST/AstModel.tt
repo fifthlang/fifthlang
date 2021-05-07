@@ -13,6 +13,30 @@ var asts = new dynamic[]
 {
 new
 {
+    Name = "ClassDefinition",
+    Parent = "ScopeAstNode, ITypedAstNode, IFunctionCollection",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Properties", Type = "List<PropertyDefinition>", IsCollection=true, IgnoreDuringVisit = false},
+        new {Name = "Functions", Type = "List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new {
+    Name = "PropertyDefinition",
+    Parent = "TypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
     Name = "TypeCast",
     Parent = "Expression",
     CustomCode=@"",
@@ -78,7 +102,7 @@ new
     Props = new dynamic[]
     {
         new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-        new {Name = "VariableRef", Type = "VariableReference", IsCollection=false, IgnoreDuringVisit = false}
+        new {Name = "VariableRef", Type = "BaseVarReference", IsCollection=false, IgnoreDuringVisit = false}
     }
 },
 new
@@ -225,13 +249,14 @@ new
 new
 {
     Name = "FifthProgram",
-    Parent = "ScopeAstNode",
+    Parent = "ScopeAstNode, IFunctionCollection",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
     {
         new {Name = "Aliases", Type = "List<AliasDeclaration>", IsCollection=true, IgnoreDuringVisit = false},
-        new {Name = "Functions", Type = "List<FunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
+        new {Name = "Classes", Type = "List<ClassDefinition>", IsCollection=true, IgnoreDuringVisit = false},
+        new {Name = "Functions", Type = "List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
@@ -249,7 +274,7 @@ new
 new
 {
     Name = "FunctionDefinition",
-    Parent = "ScopeAstNode",
+    Parent = "ScopeAstNode, IFunctionDefinition",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
@@ -260,6 +285,52 @@ new
         new {Type="string", Name="Name", IsCollection=false, IgnoreDuringVisit=true},
         new {Type="bool", Name="IsEntryPoint", IsCollection=false, IgnoreDuringVisit=true},
         new {Type="TypeId", Name="ReturnType", IsCollection=false, IgnoreDuringVisit=true},
+    }
+},
+new
+{
+    Name = "BuiltinFunctionDefinition",
+    Parent = "AstNode, IFunctionDefinition",
+    CustomCode=@"
+        public ParameterDeclarationList ParameterDeclarations { get; set; }
+        public string Typename { get; set; }
+        public string Name { get; set; }
+        public bool IsEntryPoint { get; set; }
+        public TypeId ReturnType { get; set; }
+
+       public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
+        {
+            Name = name;
+            Typename = typename;
+            var list = new List<IParameterListItem>();
+
+            foreach (var (pname, ptypename) in parameters)
+            {
+                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename);
+                list.Add(paramDef);
+            }
+                
+            var paramDeclList = new ParameterDeclarationList(list);
+
+            ParameterDeclarations = paramDeclList;
+            IsEntryPoint = false;
+        }
+    ",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+    }
+},
+new
+{
+    Name = "OverloadedFunctionDefinition",
+    Parent = "ScopeAstNode, IFunctionDefinition, ITypedAstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name="OverloadClauses", Type="List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit=false},
+        new {Type="IFunctionSignature", Name="Signature", IsCollection=false, IgnoreDuringVisit=true}
     }
 },
 new
@@ -311,7 +382,7 @@ new
 new
 {
     Name = "ParameterDeclaration",
-    Parent = "TypedAstNode",
+    Parent = "TypedAstNode, IParameterListItem",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
@@ -328,7 +399,7 @@ new
     PostCtor="",
     Props = new dynamic[]
     {
-        new {Name = "ParameterDeclarations", Type = "List<ParameterDeclaration>", IsCollection=true, IgnoreDuringVisit = false}
+        new {Name = "ParameterDeclarations", Type = "List<IParameterListItem>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
@@ -349,10 +420,49 @@ new
     PostCtor="",
     Props = new dynamic[]
     {
+        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "PropertyInitialisers", Type = "List<TypePropertyInit>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
 {
+    Name = "DestructuringParamDecl",
+    Parent = "TypedAstNode, IParameterListItem",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "ParameterName", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "PropertyBindings", Type = "List<PropertyBinding>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new {
+    Name = "PropertyBinding",
+    Parent = "AstNode",
+    CustomCode=@"
+        public PropertyDefinition BoundProperty { get; set; }
+    ",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "BoundPropertyName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "BoundVariableName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Constraint", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+    }
+},
+new {
+    Name = "TypePropertyInit",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Value", Type = "Expression", IsCollection=true, IgnoreDuringVisit = true}
+    }
+},
+new{
     Name = "UnaryExpression",
     Parent = "Expression",
     CustomCode=@"",
@@ -403,12 +513,23 @@ new
 new
 {
     Name = "VariableReference",
-    Parent = "TypedAstNode",
+    Parent = "BaseVarReference",
     CustomCode=@"",
     PostCtor="",
     Props = new dynamic[]
     {
         new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
+    Name = "CompoundVariableReference",
+    Parent = "BaseVarReference",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "ComponentReferences", Type = "List<VariableReference>", IsCollection=true, IgnoreDuringVisit = false}
     }
 },
 new
@@ -491,7 +612,7 @@ namespace Fifth.AST
 
 
 <# foreach (var ast in asts)  { #>
-    public class <#= ast.Name #> : <#= ast.Parent #>
+    public partial class <#= ast.Name #> : <#= ast.Parent #>
     {
         public <#= ast.Name #>(<#
 var sep = "";
@@ -524,14 +645,18 @@ sep=", ";
     if(!prop.IgnoreDuringVisit){
         if(prop.IsCollection){
 #>
-            foreach (var e in <#=prop.Name#>)
-            {
-                e.Accept(visitor);
+            if(<#=prop.Name#> != null){
+                foreach (var e in <#=prop.Name#>)
+                {
+                    e.Accept(visitor);
+                }
             }
 <#
         }else{
 #>
-            <#=prop.Name#>.Accept(visitor);
+            if(<#=prop.Name#> != null) {
+                <#=prop.Name#>.Accept(visitor);
+            }
 <#
         }
     }

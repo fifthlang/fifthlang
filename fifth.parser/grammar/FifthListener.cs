@@ -81,6 +81,36 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitPackagename([NotNull] FifthParser.PackagenameContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.class_definition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterClass_definition([NotNull] FifthParser.Class_definitionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.class_definition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitClass_definition([NotNull] FifthParser.Class_definitionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.property_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterProperty_declaration([NotNull] FifthParser.Property_declarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.property_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitProperty_declaration([NotNull] FifthParser.Property_declarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.member_access"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMember_access([NotNull] FifthParser.Member_accessContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.type_initialiser"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -111,16 +141,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitType_property_init([NotNull] FifthParser.Type_property_initContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.function_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -130,6 +150,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_declaration([NotNull] FifthParser.Function_declarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.formal_parameters"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.function_args"/>.
 	/// </summary>
@@ -141,15 +171,49 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_args([NotNull] FifthParser.Function_argsContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.parameter_declaration"/>.
+	/// Enter a parse tree produced by the <c>ParamDecl</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context);
+	void EnterParamDecl([NotNull] FifthParser.ParamDeclContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.parameter_declaration"/>.
+	/// Exit a parse tree produced by the <c>ParamDecl</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitParameter_declaration([NotNull] FifthParser.Parameter_declarationContext context);
+	void ExitParamDecl([NotNull] FifthParser.ParamDeclContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
+	/// labeled alternative in <see cref="FifthParser.parameter_declaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.type_destructuring_paramdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterType_destructuring_paramdecl([NotNull] FifthParser.Type_destructuring_paramdeclContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.type_destructuring_paramdecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitType_destructuring_paramdecl([NotNull] FifthParser.Type_destructuring_paramdeclContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.property_binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterProperty_binding([NotNull] FifthParser.Property_bindingContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.property_binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitProperty_binding([NotNull] FifthParser.Property_bindingContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// </summary>
@@ -350,6 +414,18 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitEVarname([NotNull] FifthParser.EVarnameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEBoolean([NotNull] FifthParser.EBooleanContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EBoolean</c>
+	/// labeled alternative in <see cref="FifthParser.exp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEBoolean([NotNull] FifthParser.EBooleanContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>EArithNegation</c>
 	/// labeled alternative in <see cref="FifthParser.exp"/>.
@@ -567,15 +643,25 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEMul([NotNull] FifthParser.EMulContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// Enter a parse tree produced by <see cref="FifthParser.truth_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBoolean([NotNull] FifthParser.BooleanContext context);
+	void EnterTruth_value([NotNull] FifthParser.Truth_valueContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.boolean"/>.
+	/// Exit a parse tree produced by <see cref="FifthParser.truth_value"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBoolean([NotNull] FifthParser.BooleanContext context);
+	void ExitTruth_value([NotNull] FifthParser.Truth_valueContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.identifier_chain"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifier_chain([NotNull] FifthParser.Identifier_chainContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.identifier_chain"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifier_chain([NotNull] FifthParser.Identifier_chainContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.var_name"/>.
 	/// </summary>

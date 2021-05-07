@@ -9,8 +9,11 @@ namespace Fifth.TypeSystem
     using Symbols;
 
     public delegate void TypeInferred(IAstNode node, IType type);
+
     public delegate void TypeNotFound(IAstNode node);
+
     public delegate void TypeNotRelevant(IAstNode node);
+
     public delegate void TypeMismatch(IAstNode node, IType type1, IType type2);
 
     /// <summary>
@@ -29,7 +32,8 @@ namespace Fifth.TypeSystem
     /// </remarks>
     public partial class FunctionalTypeChecker : ITypeChecker
     {
-        public FunctionalTypeChecker(TypeInferred typeInferred, TypeNotFound typeNotFound, TypeMismatch typeMismatch, TypeNotRelevant typeNotRelevant)
+        public FunctionalTypeChecker(TypeInferred typeInferred, TypeNotFound typeNotFound, TypeMismatch typeMismatch,
+            TypeNotRelevant typeNotRelevant)
         {
             TypeInferred = typeInferred;
             TypeNotFound = typeNotFound;
@@ -38,8 +42,8 @@ namespace Fifth.TypeSystem
         }
 
         public TypeInferred TypeInferred { get; }
-        public TypeNotFound TypeNotFound { get; }
         public TypeMismatch TypeMismatch { get; }
+        public TypeNotFound TypeNotFound { get; }
         public TypeNotRelevant TypeNotRelevant { get; }
 
         #region Type Inference
@@ -91,13 +95,13 @@ namespace Fifth.TypeSystem
         */
 
         public IType Infer(IScope scope, AbsoluteIri node)
-        {
-            return PrimitiveUri.Default;
-        }
+            => PrimitiveUri.Default;
 
-        public IType Infer(IScope scope, AliasDeclaration node) => default;
+        public IType Infer(IScope scope, AliasDeclaration node)
+            => default;
 
-        public IType Infer(IScope scope, AnnotatedThing node) => default;
+        public IType Infer(IScope scope, AnnotatedThing node)
+            => default;
 
         public IType Infer(IScope _, AssignmentStmt node)
         {
@@ -106,7 +110,7 @@ namespace Fifth.TypeSystem
             var varType = Infer(scope, node.VariableRef);
             if (node.Expression != null)
             {
-                expType = Infer(scope, node.Expression);
+                expType = Infer(node.Expression);
                 if (expType.TypeId != varType.TypeId)
                 {
                     TypeMismatch(node, varType, expType);
@@ -133,18 +137,21 @@ namespace Fifth.TypeSystem
                 Infer(statement);
             }
 
+            TypeNotRelevant(node); // TODO: either type is not relevant, or I should not be returning default
             return default;
         }
 
-        public IType Infer(IScope scope, BoolValueExpression node) 
+        public IType Infer(IScope scope, BoolValueExpression node)
         {
             var result = PrimitiveBool.Default;
             TypeInferred(node, result);
             return result;
         }
 
-        public IType Infer(IScope scope, Expression node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, Expression node)
+            => Infer(node);
 
+        // throw new NotImplementedException();
         public IType Infer(IScope scope, ExpressionList node)
         {
             var types = new List<IType>();
@@ -154,18 +161,49 @@ namespace Fifth.TypeSystem
                 ;
             }
 
-            var result = types.Last();
-            TypeInferred(node, result);
-            return result;
+            // var result = types.Last();
+            // I don't think there is a case where we either need, or can use, the type of an expression list.
+            TypeNotRelevant(node);
+            return default;
         }
 
-        public IType Infer(IScope scope, ExpressionStatement node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, ExpressionStatement node)
+        {
+            var expTid = Infer(scope, node.Expression);
+            if (expTid == null)
+            {
+                if (node.Expression is FuncCallExpression)
+                {
+                    TypeNotRelevant(node);
+                }
+                else
+                {
+                    TypeNotFound(node);
+                }
+                return default;
+            }
+
+            TypeInferred(node, expTid);
+            return expTid;
+        }
 
         public IType Infer(IScope scope, FifthProgram node)
         {
+            foreach (var classDefinition in node.Classes)
+            {
+                Infer(scope, classDefinition);
+            }
+
             foreach (var functionDefinition in node.Functions)
             {
-                Infer(scope, functionDefinition);
+                if (functionDefinition is FunctionDefinition fd)
+                {
+                    Infer(scope, fd);
+                }
+                if (functionDefinition is OverloadedFunctionDefinition ofd)
+                {
+                    Infer(scope, ofd);
+                }
             }
 
             TypeNotRelevant(node);
@@ -183,18 +221,33 @@ namespace Fifth.TypeSystem
         {
             Infer(node.ActualParameters);
             var ste = scope.Resolve(node.Name);
-            if (ste.SymbolKind != SymbolKind.FunctionDeclaration)
-            {
-                TypeNotFound(node);
-            }
-            else
-            {
-                var type = Infer(ste.Context as AstNode);
-                TypeInferred(node, type);
-                return type;
-            }
 
-            return default;
+            switch (ste.SymbolKind)
+            {
+                case SymbolKind.FunctionDeclaration:
+                case SymbolKind.BuiltinFunctionDeclaration:
+                    node[Constants.FunctionImplementation] = ste.Context;
+                    var type = Infer(ste.Context as AstNode);
+                    if (type != null)
+                    {
+                        TypeInferred(node, type);
+                        return type;
+                    }
+                        
+                    if (ste.Context is IFunctionDefinition fd && fd.Typename == "void")
+                    {
+                        TypeNotRelevant(node);
+                    }
+                    else
+                    {
+                        TypeNotFound(node);
+                    }
+
+                    return default;
+                default:
+                    TypeNotFound(node);
+                    return default;
+            }
         }
 
         public IType Infer(IScope _, FunctionDefinition node)
@@ -207,10 +260,20 @@ namespace Fifth.TypeSystem
                 TypeNotRelevant(node);
                 return default;
             }
+
             var result = returnType.Lookup();
             TypeInferred(node, result);
             return result;
         }
+
+        public IType Infer(IScope scope, BuiltinFunctionDefinition node)
+        {
+            TypeNotRelevant(node);
+            return default;
+        }
+
+        public IType Infer(IScope scope, OverloadedFunctionDefinition node)
+            => throw new NotImplementedException();
 
         public IType Infer(IScope scope, Identifier node)
         {
@@ -225,11 +288,9 @@ namespace Fifth.TypeSystem
                 TypeInferred(node, result);
                 return result;
             }
-            else
-            {
-                TypeNotFound(node);
-                return default;
-            }
+
+            TypeNotFound(node);
+            return default;
         }
 
         public IType Infer(IScope _, IdentifierExpression node)
@@ -268,7 +329,8 @@ namespace Fifth.TypeSystem
             return result;
         }
 
-        public IType Infer(IScope scope, StatementList node) => throw new NotImplementedException();
+        public IType Infer(IScope scope, StatementList node)
+            => throw new NotImplementedException();
 
         public IType Infer(IScope scope, DoubleValueExpression node)
         {
@@ -299,7 +361,8 @@ namespace Fifth.TypeSystem
         }
 
 
-        public IType Infer(IScope scope, ModuleImport node) => default;
+        public IType Infer(IScope scope, ModuleImport node)
+            => default;
 
         public IType Infer(IScope scope, ParameterDeclaration node)
         {
@@ -315,9 +378,16 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, ParameterDeclarationList node)
         {
-            foreach (var pd in node.ParameterDeclarations)
+            foreach (var e in node.ParameterDeclarations)
             {
-                Infer(pd);
+                if (e is ParameterDeclaration pd)
+                {
+                    Infer(pd);
+                }
+                else if (e is TypeCreateInstExpression tcie)
+                {
+                    Infer(tcie);
+                }
             }
 
             TypeNotRelevant(node);
@@ -327,16 +397,86 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, ReturnStatement node)
         {
             var result = Infer(node.SubExpression);
-            TypeInferred(node, result);
-            node.TargetTid = result.TypeId;
+            if (result != null)
+            {
+                TypeInferred(node, result);
+                node.TargetTid = result.TypeId;
+            }
+            else
+            {
+                TypeNotFound(node);
+            }
             return result;
         }
 
-        public IType Infer(IScope scope, Statement node) => default;
+        public IType Infer(IScope scope, Statement node)
+            => default;
 
-        public IType Infer(IScope scope, TypeCreateInstExpression node) => default;
+        public IType Infer(IScope scope, TypeCreateInstExpression node)
+            => default;
 
-        public IType Infer(IScope scope, TypeInitialiser node) => default;
+        public IType Infer(IScope scope, TypeInitialiser node)
+            => default;
+
+        public IType Infer(IScope scope, DestructuringParamDecl node)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
+            {
+                TypeInferred(node, t);
+                return t;
+            }
+
+            TypeNotFound(node);
+            return default;
+        }
+
+        public IType Infer(IScope scope, PropertyBinding node)
+        {
+            // resolve the base property definition that the node's unboundVariable is to be bound to.
+            var boundProperty = node.BoundProperty;
+            var boundPropertyTypeId = boundProperty?.TypeId;
+            if (boundProperty != null && boundPropertyTypeId != null)
+            {
+                var result = boundPropertyTypeId.Lookup();
+                TypeInferred(node, result);
+                return result;
+            }
+
+            return default;
+        }
+
+        public IType Infer(IScope scope, ClassDefinition node)
+        {
+            node.Properties.ForEach(propDef => Infer(node, propDef));
+            node.Functions.ForEach(propDef => Infer(node, propDef));
+            return node.TypeId.Lookup();
+        }
+
+        public IType Infer(IScope scope, IFunctionDefinition node)
+        {
+            if (node is FunctionDefinition fd)
+            {
+                return Infer(scope, fd);
+            }
+            if (node is OverloadedFunctionDefinition ofd)
+            {
+                return Infer(scope, ofd);
+            }
+            TypeNotFound(node);
+            return default;
+        }
+
+        public IType Infer(IScope scope, PropertyDefinition node)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
+            {
+                TypeInferred(node, t);
+                return t;
+            }
+
+            TypeNotRelevant(node);
+            return default;
+        }
 
         public IType Infer(IScope scope, TypeCast node)
         {
@@ -347,7 +487,8 @@ namespace Fifth.TypeSystem
             return coercionType;
         }
 
-        public IType Infer(IScope scope, UnaryExpression node) => default;
+        public IType Infer(IScope scope, UnaryExpression node)
+            => default;
 
         public IType Infer(IScope scope, VariableDeclarationStatement node)
         {
@@ -361,12 +502,64 @@ namespace Fifth.TypeSystem
             return default;
         }
 
-        public IType Infer(IScope scope, VariableReference node) => default;
+        public IType Infer(IScope scope, VariableReference node)
+        {
+            IType result = default;
+            if (scope.TryResolve(node.Name, out var ste) )
+            {
+                if (ste.Context is PropertyBinding pb)
+                {
+                    result = pb.BoundProperty.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+                if (ste.Context is VariableDeclarationStatement vds)
+                {
+                    result = vds.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+                if (ste.Context is PropertyDefinition propDef)
+                {
+                    result = propDef.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+                if (ste.Context is ParameterDeclaration paramDef)
+                {
+                    result = paramDef.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+            }
+            return result;
+        }
 
-        public IType Infer(IScope scope, WhileExp node) => default;
+        public IType Infer(IScope scope, CompoundVariableReference node)
+        {
+            // this is a variable that, to be resolved, one must walk up a chain to find
+            IScope innerScope = scope;
+            foreach (var vr in node.ComponentReferences)
+            {
+                var itype = Infer(innerScope, vr);
+                if (itype is UserDefinedType udt)
+                {
+                    innerScope = udt.Definition;
+                }
+            }
 
-        public IType Infer(IScope scope, TypedAstNode node) => default;
-        public IType Infer(IScope scope, ScopeAstNode node) => default;
+            var result = node.ComponentReferences.Last().TypeId.Lookup();
+            TypeInferred(node, result);
+            return result;
+        }
+
+        public IType Infer(IScope scope, WhileExp node)
+            => default;
+
+        public IType Infer(IScope scope, TypedAstNode node)
+            => throw new NotImplementedException();
+
+        public IType Infer(IScope scope, ScopeAstNode node)
+            => throw new NotImplementedException();
+
+        public IType Infer(IScope scope, TypePropertyInit node)
+            => throw new NotImplementedException();
 
         #endregion Type Inference
 
@@ -379,9 +572,11 @@ namespace Fifth.TypeSystem
 
         public void Check(IScope scope, FifthProgram prog) { }
         */
+
         #endregion Type Checking
 
         #region Helper Functions
+
         /*
         public IScope EmptyEnv() => default;
 
@@ -393,57 +588,8 @@ namespace Fifth.TypeSystem
 
         public IType LookupFunctionResultType(string identifier, IScope scope) =>
             throw new NotImplementedException();
-
-        public IScope NewBlock(IScope scope) => default;
-        public bool TryInferOperationResultType(Operator op, IType lhsType, IType rhsType,
-            out IType result)
-        {
-            try
-            {
-                var (resultType, coercionLhs, coercionRhs) =
-                    OperatorPrecedenceCalculator.GetResultType(op, lhsType.TypeId, rhsType.TypeId);
-                result = resultType.Lookup();
-                return true;
-            }
-            catch (TypeCheckingException e)
-            {
-                result = default;
-                return false;
-            }
-        }
         */
 
         #endregion Helper Functions
-
-        // - AbsoluteIri
-        // - AliasDeclaration
-        // - FifthProgram
-        // - FunctionDefinition
-        // - Identifier
-        // - ModuleImport
-        // - ParameterDeclaration
-        // - ParameterDeclarationList
-        // - TypedAstNode : ITypedAstNode
-        //     - Expression
-        //         - AssignmentStmt
-        //         - BinaryExpression
-        //         - FuncCallExpression
-        //         - IdentifierExpression
-        //         - LiteralExpression
-        //             - BooleanExpression
-        //             - FloatValueExpression
-        //             - IntValueExpression
-        //             - StringValueExpression
-        //         - Statement
-        //             - IfElseStatement
-        //             - VariableDeclarationStatement(?????)
-        //             - WhileExp
-        //         - TypeCreateInstExpression
-        //         - UnaryExpression
-        //         - VariableReference
-        //     - ExpressionList
-        //     - ScopeAstNode : IScope
-        //         - Block
-        // - TypeInitialiser
     }
 }
