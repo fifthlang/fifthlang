@@ -29,6 +29,5 @@
     <ProjectReference Include="..\fifth.codegenerator\fifth.codegenerator.csproj" />
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
     <ProjectReference Include="..\fifth.parser\fifth.parser.csproj" />
-    <ProjectReference Include="..\fifth.runtime\fifth.runtime.csproj" />
   </ItemGroup>
 </Project>

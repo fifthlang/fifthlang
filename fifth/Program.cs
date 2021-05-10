@@ -4,11 +4,9 @@ namespace Fifth
     using System.CommandLine.Invocation;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using AST;
     using CodeGeneration;
-    using Runtime;
 
     // ReSharper disable once UnusedType.Global
     internal class Program
