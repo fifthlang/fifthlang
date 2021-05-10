@@ -5,16 +5,16 @@ class Person {
     Weight: float;
 }
 
-float calculate_bmi(Person p{
-    Age = age | age > 60,
-    Height = height,
-    Weight = weight
-    }) {
+calculate_bmi(p: Person {
+    age: Age | age > 60,
+    height: Height ,
+    weight: Weight
+    }) : float {
     return weight / (height * height);
 }
 
-void main() {
-    Person eric = new Person{
+ main():void {
+    eric: Person = new Person{
         Name = 'Eric Morecombe',
         Height = 1.93,
         Age = 65,

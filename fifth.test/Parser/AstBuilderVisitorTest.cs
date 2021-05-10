@@ -49,10 +49,10 @@ namespace Fifth.Tests.Parser
             }
         }
 
-        [TestCase(@"void main(int x){return x + 1;}")]
-        [TestCase(@"void main(int x){int x = 234; return x + 1;}")]
-        [TestCase(@"void main(int x){int x = 234; return x + 1;} int foo(){return 43;}", 4)]
-        [TestCase(@"void main(int x){int x = 234; return x + 1;} void foo(){return 43;}", 4)]
+        [TestCase(@"main(x:int):void {return x + 1;}")]
+        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}")]
+        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():int{return 43;}", 4)]
+        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():void{return 43;}", 4)]
         public void TestCanBuildProgram(string programText, int funcCount = 3)
         {
             if (FifthParserManager.TryParse<FifthProgram>(programText, out var ast, out var errors))
@@ -68,10 +68,10 @@ namespace Fifth.Tests.Parser
             }
         }
 
-        [TestCase(@"alias tu as http://tempuri.com/blah/; void main(int x){int x = 234; return x + 1;}", 1)]
+        [TestCase(@"alias tu as http://tempuri.com/blah/; main(x: int):void{x: int = 234; return x + 1;}", 1)]
         [TestCase(@"alias a1 as http://tempuri.com/blah/;
                     alias a2 as http://tempuri.com/bob;
-                    void main(int x){int x = 234; return x + 1;}", 2)]
+                    main(x: int):void{x: int = 234; return x + 1;}", 2)]
         public void TestCanConstructAliasesFromProgram(string programText, int aliasCount)
         {
             TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
@@ -98,9 +98,9 @@ namespace Fifth.Tests.Parser
 
 
         [TestCase(@"
-void main(int x){
-int a = 5;
-long b = 490;
+ main(x: int):void{
+a: int = 5;
+b: long  = 490;
 return (long)a + b;
 }")]
         public void TestCanCast(string programText)

@@ -5,8 +5,8 @@ class Person {
     Weight: float;
 }
 
-void main(){
-    Person p = new Person{
+main():void{
+    p: Person = new Person{
         Name = "Eric Morecombe",
         Height = 1.93,
         Age = 60,

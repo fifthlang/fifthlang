@@ -14,8 +14,8 @@ namespace Fifth.Tests
         public void TestCanAccessScopeForMain()
         {
             var TestProgram = @"use std;
-            void main(int x, int y) { myprint(x + y);}
-            void myprint(int x) {std.print(""the answer is "" + x);}";
+            main(x: int, y: int):void { myprint(x + y);}
+            myprint(x: int): void {std.print(""the answer is "" + x);}";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var globalScope = ast.NearestScope();
@@ -31,27 +31,32 @@ namespace Fifth.Tests
         [Test]
         public void TestCanGatherMultipleDefinitions()
         {
-            var TestProgram = @"void main(){myprint(""hello world"");}
-            void myprint(string x) { std.print(x);}
-            void blah(){ int result = 5; return result;}";
+            var TestProgram = @"main():void {myprint(""hello world"");}
+            myprint(x: string):void { print(x);}
+            blah():void{ result: int = 5; return result;}";
 
-            var ast = ParseProgramToAst(TestProgram) as FifthProgram;
+            if (!FifthParserManager.TryParse<FifthProgram>(TestProgram, out var ast, out var errors))
+                Assert.Fail();
             var globalScope = ast.NearestScope();
 
             var visitor = new SymbolTableBuilderVisitor();
             ast.Accept(visitor);
             var symtab = globalScope.SymbolTable;
-            Assert.That(symtab.Count, Is.EqualTo(3));
-            foreach (var v in symtab.Values)
+            Assert.That(symtab.Count, Is.EqualTo(5)); // the three above plus two builtins
+            foreach (var v in symtab.Values.ToArray()[0..2])
             {
                 Assert.That(v.SymbolKind, Is.EqualTo(SymbolKind.FunctionDeclaration));
+            }
+            foreach (var v in symtab.Values.ToArray()[3..4])
+            {
+                Assert.That(v.SymbolKind, Is.EqualTo(SymbolKind.BuiltinFunctionDeclaration));
             }
         }
 
         [Test]
         public void TestCanGatherSingleFunctionDefinitions()
         {
-            var TestProgram = @"void main(){myprint(""hello world"");}";
+            var TestProgram = @"main():void{myprint(""hello world"");}";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var globalScope = ast.NearestScope();
@@ -67,8 +72,8 @@ namespace Fifth.Tests
         public void TestCanParseFullProgram()
         {
             var TestProgram = @"use std;
-            void main(int x, int y){myprint(x + y);}
-            void myprint(int x){std.print(""the answer is "" + x);}";
+            main(x:int, y: int):void{myprint(x + y);}
+            myprint(x:int):void{std.print(""the answer is "" + x);}";
 
             var ast = ParseProgramToAst(TestProgram) as FifthProgram;
             var globalScope = ast.NearestScope();

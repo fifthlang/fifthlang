@@ -26,10 +26,13 @@ packagename
 
 // ========[TYPE DEFINITIONS]=========
 class_definition
-    : CLASS name=IDENTIFIER OPENBRACE
-    ( functions += function_declaration
-    | properties += property_declaration
-    )* CLOSEBRACE
+    : CLASS
+      name=IDENTIFIER
+      OPENBRACE
+      ( functions += function_declaration
+      | properties += property_declaration
+      )*
+      CLOSEBRACE
     ;
 
 property_declaration
@@ -53,46 +56,58 @@ type_name
     :  IDENTIFIER
     ;
 
+// Ex: foo.bar = 5 * 23
 type_property_init
     : var_name ASSIGN exp
     ;
 
 // ========[FUNC DEFS]=========
+// Ex: Foo(x:int, y:int):int { . . . }
 function_declaration
-    : result_type=function_type name=function_name args=function_args body=function_body
+    : name=function_name
+      args=function_args
+      COLON
+      result_type=function_type
+      body=function_body
     ;
 
+// Ex: `x:int, y:float`
 formal_parameters
     : parameter_declaration (COMMA parameter_declaration)*
     ;
 
+// Ex: `( x:int, y:float )`
 function_args
     : OPENPAREN formal_parameters? CLOSEPAREN
     ;
 
+// Ex: `addr:Address`
+// Ex: `p:Person{a:Age | a < 32}`
 parameter_declaration
-    : parameter_type parameter_name  # ParamDecl
-    | type_destructuring_paramdecl   # ParamDeclWithTypeDestructure
+    : parameter_name COLON parameter_type   # ParamDecl
+    | type_destructuring_paramdecl          # ParamDeclWithTypeDestructure
     ;
 
-// an example of destructuring:
-// void Foo(Person p{Age = a | a >= 18 && a < 32, Name = name | string.IsNullOrWhitespace(name)}, int blah ){ . . . }
-// void Foo(Person p{Age = a | a < 18 || a >= 32, Name = name | !string.IsNullOrWhitespace(name)}, int blah ){ . . . }
-// void Foo(Person p, int blah ){ . . . }
-
+// Ex: `p:Person{a:Age | a < 32}`
 type_destructuring_paramdecl
-    : parameter_type
-      parameter_name
+    : parameter_name
+      COLON
+      parameter_type
       OPENBRACE
         bindings+=property_binding
         ( COMMA bindings+=property_binding )*
       CLOSEBRACE
     ;
 
+// Ex: `age : Age | age < 32`
 property_binding
-    : property_name=var_name ASSIGN bound_variable_name=var_name (BAR constraint=exp)?
+    : bound_variable_name=var_name
+      COLON
+      property_name=var_name
+      (BAR constraint=exp)?
     ;
 
+// Ex:  foo.bar.baz
 parameter_type
     : identifier_chain
     ;
@@ -129,7 +144,7 @@ statement
     ;
 
 var_decl
-    : ( type_name | list_type_signature ) var_name
+    :  var_name COLON ( type_name | list_type_signature )
     ;
 
 
@@ -167,6 +182,7 @@ truth_value
     : value=TRUE | value=FALSE
     ;
 
+// Ex: `foo.bar.baz`
 identifier_chain
     : segments+=IDENTIFIER (DOT segments+=IDENTIFIER)*
     ;

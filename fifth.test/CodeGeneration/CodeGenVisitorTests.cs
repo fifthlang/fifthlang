@@ -17,13 +17,13 @@ namespace Fifth.Test.CodeGeneration
         public void CanGenerateFromAst()
         {
             var prog = @"
-int main(){
+main():int{
     return print('hello world');
 }
 
-long print(string s){
-    long a = 5;
-    long b = 6;
+print(s: string): long{
+    a: long = 5;
+    b: long = 6;
     return a+b;
 }";
             if (FifthParserManager.TryParse<FifthProgram>(prog, out var ast, out var errors))
@@ -40,7 +40,7 @@ long print(string s){
         [Test, Category("WIP")]
         public void CopesWithPatternMatchInFuncDef()
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.pattern-matching.5th"); 
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.pattern-matching.5th");
             if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
             {
                 var sb = new StringBuilder();
@@ -54,7 +54,7 @@ long print(string s){
         [Test]
         public void CopesWithClassDefinition()
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.class-definition.5th"); 
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.class-definition.5th");
             if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
             {
                 var sb = new StringBuilder();
@@ -68,7 +68,7 @@ long print(string s){
         [Test]
         public void CopesWithPropertyAccess()
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.property-access.5th"); 
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.property-access.5th");
             if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
             {
                 var sb = new StringBuilder();

@@ -11,8 +11,6 @@ namespace Fifth.CodeGeneration
 
     public class CodeGenVisitor : BaseAstVisitor
     {
-        private readonly TextWriter writer;
-
         private readonly Dictionary<TypeId, string> toDotnet = new()
         {
             {PrimitiveBool.Default.TypeId, "bool"},
@@ -27,7 +25,13 @@ namespace Fifth.CodeGeneration
             {PrimitiveString.Default.TypeId, "string"}
         };
 
-        public CodeGenVisitor(TextWriter writer) => this.writer = writer;
+        private readonly TextWriter writer;
+
+        public CodeGenVisitor(TextWriter writer)
+            => this.writer = writer;
+
+        public override void EnterClassDefinition(ClassDefinition ctx)
+            => w($".class public  {ctx.Name}{{");
 
         public override void EnterFifthProgram(FifthProgram ctx)
         {
@@ -36,38 +40,15 @@ namespace Fifth.CodeGeneration
             w($".module {ctx.TargetAssemblyFileName}");
         }
 
-        private void w(string s)
-            => writer.WriteLine(s);
-        public override void EnterClassDefinition(ClassDefinition ctx)
-        {
-            w($".class public  {ctx.Name}{{");
-        }
-
-        public override void LeaveClassDefinition(ClassDefinition ctx)
-        {
-            w("}");
-        }
-
-        public override void EnterPropertyDefinition(PropertyDefinition ctx)
-        {
-            w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
-            w($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
-            w($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
-            w("  }");
-        }                        
-
-        public override void LeavePropertyDefinition(PropertyDefinition ctx)
-        {
-        }
-
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
         {
             if (ctx.ParameterDeclarations.ParameterDeclarations.Any(pd => pd is TypeCreateInstExpression))
             {
                 throw new NotImplementedException("Don't gen code for pattern matches yet");
             }
-            var args = ctx.ParameterDeclarations.ParameterDeclarations.Cast<IParameterListItem>()
-                            .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
+
+            var args = ctx.ParameterDeclarations.ParameterDeclarations
+                          .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
             w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
             if (ctx.IsEntryPoint)
             {
@@ -88,6 +69,14 @@ namespace Fifth.CodeGeneration
 
         public override void EnterLongValueExpression(LongValueExpression ctx)
             => w($"ldc.i8.{ctx.Value}");
+
+        public override void EnterPropertyDefinition(PropertyDefinition ctx)
+        {
+            w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
+            w($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
+            w($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
+            w("  }");
+        }
 
         public override void EnterShortValueExpression(ShortValueExpression ctx)
             => w($"ldc.i2.{ctx.Value}");
@@ -146,10 +135,11 @@ namespace Fifth.CodeGeneration
             }
         }
 
+        public override void LeaveClassDefinition(ClassDefinition ctx)
+            => w("}");
+
         public override void LeaveFifthProgram(FifthProgram ctx)
-        {
-            w(@".class public Program { }");
-        }
+            => w(@".class public Program { }");
 
         public override void LeaveFuncCallExpression(FuncCallExpression ctx)
         {
@@ -160,12 +150,16 @@ namespace Fifth.CodeGeneration
                     var funcImpl = ctx[Constants.FunctionImplementation] as IFunctionDefinition;
                     if (funcImpl is BuiltinFunctionDefinition)
                     {
-                        if(funcImpl.Name == "print")
-                            w($"call void System::Console.WriteLine(string)");
+                        if (funcImpl.Name == "print")
+                        {
+                            w("call void System::Console.WriteLine(string)");
+                        }
+
                         return;
                     }
                 }
             }
+
             var return5thType = ctx.TypeId.Lookup();
             var x = toDotnet[return5thType.TypeId];
 
@@ -192,6 +186,10 @@ namespace Fifth.CodeGeneration
         public override void LeaveFunctionDefinition(FunctionDefinition ctx)
             => w("}");
 
+        public override void LeavePropertyDefinition(PropertyDefinition ctx)
+        {
+        }
+
         public override void LeaveReturnStatement(ReturnStatement ctx)
             => w(@"ret");
 
@@ -209,5 +207,8 @@ namespace Fifth.CodeGeneration
 
             return tid.Lookup().Name;
         }
+
+        private void w(string s)
+            => writer.WriteLine(s);
     }
 }
