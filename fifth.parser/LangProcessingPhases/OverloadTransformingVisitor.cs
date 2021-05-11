@@ -1,8 +1,10 @@
 namespace Fifth.LangProcessingPhases
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using AST;
+    using AST.Builders;
     using AST.Visitors;
 
     /// <summary>
@@ -10,14 +12,25 @@ namespace Fifth.LangProcessingPhases
     /// </summary>
     public class OverloadTransformingVisitor : BaseAstVisitor
     {
-        public override void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
+        public override void EnterFifthProgram(FifthProgram ctx)
         {
-            int clauseCounter = 0;
+            var overloads = ctx.Functions.Where(f => f is OverloadedFunctionDefinition).ToArray();
+            for (int i = 0; i < overloads.Length; i++)
+            {
+                ProcessOverloadedFunctionDefinition(overloads[i] as OverloadedFunctionDefinition);
+            }
+        }
+
+        private int clauseCounter;
+        public void ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
+        {
+            clauseCounter = 1;
             var clauses = new List<(Expression, IFunctionDefinition)>();
             foreach (var clause in ctx.OverloadClauses)
             {
                 var precondition = GetPrecondition(clause);
                 var subClauseFunction = GetSubclauseFunction(clause);
+                clauseCounter++;
                 clauses.Add((precondition, subClauseFunction));
             }
 
@@ -29,7 +42,58 @@ namespace Fifth.LangProcessingPhases
 
         private IFunctionDefinition GenerateGuardFunction(OverloadedFunctionDefinition ctx, List<(Expression, IFunctionDefinition)> clauses)
         {
-            throw new System.NotImplementedException();
+            var ifStatements = new List<Statement>();
+            foreach (var clause in clauses)
+            {
+                /*
+                 var name = context.funcname.GetText();
+                    var actualParams = (ExpressionList)VisitExplist(context.args);
+                    return new FuncCallExpression(actualParams, name)
+                 */
+                var args = clause
+                           .Item2
+                           .ParameterDeclarations
+                           .ParameterDeclarations
+                           .Select(pd => new VariableReference(pd.ParameterName.Value).HasSameParentAs(pd as IAstNode))
+                           .Cast<Expression>()
+                           .ToList();
+                var funcCallExpression = new FuncCallExpression(new ExpressionList(args), clause.Item2.Name);
+                if (clause.Item1 != null)
+                {
+                    var ifBlock = BlockBuilder.NewBlock()
+                                              .WithStatement(new ReturnStatement(funcCallExpression,
+                                                  clause.Item2.ReturnType))
+                                              .AsAstNode();
+                    var ieb = IfElseBuilder.NewIfElse()
+                                           .WithCondition(clause.Item1)
+                                           .WithIfBlock(ifBlock)
+                                           .AsAstNode();
+                    ifStatements.Add(ieb);
+                }
+                else
+                {
+                    // if there is no clause condition, it must be the base case (which should be the last clause)
+                    ifStatements.Add(new ExpressionStatement(funcCallExpression));
+                }
+            }
+            var body = new Block(ifStatements);
+
+            var fb = FunctionBuilder
+                   .NewFunction()
+                   .Called(ctx.Name)
+                   .WithReturnType(ctx.Typename)
+                   .WithBody(body)
+                   .WithSameParentAs(ctx);
+            if (ctx.ParameterDeclarations?.ParameterDeclarations.Any() ?? false)
+            {
+                foreach (var pd in ctx.ParameterDeclarations.ParameterDeclarations)
+                {
+                    fb.WithParam(pd.ParameterName.Value, pd.TypeName);
+                }
+                
+            }
+
+            return fb.AsAstNode();
         }
 
         /// <summary>
@@ -39,12 +103,22 @@ namespace Fifth.LangProcessingPhases
         /// <returns>a new function</returns>
         private IFunctionDefinition GetSubclauseFunction(IFunctionDefinition clause)
         {
+            var fb = FunctionBuilder
+                     .NewFunction()
+                     .Called($"{clause.Name}_subclause{clauseCounter}")
+                     .WithBody(clause.Body)
+                     .WithReturnType(clause.Typename)
+                     .WithSameParentAs((AstNode) clause);
+            foreach (var pd in clause.ParameterDeclarations.ParameterDeclarations)
+            {
+                fb.WithParam(pd.ParameterName.Value, pd.TypeName);
+            }
             // get all the bindings
             // create a new function with unique name
             // normalise param list and insert into function
             // add binding var decls to front of body
             // insert body of old function into new function
-            throw new System.NotImplementedException();
+            return fb.AsAstNode();
         }
 
         /// <summary>
@@ -57,15 +131,9 @@ namespace Fifth.LangProcessingPhases
             var conditions = new Queue<Expression>();
             foreach (var pd in clause.ParameterDeclarations.ParameterDeclarations)
             {
-                if (pd is DestructuringParamDecl dpd)
+                if (pd.Constraint != null)
                 {
-                    foreach (var pb in dpd.PropertyBindings)
-                    {
-                        if (pb.Constraint != null)
-                        {
-                            conditions.Enqueue(pb.Constraint);
-                        }
-                    }
+                    conditions.Enqueue(pd.Constraint);
                 }
             }
 

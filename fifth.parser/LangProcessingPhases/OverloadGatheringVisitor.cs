@@ -31,9 +31,11 @@ namespace Fifth.LangProcessingPhases
         private IDictionary<IFunctionSignature, List<IFunctionDefinition>> GatherOverloads(IFunctionCollection classDefinition)
         {
             var result = new Dictionary<IFunctionSignature, List<IFunctionDefinition>>();
+            var x = classDefinition.Functions.GroupBy(f => f.GetFunctionSignature(), f => f, new SignaturesAreEqual());
             foreach (var f in classDefinition.Functions)
             {
                 var signature = f.GetFunctionSignature();
+                
                 if (!result.ContainsKey(signature))
                 {
                     result[signature] = new List<IFunctionDefinition>();
@@ -64,9 +66,24 @@ namespace Fifth.LangProcessingPhases
             List<IFunctionDefinition> functionDefinitions)
         {
             var orderedFuns = functionDefinitions.OrderBy(fd => fd.Line).ToList();
+            var firstClause = orderedFuns.First();
             var result = new OverloadedFunctionDefinition(orderedFuns, functionSignature)
-                .CameFromSameSourceLocation(orderedFuns.First())
-                .HasSameParentAs(functionDefinitions.First());
+                         .CameFromSameSourceLocation(firstClause)
+                         .HasSameParentAs(functionDefinitions.First());
+            result.Name = firstClause.Name;
+            result.ReturnType = firstClause.ReturnType;
+            result.Typename = firstClause.Typename;
+            var ctx = functionDefinitions.Last();
+            var paramDecls = new List<IParameterListItem>();
+            if (ctx.ParameterDeclarations?.ParameterDeclarations.Any() ?? false)
+            {
+                foreach (var pd in ctx.ParameterDeclarations.ParameterDeclarations)
+                {
+                    paramDecls.Add(new ParameterDeclaration(new Identifier(pd.ParameterName.Value), pd.TypeName, null));
+                }
+            }
+
+            result.ParameterDeclarations = new ParameterDeclarationList(paramDecls);
             return result;
         }
     }

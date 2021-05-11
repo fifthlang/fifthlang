@@ -48,6 +48,8 @@ namespace Fifth
                 ast.Accept(new VerticalLinkageVisitor());
                 ast.Accept(new CompoundVariableSplitterVisitor());
                 ast.Accept(new OverloadGatheringVisitor());
+                ast.Accept(new OverloadTransformingVisitor());
+                ast.Accept(new VerticalLinkageVisitor());
                 ast.Accept(new SymbolTableBuilderVisitor());
                 ast.Accept(new TypeAnnotatorVisitor());
             }

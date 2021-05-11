@@ -7,6 +7,6 @@ namespace Fifth.AST
         public string Name{get;set;}
         public bool IsEntryPoint{get;set;}
         public TypeId ReturnType{get;set;}
-
+        Block Body { get; set; }
     }
 }

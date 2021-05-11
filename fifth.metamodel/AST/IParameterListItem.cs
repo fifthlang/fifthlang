@@ -6,6 +6,7 @@ namespace Fifth.AST
     {
         Identifier ParameterName { get; set; }
         string TypeName { get; set; }
+        Expression Constraint { get; set; }
     }
 
 }

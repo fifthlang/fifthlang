@@ -304,7 +304,8 @@ namespace Fifth.TypeSystem
         {
             Infer(node.Condition);
             Infer(node.IfBlock);
-            Infer(node.ElseBlock);
+            if(node.ElseBlock != null)
+                Infer(node.ElseBlock);
             return default;
         }
 

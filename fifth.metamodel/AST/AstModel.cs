@@ -240,7 +240,7 @@ namespace Fifth.AST
             visitor.LeaveClassDefinition(this);
         }
 
-
+        
     }
 
     public partial class PropertyDefinition : TypedAstNode
@@ -262,7 +262,7 @@ namespace Fifth.AST
             visitor.LeavePropertyDefinition(this);
         }
 
-
+        
     }
 
     public partial class TypeCast : Expression
@@ -287,7 +287,7 @@ namespace Fifth.AST
             visitor.LeaveTypeCast(this);
         }
 
-
+        
     }
 
     public partial class ReturnStatement : Statement
@@ -312,7 +312,7 @@ namespace Fifth.AST
             visitor.LeaveReturnStatement(this);
         }
 
-
+        
     }
 
     public partial class StatementList : AstNode
@@ -337,7 +337,7 @@ namespace Fifth.AST
             visitor.LeaveStatementList(this);
         }
 
-
+        
     }
 
     public partial class AbsoluteIri : TypedAstNode
@@ -356,7 +356,7 @@ namespace Fifth.AST
             visitor.LeaveAbsoluteIri(this);
         }
 
-
+        
     }
 
     public partial class AliasDeclaration : AstNode
@@ -381,7 +381,7 @@ namespace Fifth.AST
             visitor.LeaveAliasDeclaration(this);
         }
 
-
+        
     }
 
     public partial class AssignmentStmt : Statement
@@ -409,7 +409,7 @@ namespace Fifth.AST
             visitor.LeaveAssignmentStmt(this);
         }
 
-
+        
     }
 
     public partial class BinaryExpression : Expression
@@ -440,7 +440,7 @@ namespace Fifth.AST
             visitor.LeaveBinaryExpression(this);
         }
 
-
+        
     }
 
     public partial class Block : ScopeAstNode
@@ -465,9 +465,9 @@ namespace Fifth.AST
             visitor.LeaveBlock(this);
         }
 
-
+        
     public Block(StatementList sl):this(sl.Statements){}
-
+    
     }
 
     public partial class BoolValueExpression : LiteralExpression<bool>
@@ -486,7 +486,7 @@ namespace Fifth.AST
             visitor.LeaveBoolValueExpression(this);
         }
 
-
+        
     }
 
     public partial class ShortValueExpression : LiteralExpression<short>
@@ -505,7 +505,7 @@ namespace Fifth.AST
             visitor.LeaveShortValueExpression(this);
         }
 
-
+        
     }
 
     public partial class IntValueExpression : LiteralExpression<int>
@@ -524,7 +524,7 @@ namespace Fifth.AST
             visitor.LeaveIntValueExpression(this);
         }
 
-
+        
     }
 
     public partial class LongValueExpression : LiteralExpression<long>
@@ -543,7 +543,7 @@ namespace Fifth.AST
             visitor.LeaveLongValueExpression(this);
         }
 
-
+        
     }
 
     public partial class FloatValueExpression : LiteralExpression<float>
@@ -562,7 +562,7 @@ namespace Fifth.AST
             visitor.LeaveFloatValueExpression(this);
         }
 
-
+        
     }
 
     public partial class DoubleValueExpression : LiteralExpression<double>
@@ -581,7 +581,7 @@ namespace Fifth.AST
             visitor.LeaveDoubleValueExpression(this);
         }
 
-
+        
     }
 
     public partial class DecimalValueExpression : LiteralExpression<decimal>
@@ -600,7 +600,7 @@ namespace Fifth.AST
             visitor.LeaveDecimalValueExpression(this);
         }
 
-
+        
     }
 
     public partial class StringValueExpression : LiteralExpression<string>
@@ -619,7 +619,7 @@ namespace Fifth.AST
             visitor.LeaveStringValueExpression(this);
         }
 
-
+        
     }
 
     public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
@@ -638,7 +638,7 @@ namespace Fifth.AST
             visitor.LeaveDateValueExpression(this);
         }
 
-
+        
     }
 
     public partial class ExpressionList : TypedAstNode
@@ -663,7 +663,7 @@ namespace Fifth.AST
             visitor.LeaveExpressionList(this);
         }
 
-
+        
     }
 
     public partial class FifthProgram : ScopeAstNode, IFunctionCollection
@@ -706,7 +706,7 @@ namespace Fifth.AST
             visitor.LeaveFifthProgram(this);
         }
 
-
+        
     }
 
     public partial class FuncCallExpression : Expression
@@ -731,7 +731,7 @@ namespace Fifth.AST
             visitor.LeaveFuncCallExpression(this);
         }
 
-
+        
     }
 
     public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
@@ -771,7 +771,7 @@ namespace Fifth.AST
             visitor.LeaveFunctionDefinition(this);
         }
 
-
+        
     }
 
     public partial class BuiltinFunctionDefinition : AstNode, IFunctionDefinition
@@ -787,7 +787,7 @@ namespace Fifth.AST
             visitor.LeaveBuiltinFunctionDefinition(this);
         }
 
-
+        
         public ParameterDeclarationList ParameterDeclarations { get; set; }
         public string Typename { get; set; }
         public string Name { get; set; }
@@ -802,16 +802,16 @@ namespace Fifth.AST
 
             foreach (var (pname, ptypename) in parameters)
             {
-                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename);
+                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
                 list.Add(paramDef);
             }
-
+                
             var paramDeclList = new ParameterDeclarationList(list);
 
             ParameterDeclarations = paramDeclList;
             IsEntryPoint = false;
         }
-
+    
     }
 
     public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
@@ -839,7 +839,7 @@ namespace Fifth.AST
             visitor.LeaveOverloadedFunctionDefinition(this);
         }
 
-
+        
     }
 
     public partial class Identifier : TypedAstNode
@@ -858,7 +858,7 @@ namespace Fifth.AST
             visitor.LeaveIdentifier(this);
         }
 
-
+        
     }
 
     public partial class IdentifierExpression : Expression
@@ -880,7 +880,7 @@ namespace Fifth.AST
             visitor.LeaveIdentifierExpression(this);
         }
 
-
+        
     }
 
     public partial class IfElseStatement : Statement
@@ -914,7 +914,7 @@ namespace Fifth.AST
             visitor.LeaveIfElseStatement(this);
         }
 
-
+        
     }
 
     public partial class ModuleImport : AstNode
@@ -933,21 +933,24 @@ namespace Fifth.AST
             visitor.LeaveModuleImport(this);
         }
 
-
+        
     }
 
     public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
     {
-        public ParameterDeclaration(Identifier ParameterName, string TypeName)
+        public ParameterDeclaration(Identifier ParameterName, string TypeName, Expression Constraint)
         {
             //_ = ParameterName ?? throw new ArgumentNullException(nameof(ParameterName));
             this.ParameterName = ParameterName;
             //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
             this.TypeName = TypeName;
+            //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
+            this.Constraint = Constraint;
         }
 
         public Identifier ParameterName{get;set;}
         public string TypeName{get;set;}
+        public Expression Constraint{get;set;}
 
         public override void Accept(IAstVisitor visitor)
         {
@@ -955,10 +958,13 @@ namespace Fifth.AST
             if(ParameterName != null) {
                 ParameterName.Accept(visitor);
             }
+            if(Constraint != null) {
+                Constraint.Accept(visitor);
+            }
             visitor.LeaveParameterDeclaration(this);
         }
 
-
+        
     }
 
     public partial class ParameterDeclarationList : AstNode
@@ -983,7 +989,7 @@ namespace Fifth.AST
             visitor.LeaveParameterDeclarationList(this);
         }
 
-
+        
     }
 
     public partial class TypeCreateInstExpression : Expression
@@ -999,7 +1005,7 @@ namespace Fifth.AST
             visitor.LeaveTypeCreateInstExpression(this);
         }
 
-
+        
     }
 
     public partial class TypeInitialiser : Expression
@@ -1027,7 +1033,7 @@ namespace Fifth.AST
             visitor.LeaveTypeInitialiser(this);
         }
 
-
+        
     }
 
     public partial class DestructuringParamDecl : TypedAstNode, IParameterListItem
@@ -1058,7 +1064,7 @@ namespace Fifth.AST
             visitor.LeaveDestructuringParamDecl(this);
         }
 
-
+        
     }
 
     public partial class PropertyBinding : AstNode
@@ -1086,9 +1092,9 @@ namespace Fifth.AST
             visitor.LeavePropertyBinding(this);
         }
 
-
+        
         public PropertyDefinition BoundProperty { get; set; }
-
+    
     }
 
     public partial class TypePropertyInit : AstNode
@@ -1110,7 +1116,7 @@ namespace Fifth.AST
             visitor.LeaveTypePropertyInit(this);
         }
 
-
+        
     }
 
     public partial class UnaryExpression : Expression
@@ -1135,7 +1141,7 @@ namespace Fifth.AST
             visitor.LeaveUnaryExpression(this);
         }
 
-
+        
     }
 
     public partial class VariableDeclarationStatement : Statement, ITypedAstNode
@@ -1163,7 +1169,7 @@ namespace Fifth.AST
             visitor.LeaveVariableDeclarationStatement(this);
         }
 
-
+        
         private string typeName;
         public string TypeName
         {
@@ -1179,7 +1185,7 @@ namespace Fifth.AST
             {
                 if (!TypeRegistry.DefaultRegistry.TryGetTypeByName(value, out var type))
                 {
-                    throw new TypeCheckingException($"Setting unrecognised type '{value}' for variable");
+                    throw new TypeCheckingException("Setting unrecognised type for variable");
                 }
 
                 typeName = type.Name; // in case we want to use some sort of mapping onto a canonical name
@@ -1188,7 +1194,7 @@ namespace Fifth.AST
         }
         public TypeId TypeId { get; set; }
 
-
+    
     }
 
     public partial class VariableReference : BaseVarReference
@@ -1207,7 +1213,7 @@ namespace Fifth.AST
             visitor.LeaveVariableReference(this);
         }
 
-
+        
     }
 
     public partial class CompoundVariableReference : BaseVarReference
@@ -1232,7 +1238,7 @@ namespace Fifth.AST
             visitor.LeaveCompoundVariableReference(this);
         }
 
-
+        
     }
 
     public partial class WhileExp : Statement
@@ -1257,7 +1263,7 @@ namespace Fifth.AST
             visitor.LeaveWhileExp(this);
         }
 
-
+        
     }
 
     public partial class ExpressionStatement : Statement
@@ -1279,7 +1285,7 @@ namespace Fifth.AST
             visitor.LeaveExpressionStatement(this);
         }
 
-
+        
     }
 
     public partial class Expression : TypedAstNode
@@ -1295,7 +1301,7 @@ namespace Fifth.AST
             visitor.LeaveExpression(this);
         }
 
-
+        
     }
 
 

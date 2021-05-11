@@ -255,6 +255,18 @@ public partial class FifthBaseListener : IFifthListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitProperty_binding([NotNull] FifthParser.Property_bindingContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVariable_constraint([NotNull] FifthParser.Variable_constraintContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVariable_constraint([NotNull] FifthParser.Variable_constraintContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

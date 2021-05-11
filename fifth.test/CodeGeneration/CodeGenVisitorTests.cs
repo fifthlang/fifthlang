@@ -37,10 +37,11 @@ print(s: string): long{
             }
         }
 
-        [Test, Category("WIP")]
-        public void CopesWithPatternMatchInFuncDef()
+        [Test]
+        [Category("WIP")]
+        public void CopesWithOverloading()
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.pattern-matching.5th");
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.overloading.5th");
             if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
             {
                 var sb = new StringBuilder();
@@ -51,6 +52,23 @@ print(s: string): long{
                 Console.WriteLine(generatedCode);
             }
         }
+
+        [Test]
+        [Category("WIP")]
+        public void CopesWithPatternMatchInFuncDef()
+        {
+            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.destructuring.5th");
+            if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
+            {
+                var sb = new StringBuilder();
+                var sut = new CodeGenVisitor(new StringWriter(sb));
+                ast.Accept(sut);
+                var generatedCode = sb.ToString();
+                generatedCode.Should().NotBeNullOrWhiteSpace();
+                Console.WriteLine(generatedCode);
+            }
+        }
+
         [Test]
         public void CopesWithClassDefinition()
         {
@@ -65,6 +83,7 @@ print(s: string): long{
                 Console.WriteLine(generatedCode);
             }
         }
+
         [Test]
         public void CopesWithPropertyAccess()
         {

@@ -1,5 +1,6 @@
 namespace Fifth.Test.metamodel
 {
+    using Fifth.TypeSystem;
     using FluentAssertions;
     using NUnit.Framework;
     using PrimitiveTypes;

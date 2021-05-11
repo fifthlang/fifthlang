@@ -84,8 +84,8 @@ function_args
 // Ex: `addr:Address`
 // Ex: `p:Person{a:Age | a < 32}`
 parameter_declaration
-    : parameter_name COLON parameter_type   # ParamDecl
-    | type_destructuring_paramdecl          # ParamDeclWithTypeDestructure
+    : parameter_name COLON parameter_type variable_constraint?  # ParamDecl
+    | type_destructuring_paramdecl                              # ParamDeclWithTypeDestructure
     ;
 
 // Ex: `p:Person{a:Age | a < 32}`
@@ -104,7 +104,11 @@ property_binding
     : bound_variable_name=var_name
       COLON
       property_name=var_name
-      (BAR constraint=exp)?
+      variable_constraint?
+    ;
+
+variable_constraint
+    : BAR constraint=exp
     ;
 
 // Ex:  foo.bar.baz

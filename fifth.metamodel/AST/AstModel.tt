@@ -306,7 +306,7 @@ new
 
             foreach (var (pname, ptypename) in parameters)
             {
-                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename);
+                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
                 list.Add(paramDef);
             }
                 
@@ -388,7 +388,8 @@ new
     Props = new dynamic[]
     {
         new {Name = "ParameterName", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false},
-        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+        new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Constraint", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
     }
 },
 new

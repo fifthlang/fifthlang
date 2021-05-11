@@ -215,6 +215,16 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitProperty_binding([NotNull] FifthParser.Property_bindingContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariable_constraint([NotNull] FifthParser.Variable_constraintContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariable_constraint([NotNull] FifthParser.Variable_constraintContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

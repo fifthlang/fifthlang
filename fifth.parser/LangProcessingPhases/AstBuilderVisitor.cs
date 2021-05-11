@@ -225,7 +225,12 @@ namespace Fifth.LangProcessingPhases
                            select seg.Text;
             var type =string.Join('.', segments);
             var name = context.parameter_name().IDENTIFIER().GetText();
-            return new ParameterDeclaration(new Identifier(name), type).CaptureLocation(context.Start);
+            Expression constraint = default;
+            if (context.variable_constraint() != null)
+            {
+                constraint = (Expression)Visit(context.variable_constraint());
+            }
+            return new ParameterDeclaration(new Identifier(name), type, constraint).CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitParamDeclWithTypeDestructure(FifthParser.ParamDeclWithTypeDestructureContext context)
@@ -249,9 +254,9 @@ namespace Fifth.LangProcessingPhases
             var varName = VisitVar_name(ctx.bound_variable_name) as Identifier;
             var propName = VisitVar_name(ctx.property_name) as Identifier;
             Expression constraint = default;
-            if (ctx.constraint != null)
+            if (ctx.variable_constraint() != null)
             {
-                constraint = (Expression)Visit(ctx.constraint);
+                constraint = (Expression)Visit(ctx.variable_constraint());
             }
             return new PropertyBinding(propName.Value, varName.Value, constraint)
                 .CaptureLocation(ctx.Start);

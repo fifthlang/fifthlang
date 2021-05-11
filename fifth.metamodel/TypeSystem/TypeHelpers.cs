@@ -23,8 +23,6 @@ namespace Fifth.TypeSystem
                 }
             }
             return new FunctionSignature(fd.Name, returnType?.TypeId, paramTypes.ToArray());
-
-            throw new TypeCheckingException("unable to form type signature. Has type inference happened yet?");
         }
 
         public static IFunctionSignature GetFuncType(this MethodInfo method)

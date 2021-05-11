@@ -1,5 +1,7 @@
 namespace Fifth.TypeSystem
 {
+    using System;
+
     public interface IType
     {
         public string Name { get; }

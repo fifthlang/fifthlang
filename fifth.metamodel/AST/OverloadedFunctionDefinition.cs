@@ -8,5 +8,11 @@ namespace Fifth.AST
         public bool IsEntryPoint { get; set; }
         public TypeId ReturnType { get; set; }
         public TypeId TypeId { get; set; }
+        public Block Body { get; set; }
+    }
+
+    public partial class BuiltinFunctionDefinition
+    {
+        public Block Body { get; set; }
     }
 }

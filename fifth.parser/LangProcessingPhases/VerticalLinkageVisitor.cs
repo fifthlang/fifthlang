@@ -178,7 +178,7 @@ namespace Fifth.LangProcessingPhases
             => LeaveNonTerminal(ctx);
 
         public void EnterIfElseStatement(IfElseStatement ctx)
-            => LeaveNonTerminal(ctx);
+            => EnterNonTerminal(ctx);
 
         public void LeaveIntValueExpression(IntValueExpression ctx)
             => LeaveTerminal(ctx);

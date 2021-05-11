@@ -142,6 +142,12 @@ public interface IFifthVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitProperty_binding([NotNull] FifthParser.Property_bindingContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariable_constraint([NotNull] FifthParser.Variable_constraintContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="FifthParser.parameter_type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
