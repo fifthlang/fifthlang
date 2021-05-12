@@ -309,7 +309,7 @@ new
                 var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
                 list.Add(paramDef);
             }
-                
+
             var paramDeclList = new ParameterDeclarationList(list);
 
             ParameterDeclarations = paramDeclList;
@@ -589,11 +589,28 @@ namespace Fifth.AST.Visitors
         public void Leave<#= ast.Name #>(<#= ast.Name #> ctx);
 <# } #>
     }
+
     public partial class BaseAstVisitor : IAstVisitor
     {
 <# foreach (var ast in asts)  { #>
         public virtual void Enter<#= ast.Name #>(<#= ast.Name #> ctx){}
         public virtual void Leave<#= ast.Name #>(<#= ast.Name #> ctx){}
+<# } #>
+    }
+
+
+    public interface IAstRecursiveDescentVisitor
+    {
+<# foreach (var ast in asts)  { #>
+        public <#= ast.Name #> Visit<#= ast.Name #>(<#= ast.Name #> ctx);
+<# } #>
+    }
+
+    public class DefaultRecursiveDescentVisitor : IAstRecursiveDescentVisitor
+    {
+<# foreach (var ast in asts)  { #>
+        public virtual <#= ast.Name #> Visit<#= ast.Name #>(<#= ast.Name #> ctx)
+            => ctx;
 <# } #>
     }
 

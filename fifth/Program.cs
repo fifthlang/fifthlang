@@ -18,8 +18,8 @@ namespace Fifth
                 var path = @"C:\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il";
                 using (var writer = File.CreateText(path))
                 {
-                    var sut = new CodeGenVisitor(writer);
-                    ast.Accept(sut);
+                    var codeGenVisitor = new CodeGenVisitor(writer);
+                    codeGenVisitor.VisitFifthProgram(ast);
                 }
                 Console.WriteLine(path);
                 var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";

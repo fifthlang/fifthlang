@@ -30,7 +30,7 @@ print(s: string): long{
             {
                 var sb = new StringBuilder();
                 var sut = new CodeGenVisitor(new StringWriter(sb));
-                ast.Accept(sut);
+                sut.VisitFifthProgram(ast);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
                 Console.WriteLine(generatedCode);
@@ -46,7 +46,7 @@ print(s: string): long{
             {
                 var sb = new StringBuilder();
                 var sut = new CodeGenVisitor(new StringWriter(sb));
-                ast.Accept(sut);
+                sut.VisitFifthProgram(ast);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
                 Console.WriteLine(generatedCode);
@@ -62,7 +62,7 @@ print(s: string): long{
             {
                 var sb = new StringBuilder();
                 var sut = new CodeGenVisitor(new StringWriter(sb));
-                ast.Accept(sut);
+                sut.VisitFifthProgram(ast);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
                 Console.WriteLine(generatedCode);
@@ -77,7 +77,7 @@ print(s: string): long{
             {
                 var sb = new StringBuilder();
                 var sut = new CodeGenVisitor(new StringWriter(sb));
-                ast.Accept(sut);
+                sut.VisitFifthProgram(ast);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
                 Console.WriteLine(generatedCode);
@@ -92,7 +92,7 @@ print(s: string): long{
             {
                 var sb = new StringBuilder();
                 var sut = new CodeGenVisitor(new StringWriter(sb));
-                ast.Accept(sut);
+                sut.VisitFifthProgram(ast);
                 var generatedCode = sb.ToString();
                 generatedCode.Should().NotBeNullOrWhiteSpace();
                 Console.WriteLine(generatedCode);

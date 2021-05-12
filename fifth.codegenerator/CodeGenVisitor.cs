@@ -4,13 +4,15 @@ namespace Fifth.CodeGeneration
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using AST;
     using AST.Visitors;
     using PrimitiveTypes;
     using TypeSystem;
 
-    public class CodeGenVisitor : BaseAstVisitor
+    public class CodeGenVisitor : DefaultRecursiveDescentVisitor
     {
+        private ulong labelCounter;
         private readonly Dictionary<TypeId, string> toDotnet = new()
         {
             {PrimitiveBool.Default.TypeId, "bool"},
@@ -30,23 +32,53 @@ namespace Fifth.CodeGeneration
         public CodeGenVisitor(TextWriter writer)
             => this.writer = writer;
 
-        public override void EnterClassDefinition(ClassDefinition ctx)
-            => w($".class public  {ctx.Name}{{");
 
-        public override void EnterFifthProgram(FifthProgram ctx)
+        public override IfElseStatement VisitIfElseStatement(IfElseStatement ctx)
+        {
+            Interlocked.Increment(ref labelCounter);
+            VisitExpression(ctx.Condition);
+            w($"brfalse.s LBL_ELSE_{labelCounter}");
+
+            w($"LBL_IF_{labelCounter}:");
+            VisitBlock(ctx.IfBlock);
+            w($"br.s LBL_END_{labelCounter}");
+
+            w($"LBL_ELSE_{labelCounter}:");
+            VisitBlock(ctx.ElseBlock);
+            w($"LBL_END_{labelCounter}:");
+            return ctx;
+        }
+
+        public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
+        {
+            w($".class public  {ctx.Name}{{");
+            foreach (var functionDefinition in ctx.Functions)
+            {
+                VisitFunctionDefinition(functionDefinition as FunctionDefinition);
+            }
+            w("}");
+            return ctx;
+        }
+
+        public override FifthProgram VisitFifthProgram(FifthProgram ctx)
         {
             w(".assembly extern mscorlib { .ver 4:0:0:0 auto }");
             w(".assembly fifth { }");
             w($".module {ctx.TargetAssemblyFileName}");
+            foreach (var functionDefinition in ctx.Functions)
+            {
+                VisitFunctionDefinition(functionDefinition as FunctionDefinition);
+            }
+            w(@".class public Program { }");
+            return ctx;
         }
 
-        public override void EnterFunctionDefinition(FunctionDefinition ctx)
+        public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
         {
-            if (ctx.ParameterDeclarations.ParameterDeclarations.Any(pd => pd is TypeCreateInstExpression))
+            if (ctx == null)
             {
-                throw new NotImplementedException("Don't gen code for pattern matches yet");
+                return ctx;
             }
-
             var args = ctx.ParameterDeclarations.ParameterDeclarations
                           .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
             w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
@@ -62,29 +94,43 @@ namespace Fifth.CodeGeneration
                 var localsList = locals.Decls.Join(vd => $"{MapType(vd.TypeId)} {vd.Name.Value}");
                 w($".locals init({localsList})");
             }
+            return ctx;
         }
 
-        public override void EnterIntValueExpression(IntValueExpression ctx)
-            => w($"ldc.i4.{ctx.Value}");
+        public override IntValueExpression VisitIntValueExpression(IntValueExpression ctx)
+        {
+            w($"ldc.i4.{ctx.Value}");
+            return ctx;
+        }
 
-        public override void EnterLongValueExpression(LongValueExpression ctx)
-            => w($"ldc.i8.{ctx.Value}");
+        public override LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
+        {
+            w($"ldc.i8.{ctx.Value}");
+            return ctx;
+        }
 
-        public override void EnterPropertyDefinition(PropertyDefinition ctx)
+        public override PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
         {
             w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
             w($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
             w($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
             w("  }");
+            return ctx;
         }
 
-        public override void EnterShortValueExpression(ShortValueExpression ctx)
-            => w($"ldc.i2.{ctx.Value}");
+        public override ShortValueExpression VisitShortValueExpression(ShortValueExpression ctx)
+        {
+            w($"ldc.i2.{ctx.Value}");
+            return ctx;
+        }
 
-        public override void EnterStringValueExpression(StringValueExpression ctx)
-            => w($"ldstr \"{ctx.Value}\"");
+        public override StringValueExpression VisitStringValueExpression(StringValueExpression ctx)
+        {
+            w($"ldstr \"{ctx.Value}\"");
+            return ctx;
+        }
 
-        public override void LeaveBinaryExpression(BinaryExpression ctx)
+        public override BinaryExpression VisitBinaryExpression(BinaryExpression ctx)
         {
             switch (ctx.Op)
             {
@@ -133,15 +179,10 @@ namespace Fifth.CodeGeneration
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            return ctx;
         }
 
-        public override void LeaveClassDefinition(ClassDefinition ctx)
-            => w("}");
-
-        public override void LeaveFifthProgram(FifthProgram ctx)
-            => w(@".class public Program { }");
-
-        public override void LeaveFuncCallExpression(FuncCallExpression ctx)
+        public override FuncCallExpression VisitFuncCallExpression(FuncCallExpression ctx)
         {
             if (ctx.TypeId == null)
             {
@@ -155,7 +196,7 @@ namespace Fifth.CodeGeneration
                             w("call void System::Console.WriteLine(string)");
                         }
 
-                        return;
+                        return ctx;
                     }
                 }
             }
@@ -181,17 +222,14 @@ namespace Fifth.CodeGeneration
 
             var argTypeNames = dotnetTypes.Join(t => t);
             w($"call {x} Program::{ctx.Name}({argTypeNames})");
+            return ctx;
         }
 
-        public override void LeaveFunctionDefinition(FunctionDefinition ctx)
-            => w("}");
-
-        public override void LeavePropertyDefinition(PropertyDefinition ctx)
+        public override ReturnStatement VisitReturnStatement(ReturnStatement ctx)
         {
+            w(@"ret");
+            return ctx;
         }
-
-        public override void LeaveReturnStatement(ReturnStatement ctx)
-            => w(@"ret");
 
         public string MapType(TypeId tid)
         {
@@ -208,6 +246,7 @@ namespace Fifth.CodeGeneration
             return tid.Lookup().Name;
         }
 
+        // ReSharper disable once InconsistentNaming
         private void w(string s)
             => writer.WriteLine(s);
     }
