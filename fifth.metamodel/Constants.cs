@@ -8,6 +8,7 @@ namespace Fifth
 {
     public static class Constants
     {
+        public static readonly string DeclarationOrdinal = "DeclarationOrdinal";
         public static readonly string FunctionImplementation = "function_implementation";
     }
 }

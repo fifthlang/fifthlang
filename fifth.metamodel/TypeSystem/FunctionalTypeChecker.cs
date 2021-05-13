@@ -219,7 +219,10 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, FuncCallExpression node)
         {
-            Infer(node.ActualParameters);
+            if (node.ActualParameters != null)
+            {
+                Infer(node.ActualParameters);
+            }
             var ste = scope.Resolve(node.Name);
 
             switch (ste.SymbolKind)

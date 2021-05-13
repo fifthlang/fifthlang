@@ -3,6 +3,7 @@ namespace Fifth.Test.CodeGeneration
     using System;
     using System.IO;
     using System.Text;
+    using System.Threading.Tasks;
     using AST;
     using Fifth.CodeGeneration;
     using FluentAssertions;
@@ -14,31 +15,24 @@ namespace Fifth.Test.CodeGeneration
     public class CodeGenVisitorTests
     {
         [Test]
-        public void CanGenerateFromAst()
+        [Category("WIP")]
+        public async Task CanGenerateFromAst()
         {
             var prog = @"
 main():int{
-    return print('hello world');
+    return print(sum());
 }
 
-print(s: string): long{
+sum(): long{
     a: long = 5;
     b: long = 6;
     return a+b;
 }";
-            if (FifthParserManager.TryParse<FifthProgram>(prog, out var ast, out var errors))
-            {
-                var sb = new StringBuilder();
-                var sut = new CodeGenVisitor(new StringWriter(sb));
-                sut.VisitFifthProgram(ast);
-                var generatedCode = sb.ToString();
-                generatedCode.Should().NotBeNullOrWhiteSpace();
-                Console.WriteLine(generatedCode);
-            }
+            var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
+            outputs.Should().NotBeEmpty().And.Contain("11");
         }
 
         [Test]
-        [Category("WIP")]
         public void CopesWithOverloading()
         {
             using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.overloading.5th");
@@ -54,7 +48,6 @@ print(s: string): long{
         }
 
         [Test]
-        [Category("WIP")]
         public void CopesWithPatternMatchInFuncDef()
         {
             using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.destructuring.5th");

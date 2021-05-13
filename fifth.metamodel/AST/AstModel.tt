@@ -601,6 +601,7 @@ namespace Fifth.AST.Visitors
 
     public interface IAstRecursiveDescentVisitor
     {
+        public AstNode Visit(AstNode ctx);
 <# foreach (var ast in asts)  { #>
         public <#= ast.Name #> Visit<#= ast.Name #>(<#= ast.Name #> ctx);
 <# } #>
@@ -608,10 +609,21 @@ namespace Fifth.AST.Visitors
 
     public class DefaultRecursiveDescentVisitor : IAstRecursiveDescentVisitor
     {
+        public virtual AstNode Visit(AstNode ctx)
+        => ctx switch
+            {
+<# foreach (string astNodeType in asts.Select(a=>a.Name))  { #>
+                <#= astNodeType #> node => Visit<#= astNodeType #>(node),
+<# } #>
+
+                { } node => null,
+            };
+
 <# foreach (var ast in asts)  { #>
         public virtual <#= ast.Name #> Visit<#= ast.Name #>(<#= ast.Name #> ctx)
             => ctx;
 <# } #>
+
     }
 
 }

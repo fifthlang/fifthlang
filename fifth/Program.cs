@@ -9,27 +9,46 @@ namespace Fifth
     using CodeGeneration;
 
     // ReSharper disable once UnusedType.Global
-    internal class Program
+    public class Program
     {
-        private static async Task<int> Main(string fileName)
+        public static bool TryCompile(string sourceFilename, out string assemblyFilename)
         {
-            if (FifthParserManager.TryParseFile<FifthProgram>(fileName, out var ast, out var errors))
+            var result = 0;
+            var ilFilename = Path.ChangeExtension(sourceFilename, ".il");
+            assemblyFilename = Path.ChangeExtension(sourceFilename, ".exe");
+            if (FifthParserManager.TryParseFile<FifthProgram>(sourceFilename, out var ast, out var errors))
             {
-                var path = @"C:\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il";
-                using (var writer = File.CreateText(path))
+                using (var writer = File.CreateText(ilFilename))
                 {
                     var codeGenVisitor = new CodeGenVisitor(writer);
                     codeGenVisitor.VisitFifthProgram(ast);
                 }
-                Console.WriteLine(path);
+
                 var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
-                var ilasmFlags = "/EXE /NOLOGO";
-                var result = await Process.ExecuteAsync($"{ilasmPath}", $"{path} {ilasmFlags}", stdOut: s => Console.WriteLine(s));
-                return result;
+                var ilasmFlags = $"/DEBUG /EXE /NOLOGO /OUTPUT={assemblyFilename}";
+                var t = Process.ExecuteAsync($"{ilasmPath}", $"{ilFilename} {ilasmFlags}",
+                    stdOut: s => Console.WriteLine(s));
+                t.Wait();
+                result = t.Result;
             }
+
             if (!errors?.Any() ?? false)
             {
                 Console.Write("errors!");
+            }
+
+            return result == 0;
+        }
+
+        public static async Task<int> ExecuteAssemblyAsync(string assemblyFilename)
+            => await Process.ExecuteAsync(assemblyFilename, "", Path.GetDirectoryName(assemblyFilename),
+                s => Console.WriteLine(s), s => Console.WriteLine(s));
+
+        public static async Task<int> Main(string fileName)
+        {
+            if (TryCompile(fileName, out var assemblyFilename))
+            {
+                return await ExecuteAssemblyAsync(assemblyFilename);
             }
 
             return 1;

@@ -195,6 +195,7 @@ namespace Fifth.AST.Visitors
 
     public interface IAstRecursiveDescentVisitor
     {
+        public AstNode Visit(AstNode ctx);
         public ClassDefinition VisitClassDefinition(ClassDefinition ctx);
         public PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx);
         public TypeCast VisitTypeCast(TypeCast ctx);
@@ -242,6 +243,56 @@ namespace Fifth.AST.Visitors
 
     public class DefaultRecursiveDescentVisitor : IAstRecursiveDescentVisitor
     {
+        public virtual AstNode Visit(AstNode ctx)
+        => ctx switch
+            {
+                ClassDefinition node => VisitClassDefinition(node),
+                PropertyDefinition node => VisitPropertyDefinition(node),
+                TypeCast node => VisitTypeCast(node),
+                ReturnStatement node => VisitReturnStatement(node),
+                StatementList node => VisitStatementList(node),
+                AbsoluteIri node => VisitAbsoluteIri(node),
+                AliasDeclaration node => VisitAliasDeclaration(node),
+                AssignmentStmt node => VisitAssignmentStmt(node),
+                BinaryExpression node => VisitBinaryExpression(node),
+                Block node => VisitBlock(node),
+                BoolValueExpression node => VisitBoolValueExpression(node),
+                ShortValueExpression node => VisitShortValueExpression(node),
+                IntValueExpression node => VisitIntValueExpression(node),
+                LongValueExpression node => VisitLongValueExpression(node),
+                FloatValueExpression node => VisitFloatValueExpression(node),
+                DoubleValueExpression node => VisitDoubleValueExpression(node),
+                DecimalValueExpression node => VisitDecimalValueExpression(node),
+                StringValueExpression node => VisitStringValueExpression(node),
+                DateValueExpression node => VisitDateValueExpression(node),
+                ExpressionList node => VisitExpressionList(node),
+                FifthProgram node => VisitFifthProgram(node),
+                FuncCallExpression node => VisitFuncCallExpression(node),
+                FunctionDefinition node => VisitFunctionDefinition(node),
+                BuiltinFunctionDefinition node => VisitBuiltinFunctionDefinition(node),
+                OverloadedFunctionDefinition node => VisitOverloadedFunctionDefinition(node),
+                Identifier node => VisitIdentifier(node),
+                IdentifierExpression node => VisitIdentifierExpression(node),
+                IfElseStatement node => VisitIfElseStatement(node),
+                ModuleImport node => VisitModuleImport(node),
+                ParameterDeclaration node => VisitParameterDeclaration(node),
+                ParameterDeclarationList node => VisitParameterDeclarationList(node),
+                TypeCreateInstExpression node => VisitTypeCreateInstExpression(node),
+                TypeInitialiser node => VisitTypeInitialiser(node),
+                DestructuringParamDecl node => VisitDestructuringParamDecl(node),
+                PropertyBinding node => VisitPropertyBinding(node),
+                TypePropertyInit node => VisitTypePropertyInit(node),
+                UnaryExpression node => VisitUnaryExpression(node),
+                VariableDeclarationStatement node => VisitVariableDeclarationStatement(node),
+                VariableReference node => VisitVariableReference(node),
+                CompoundVariableReference node => VisitCompoundVariableReference(node),
+                WhileExp node => VisitWhileExp(node),
+                ExpressionStatement node => VisitExpressionStatement(node),
+                Expression node => VisitExpression(node),
+
+                { } node => null,
+            };
+
         public virtual ClassDefinition VisitClassDefinition(ClassDefinition ctx)
             => ctx;
         public virtual PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
@@ -328,6 +379,7 @@ namespace Fifth.AST.Visitors
             => ctx;
         public virtual Expression VisitExpression(Expression ctx)
             => ctx;
+
     }
 
 }

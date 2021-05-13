@@ -163,7 +163,7 @@ namespace Fifth.LangProcessingPhases
             => LeaveNonTerminal(ctx);
 
         public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-            => EnterNonTerminal(ctx); // TODO: Should I just ignore this?
+            => EnterNonTerminal(ctx);
 
         public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
             => LeaveNonTerminal(ctx);

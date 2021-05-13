@@ -68,7 +68,7 @@ namespace Fifth.LangProcessingPhases
             var name = context.funcname.GetText();
             var actualParams = (ExpressionList)VisitExplist(context.args);
             return new FuncCallExpression(actualParams, name)
-                .CaptureLocation(context.Start); // TODO: I need to supply the type, perhaps via symtab
+                .CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitEGEQ([NotNull] FifthParser.EGEQContext context)
@@ -127,11 +127,15 @@ namespace Fifth.LangProcessingPhases
             var id = context.var_name().GetText();
             return
                 new VariableReference(id)
-                    .CaptureLocation(context.Start); // TODO: I need to supply the type, perhaps via symtab
+                    .CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitExplist([NotNull] FifthParser.ExplistContext context)
         {
+            if (context == null)
+            {
+                return null;
+            }
             var exps = new List<Expression>();
             foreach (var e in context.exp())
             {
@@ -315,7 +319,7 @@ namespace Fifth.LangProcessingPhases
             var typeInitialiser = context.type_initialiser();
             var propertyInits = from x in typeInitialiser._properties
                                 select VisitType_property_init(x);
-            
+
             var result = new TypeInitialiser(context.type_initialiser().typename.GetText(), propertyInits.Cast<TypePropertyInit>().ToList());
             return result;
         }
