@@ -2,10 +2,12 @@ namespace Fifth.Test.CodeGeneration
 {
     using System;
     using System.IO;
+    using System.Net.Security;
     using System.Text;
     using System.Threading.Tasks;
     using AST;
     using Fifth.CodeGeneration;
+    using Fifth.CodeGeneration.LangProcessingPhases;
     using FluentAssertions;
     using NUnit.Framework;
 
@@ -20,7 +22,9 @@ namespace Fifth.Test.CodeGeneration
         {
             var prog = @"
 main():int{
-    return print(sum());
+    print('hello world');
+    print(sum());
+    return 0;
 }
 
 sum(): long{

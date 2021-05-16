@@ -3,6 +3,7 @@ namespace Fifth.Test
     using System;
     using System.Collections.Generic;
     using System.CommandLine.Invocation;
+    using System.Diagnostics;
     using System.IO;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
@@ -63,8 +64,15 @@ namespace Fifth.Test
             if (Program.TryCompile(sourceFile, out var assemblyFilename))
             {
                 filesToDelete.Add(assemblyFilename);
-                await Process.ExecuteAsync(assemblyFilename, "", Path.GetDirectoryName(assemblyFilename),
-                    s => programOutputs.Add(s), s => programOutputs.Add(s));
+                var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
+                if (result == 0)
+                {
+                    Console.WriteLine(stdOutputs.Join(s=>s, "\n"));
+                }
+                else
+                {
+                    Console.WriteLine(stdErrors.Join(s=>s, "\n"));
+                }
             }
 
             foreach (var fileToDelete in filesToDelete)

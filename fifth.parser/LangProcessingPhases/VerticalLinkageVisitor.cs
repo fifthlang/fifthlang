@@ -11,6 +11,18 @@ namespace Fifth.LangProcessingPhases
     {
         private readonly Stack<AstNode> parents = new();
 
+        public void EnterAssembly(Assembly ctx)
+            => EnterNonTerminal(ctx);
+
+        public void LeaveAssembly(Assembly ctx)
+            => LeaveNonTerminal(ctx);
+
+        public void EnterAssemblyRef(AssemblyRef ctx)
+            => EnterTerminal(ctx);
+
+        public void LeaveAssemblyRef(AssemblyRef ctx)
+            => LeaveTerminal(ctx);
+
         public void EnterClassDefinition(ClassDefinition ctx)
             => EnterNonTerminal(ctx);
 

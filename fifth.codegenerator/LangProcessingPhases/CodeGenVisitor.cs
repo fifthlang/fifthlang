@@ -1,4 +1,4 @@
-namespace Fifth.CodeGeneration
+namespace Fifth.CodeGeneration.LangProcessingPhases
 {
     using System;
     using System.Collections.Generic;
@@ -120,7 +120,8 @@ namespace Fifth.CodeGeneration
 
         public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
         {
-            w($".class public  {ctx.Name}{{");
+
+            w($".class public  {ctx.Name} extends [System.Runtime]System.Object {{");
             foreach (var functionDefinition in ctx.Functions)
             {
                 VisitFunctionDefinition(functionDefinition as FunctionDefinition);
@@ -130,18 +131,40 @@ namespace Fifth.CodeGeneration
             return ctx;
         }
 
+        public override Assembly VisitAssembly(Assembly ctx)
+        {
+            foreach (var assemblyRef in ctx.References ?? new List<AssemblyRef>())
+            {
+                VisitAssemblyRef(assemblyRef);
+            }
+            w(".assembly extern mscorlib { }");
+            w($@".assembly {ctx.Name}
+            {{
+                .ver 1:0:0:0
+            }}");
+            VisitFifthProgram(ctx.Program);
+            return ctx;
+        }
+
+        public override AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
+            => base.VisitAssemblyRef(ctx);
+        public override ExpressionStatement VisitExpressionStatement(ExpressionStatement ctx)
+        {
+            Visit(ctx.Expression);
+            return ctx;
+        }
 
         public override FifthProgram VisitFifthProgram(FifthProgram ctx)
         {
-            w(".assembly extern mscorlib { .ver 4:0:0:0 auto }");
-            w(".assembly fifth { }");
+
             w($".module {ctx.TargetAssemblyFileName}");
+            w(@".class public Program {");
             foreach (var functionDefinition in ctx.Functions)
             {
                 VisitFunctionDefinition(functionDefinition as FunctionDefinition);
             }
-
-            w(@".class public Program { }");
+            w("}");
+            w("");
             return ctx;
         }
 
@@ -193,7 +216,8 @@ namespace Fifth.CodeGeneration
             {
                 if (funcImpl.Name == "print")
                 {
-                    w("call void System::Console.WriteLine(string)");
+                    var argType = GetPrintArgType(ctx);
+                    w($"call    void [mscorlib]System.Console::WriteLine({argType})");
                 }
 
                 return ctx;
@@ -202,6 +226,12 @@ namespace Fifth.CodeGeneration
             w($"call {dotNetReturnType} Program::{ctx.Name}({argTypeNames})");
 
             return ctx;
+        }
+
+        private string GetPrintArgType(FuncCallExpression ctx)
+        {
+            var firstArgTid = ctx.ActualParameters.Expressions[0].TypeId;
+            return toDotnet[firstArgTid];
         }
 
         public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)

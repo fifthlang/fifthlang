@@ -1,29 +1,20 @@
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using Fifth.AST;
-using Fifth.LangProcessingPhases;
-using Fifth.Parser.LangProcessingPhases;
-using Fifth.TypeSystem;
+
 
 /*
  * ParseAndAnnotate -> ParseToAst<T> -> GetParserFor
  */
 namespace Fifth
 {
+    using System.Collections.Generic;
+    using System.Security.Cryptography.X509Certificates;
+    using Antlr4.Runtime;
+    using AST;
+    using LangProcessingPhases;
+    using Parser.LangProcessingPhases;
+    using TypeSystem;
+
     public static class FifthParserManager
     {
-
-        public static bool TryParseFile<T>(string fileName, out T ast, out List<FifthCompilationError> errors)
-            where T : IAstNode
-        {
-            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
-            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
-            ast = (T)ParseAndAnnotate<T>(CharStreams.fromPath(fileName));
-            errors = new List<FifthCompilationError>();
-            return true;
-
-        }
-
         public static bool TryParse<T>(string source, out T ast, out List<FifthCompilationError> errors)
             where T : IAstNode
         {
@@ -34,8 +25,17 @@ namespace Fifth
             return true;
         }
 
-        #region Core Drivers
+        public static bool TryParseFile<T>(string fileName, out T ast, out List<FifthCompilationError> errors)
+            where T : IAstNode
+        {
+            TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
+            InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
+            ast = (T)ParseAndAnnotate<T>(CharStreams.fromPath(fileName));
+            errors = new List<FifthCompilationError>();
+            return true;
+        }
 
+        #region Core Drivers
 
         public static IAstNode ParseAndAnnotate<T>(ICharStream source)
             where T : IAstNode
@@ -56,9 +56,26 @@ namespace Fifth
 
             return ast;
         }
+
+        private static (string , string , string ) GetAssemblyDetails()
+        {
+            return ("fifth", "", "");
+        }
+
         public static IAstNode ParseToAst<T>(ICharStream source)
             where T : IAstNode
         {
+            if (typeof(T) == typeof(Assembly))
+            {
+                var ast = ParseProgramToAst(source);
+                // embed the program in an assembly to generate code for
+                var (name, publicKey, ver) = GetAssemblyDetails();
+                var newAst = new Assembly(name, publicKey, ver);
+                newAst.Program = (FifthProgram) ast;
+                ast = newAst;
+                return (T)ast;
+            }
+
             if (typeof(T) == typeof(FifthProgram))
             {
                 return (T)ParseProgramToAst(source);
@@ -139,7 +156,6 @@ namespace Fifth
             var ast = visitor.Visit(parseTree);
             return ast;
         }
-
         #endregion Parsing into AST Node
 
         #region Parsing into Parse Tree

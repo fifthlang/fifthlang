@@ -14,6 +14,10 @@ namespace Fifth.AST.Visitors
 
     public interface IAstVisitor
     {
+        public void EnterAssembly(Assembly ctx);
+        public void LeaveAssembly(Assembly ctx);
+        public void EnterAssemblyRef(AssemblyRef ctx);
+        public void LeaveAssemblyRef(AssemblyRef ctx);
         public void EnterClassDefinition(ClassDefinition ctx);
         public void LeaveClassDefinition(ClassDefinition ctx);
         public void EnterPropertyDefinition(PropertyDefinition ctx);
@@ -104,6 +108,10 @@ namespace Fifth.AST.Visitors
 
     public partial class BaseAstVisitor : IAstVisitor
     {
+        public virtual void EnterAssembly(Assembly ctx){}
+        public virtual void LeaveAssembly(Assembly ctx){}
+        public virtual void EnterAssemblyRef(AssemblyRef ctx){}
+        public virtual void LeaveAssemblyRef(AssemblyRef ctx){}
         public virtual void EnterClassDefinition(ClassDefinition ctx){}
         public virtual void LeaveClassDefinition(ClassDefinition ctx){}
         public virtual void EnterPropertyDefinition(PropertyDefinition ctx){}
@@ -196,6 +204,8 @@ namespace Fifth.AST.Visitors
     public interface IAstRecursiveDescentVisitor
     {
         public AstNode Visit(AstNode ctx);
+        public Assembly VisitAssembly(Assembly ctx);
+        public AssemblyRef VisitAssemblyRef(AssemblyRef ctx);
         public ClassDefinition VisitClassDefinition(ClassDefinition ctx);
         public PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx);
         public TypeCast VisitTypeCast(TypeCast ctx);
@@ -246,6 +256,8 @@ namespace Fifth.AST.Visitors
         public virtual AstNode Visit(AstNode ctx)
         => ctx switch
             {
+                Assembly node => VisitAssembly(node),
+                AssemblyRef node => VisitAssemblyRef(node),
                 ClassDefinition node => VisitClassDefinition(node),
                 PropertyDefinition node => VisitPropertyDefinition(node),
                 TypeCast node => VisitTypeCast(node),
@@ -293,6 +305,10 @@ namespace Fifth.AST.Visitors
                 { } node => null,
             };
 
+        public virtual Assembly VisitAssembly(Assembly ctx)
+            => ctx;
+        public virtual AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
+            => ctx;
         public virtual ClassDefinition VisitClassDefinition(ClassDefinition ctx)
             => ctx;
         public virtual PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
@@ -396,6 +412,78 @@ namespace Fifth.AST
 
 #region AST Nodes
 
+
+    public partial class Assembly : AstNode
+    {
+        public Assembly(string Name, string PublicKeyToken, string Version, FifthProgram Program, List<AssemblyRef> References)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
+            this.PublicKeyToken = PublicKeyToken;
+            //_ = Version ?? throw new ArgumentNullException(nameof(Version));
+            this.Version = Version;
+            //_ = Program ?? throw new ArgumentNullException(nameof(Program));
+            this.Program = Program;
+            //_ = References ?? throw new ArgumentNullException(nameof(References));
+            this.References = References;
+        }
+
+        public string Name{get;set;}
+        public string PublicKeyToken{get;set;}
+        public string Version{get;set;}
+        public FifthProgram Program{get;set;}
+        public List<AssemblyRef> References{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterAssembly(this);
+            if(Program != null) {
+                Program.Accept(visitor);
+            }
+            if(References != null){
+                foreach (var e in References)
+                {
+                    e.Accept(visitor);
+                }
+            }
+            visitor.LeaveAssembly(this);
+        }
+
+        
+        public Assembly(string name, string strongNameKey, string versionNumber)
+        {
+            Name = name;
+            PublicKeyToken = strongNameKey;
+            Version = versionNumber;
+        }
+    
+    }
+
+    public partial class AssemblyRef : AstNode
+    {
+        public AssemblyRef(string Name, string PublicKeyToken, string Version)
+        {
+            //_ = Name ?? throw new ArgumentNullException(nameof(Name));
+            this.Name = Name;
+            //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
+            this.PublicKeyToken = PublicKeyToken;
+            //_ = Version ?? throw new ArgumentNullException(nameof(Version));
+            this.Version = Version;
+        }
+
+        public string Name{get;set;}
+        public string PublicKeyToken{get;set;}
+        public string Version{get;set;}
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.EnterAssemblyRef(this);
+            visitor.LeaveAssemblyRef(this);
+        }
+
+        
+    }
 
     public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCollection
     {
@@ -1507,6 +1595,8 @@ namespace Fifth.TypeSystem
 
     public interface ITypeChecker
     {
+        public IType Infer(IScope scope, Assembly node);
+        public IType Infer(IScope scope, AssemblyRef node);
         public IType Infer(IScope scope, ClassDefinition node);
         public IType Infer(IScope scope, PropertyDefinition node);
         public IType Infer(IScope scope, TypeCast node);
@@ -1560,6 +1650,8 @@ namespace Fifth.TypeSystem
             var scope = exp.NearestScope();
             return exp switch
             {
+                Assembly node => Infer(scope, node),
+                AssemblyRef node => Infer(scope, node),
                 ClassDefinition node => Infer(scope, node),
                 PropertyDefinition node => Infer(scope, node),
                 TypeCast node => Infer(scope, node),

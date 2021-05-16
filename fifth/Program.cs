@@ -1,50 +1,36 @@
 namespace Fifth
 {
     using System;
-    using System.CommandLine.Invocation;
+    using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
     using AST;
     using CodeGeneration;
+    using CodeGeneration.LangProcessingPhases;
 
     // ReSharper disable once UnusedType.Global
     public class Program
     {
-        public static bool TryCompile(string sourceFilename, out string assemblyFilename)
+        public static Task<int> ExecuteAssemblyAsync(string assemblyFilename)
         {
             var result = 0;
-            var ilFilename = Path.ChangeExtension(sourceFilename, ".il");
-            assemblyFilename = Path.ChangeExtension(sourceFilename, ".exe");
-            if (FifthParserManager.TryParseFile<FifthProgram>(sourceFilename, out var ast, out var errors))
+            using (var proc = new Process())
             {
-                using (var writer = File.CreateText(ilFilename))
+                proc.StartInfo = new ProcessStartInfo(assemblyFilename)
                 {
-                    var codeGenVisitor = new CodeGenVisitor(writer);
-                    codeGenVisitor.VisitFifthProgram(ast);
-                }
-
-                var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
-                var ilasmFlags = $"/DEBUG /EXE /NOLOGO /OUTPUT={assemblyFilename}";
-                var t = Process.ExecuteAsync($"{ilasmPath}", $"{ilFilename} {ilasmFlags}",
-                    stdOut: s => Console.WriteLine(s));
-                t.Wait();
-                result = t.Result;
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Path.GetDirectoryName(assemblyFilename)
+                };
+                proc.Start();
+                proc.WaitForExit();
+                result = proc.ExitCode;
             }
 
-            if (!errors?.Any() ?? false)
-            {
-                Console.Write("errors!");
-            }
-
-            return result == 0;
+            return Task.FromResult(result);
         }
 
-        public static async Task<int> ExecuteAssemblyAsync(string assemblyFilename)
-            => await Process.ExecuteAsync(assemblyFilename, "", Path.GetDirectoryName(assemblyFilename),
-                s => Console.WriteLine(s), s => Console.WriteLine(s));
-
-        public static async Task<int> Main(string fileName)
+        public static async Task<int> Main(string fileName, string[] args)
         {
             if (TryCompile(fileName, out var assemblyFilename))
             {
@@ -52,6 +38,37 @@ namespace Fifth
             }
 
             return 1;
+        }
+
+        public static bool TryCompile(string sourceFilename, out string assemblyFilename)
+        {
+            var ilFilename = Path.ChangeExtension(sourceFilename, ".il");
+            assemblyFilename = Path.ChangeExtension(sourceFilename, ".exe");
+            if (FifthParserManager.TryParseFile<AST.Assembly>(sourceFilename, out var ast, out var errors))
+            {
+                using (var writer = File.CreateText(ilFilename))
+                {
+                    var codeGenVisitor = new CodeGenVisitor(writer);
+                    codeGenVisitor.VisitAssembly(ast);
+                }
+
+                var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
+                var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, ilFilename,
+                    "/DEBUG",
+                    "/EXE",
+                    "/NOLOGO",
+                    $"/OUTPUT={assemblyFilename}");
+
+                if (result != 0)
+                {
+                    Console.Write(stdOutputs.Join(s => s, "\n"));
+                    Console.Write(stdErrors.Join(s => s, "\n"));
+                }
+
+                return result == 0;
+            }
+
+            return false;
         }
     }
 }

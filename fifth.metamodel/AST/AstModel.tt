@@ -13,6 +13,41 @@ var asts = new dynamic[]
 {
 new
 {
+    Name = "Assembly",
+    Parent = "AstNode",
+    CustomCode=@"
+        public Assembly(string name, string strongNameKey, string versionNumber)
+        {
+            Name = name;
+            PublicKeyToken = strongNameKey;
+            Version = versionNumber;
+        }
+    ",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "PublicKeyToken", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Version", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Program", Type = "FifthProgram", IsCollection=false, IgnoreDuringVisit = false},
+        new {Name = "References", Type = "List<AssemblyRef>", IsCollection=true, IgnoreDuringVisit = false}
+    }
+},
+new
+{
+    Name = "AssemblyRef",
+    Parent = "AstNode",
+    CustomCode=@"",
+    PostCtor="",
+    Props = new dynamic[]
+    {
+        new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "PublicKeyToken", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
+        new {Name = "Version", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+    }
+},
+new
+{
     Name = "ClassDefinition",
     Parent = "ScopeAstNode, ITypedAstNode, IFunctionCollection",
     CustomCode=@"",

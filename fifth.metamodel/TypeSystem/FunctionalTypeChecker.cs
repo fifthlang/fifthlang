@@ -2,6 +2,7 @@ namespace Fifth.TypeSystem
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using AST;
     using Fifth.PrimitiveTypes;
@@ -30,6 +31,7 @@ namespace Fifth.TypeSystem
     ///     where the type is know, so is the first place where actions can be performed.
     ///     Similarly, when type checking, there is a corresponding handler that will be the first to know.
     /// </remarks>
+    [SuppressMessage("ReSharper", "UnusedParameter.Global")]
     public partial class FunctionalTypeChecker : ITypeChecker
     {
         public FunctionalTypeChecker(TypeInferred typeInferred, TypeNotFound typeNotFound, TypeMismatch typeMismatch,
@@ -180,6 +182,7 @@ namespace Fifth.TypeSystem
                 {
                     TypeNotFound(node);
                 }
+
                 return default;
             }
 
@@ -200,6 +203,7 @@ namespace Fifth.TypeSystem
                 {
                     Infer(scope, fd);
                 }
+
                 if (functionDefinition is OverloadedFunctionDefinition ofd)
                 {
                     Infer(scope, ofd);
@@ -223,6 +227,7 @@ namespace Fifth.TypeSystem
             {
                 Infer(node.ActualParameters);
             }
+
             var ste = scope.Resolve(node.Name);
 
             switch (ste.SymbolKind)
@@ -236,7 +241,7 @@ namespace Fifth.TypeSystem
                         TypeInferred(node, type);
                         return type;
                     }
-                        
+
                     if (ste.Context is IFunctionDefinition fd && fd.Typename == "void")
                     {
                         TypeNotRelevant(node);
@@ -307,8 +312,11 @@ namespace Fifth.TypeSystem
         {
             Infer(node.Condition);
             Infer(node.IfBlock);
-            if(node.ElseBlock != null)
+            if (node.ElseBlock != null)
+            {
                 Infer(node.ElseBlock);
+            }
+
             return default;
         }
 
@@ -410,6 +418,7 @@ namespace Fifth.TypeSystem
             {
                 TypeNotFound(node);
             }
+
             return result;
         }
 
@@ -449,6 +458,12 @@ namespace Fifth.TypeSystem
             return default;
         }
 
+        public IType Infer(IScope scope, Assembly node)
+            => throw new NotImplementedException();
+
+        public IType Infer(IScope scope, AssemblyRef node)
+            => throw new NotImplementedException();
+
         public IType Infer(IScope scope, ClassDefinition node)
         {
             node.Properties.ForEach(propDef => Infer(node, propDef));
@@ -462,10 +477,12 @@ namespace Fifth.TypeSystem
             {
                 return Infer(scope, fd);
             }
+
             if (node is OverloadedFunctionDefinition ofd)
             {
                 return Infer(scope, ofd);
             }
+
             TypeNotFound(node);
             return default;
         }
@@ -509,36 +526,40 @@ namespace Fifth.TypeSystem
         public IType Infer(IScope scope, VariableReference node)
         {
             IType result = default;
-            if (scope.TryResolve(node.Name, out var ste) )
+            if (scope.TryResolve(node.Name, out var ste))
             {
                 if (ste.Context is PropertyBinding pb)
                 {
                     result = pb.BoundProperty.TypeId.Lookup();
                     TypeInferred(node, result);
                 }
+
                 if (ste.Context is VariableDeclarationStatement vds)
                 {
                     result = vds.TypeId.Lookup();
                     TypeInferred(node, result);
                 }
+
                 if (ste.Context is PropertyDefinition propDef)
                 {
                     result = propDef.TypeId.Lookup();
                     TypeInferred(node, result);
                 }
+
                 if (ste.Context is ParameterDeclaration paramDef)
                 {
                     result = paramDef.TypeId.Lookup();
                     TypeInferred(node, result);
                 }
             }
+
             return result;
         }
 
         public IType Infer(IScope scope, CompoundVariableReference node)
         {
             // this is a variable that, to be resolved, one must walk up a chain to find
-            IScope innerScope = scope;
+            var innerScope = scope;
             foreach (var vr in node.ComponentReferences)
             {
                 var itype = Infer(innerScope, vr);

@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fifth.CodeGeneration
+namespace Fifth.CodeGeneration.LangProcessingPhases
 {
+    using System.Collections.Generic;
     using AST;
     using AST.Visitors;
 
