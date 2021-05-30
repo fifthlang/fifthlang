@@ -58,26 +58,27 @@ namespace Fifth.Test
         }
         public static async Task<List<string>> BuildRunAndTestProgram(string sourceFile)
         {
-            List<string> filesToDelete = new();
             List<string> programOutputs = new();
             
             if (Program.TryCompile(sourceFile, out var assemblyFilename))
             {
-                filesToDelete.Add(assemblyFilename);
-                var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
-                if (result == 0)
+                try
                 {
-                    Console.WriteLine(stdOutputs.Join(s=>s, "\n"));
-                }
-                else
-                {
-                    Console.WriteLine(stdErrors.Join(s=>s, "\n"));
-                }
-            }
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
+                    if (result == 0)
+                    {
+                        programOutputs.AddRange(stdOutputs ?? new List<string>());
+                    }
+                    else
+                    {
+                        programOutputs.AddRange(stdErrors ?? new List<string>());
+                    }
 
-            foreach (var fileToDelete in filesToDelete)
-            {
-                File.Delete(fileToDelete);
+                }
+                finally
+                {
+                    File.Delete(assemblyFilename);
+                }
             }
 
             return programOutputs;
