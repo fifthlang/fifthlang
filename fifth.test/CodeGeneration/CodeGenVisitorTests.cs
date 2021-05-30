@@ -17,18 +17,26 @@ namespace Fifth.Test.CodeGeneration
     public class CodeGenVisitorTests
     {
         [Category("WIP")]
-        [TestCase("long", "0", "0", "0")]
 
-        [TestCase("long", "0", "1", "1")]
-        [TestCase("long", "1", "1", "2")]
-        [TestCase("long", "1", "0", "1")]
+        [TestCase("long", "+", "0", "0", "0")]
+        [TestCase("long", "+", "0", "1", "1")]
+        [TestCase("long", "+", "1", "1", "2")]
+        [TestCase("long", "+", "1", "0", "1")]
+        [TestCase("long", "+", "0", "-1", "-1")]
+        [TestCase("long", "+", "1", "-1", "0")]
+        [TestCase("long", "+", "-1", "0", "-1")]
 
-        [TestCase("long", "0", "-1", "-1")]
-        [TestCase("long", "1", "-1", "0")]
-        [TestCase("long", "-1", "0", "-1")]
+        [TestCase("long", "-", "0", "0", "0")]
+        [TestCase("long", "-", "0", "1", "-1")]
+        [TestCase("long", "-", "1", "1", "0")]
+        [TestCase("long", "-", "1", "0", "1")]
+        [TestCase("long", "-", "0", "-1", "1")]
+        [TestCase("long", "-", "1", "-1", "2")]
+        [TestCase("long", "-", "-1", "0", "-1")]
 
-        [TestCase("long", "5", "6", "11")]
-        public async Task CanGenerateFromAst(string numberType, string leftNumber, string rightNumber, string expectedResult)
+        [TestCase("long", "+", "1024", "1024", "2048")]
+        [TestCase("long", "+", "5", "6", "11")]
+        public async Task CanGenerateFromAst(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
         {
             var prog = $@"
 main():int{{
@@ -39,7 +47,7 @@ main():int{{
 sum(): {numberType}{{
     a: {numberType} = {leftNumber};
     b: {numberType} = {rightNumber};
-    return a+b;
+    return a {operatorSymbol} b;
 }}";
             var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
             outputs.Should().NotBeEmpty().And.Contain(expectedResult);
