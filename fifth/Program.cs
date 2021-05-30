@@ -9,8 +9,16 @@ namespace Fifth
     using CodeGeneration.LangProcessingPhases;
 
     // ReSharper disable once UnusedType.Global
+    /// <summary>
+    /// Main CLI entry-point to the Fifth Compiler.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Asynchronously execute assembly
+        /// </summary>
+        /// <param name="assemblyFilename"></param>
+        /// <returns></returns>
         public static Task<int> ExecuteAssemblyAsync(string assemblyFilename)
         {
             var result = 0;
@@ -30,8 +38,17 @@ namespace Fifth
             return Task.FromResult(result);
         }
 
+        /// <summary>
+        /// Entry-point to compiler
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static async Task<int> Main(string fileName, string[] args)
         {
+            _ = fileName ?? throw new ArgumentNullException(nameof(fileName));
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             if (TryCompile(fileName, out var assemblyFilename))
             {
                 return await ExecuteAssemblyAsync(assemblyFilename);
@@ -40,6 +57,12 @@ namespace Fifth
             return 1;
         }
 
+        /// <summary>
+        /// Try to compile the source file to an assembly
+        /// </summary>
+        /// <param name="sourceFilename"></param>
+        /// <param name="assemblyFilename"></param>
+        /// <returns></returns>
         public static bool TryCompile(string sourceFilename, out string assemblyFilename)
         {
             var ilFilename = Path.ChangeExtension(sourceFilename, ".il");

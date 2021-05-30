@@ -56,7 +56,7 @@ namespace Fifth.Test
             var sourcePath = await CopyStringToTempFile(source);
             return await BuildRunAndTestProgram(sourcePath);
         }
-        public static async Task<List<string>> BuildRunAndTestProgram(string sourceFile)
+        public static Task<List<string>> BuildRunAndTestProgram(string sourceFile)
         {
             List<string> programOutputs = new();
             
@@ -81,7 +81,7 @@ namespace Fifth.Test
                 }
             }
 
-            return programOutputs;
+            return Task.FromResult(programOutputs);
         }
     }
 }

@@ -372,7 +372,9 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         }
 
         // ReSharper disable once InconsistentNaming
+#pragma warning disable IDE1006 // Naming Styles
         private void w(string s)
+#pragma warning restore IDE1006 // Naming Styles
             => writer.WriteLine(s);
     }
 }

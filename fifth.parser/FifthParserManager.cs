@@ -1,12 +1,6 @@
-
-
-/*
- * ParseAndAnnotate -> ParseToAst<T> -> GetParserFor
- */
 namespace Fifth
 {
     using System.Collections.Generic;
-    using System.Security.Cryptography.X509Certificates;
     using Antlr4.Runtime;
     using AST;
     using LangProcessingPhases;
@@ -42,25 +36,24 @@ namespace Fifth
         {
             var ast = ParseToAst<T>(source);
 
-            if (ast != null)
+            if (ast == null)
             {
-                ast.Accept(new BuiltinInjectorVisitor());
-                ast.Accept(new VerticalLinkageVisitor());
-                ast.Accept(new CompoundVariableSplitterVisitor());
-                ast.Accept(new OverloadGatheringVisitor());
-                ast.Accept(new OverloadTransformingVisitor());
-                ast.Accept(new VerticalLinkageVisitor());
-                ast.Accept(new SymbolTableBuilderVisitor());
-                ast.Accept(new TypeAnnotatorVisitor());
+                throw new Fifth.CompilationException("Unable to parse source to AST");
             }
 
+            ast.Accept(new BuiltinInjectorVisitor());
+            ast.Accept(new VerticalLinkageVisitor());
+            ast.Accept(new CompoundVariableSplitterVisitor());
+            ast.Accept(new OverloadGatheringVisitor());
+            ast.Accept(new OverloadTransformingVisitor());
+            ast.Accept(new VerticalLinkageVisitor());
+            ast.Accept(new SymbolTableBuilderVisitor());
+            ast.Accept(new TypeAnnotatorVisitor());
             return ast;
         }
 
-        private static (string , string , string ) GetAssemblyDetails()
-        {
-            return ("fifth", "", "");
-        }
+        private static (string, string, string ) GetAssemblyDetails()
+            => ("fifth", "", "");
 
         public static IAstNode ParseToAst<T>(ICharStream source)
             where T : IAstNode
@@ -70,9 +63,10 @@ namespace Fifth
                 var ast = ParseProgramToAst(source);
                 // embed the program in an assembly to generate code for
                 var (name, publicKey, ver) = GetAssemblyDetails();
-                var newAst = new Assembly(name, publicKey, ver);
-                newAst.Program = (FifthProgram) ast;
-                ast = newAst;
+                ast = new Assembly(name, publicKey, ver)
+                {
+                    Program = (FifthProgram)ast
+                };
                 return (T)ast;
             }
 
@@ -156,6 +150,7 @@ namespace Fifth
             var ast = visitor.Visit(parseTree);
             return ast;
         }
+
         #endregion Parsing into AST Node
 
         #region Parsing into Parse Tree
