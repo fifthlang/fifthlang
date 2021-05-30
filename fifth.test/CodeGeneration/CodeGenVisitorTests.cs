@@ -16,24 +16,33 @@ namespace Fifth.Test.CodeGeneration
     [Category("CIL")]
     public class CodeGenVisitorTests
     {
-        [Test]
         [Category("WIP")]
-        public async Task CanGenerateFromAst()
+        [TestCase("long", "0", "0", "0")]
+
+        [TestCase("long", "0", "1", "1")]
+        [TestCase("long", "1", "1", "2")]
+        [TestCase("long", "1", "0", "1")]
+
+        [TestCase("long", "0", "-1", "-1")]
+        [TestCase("long", "1", "-1", "0")]
+        [TestCase("long", "-1", "0", "-1")]
+
+        [TestCase("long", "5", "6", "11")]
+        public async Task CanGenerateFromAst(string numberType, string leftNumber, string rightNumber, string expectedResult)
         {
-            var prog = @"
-main():int{
-    print('hello world');
+            var prog = $@"
+main():int{{
     print(sum());
     return 0;
-}
+}}
 
-sum(): long{
-    a: long = 5;
-    b: long = 6;
+sum(): {numberType}{{
+    a: {numberType} = {leftNumber};
+    b: {numberType} = {rightNumber};
     return a+b;
-}";
+}}";
             var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
-            outputs.Should().NotBeEmpty().And.Contain("11");
+            outputs.Should().NotBeEmpty().And.Contain(expectedResult);
         }
 
         [Test]

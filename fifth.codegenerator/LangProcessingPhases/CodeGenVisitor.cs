@@ -290,13 +290,13 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override IntValueExpression VisitIntValueExpression(IntValueExpression ctx)
         {
-            w($"ldc.i4.{ctx.Value}");
+            w($"ldc.i4 {ctx.Value}");
             return ctx;
         }
 
         public override LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
         {
-            w($"ldc.i8.{ctx.Value}");
+            w($"ldc.i8 {ctx.Value}");
             return ctx;
         }
 
@@ -318,7 +318,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override ShortValueExpression VisitShortValueExpression(ShortValueExpression ctx)
         {
-            w($"ldc.i2.{ctx.Value}");
+            w($"ldc.i2 {ctx.Value}");
             return ctx;
         }
 
