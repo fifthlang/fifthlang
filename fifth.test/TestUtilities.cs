@@ -77,6 +77,8 @@ namespace Fifth.Test
                 }
                 finally
                 {
+                    File.Delete(Path.ChangeExtension(assemblyFilename, "pdb"));
+                    File.Delete(Path.ChangeExtension(assemblyFilename, "dll"));
                     File.Delete(assemblyFilename);
                 }
             }

@@ -64,32 +64,54 @@ namespace Fifth
         public static bool TryCompile(string sourceFilename, out string assemblyFilename)
         {
             var ilFilename = Path.ChangeExtension(sourceFilename, ".il");
-            assemblyFilename = Path.ChangeExtension(sourceFilename, ".exe");
-            if (FifthParserManager.TryParseFile<AST.Assembly>(sourceFilename, out var ast, out var errors))
+            try
             {
-                using (var writer = File.CreateText(ilFilename))
+                assemblyFilename = Path.ChangeExtension(sourceFilename, ".exe");
+                if (FifthParserManager.TryParseFile<AST.Assembly>(sourceFilename, out var ast, out var errors))
                 {
-                    var codeGenVisitor = new CodeGenVisitor(writer);
-                    codeGenVisitor.VisitAssembly(ast);
+                    using (var writer = File.CreateText(ilFilename))
+                    {
+                        var codeGenVisitor = new CodeGenVisitor(writer);
+                        codeGenVisitor.VisitAssembly(ast);
+                    }
+
+                    var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, ilFilename,
+                        "/DEBUG",
+                        "/EXE",
+                        "/NOLOGO",
+                        $"/OUTPUT={assemblyFilename}");
+
+                    if (result != 0)
+                    {
+                        Console.Write(stdOutputs.Join(s => s, "\n"));
+                        Console.Write(stdErrors.Join(s => s, "\n"));
+                    }
+
+                    return result == 0;
                 }
 
-                var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
-                var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, ilFilename,
-                    "/DEBUG",
-                    "/EXE",
-                    "/NOLOGO",
-                    $"/OUTPUT={assemblyFilename}");
-
-                if (result != 0)
-                {
-                    Console.Write(stdOutputs.Join(s => s, "\n"));
-                    Console.Write(stdErrors.Join(s => s, "\n"));
-                }
-
-                return result == 0;
+                return false;
             }
+            finally
+            {
+                DeleteFile(ilFilename);
+                DeleteFile(Path.ChangeExtension(sourceFilename, ".tmp"));
+            }
+        }
 
-            return false;
+        private static void DeleteFile(string filename)
+        {
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    File.Delete(filename);
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

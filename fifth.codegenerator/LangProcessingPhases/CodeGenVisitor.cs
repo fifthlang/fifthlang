@@ -231,6 +231,10 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         private string GetPrintArgType(FuncCallExpression ctx)
         {
             var firstArgTid = ctx.ActualParameters.Expressions[0].TypeId;
+            if (firstArgTid == PrimitiveShort.Default.TypeId)
+            {
+                firstArgTid = PrimitiveInteger.Default.TypeId;
+            }
             return toDotnet[firstArgTid];
         }
 

@@ -18,6 +18,77 @@ namespace Fifth.Test.CodeGeneration
     {
         [Category("WIP")]
 
+        #region short
+        [TestCase("short", "+", "0", "0", "0")]
+        [TestCase("short", "+", "0", "1", "1")]
+        [TestCase("short", "+", "1", "1", "2")]
+        [TestCase("short", "+", "1", "0", "1")]
+        [TestCase("short", "+", "0", "-1", "-1")]
+        [TestCase("short", "+", "1", "-1", "0")]
+        [TestCase("short", "+", "-1", "0", "-1")]
+
+        [TestCase("short", "-", "0", "0", "0")]
+        [TestCase("short", "-", "0", "1", "-1")]
+        [TestCase("short", "-", "1", "1", "0")]
+        [TestCase("short", "-", "1", "0", "1")]
+        [TestCase("short", "-", "0", "-1", "1")]
+        [TestCase("short", "-", "1", "-1", "2")]
+        [TestCase("short", "-", "-1", "0", "-1")]
+
+        [TestCase("short", "*", "0", "0", "0")]
+        [TestCase("short", "*", "0", "1", "0")]
+        [TestCase("short", "*", "1", "1", "1")]
+        [TestCase("short", "*", "1", "0", "0")]
+        [TestCase("short", "*", "0", "-1", "0")]
+        [TestCase("short", "*", "1", "-1", "-1")]
+        [TestCase("short", "*", "-1", "0", "0")]
+
+        [TestCase("short", "/", "0", "1", "0")]
+        [TestCase("short", "/", "1", "1", "1")]
+        [TestCase("short", "/", "0", "-1", "0")]
+        [TestCase("short", "/", "1", "-1", "-1")]
+        // [TestCase("short", "/", "-1", "0", "-1")]
+        // [TestCase("short", "/", "0", "0", "0")]
+        // [TestCase("short", "/", "1", "0", "1")]
+        [TestCase("short", "+", "1024", "1024", "2048")]
+        [TestCase("short", "+", "5", "6", "11")]
+        #endregion
+        #region int
+        [TestCase("int", "+", "0", "0", "0")]
+        [TestCase("int", "+", "0", "1", "1")]
+        [TestCase("int", "+", "1", "1", "2")]
+        [TestCase("int", "+", "1", "0", "1")]
+        [TestCase("int", "+", "0", "-1", "-1")]
+        [TestCase("int", "+", "1", "-1", "0")]
+        [TestCase("int", "+", "-1", "0", "-1")]
+
+        [TestCase("int", "-", "0", "0", "0")]
+        [TestCase("int", "-", "0", "1", "-1")]
+        [TestCase("int", "-", "1", "1", "0")]
+        [TestCase("int", "-", "1", "0", "1")]
+        [TestCase("int", "-", "0", "-1", "1")]
+        [TestCase("int", "-", "1", "-1", "2")]
+        [TestCase("int", "-", "-1", "0", "-1")]
+
+        [TestCase("int", "*", "0", "0", "0")]
+        [TestCase("int", "*", "0", "1", "0")]
+        [TestCase("int", "*", "1", "1", "1")]
+        [TestCase("int", "*", "1", "0", "0")]
+        [TestCase("int", "*", "0", "-1", "0")]
+        [TestCase("int", "*", "1", "-1", "-1")]
+        [TestCase("int", "*", "-1", "0", "0")]
+
+        [TestCase("int", "/", "0", "1", "0")]
+        [TestCase("int", "/", "1", "1", "1")]
+        [TestCase("int", "/", "0", "-1", "0")]
+        [TestCase("int", "/", "1", "-1", "-1")]
+        // [TestCase("int", "/", "-1", "0", "-1")]
+        // [TestCase("int", "/", "0", "0", "0")]
+        // [TestCase("int", "/", "1", "0", "1")]
+        [TestCase("int", "+", "1024", "1024", "2048")]
+        [TestCase("int", "+", "5", "6", "11")]
+        #endregion
+        #region long
         [TestCase("long", "+", "0", "0", "0")]
         [TestCase("long", "+", "0", "1", "1")]
         [TestCase("long", "+", "1", "1", "2")]
@@ -34,8 +105,24 @@ namespace Fifth.Test.CodeGeneration
         [TestCase("long", "-", "1", "-1", "2")]
         [TestCase("long", "-", "-1", "0", "-1")]
 
+        [TestCase("long", "*", "0", "0", "0")]
+        [TestCase("long", "*", "0", "1", "0")]
+        [TestCase("long", "*", "1", "1", "1")]
+        [TestCase("long", "*", "1", "0", "0")]
+        [TestCase("long", "*", "0", "-1", "0")]
+        [TestCase("long", "*", "1", "-1", "-1")]
+        [TestCase("long", "*", "-1", "0", "0")]
+
+        [TestCase("long", "/", "0", "1", "0")]
+        [TestCase("long", "/", "1", "1", "1")]
+        [TestCase("long", "/", "0", "-1", "0")]
+        [TestCase("long", "/", "1", "-1", "-1")]
+        // [TestCase("long", "/", "-1", "0", "-1")]
+        // [TestCase("long", "/", "0", "0", "0")]
+        // [TestCase("long", "/", "1", "0", "1")]
         [TestCase("long", "+", "1024", "1024", "2048")]
         [TestCase("long", "+", "5", "6", "11")]
+        #endregion
         public async Task CanGenerateFromAst(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
         {
             var prog = $@"
