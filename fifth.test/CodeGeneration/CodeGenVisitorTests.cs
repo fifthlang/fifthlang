@@ -16,9 +16,7 @@ namespace Fifth.Test.CodeGeneration
     [Category("CIL")]
     public class CodeGenVisitorTests
     {
-        [Category("WIP")]
 
-        #region short
         [TestCase("short", "+", "0", "0", "0")]
         [TestCase("short", "+", "0", "1", "1")]
         [TestCase("short", "+", "1", "1", "2")]
@@ -47,13 +45,25 @@ namespace Fifth.Test.CodeGeneration
         [TestCase("short", "/", "1", "1", "1")]
         [TestCase("short", "/", "0", "-1", "0")]
         [TestCase("short", "/", "1", "-1", "-1")]
-        // [TestCase("short", "/", "-1", "0", "-1")]
-        // [TestCase("short", "/", "0", "0", "0")]
-        // [TestCase("short", "/", "1", "0", "1")]
         [TestCase("short", "+", "1024", "1024", "2048")]
         [TestCase("short", "+", "5", "6", "11")]
-        #endregion
-        #region int
+        public async Task CanRunProgWithShorts(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
+        {
+            var prog = $@"
+main():int{{
+    print(sum());
+    return 0;
+}}
+
+sum(): {numberType}{{
+    a: {numberType} = {leftNumber};
+    b: {numberType} = {rightNumber};
+    return a {operatorSymbol} b;
+}}";
+            var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
+            outputs.Should().NotBeEmpty().And.Contain(expectedResult);
+        }
+
         [TestCase("int", "+", "0", "0", "0")]
         [TestCase("int", "+", "0", "1", "1")]
         [TestCase("int", "+", "1", "1", "2")]
@@ -87,8 +97,22 @@ namespace Fifth.Test.CodeGeneration
         // [TestCase("int", "/", "1", "0", "1")]
         [TestCase("int", "+", "1024", "1024", "2048")]
         [TestCase("int", "+", "5", "6", "11")]
-        #endregion
-        #region long
+        public async Task CanRunProgWithInts(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
+        {
+            var prog = $@"
+main():int{{
+    print(sum());
+    return 0;
+}}
+
+sum(): {numberType}{{
+    a: {numberType} = {leftNumber};
+    b: {numberType} = {rightNumber};
+    return a {operatorSymbol} b;
+}}";
+            var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
+            outputs.Should().NotBeEmpty().And.Contain(expectedResult);
+        }
         [TestCase("long", "+", "0", "0", "0")]
         [TestCase("long", "+", "0", "1", "1")]
         [TestCase("long", "+", "1", "1", "2")]
@@ -122,8 +146,52 @@ namespace Fifth.Test.CodeGeneration
         // [TestCase("long", "/", "1", "0", "1")]
         [TestCase("long", "+", "1024", "1024", "2048")]
         [TestCase("long", "+", "5", "6", "11")]
-        #endregion
-        public async Task CanGenerateFromAst(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
+        public async Task CanRunProgWithLongs(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
+        {
+            var prog = $@"
+main():int{{
+    print(sum());
+    return 0;
+}}
+
+sum(): {numberType}{{
+    a: {numberType} = {leftNumber};
+    b: {numberType} = {rightNumber};
+    return a {operatorSymbol} b;
+}}";
+            var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
+            outputs.Should().NotBeEmpty().And.Contain(expectedResult);
+        }
+
+        [TestCase("float", "+", "0.1", "0.1", "0.2")]
+        [TestCase("float", "+", "0.1", "1.1", "1.2")]
+        [TestCase("float", "+", "1.1", "1.1", "2.2")]
+        [TestCase("float", "+", "1.1", "0.1", "1.2")]
+        [TestCase("float", "+", "0.1", "-1.1", "-1")]
+        [TestCase("float", "+", "1.1", "-1.1", "0")]
+        [TestCase("float", "+", "-1.1", "0.1", "-1")]
+        [TestCase("float", "-", "0.1", "0.1", "0")]
+        [TestCase("float", "-", "0.1", "1.1", "-1")]
+        [TestCase("float", "-", "1.1", "1.1", "0")]
+        [TestCase("float", "-", "1.1", "0.1", "1")]
+        [TestCase("float", "-", "0.1", "-1.1", "1.2")]
+        [TestCase("float", "-", "1.1", "-1.1", "2.2")]
+        [TestCase("float", "-", "-1.1", "0.1", "-1.2")]
+        [TestCase("float", "*", "0.1", "0.1", "0.01")]
+        [TestCase("float", "*", "0.1", "1.1", "0.11")]
+        [TestCase("float", "*", "1.1", "1.1", "1.21")]
+        [TestCase("float", "*", "1.1", "0.1", "0.11")]
+        [TestCase("float", "*", "0.1", "-1.1", "-0.11")]
+        [TestCase("float", "*", "1.1", "-1.1", "-1.21")]
+        [TestCase("float", "*", "-1.1", "0.1", "-0.11")]
+        [TestCase("float", "/", "0.1", "1.1", "0.09090909")]
+        [TestCase("float", "/", "1.1", "1.1", "1")]
+        [TestCase("float", "/", "0.1", "-1.1", "-0.09090909")]
+        [TestCase("float", "/", "1.1", "-1.1", "-1")]
+        [TestCase("float", "+", "1024.1", "1024.1", "2048.2")]
+        [TestCase("float", "+", "5.1", "6.1", "11.2")]
+        [Category("WIP")]
+        public async Task CanRunProgWithFloats(string numberType, string operatorSymbol, string leftNumber, string rightNumber, string expectedResult)
         {
             var prog = $@"
 main():int{{

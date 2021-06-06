@@ -100,11 +100,11 @@ namespace Fifth
             }
         }
 
-        private static void DeleteFile(string filename)
+        public static void DeleteFile(string filename)
         {
             try
             {
-                if (File.Exists(filename))
+                if (!string.IsNullOrWhiteSpace(filename) && File.Exists(filename))
                 {
                     File.Delete(filename);
                 }

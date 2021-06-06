@@ -2,17 +2,61 @@ namespace Fifth.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.CommandLine.Invocation;
-    using System.Diagnostics;
     using System.IO;
-    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading.Tasks;
-    using AST;
-    using NUnit.Framework;
 
     public static class TestUtilities
     {
+        public static Task<List<string>> BuildRunAndTestProgram(string sourceFile)
+        {
+            List<string> programOutputs = new();
+
+            if (Program.TryCompile(sourceFile, out var assemblyFilename))
+            {
+                try
+                {
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
+                    if (result == 0)
+                    {
+                        programOutputs.AddRange(stdOutputs ?? new List<string>());
+                    }
+                    else
+                    {
+                        programOutputs.AddRange(stdErrors ?? new List<string>());
+                    }
+                }
+                finally
+                {
+                    Program.DeleteFile(Path.ChangeExtension(assemblyFilename, "pdb"));
+                    Program.DeleteFile(Path.ChangeExtension(assemblyFilename, "dll"));
+                    Program.DeleteFile(assemblyFilename);
+                }
+            }
+
+            return Task.FromResult(programOutputs);
+        }
+
+        public static async Task<List<string>> BuildRunAndTestProgramInResource(string resourceName)
+        {
+            using var f = LoadTestResource(resourceName);
+            return await BuildRunAndTestProgram(f.Path);
+        }
+
+        public static async Task<List<string>> BuildRunAndTestProgramInString(string source)
+        {
+            string sourcePath = null;
+            try
+            {
+                sourcePath = await CopyStringToTempFile(source);
+                return await BuildRunAndTestProgram(sourcePath);
+            }
+            finally
+            {
+                Program.DeleteFile(sourcePath);
+            }
+        }
+
         public static async Task<string> CopyEmbeddedResourceToTempFile(Type t, string fullName)
         {
             var content = await LoadEmbeddedResourceToString(t, fullName);
@@ -44,46 +88,6 @@ namespace Fifth.Test
                                               .GetManifestResourceStream(fullName);
             var sr = new StreamReader(stream);
             return new TempFile(sr);
-        }
-
-        public static async Task<List<string>> BuildRunAndTestProgramInResource(string resourceName)
-        {
-            using var f = TestUtilities.LoadTestResource(resourceName);
-            return await BuildRunAndTestProgram(f.Path);
-        }
-        public static async Task<List<string>> BuildRunAndTestProgramInString(string source)
-        {
-            var sourcePath = await CopyStringToTempFile(source);
-            return await BuildRunAndTestProgram(sourcePath);
-        }
-        public static Task<List<string>> BuildRunAndTestProgram(string sourceFile)
-        {
-            List<string> programOutputs = new();
-            
-            if (Program.TryCompile(sourceFile, out var assemblyFilename))
-            {
-                try
-                {
-                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
-                    if (result == 0)
-                    {
-                        programOutputs.AddRange(stdOutputs ?? new List<string>());
-                    }
-                    else
-                    {
-                        programOutputs.AddRange(stdErrors ?? new List<string>());
-                    }
-
-                }
-                finally
-                {
-                    File.Delete(Path.ChangeExtension(assemblyFilename, "pdb"));
-                    File.Delete(Path.ChangeExtension(assemblyFilename, "dll"));
-                    File.Delete(assemblyFilename);
-                }
-            }
-
-            return Task.FromResult(programOutputs);
         }
     }
 }

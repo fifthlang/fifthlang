@@ -20,7 +20,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             {PrimitiveDate.Default.TypeId, "System.DateTimeOffset"},
             {PrimitiveDecimal.Default.TypeId, "decimal"},
             {PrimitiveDouble.Default.TypeId, "float64"},
-            {PrimitiveFloat.Default.TypeId, "float"},
+            {PrimitiveFloat.Default.TypeId, "float32"},
             {PrimitiveInteger.Default.TypeId, "int32"},
             {PrimitiveLong.Default.TypeId, "int64"},
             {PrimitiveShort.Default.TypeId, "int16"},
@@ -301,6 +301,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public override LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
         {
             w($"ldc.i8 {ctx.Value}");
+            return ctx;
+        }
+        public override FloatValueExpression VisitFloatValueExpression(FloatValueExpression ctx)
+        {
+            w($"ldc.r4 {ctx.Value}");
             return ctx;
         }
 
