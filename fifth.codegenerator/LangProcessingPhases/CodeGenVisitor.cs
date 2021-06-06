@@ -309,6 +309,12 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             return ctx;
         }
 
+        public override DoubleValueExpression VisitDoubleValueExpression(DoubleValueExpression ctx)
+        {
+            w($"ldc.r8 {ctx.Value}");
+            return ctx;
+        }
+
         public override PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
         {
             w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
