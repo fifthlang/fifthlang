@@ -17,150 +17,9 @@ namespace Fifth.Test.CodeGeneration
     [Category("Slow")]
     public class CodeGenVisitorTests
     {
-        public static IEnumerable TestCases
-        {
-            get
-            {
-		    yield return new TestCaseData("short", "+", "0", "0").Returns("0");
-		    yield return new TestCaseData("short", "+", "0", "1").Returns("1");
-		    yield return new TestCaseData("short", "+", "1", "1").Returns("2");
-		    yield return new TestCaseData("short", "+", "1", "0").Returns("1");
-		    yield return new TestCaseData("short", "+", "0", "-1").Returns("-1");
-		    yield return new TestCaseData("short", "+", "1", "-1").Returns("0");
-		    yield return new TestCaseData("short", "+", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("short", "-", "0", "0").Returns("0");
-		    yield return new TestCaseData("short", "-", "0", "1").Returns("-1");
-		    yield return new TestCaseData("short", "-", "1", "1").Returns("0");
-		    yield return new TestCaseData("short", "-", "1", "0").Returns("1");
-		    yield return new TestCaseData("short", "-", "0", "-1").Returns("1");
-		    yield return new TestCaseData("short", "-", "1", "-1").Returns("2");
-		    yield return new TestCaseData("short", "-", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("short", "*", "0", "0").Returns("0");
-		    yield return new TestCaseData("short", "*", "0", "1").Returns("0");
-		    yield return new TestCaseData("short", "*", "1", "1").Returns("1");
-		    yield return new TestCaseData("short", "*", "1", "0").Returns("0");
-		    yield return new TestCaseData("short", "*", "0", "-1").Returns("0");
-		    yield return new TestCaseData("short", "*", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("short", "*", "-1", "0").Returns("0");
-		    yield return new TestCaseData("short", "/", "0", "1").Returns("0");
-		    yield return new TestCaseData("short", "/", "1", "1").Returns("1");
-		    yield return new TestCaseData("short", "/", "0", "-1").Returns("0");
-		    yield return new TestCaseData("short", "/", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("short", "+", "1024", "1024").Returns("2048");
-		    yield return new TestCaseData("short", "+", "5", "6").Returns("11");
-		    yield return new TestCaseData("int", "+", "0", "0").Returns("0");
-		    yield return new TestCaseData("int", "+", "0", "1").Returns("1");
-		    yield return new TestCaseData("int", "+", "1", "1").Returns("2");
-		    yield return new TestCaseData("int", "+", "1", "0").Returns("1");
-		    yield return new TestCaseData("int", "+", "0", "-1").Returns("-1");
-		    yield return new TestCaseData("int", "+", "1", "-1").Returns("0");
-		    yield return new TestCaseData("int", "+", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("int", "-", "0", "0").Returns("0");
-		    yield return new TestCaseData("int", "-", "0", "1").Returns("-1");
-		    yield return new TestCaseData("int", "-", "1", "1").Returns("0");
-		    yield return new TestCaseData("int", "-", "1", "0").Returns("1");
-		    yield return new TestCaseData("int", "-", "0", "-1").Returns("1");
-		    yield return new TestCaseData("int", "-", "1", "-1").Returns("2");
-		    yield return new TestCaseData("int", "-", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("int", "*", "0", "0").Returns("0");
-		    yield return new TestCaseData("int", "*", "0", "1").Returns("0");
-		    yield return new TestCaseData("int", "*", "1", "1").Returns("1");
-		    yield return new TestCaseData("int", "*", "1", "0").Returns("0");
-		    yield return new TestCaseData("int", "*", "0", "-1").Returns("0");
-		    yield return new TestCaseData("int", "*", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("int", "*", "-1", "0").Returns("0");
-		    yield return new TestCaseData("int", "/", "0", "1").Returns("0");
-		    yield return new TestCaseData("int", "/", "1", "1").Returns("1");
-		    yield return new TestCaseData("int", "/", "0", "-1").Returns("0");
-		    yield return new TestCaseData("int", "/", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("int", "+", "1024", "1024").Returns("2048");
-		    yield return new TestCaseData("int", "+", "5", "6").Returns("11");
-		    yield return new TestCaseData("long", "+", "0", "0").Returns("0");
-		    yield return new TestCaseData("long", "+", "0", "1").Returns("1");
-		    yield return new TestCaseData("long", "+", "1", "1").Returns("2");
-		    yield return new TestCaseData("long", "+", "1", "0").Returns("1");
-		    yield return new TestCaseData("long", "+", "0", "-1").Returns("-1");
-		    yield return new TestCaseData("long", "+", "1", "-1").Returns("0");
-		    yield return new TestCaseData("long", "+", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("long", "-", "0", "0").Returns("0");
-		    yield return new TestCaseData("long", "-", "0", "1").Returns("-1");
-		    yield return new TestCaseData("long", "-", "1", "1").Returns("0");
-		    yield return new TestCaseData("long", "-", "1", "0").Returns("1");
-		    yield return new TestCaseData("long", "-", "0", "-1").Returns("1");
-		    yield return new TestCaseData("long", "-", "1", "-1").Returns("2");
-		    yield return new TestCaseData("long", "-", "-1", "0").Returns("-1");
-		    yield return new TestCaseData("long", "*", "0", "0").Returns("0");
-		    yield return new TestCaseData("long", "*", "0", "1").Returns("0");
-		    yield return new TestCaseData("long", "*", "1", "1").Returns("1");
-		    yield return new TestCaseData("long", "*", "1", "0").Returns("0");
-		    yield return new TestCaseData("long", "*", "0", "-1").Returns("0");
-		    yield return new TestCaseData("long", "*", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("long", "*", "-1", "0").Returns("0");
-		    yield return new TestCaseData("long", "/", "0", "1").Returns("0");
-		    yield return new TestCaseData("long", "/", "1", "1").Returns("1");
-		    yield return new TestCaseData("long", "/", "0", "-1").Returns("0");
-		    yield return new TestCaseData("long", "/", "1", "-1").Returns("-1");
-		    yield return new TestCaseData("long", "+", "1024", "1024").Returns("2048");
-		    yield return new TestCaseData("long", "+", "5", "6").Returns("11");
-		    yield return new TestCaseData("float", "+", "0.1", "0.1").Returns("0.2");
-		    yield return new TestCaseData("float", "+", "0.1", "1.1").Returns("1.2");
-		    yield return new TestCaseData("float", "+", "1.1", "1.1").Returns("2.2");
-		    yield return new TestCaseData("float", "+", "1.1", "0.1").Returns("1.2");
-		    yield return new TestCaseData("float", "+", "0.1", "-1.1").Returns("-1");
-		    yield return new TestCaseData("float", "+", "1.1", "-1.1").Returns("0");
-		    yield return new TestCaseData("float", "+", "-1.1", "0.1").Returns("-1");
-		    yield return new TestCaseData("float", "-", "0.1", "0.1").Returns("0");
-		    yield return new TestCaseData("float", "-", "0.1", "1.1").Returns("-1");
-		    yield return new TestCaseData("float", "-", "1.1", "1.1").Returns("0");
-		    yield return new TestCaseData("float", "-", "1.1", "0.1").Returns("1");
-		    yield return new TestCaseData("float", "-", "0.1", "-1.1").Returns("1.2");
-		    yield return new TestCaseData("float", "-", "1.1", "-1.1").Returns("2.2");
-		    yield return new TestCaseData("float", "-", "-1.1", "0.1").Returns("-1.2");
-		    yield return new TestCaseData("float", "*", "0.1", "0.1").Returns("0.01");
-		    yield return new TestCaseData("float", "*", "0.1", "1.1").Returns("0.11");
-		    yield return new TestCaseData("float", "*", "1.1", "1.1").Returns("1.21");
-		    yield return new TestCaseData("float", "*", "1.1", "0.1").Returns("0.11");
-		    yield return new TestCaseData("float", "*", "0.1", "-1.1").Returns("-0.11");
-		    yield return new TestCaseData("float", "*", "1.1", "-1.1").Returns("-1.21");
-		    yield return new TestCaseData("float", "*", "-1.1", "0.1").Returns("-0.11");
-		    yield return new TestCaseData("float", "/", "0.1", "1.1").Returns("0.09090909");
-		    yield return new TestCaseData("float", "/", "1.1", "1.1").Returns("1");
-		    yield return new TestCaseData("float", "/", "0.1", "-1.1").Returns("-0.09090909");
-		    yield return new TestCaseData("float", "/", "1.1", "-1.1").Returns("-1");
-		    yield return new TestCaseData("float", "+", "1024.1", "1024.1").Returns("2048.2");
-		    yield return new TestCaseData("float", "+", "5.1", "6.1").Returns("11.2");
-		    yield return new TestCaseData("double", "+", "0.1", "0.1").Returns("0.200000002980232");
-		    yield return new TestCaseData("double", "+", "0.1", "1.1").Returns("1.20000002533197");
-		    yield return new TestCaseData("double", "+", "1.1", "1.1").Returns("2.20000004768372");
-		    yield return new TestCaseData("double", "+", "1.1", "0.1").Returns("1.20000002533197");
-		    yield return new TestCaseData("double", "+", "0.1", "-1.1").Returns("-1.00000002235174");
-		    yield return new TestCaseData("double", "+", "1.1", "-1.1").Returns("0");
-		    yield return new TestCaseData("double", "+", "-1.1", "0.1").Returns("-1.00000002235174");
-		    yield return new TestCaseData("double", "-", "0.1", "0.1").Returns("0");
-		    yield return new TestCaseData("double", "-", "0.1", "1.1").Returns("-1.00000002235174");
-		    yield return new TestCaseData("double", "-", "1.1", "1.1").Returns("0");
-		    yield return new TestCaseData("double", "-", "1.1", "0.1").Returns("1.00000002235174");
-		    yield return new TestCaseData("double", "-", "0.1", "-1.1").Returns("1.20000002533197");
-		    yield return new TestCaseData("double", "-", "1.1", "-1.1").Returns("2.20000004768372");
-		    yield return new TestCaseData("double", "-", "-1.1", "0.1").Returns("-1.20000002533197");
-		    yield return new TestCaseData("double", "*", "0.1", "0.1").Returns("0.0100000002980232");
-		    yield return new TestCaseData("double", "*", "0.1", "1.1").Returns("0.110000004023314");
-		    yield return new TestCaseData("double", "*", "1.1", "1.1").Returns("1.21000005245209");
-		    yield return new TestCaseData("double", "*", "1.1", "0.1").Returns("0.110000004023314");
-		    yield return new TestCaseData("double", "*", "0.1", "-1.1").Returns("-0.110000004023314");
-		    yield return new TestCaseData("double", "*", "1.1", "-1.1").Returns("-1.21000005245209");
-		    yield return new TestCaseData("double", "*", "-1.1", "0.1").Returns("-0.110000004023314");
-		    yield return new TestCaseData("double", "/", "0.1", "1.1").Returns("0.0909090902933405");
-		    yield return new TestCaseData("double", "/", "1.1", "1.1").Returns("1");
-		    yield return new TestCaseData("double", "/", "0.1", "-1.1").Returns("-0.0909090902933405");
-		    yield return new TestCaseData("double", "/", "1.1", "-1.1").Returns("-1");
-		    yield return new TestCaseData("double", "+", "1024.1", "1024.1").Returns("2048.19995117188");
-		    yield return new TestCaseData("double", "+", "5.1", "6.1").Returns("11.1999998092651");
-            }
-        }
-
-        [TestCaseSource(typeof(CodeGenVisitorTests), nameof(CodeGenVisitorTests.TestCases))]
-        public async Task<string> TestShortProgramByOutput(string numberType, string operatorSymbol, string leftNumber,
+        [TestCaseSource(typeof(CodeGenVisitorTests), nameof(TypeArithmeticTestCases))]
+        [Category("WIP")]
+        public async Task<string> TestArithmeticOperationsWorkForEachType(string numberType, string operatorSymbol, string leftNumber,
             string rightNumber)
         {
             var prog = $@"
@@ -174,6 +33,14 @@ sum(): {numberType}{{
     b: {numberType} = {rightNumber};
     return a {operatorSymbol} b;
 }}";
+            var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
+            return outputs.FirstOrDefault();
+        }
+
+        [TestCaseSource(typeof(CodeGenVisitorTests), nameof(StringFormattingTestCases))]
+        public async Task<string> TestStringFormattingWorksThroughPrint(string format, string input)
+        {
+            var prog = $@"main():int{{ print(""{format}"", {input}); return 0; }}";
             var outputs = await TestUtilities.BuildRunAndTestProgramInString(prog);
             return outputs.FirstOrDefault();
         }
@@ -237,5 +104,182 @@ sum(): {numberType}{{
                 Console.WriteLine(generatedCode);
             }
         }
+
+        #region Test Cases
+
+        public static IEnumerable TypeArithmeticTestCases
+        {
+            get
+            {
+                #region short
+
+                yield return new TestCaseData("short", "+", "0", "0").Returns("0");
+                yield return new TestCaseData("short", "+", "0", "1").Returns("1");
+                yield return new TestCaseData("short", "+", "1", "1").Returns("2");
+                yield return new TestCaseData("short", "+", "1", "0").Returns("1");
+                yield return new TestCaseData("short", "+", "0", "-1").Returns("-1");
+                yield return new TestCaseData("short", "+", "1", "-1").Returns("0");
+                yield return new TestCaseData("short", "+", "-1", "0").Returns("-1");
+                yield return new TestCaseData("short", "-", "0", "0").Returns("0");
+                yield return new TestCaseData("short", "-", "0", "1").Returns("-1");
+                yield return new TestCaseData("short", "-", "1", "1").Returns("0");
+                yield return new TestCaseData("short", "-", "1", "0").Returns("1");
+                yield return new TestCaseData("short", "-", "0", "-1").Returns("1");
+                yield return new TestCaseData("short", "-", "1", "-1").Returns("2");
+                yield return new TestCaseData("short", "-", "-1", "0").Returns("-1");
+                yield return new TestCaseData("short", "*", "0", "0").Returns("0");
+                yield return new TestCaseData("short", "*", "0", "1").Returns("0");
+                yield return new TestCaseData("short", "*", "1", "1").Returns("1");
+                yield return new TestCaseData("short", "*", "1", "0").Returns("0");
+                yield return new TestCaseData("short", "*", "0", "-1").Returns("0");
+                yield return new TestCaseData("short", "*", "1", "-1").Returns("-1");
+                yield return new TestCaseData("short", "*", "-1", "0").Returns("0");
+                yield return new TestCaseData("short", "/", "0", "1").Returns("0");
+                yield return new TestCaseData("short", "/", "1", "1").Returns("1");
+                yield return new TestCaseData("short", "/", "0", "-1").Returns("0");
+                yield return new TestCaseData("short", "/", "1", "-1").Returns("-1");
+                yield return new TestCaseData("short", "+", "1024", "1024").Returns("2048");
+                yield return new TestCaseData("short", "+", "5", "6").Returns("11");
+
+                #endregion
+
+                #region int
+
+                yield return new TestCaseData("int", "+", "0", "0").Returns("0");
+                yield return new TestCaseData("int", "+", "0", "1").Returns("1");
+                yield return new TestCaseData("int", "+", "1", "1").Returns("2");
+                yield return new TestCaseData("int", "+", "1", "0").Returns("1");
+                yield return new TestCaseData("int", "+", "0", "-1").Returns("-1");
+                yield return new TestCaseData("int", "+", "1", "-1").Returns("0");
+                yield return new TestCaseData("int", "+", "-1", "0").Returns("-1");
+                yield return new TestCaseData("int", "-", "0", "0").Returns("0");
+                yield return new TestCaseData("int", "-", "0", "1").Returns("-1");
+                yield return new TestCaseData("int", "-", "1", "1").Returns("0");
+                yield return new TestCaseData("int", "-", "1", "0").Returns("1");
+                yield return new TestCaseData("int", "-", "0", "-1").Returns("1");
+                yield return new TestCaseData("int", "-", "1", "-1").Returns("2");
+                yield return new TestCaseData("int", "-", "-1", "0").Returns("-1");
+                yield return new TestCaseData("int", "*", "0", "0").Returns("0");
+                yield return new TestCaseData("int", "*", "0", "1").Returns("0");
+                yield return new TestCaseData("int", "*", "1", "1").Returns("1");
+                yield return new TestCaseData("int", "*", "1", "0").Returns("0");
+                yield return new TestCaseData("int", "*", "0", "-1").Returns("0");
+                yield return new TestCaseData("int", "*", "1", "-1").Returns("-1");
+                yield return new TestCaseData("int", "*", "-1", "0").Returns("0");
+                yield return new TestCaseData("int", "/", "0", "1").Returns("0");
+                yield return new TestCaseData("int", "/", "1", "1").Returns("1");
+                yield return new TestCaseData("int", "/", "0", "-1").Returns("0");
+                yield return new TestCaseData("int", "/", "1", "-1").Returns("-1");
+                yield return new TestCaseData("int", "+", "1024", "1024").Returns("2048");
+                yield return new TestCaseData("int", "+", "5", "6").Returns("11");
+
+                #endregion
+
+                #region long
+
+                yield return new TestCaseData("long", "+", "0", "0").Returns("0");
+                yield return new TestCaseData("long", "+", "0", "1").Returns("1");
+                yield return new TestCaseData("long", "+", "1", "1").Returns("2");
+                yield return new TestCaseData("long", "+", "1", "0").Returns("1");
+                yield return new TestCaseData("long", "+", "0", "-1").Returns("-1");
+                yield return new TestCaseData("long", "+", "1", "-1").Returns("0");
+                yield return new TestCaseData("long", "+", "-1", "0").Returns("-1");
+                yield return new TestCaseData("long", "-", "0", "0").Returns("0");
+                yield return new TestCaseData("long", "-", "0", "1").Returns("-1");
+                yield return new TestCaseData("long", "-", "1", "1").Returns("0");
+                yield return new TestCaseData("long", "-", "1", "0").Returns("1");
+                yield return new TestCaseData("long", "-", "0", "-1").Returns("1");
+                yield return new TestCaseData("long", "-", "1", "-1").Returns("2");
+                yield return new TestCaseData("long", "-", "-1", "0").Returns("-1");
+                yield return new TestCaseData("long", "*", "0", "0").Returns("0");
+                yield return new TestCaseData("long", "*", "0", "1").Returns("0");
+                yield return new TestCaseData("long", "*", "1", "1").Returns("1");
+                yield return new TestCaseData("long", "*", "1", "0").Returns("0");
+                yield return new TestCaseData("long", "*", "0", "-1").Returns("0");
+                yield return new TestCaseData("long", "*", "1", "-1").Returns("-1");
+                yield return new TestCaseData("long", "*", "-1", "0").Returns("0");
+                yield return new TestCaseData("long", "/", "0", "1").Returns("0");
+                yield return new TestCaseData("long", "/", "1", "1").Returns("1");
+                yield return new TestCaseData("long", "/", "0", "-1").Returns("0");
+                yield return new TestCaseData("long", "/", "1", "-1").Returns("-1");
+                yield return new TestCaseData("long", "+", "1024", "1024").Returns("2048");
+                yield return new TestCaseData("long", "+", "5", "6").Returns("11");
+
+                #endregion
+
+                #region float
+
+                yield return new TestCaseData("float", "+", "0.1", "0.1").Returns("0.2");
+                yield return new TestCaseData("float", "+", "0.1", "1.1").Returns("1.2");
+                yield return new TestCaseData("float", "+", "1.1", "1.1").Returns("2.2");
+                yield return new TestCaseData("float", "+", "1.1", "0.1").Returns("1.2");
+                yield return new TestCaseData("float", "+", "0.1", "-1.1").Returns("-1");
+                yield return new TestCaseData("float", "+", "1.1", "-1.1").Returns("0");
+                yield return new TestCaseData("float", "+", "-1.1", "0.1").Returns("-1");
+                yield return new TestCaseData("float", "-", "0.1", "0.1").Returns("0");
+                yield return new TestCaseData("float", "-", "0.1", "1.1").Returns("-1");
+                yield return new TestCaseData("float", "-", "1.1", "1.1").Returns("0");
+                yield return new TestCaseData("float", "-", "1.1", "0.1").Returns("1");
+                yield return new TestCaseData("float", "-", "0.1", "-1.1").Returns("1.2");
+                yield return new TestCaseData("float", "-", "1.1", "-1.1").Returns("2.2");
+                yield return new TestCaseData("float", "-", "-1.1", "0.1").Returns("-1.2");
+                yield return new TestCaseData("float", "*", "0.1", "0.1").Returns("0.01");
+                yield return new TestCaseData("float", "*", "0.1", "1.1").Returns("0.11");
+                yield return new TestCaseData("float", "*", "1.1", "1.1").Returns("1.21");
+                yield return new TestCaseData("float", "*", "1.1", "0.1").Returns("0.11");
+                yield return new TestCaseData("float", "*", "0.1", "-1.1").Returns("-0.11");
+                yield return new TestCaseData("float", "*", "1.1", "-1.1").Returns("-1.21");
+                yield return new TestCaseData("float", "*", "-1.1", "0.1").Returns("-0.11");
+                yield return new TestCaseData("float", "/", "0.1", "1.1").Returns("0.09090909");
+                yield return new TestCaseData("float", "/", "1.1", "1.1").Returns("1");
+                yield return new TestCaseData("float", "/", "0.1", "-1.1").Returns("-0.09090909");
+                yield return new TestCaseData("float", "/", "1.1", "-1.1").Returns("-1");
+                yield return new TestCaseData("float", "+", "1024.1", "1024.1").Returns("2048.2");
+                yield return new TestCaseData("float", "+", "5.1", "6.1").Returns("11.2");
+
+                #endregion
+
+                #region double
+
+                yield return new TestCaseData("double", "+", "0.1", "0.1").Returns("0.200000002980232");
+                yield return new TestCaseData("double", "+", "0.1", "1.1").Returns("1.20000002533197");
+                yield return new TestCaseData("double", "+", "1.1", "1.1").Returns("2.20000004768372");
+                yield return new TestCaseData("double", "+", "1.1", "0.1").Returns("1.20000002533197");
+                yield return new TestCaseData("double", "+", "0.1", "-1.1").Returns("-1.00000002235174");
+                yield return new TestCaseData("double", "+", "1.1", "-1.1").Returns("0");
+                yield return new TestCaseData("double", "+", "-1.1", "0.1").Returns("-1.00000002235174");
+                yield return new TestCaseData("double", "-", "0.1", "0.1").Returns("0");
+                yield return new TestCaseData("double", "-", "0.1", "1.1").Returns("-1.00000002235174");
+                yield return new TestCaseData("double", "-", "1.1", "1.1").Returns("0");
+                yield return new TestCaseData("double", "-", "1.1", "0.1").Returns("1.00000002235174");
+                yield return new TestCaseData("double", "-", "0.1", "-1.1").Returns("1.20000002533197");
+                yield return new TestCaseData("double", "-", "1.1", "-1.1").Returns("2.20000004768372");
+                yield return new TestCaseData("double", "-", "-1.1", "0.1").Returns("-1.20000002533197");
+                yield return new TestCaseData("double", "*", "0.1", "0.1").Returns("0.0100000002980232");
+                yield return new TestCaseData("double", "*", "0.1", "1.1").Returns("0.110000004023314");
+                yield return new TestCaseData("double", "*", "1.1", "1.1").Returns("1.21000005245209");
+                yield return new TestCaseData("double", "*", "1.1", "0.1").Returns("0.110000004023314");
+                yield return new TestCaseData("double", "*", "0.1", "-1.1").Returns("-0.110000004023314");
+                yield return new TestCaseData("double", "*", "1.1", "-1.1").Returns("-1.21000005245209");
+                yield return new TestCaseData("double", "*", "-1.1", "0.1").Returns("-0.110000004023314");
+                yield return new TestCaseData("double", "/", "0.1", "1.1").Returns("0.0909090902933405");
+                yield return new TestCaseData("double", "/", "1.1", "1.1").Returns("1");
+                yield return new TestCaseData("double", "/", "0.1", "-1.1").Returns("-0.0909090902933405");
+                yield return new TestCaseData("double", "/", "1.1", "-1.1").Returns("-1");
+                yield return new TestCaseData("double", "+", "1024.1", "1024.1").Returns("2048.19995117188");
+                yield return new TestCaseData("double", "+", "5.1", "6.1").Returns("11.1999998092651");
+
+                #endregion
+            }
+        }
+
+        public static IEnumerable StringFormattingTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("{0:c}", "12345.67").Returns("£12,345.67");
+            }
+        }
+        #endregion
     }
 }

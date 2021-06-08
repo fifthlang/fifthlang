@@ -51,9 +51,9 @@ namespace Fifth.Tests.Parser
 
         [TestCase(@"main(x:int):void {return x + 1;}")]
         [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}")]
-        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():int{return 43;}", 4)]
-        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():void{return 43;}", 4)]
-        public void TestCanBuildProgram(string programText, int funcCount = 3)
+        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():int{return 43;}", 5)]
+        [TestCase(@"main(x:int):void {x:int = 234; return x + 1;}  foo():void{return 43;}", 5)]
+        public void TestCanBuildProgram(string programText, int funcCount = 4)
         {
             if (FifthParserManager.TryParse<FifthProgram>(programText, out var ast, out var errors))
             {

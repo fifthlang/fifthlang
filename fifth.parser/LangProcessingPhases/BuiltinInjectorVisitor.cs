@@ -13,6 +13,7 @@ namespace Fifth.LangProcessingPhases
     {
         public override void EnterFifthProgram(FifthProgram ctx)
         {
+            ctx.Functions.Add(new BuiltinFunctionDefinition("print", "void", ("format", "string"), ("value", "string")));
             ctx.Functions.Add(new BuiltinFunctionDefinition("print", "void", ("value", "string")));
             ctx.Functions.Add(new BuiltinFunctionDefinition("write", "void", ("value", "string")));
         }

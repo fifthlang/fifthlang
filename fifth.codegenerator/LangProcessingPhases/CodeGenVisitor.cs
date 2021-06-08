@@ -7,25 +7,13 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
     using System.Threading;
     using AST;
     using AST.Visitors;
+    using BuiltinsGeneration;
     using PrimitiveTypes;
     using TypeSystem;
     using Exception = Fifth.Exception;
 
     public class CodeGenVisitor : DefaultRecursiveDescentVisitor
     {
-        private readonly Dictionary<TypeId, string> toDotnet = new()
-        {
-            {PrimitiveBool.Default.TypeId, "bool"},
-            {PrimitiveChar.Default.TypeId, "char"},
-            {PrimitiveDate.Default.TypeId, "System.DateTimeOffset"},
-            {PrimitiveDecimal.Default.TypeId, "decimal"},
-            {PrimitiveDouble.Default.TypeId, "float64"},
-            {PrimitiveFloat.Default.TypeId, "float32"},
-            {PrimitiveInteger.Default.TypeId, "int32"},
-            {PrimitiveLong.Default.TypeId, "int64"},
-            {PrimitiveShort.Default.TypeId, "int16"},
-            {PrimitiveString.Default.TypeId, "string"}
-        };
 
         private readonly TextWriter writer;
         private ulong labelCounter;
@@ -40,12 +28,52 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
                 return "void";
             }
 
-            if (toDotnet.ContainsKey(tid))
+            if (TypeMappings.HasMapping(tid))
             {
-                return toDotnet[tid];
+                return TypeMappings.ToDotnetType(tid);
             }
 
             return tid.Lookup().Name;
+        }
+
+        public override Assembly VisitAssembly(Assembly ctx)
+        {
+            foreach (var assemblyRef in ctx.References ?? new List<AssemblyRef>())
+            {
+                VisitAssemblyRef(assemblyRef);
+            }
+
+            // w(".assembly extern mscorlib { }");
+            // w(".assembly extern System.Console { }");
+
+            w($@".assembly {ctx.Name}
+            {{
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = ( 01 00 08 00 00 00 00 00 )
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor() = ( 01 00 01 00 54 02 16 57 72 61 70 4E 6F 6E 45 78   // ....T..WrapNonEx
+                                                                                                                               63 65 70 74 69 6F 6E 54 68 72 6F 77 73 01 )       // ceptionThrows.
+
+              // --- The following custom attribute is added automatically, do not uncomment -------
+              //  .custom instance void [System.Runtime]System.Diagnostics.DebuggableAttribute::.ctor(valuetype [System.Runtime]System.Diagnostics.DebuggableAttribute/DebuggingModes) = ( 01 00 07 01 00 00 00 00 )
+
+              .custom instance void [System.Runtime]System.Runtime.Versioning.TargetFrameworkAttribute::.ctor(string) = ( 01 00 18 2E 4E 45 54 43 6F 72 65 41 70 70 2C 56   // ....NETCoreApp,V
+                                                                                                                          65 72 73 69 6F 6E 3D 76 35 2E 30 01 00 54 0E 14   // ersion=v5.0..T..
+                                                                                                                          46 72 61 6D 65 77 6F 72 6B 44 69 73 70 6C 61 79   // FrameworkDisplay
+                                                                                                                          4E 61 6D 65 00 )                                  // Name.
+              .hash algorithm 0x00008004
+              .ver 1:0:0:0
+            }}");
+            VisitFifthProgram(ctx.Program);
+            return ctx;
+        }
+
+        public override AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
+        {
+            w($@".assembly extern {ctx.Name}
+            {{
+              .publickeytoken = ( {ctx.PublicKeyToken} )
+              .ver {ctx.Version}
+            }}");
+            return ctx;
         }
 
         public override BinaryExpression VisitBinaryExpression(BinaryExpression ctx)
@@ -120,7 +148,6 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
         {
-
             w($".class public  {ctx.Name} extends [System.Runtime]System.Object {{");
             foreach (var functionDefinition in ctx.Functions)
             {
@@ -131,23 +158,12 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             return ctx;
         }
 
-        public override Assembly VisitAssembly(Assembly ctx)
+        public override DoubleValueExpression VisitDoubleValueExpression(DoubleValueExpression ctx)
         {
-            foreach (var assemblyRef in ctx.References ?? new List<AssemblyRef>())
-            {
-                VisitAssemblyRef(assemblyRef);
-            }
-            w(".assembly extern mscorlib { }");
-            w($@".assembly {ctx.Name}
-            {{
-                .ver 1:0:0:0
-            }}");
-            VisitFifthProgram(ctx.Program);
+            w($"ldc.r8 {ctx.Value}");
             return ctx;
         }
 
-        public override AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
-            => base.VisitAssemblyRef(ctx);
         public override ExpressionStatement VisitExpressionStatement(ExpressionStatement ctx)
         {
             Visit(ctx.Expression);
@@ -156,15 +172,21 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override FifthProgram VisitFifthProgram(FifthProgram ctx)
         {
-
             w($".module {ctx.TargetAssemblyFileName}");
             w(@".class public Program {");
             foreach (var functionDefinition in ctx.Functions)
             {
                 VisitFunctionDefinition(functionDefinition as FunctionDefinition);
             }
+
             w("}");
             w("");
+            return ctx;
+        }
+
+        public override FloatValueExpression VisitFloatValueExpression(FloatValueExpression ctx)
+        {
+            w($"ldc.r4 {ctx.Value}");
             return ctx;
         }
 
@@ -175,9 +197,9 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             {
                 foreach (var e in ctx.ActualParameters.Expressions)
                 {
-                    if (toDotnet.ContainsKey(e.TypeId))
+                    if (TypeMappings.HasMapping(e.TypeId))
                     {
-                        dotnetTypes.Add(toDotnet[e.TypeId]);
+                        dotnetTypes.Add(TypeMappings.ToDotnetType(e.TypeId));
                     }
                     else
                     {
@@ -187,7 +209,6 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
                         }
                     }
                 }
-
             }
 
             var argTypeNames = dotnetTypes.Join(t => t);
@@ -195,7 +216,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             if (ctx.TypeId != null)
             {
                 var return5thType = ctx.TypeId.Lookup();
-                dotNetReturnType = toDotnet[return5thType.TypeId];
+                dotNetReturnType = TypeMappings.ToDotnetType(return5thType.TypeId);
             }
 
             if (!ctx.HasAnnotation(Constants.FunctionImplementation))
@@ -212,12 +233,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             }
 
             var funcImpl = ctx[Constants.FunctionImplementation] as IFunctionDefinition;
-            if (funcImpl is BuiltinFunctionDefinition)
+            if (funcImpl is BuiltinFunctionDefinition bif)
             {
-                if (funcImpl.Name == "print")
+                if (bif.Name == "print")
                 {
-                    var argType = GetPrintArgType(ctx);
-                    w($"call    void [mscorlib]System.Console::WriteLine({argType})");
+                    new PrintGenerator(writer).GenerateFor(ctx, bif);
                 }
 
                 return ctx;
@@ -226,16 +246,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             w($"call {dotNetReturnType} Program::{ctx.Name}({argTypeNames})");
 
             return ctx;
-        }
 
-        private string GetPrintArgType(FuncCallExpression ctx)
-        {
-            var firstArgTid = ctx.ActualParameters.Expressions[0].TypeId;
-            if (firstArgTid == PrimitiveShort.Default.TypeId)
-            {
-                firstArgTid = PrimitiveInteger.Default.TypeId;
-            }
-            return toDotnet[firstArgTid];
         }
 
         public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
@@ -301,17 +312,6 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public override LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
         {
             w($"ldc.i8 {ctx.Value}");
-            return ctx;
-        }
-        public override FloatValueExpression VisitFloatValueExpression(FloatValueExpression ctx)
-        {
-            w($"ldc.r4 {ctx.Value}");
-            return ctx;
-        }
-
-        public override DoubleValueExpression VisitDoubleValueExpression(DoubleValueExpression ctx)
-        {
-            w($"ldc.r8 {ctx.Value}");
             return ctx;
         }
 
