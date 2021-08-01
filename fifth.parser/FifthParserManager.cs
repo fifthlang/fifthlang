@@ -57,8 +57,12 @@ namespace Fifth
 
         static void AddCommonAssemblyReferences(AST.Assembly ast)
         {
-            ast.References.Add(new AssemblyRef("System.Runtime", "B0 3F 5F 7F 11 D5 0A 3A", "4:0:0:0"));
-            ast.References.Add(new AssemblyRef("System.Console", "B0 3F 5F 7F 11 D5 0A 3A", "4:0:0:0"));
+            if (ast != null)
+            {
+                // ilasm automatically adds [mscorlib]
+                ast.References.Add(new AssemblyRef("System.Runtime", "B0 3F 5F 7F 11 D5 0A 3A", "4:0:0:0"));
+                ast.References.Add(new AssemblyRef("System.Console", "B0 3F 5F 7F 11 D5 0A 3A", "4:0:0:0"));
+            }
         }
         public static IAstNode ParseToAst<T>(ICharStream source)
             where T : IAstNode

@@ -30,16 +30,22 @@ class Person {
     Weight: float;
 }
 
-void main(){
-    Person p = new Person{
-        Name = "Eric Morecombe",
-        Height = 1.93,
-        Age = 60,
-        Weight = 95
-    };
+calculate_bmi(p: Person {
+    age: Age | age > 60,
+    height: Height ,
+    weight: Weight
+    }) : float {
+    return weight / (height * height);
+}
 
-    p.Weight = p.Weight + 5;
-    return p.Weight;
+ main():void {
+    eric: Person = new Person{
+        Name = 'Eric Morecombe',
+        Height = 1.93,
+        Age = 65,
+        Weight = 100
+    };
+    print(calculate_bmi(eric));
 }
 ```
 

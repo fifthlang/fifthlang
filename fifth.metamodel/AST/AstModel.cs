@@ -456,6 +456,7 @@ namespace Fifth.AST
             Name = name;
             PublicKeyToken = strongNameKey;
             Version = versionNumber;
+            References = new();
         }
     
     }

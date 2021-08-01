@@ -18,7 +18,6 @@ namespace Fifth.Test.CodeGeneration
     public class CodeGenVisitorTests
     {
         [TestCaseSource(typeof(CodeGenVisitorTests), nameof(TypeArithmeticTestCases))]
-        [Category("WIP")]
         public async Task<string> TestArithmeticOperationsWorkForEachType(string numberType, string operatorSymbol, string leftNumber,
             string rightNumber)
         {
@@ -60,19 +59,12 @@ sum(): {numberType}{{
             }
         }
 
-        [Test]
-        public void CopesWithPatternMatchInFuncDef()
+        [TestCaseSource(typeof(CodeGenVisitorTests), nameof(DestructuringTestCases))]
+        [Category("WIP")]
+        public async Task<string> TestDestructuringCases(string resourceName)
         {
-            using var f = TestUtilities.LoadTestResource("Fifth.Test.TestSampleCode.destructuring.5th");
-            if (FifthParserManager.TryParseFile<FifthProgram>(f.Path, out var ast, out var errors))
-            {
-                var sb = new StringBuilder();
-                var sut = new CodeGenVisitor(new StringWriter(sb));
-                sut.VisitFifthProgram(ast);
-                var generatedCode = sb.ToString();
-                generatedCode.Should().NotBeNullOrWhiteSpace();
-                Console.WriteLine(generatedCode);
-            }
+            var outputs = await TestUtilities.BuildRunAndTestProgramInResource(resourceName);
+            return outputs.FirstOrDefault();
         }
 
         [Test]
@@ -278,6 +270,13 @@ sum(): {numberType}{{
             get
             {
                 yield return new TestCaseData("{0:c}", "12345.67").Returns("£12,345.67");
+            }
+        }
+        public static IEnumerable DestructuringTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("Fifth.Test.TestSampleCode.destructuring.5th").Returns("26.84635829149776");
             }
         }
         #endregion
