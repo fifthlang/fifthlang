@@ -16,7 +16,10 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-dotnettools.csharp"
+		"ms-dotnettools.csharp", "zbecknell.t4-support", "wk-j.vscode-cil-complete",
+		"mike-lischke.vscode-antlr4", "stardog-union.stardog-rdf-grammars", "stardog-union.vscode-langserver-trig",
+		"github.copilot",
+		"yzhang.markdown-all-in-one", "fcrespo82.markdown-table-formatter", "davidanson.vscode-markdownlint", "marvhen.reflow-markdown"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -49,5 +52,5 @@
 	// "postCreateCommand": "dotnet restore",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	//"remoteUser": "vscode"
 }

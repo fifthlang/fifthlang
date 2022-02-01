@@ -8,31 +8,41 @@
             "command": "dotnet",
             "type": "process",
             "args": [
-                "build",
-                "${workspaceFolder}/test-project/aspnetapp.csproj"
+                "build"
             ],
             "problemMatcher": "$tsc"
         },
-                {
+        {
+            "label": "clean",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": "$tsc"
+        },
+        {
             "label": "build-original",
             "command": "dotnet",
             "type": "shell",
             "args": [
                 "build",
-                // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
-                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
             "group": "build",
             "problemMatcher": "$msCompile"
-        },{
+        },
+        {
             "label": "test",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "test",
                 "${workspaceFolder}/fifth.test/fifth.test.csproj"
+            ],
+            "problemMatcher": [
+                "$msCompile"
             ]
         }
     ]
