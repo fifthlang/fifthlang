@@ -149,6 +149,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
         {
             w($".class public  {ctx.Name} extends [System.Runtime]System.Object {{");
+            
+            foreach (var propertyDefinition in ctx.Properties)
+            {
+                VisitPropertyDefinition(propertyDefinition);
+            }
             foreach (var functionDefinition in ctx.Functions)
             {
                 VisitFunctionDefinition(functionDefinition as FunctionDefinition);
@@ -173,6 +178,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public override FifthProgram VisitFifthProgram(FifthProgram ctx)
         {
             w($".module {ctx.TargetAssemblyFileName}");
+
+            foreach (var classDefinition in ctx.Classes)
+            {
+                VisitClassDefinition(classDefinition);
+            }
             w(@".class public Program {");
             foreach (var functionDefinition in ctx.Functions)
             {
@@ -317,9 +327,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
         {
+            var owningClassDefinition = ctx.ParentNode as ClassDefinition;
+            var className = owningClassDefinition.Name;
             w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
-            w($"      .get instance {ctx.TypeName} NamespaceName.Class::get_{ctx.Name}()");
-            w($"      .set instance void Namespace.Class::set_{ctx.Name}({ctx.TypeName})");
+            w($"      .get instance {ctx.TypeName} {className}::get_{ctx.Name}()");
+            w($"      .set instance void {className}::set_{ctx.Name}({ctx.TypeName})");
             w("  }");
             return ctx;
         }

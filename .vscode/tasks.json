@@ -6,6 +6,16 @@
         {
             "label": "build",
             "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/test-project/aspnetapp.csproj"
+            ],
+            "problemMatcher": "$tsc"
+        },
+                {
+            "label": "build-original",
+            "command": "dotnet",
             "type": "shell",
             "args": [
                 "build",
