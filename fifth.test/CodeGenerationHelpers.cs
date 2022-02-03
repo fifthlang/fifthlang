@@ -1,8 +1,5 @@
-namespace Fifth.Test
+namespace Fifth.Test;
+
+public static class CodeGenerationHelpers
 {
-    public static class CodeGenerationHelpers
-    {
-    }
-
-
 }

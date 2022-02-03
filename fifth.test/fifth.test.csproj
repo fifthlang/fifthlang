@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
     <RootNamespace>Fifth.Test</RootNamespace>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="TestSampleCode\class-definition.5th" />
@@ -23,6 +23,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0-beta.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
     <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
   <None Update="log4net.config" CopyToOutputDirectory="PreserveNewest" />

@@ -6,6 +6,7 @@
         {
             "label": "build",
             "command": "dotnet",
+            "group": "build",
             "type": "process",
             "args": [
                 "build"
@@ -16,6 +17,7 @@
             "label": "clean",
             "command": "dotnet",
             "type": "process",
+            "group": "build",
             "args": [
                 "clean"
             ],
@@ -32,18 +34,12 @@
             ],
             "group": "build",
             "problemMatcher": "$msCompile"
-        },
+        },    
         {
-            "label": "test",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "test",
-                "${workspaceFolder}/fifth.test/fifth.test.csproj"
-            ],
-            "problemMatcher": [
-                "$msCompile"
-            ]
-        }
+            "label": "run tests",
+            "group": "test",
+            "type": "shell",
+            "command": "dotnet test"
+          }
     ]
 }

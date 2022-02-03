@@ -75,7 +75,7 @@ namespace Fifth
                         codeGenVisitor.VisitAssembly(ast);
                     }
 
-                    var ilasmPath = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\ilasm.exe";
+                    var ilasmPath = @"ilasm";
                     var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, ilFilename,
                         "/DEBUG",
                         "/EXE",

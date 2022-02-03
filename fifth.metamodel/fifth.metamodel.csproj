@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Fifth</RootNamespace>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>Fifth</RootNamespace>
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
