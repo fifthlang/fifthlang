@@ -1,9 +1,9 @@
-int main(){
+main(): int {
     return print('hello world');
 }
 
-int print(string s){
-    int a = 5;
-    int b = 6;
+print(s: string) : int{
+    a: int = 5;
+    b: int = 6;
     return a+b;
 }

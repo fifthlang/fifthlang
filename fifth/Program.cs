@@ -76,11 +76,9 @@ namespace Fifth
                     }
 
                     var ilasmPath = @"ilasm";
-                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, ilFilename,
-                        "/DEBUG",
-                        "/EXE",
-                        "/NOLOGO",
-                        $"/OUTPUT={assemblyFilename}");
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, 
+                        ilFilename, 
+                        "-DEBUG", $"-OUTPUT={assemblyFilename}");
 
                     if (result != 0)
                     {
@@ -93,10 +91,14 @@ namespace Fifth
 
                 return false;
             }
+            catch(Exception e){
+                Console.WriteLine(e);
+                assemblyFilename = null;
+                return false;
+            }
             finally
             {
                 DeleteFile(ilFilename);
-                DeleteFile(Path.ChangeExtension(sourceFilename, ".tmp"));
             }
         }
 
