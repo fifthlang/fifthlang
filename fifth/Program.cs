@@ -79,10 +79,10 @@ namespace Fifth
                         codeGenVisitor.VisitAssembly(ast);
                     }
 
-                    var ilasmPath = @"ilasm";
-                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath, 
-                        ilFilename, 
-                        "-DEBUG", $"-OUTPUT={assemblyFilename}");
+var ilasmPath = @"ilasm";
+var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath,
+    ilFilename,
+    "-DEBUG", $"-OUTPUT={assemblyFilename}");
 
                     if (result != 0)
                     {

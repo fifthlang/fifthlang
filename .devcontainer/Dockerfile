@@ -11,4 +11,5 @@ RUN apt-get update && apt-get install -y \
     ranger \
     neovim \
     ripgrep \
+    openjdk-17-jre-zero \
  && rm -rf /var/lib/apt/lists/*
