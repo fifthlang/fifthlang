@@ -2,7 +2,7 @@
 	"name": "C# (.NET)",
 	"build": {
 		"dockerfile": "Dockerfile",
-		"args": { 
+		"args": {
 			// Update 'VARIANT' to pick a .NET Core version: 3.1, 5.0, 6.0
 			// Append -bullseye or -focal to pin to an OS version.
 			"VARIANT": "6.0",
@@ -16,10 +16,19 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-dotnettools.csharp", "zbecknell.t4-support", "wk-j.vscode-cil-complete",
-		"mike-lischke.vscode-antlr4", "stardog-union.stardog-rdf-grammars", "stardog-union.vscode-langserver-trig",
+		"davidanson.vscode-markdownlint",
+		"EditorConfig.EditorConfig",
+		"fcrespo82.markdown-table-formatter",
+		"formulahendry.dotnet-test-explorer",
 		"github.copilot",
-		"yzhang.markdown-all-in-one", "fcrespo82.markdown-table-formatter", "davidanson.vscode-markdownlint", "marvhen.reflow-markdown"
+		"jmrog.vscode-nuget-package-manager",
+		"marvhen.reflow-markdown",
+		"mike-lischke.vscode-antlr4",
+		"ms-dotnettools.csharp",
+		"stardog-union.stardog-rdf-grammars",
+		"stardog-union.vscode-langserver-trig",
+		"yzhang.markdown-all-in-one",
+		"zbecknell.t4-support",
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -32,7 +41,7 @@
 	//        dotnet dev-certs https --trust; dotnet dev-certs https -ep "$env:USERPROFILE/.aspnet/https/aspnetapp.pfx" -p "SecurePwdGoesHere"
 	//    * macOS/Linux terminal:
 	//        dotnet dev-certs https --trust; dotnet dev-certs https -ep "${HOME}/.aspnet/https/aspnetapp.pfx" -p "SecurePwdGoesHere"
-	// 
+	//
 	// 2. Uncomment these 'remoteEnv' lines:
 	//    "remoteEnv": {
 	// 	      "ASPNETCORE_Kestrel__Certificates__Default__Password": "SecurePwdGoesHere",
@@ -49,7 +58,7 @@
 	//      "mounts": [ "source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind" ],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "dotnet restore",
+	"postCreateCommand": "dotnet restore",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	//"remoteUser": "vscode"
