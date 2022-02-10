@@ -26,6 +26,27 @@ namespace Fifth
             }
         }
 
+        public static void ExecOnUnix(string cmd)
+        {
+            var escapedArgs = cmd.Replace("\"", "\\\"");
+                
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+        }
+
         public static (int errorCode, List<string> outputs, List<string> errors) RunProcess(string executable,
             params string[] args)
         {

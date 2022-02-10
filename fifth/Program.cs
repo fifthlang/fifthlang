@@ -49,7 +49,11 @@ namespace Fifth
             _ = args ?? throw new ArgumentNullException(nameof(args));
             if (TryCompile(fileName, out var assemblyFilename))
             {
-                return await ExecuteAssemblyAsync(assemblyFilename);
+                if (File.Exists(assemblyFilename))
+                {
+                    GeneralHelpers.ExecOnUnix($"chmod 777 {assemblyFilename}");
+                    return await ExecuteAssemblyAsync(assemblyFilename);
+                }
             }
 
             return 1;
