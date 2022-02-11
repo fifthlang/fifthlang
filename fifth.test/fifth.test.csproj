@@ -34,7 +34,16 @@
     <ProjectReference Include="..\fifth.parser\fifth.parser.csproj" />
     <ProjectReference Include="..\fifth\fifth.csproj" />
   </ItemGroup>
-    <ItemGroup Label="ILAsm NuGet Package">
+  <ItemGroup>
+    <None Update="tools\ilasm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="tools\ilasm.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+<!---
+  <ItemGroup Label="ILAsm NuGet Package">
     <PackageReference Include="runtime.win-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <PackageReference Include="runtime.osx-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Darwin'))" />
@@ -44,4 +53,5 @@
     <Copy SourceFiles="$(Pkgruntime_linux-x64_Microsoft_NETCore_ILAsm)/runtimes/linux-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <Copy SourceFiles="$(Pkgruntime_osx-x64_Microsoft_NETCore_ILAsm)/runtimes/osx-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Darwin'))" />
   </Target>
+-->
 </Project>

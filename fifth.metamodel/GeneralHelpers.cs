@@ -1,93 +1,93 @@
-namespace Fifth
+namespace Fifth;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+public static class GeneralHelpers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-
-    public static class GeneralHelpers
+    public static void ExecOnUnix(string cmd)
     {
-        public static void ForEach<T>(this IEnumerable<T> seq, Action<T> job)
+        if (Environment.OSVersion.Platform != PlatformID.Unix)
         {
-            foreach (var t in seq)
-            {
-                job(t);
-            }
+            return;
         }
+        var escapedArgs = cmd.Replace("\"", "\\\"");
 
-        public static string Join<T>(this IEnumerable<T> seq, Func<T, string> accessor, string separator = ", ")
-            => string.Join(separator, seq.Select(accessor).ToArray());
-
-        public static IEnumerable<T> Map<T>(this IEnumerable<T> seq, Func<T, T> fn)
+        using var process = new Process
         {
-            foreach (var t in seq)
+            StartInfo = new ProcessStartInfo
             {
-                yield return fn(t);
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{escapedArgs}\""
             }
-        }
+        };
 
-        public static void ExecOnUnix(string cmd)
+        process.Start();
+        process.WaitForExit();
+    }
+
+    public static void ForEach<T>(this IEnumerable<T> seq, Action<T> job)
+    {
+        foreach (var t in seq)
         {
-            var escapedArgs = cmd.Replace("\"", "\\\"");
-                
-            using var process = new Process
+            job(t);
+        }
+    }
+
+    public static string Join<T>(this IEnumerable<T> seq, Func<T, string> accessor, string separator = ", ")
+        => string.Join(separator, seq.Select(accessor).ToArray());
+
+    public static IEnumerable<T> Map<T>(this IEnumerable<T> seq, Func<T, T> fn)
+    {
+        foreach (var t in seq)
+        {
+            yield return fn(t);
+        }
+    }
+
+    public static (int errorCode, List<string> outputs, List<string> errors) RunProcess(string executable,
+        params string[] args)
+    => RunProcessVerbosely(executable, false, args);
+
+    public static (int errorCode, List<string> outputs, List<string> errors) RunProcessVerbosely(string executable, bool relayToStdOutErr, params string[] args)
+    {
+        var result = 0;
+        var stdErrors = new List<string>();
+        var stdOutputs = new List<string>();
+        using (var proc = new Process())
+        {
+            proc.StartInfo = new ProcessStartInfo(executable)
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"{escapedArgs}\""
-                }
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                RedirectStandardOutput = relayToStdOutErr,
+                RedirectStandardError = relayToStdOutErr,
+                Arguments = string.Join(" ", args)
             };
 
-            process.Start();
-            process.WaitForExit();
-        }
-
-        public static (int errorCode, List<string> outputs, List<string> errors) RunProcess(string executable,
-            params string[] args)
-        {
-            var result = 0;
-            var stdErrors = new List<string>();
-            var stdOutputs = new List<string>();
-            using (var proc = new Process())
+            if (proc.Start())
             {
-                proc.StartInfo = new ProcessStartInfo(executable)
+                proc.WaitForExit();
+                if (relayToStdOutErr)
                 {
-                    UseShellExecute = false,
-                    CreateNoWindow = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    Arguments = string.Join(" ", args)
-                };
-
-                if (proc.Start())
-                {
-                    while (!proc.StandardOutput.EndOfStream)
-                    {
-                        var line = proc.StandardOutput.ReadLine();
-                        stdOutputs.Add(line);
-                    }
-
-                    while (!proc.StandardError.EndOfStream)
-                    {
-                        var line = proc.StandardError.ReadLine();
-                        stdErrors.Add(line);
-                    }
-
-                    proc.WaitForExit();
-                    result = proc.ExitCode;
+                    stdOutputs.Add(proc.StandardOutput.ReadToEnd());
+                    stdErrors.Add(proc.StandardError.ReadToEnd());
                 }
-                else
-                {
-                    Console.Write("Error running ilasm");
-                }
+
+                result = proc.ExitCode;
             }
-
-            return (result, stdOutputs, stdErrors);
+            else
+            {
+                Console.Write("Error running process");
+            }
         }
+
+        return (result, stdOutputs, stdErrors);
     }
 }

@@ -79,10 +79,31 @@ namespace Fifth
                         codeGenVisitor.VisitAssembly(ast);
                     }
 
-var ilasmPath = @"ilasm";
-var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath,
-    ilFilename,
-    "-DEBUG", $"-OUTPUT={assemblyFilename}");
+                    var ilasmPath = @"ilasm";
+#if DEBUG
+                    if (!File.Exists(ilasmPath))
+                    {
+                        if (System.Environment.OSVersion.Platform == PlatformID.Unix)
+                        {
+                            ilasmPath = @"tools/ilasm";
+                        }
+                        else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                        {
+                            ilasmPath = @"tools/ilasm.exe";
+                        }
+                        else // find way to support osx
+                        {
+                            throw new RuntimeException("Unable to locate IL Assembler");
+                        }
+                        if (!File.Exists(ilasmPath))
+                        {
+                            throw new RuntimeException("Unable to locate IL Assembler");
+                        }
+                    }
+#endif
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath,
+                        ilFilename,
+                        "-DEBUG", $"-OUTPUT={assemblyFilename}");
 
                     if (result != 0)
                     {
@@ -95,7 +116,8 @@ var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(ilasmPath,
 
                 return false;
             }
-            catch(Exception e){
+            catch (Exception e)
+            {
                 Console.WriteLine(e);
                 assemblyFilename = null;
                 return false;

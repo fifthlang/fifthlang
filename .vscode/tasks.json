@@ -14,6 +14,21 @@
             "problemMatcher": "$msCompile"
         },
         {
+          "label": "test",
+          "command": "dotnet",
+          "type": "process",
+          "args": [
+              "test",
+              "${workspaceFolder}/fifthlang.sln",
+              "/property:GenerateFullPaths=true",
+              "/consoleloggerparameters:NoSummary"
+          ],
+          "problemMatcher": "$msCompile",
+          "logging": {
+              "moduleLoad": false
+          }
+      },
+        {
             "label": "publish",
             "command": "dotnet",
             "type": "process",

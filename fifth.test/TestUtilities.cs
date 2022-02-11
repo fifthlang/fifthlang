@@ -16,7 +16,12 @@ namespace Fifth.Test
             {
                 try
                 {
-                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcess(assemblyFilename);
+                    if (File.Exists(assemblyFilename))
+                    {
+                        GeneralHelpers.ExecOnUnix($"chmod 777 {assemblyFilename}");
+                    }
+
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcessVerbosely(assemblyFilename, true);
                     if (result == 0)
                     {
                         programOutputs.AddRange(stdOutputs ?? new List<string>());
