@@ -1,5 +1,0 @@
-use std;
-
-main(int x, int y) => myprint(x + y);
-
-myprint(int x) => std.print("the answer is " + x);

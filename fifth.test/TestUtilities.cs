@@ -11,17 +11,17 @@ namespace Fifth.Test
         public static Task<List<string>> BuildRunAndTestProgram(string sourceFile)
         {
             List<string> programOutputs = new();
-
-            if (Program.TryCompile(sourceFile, out var assemblyFilename))
+            var ctx = new CompilationContext(sourceFile, null, true, null);
+            if (Program.TryCompile(ctx))
             {
                 try
                 {
-                    if (File.Exists(assemblyFilename))
+                    if (File.Exists(ctx.Output))
                     {
-                        GeneralHelpers.ExecOnUnix($"chmod 777 {assemblyFilename}");
+                        GeneralHelpers.ExecOnUnix($"chmod 777 {ctx.Output}");
                     }
 
-                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcessVerbosely(assemblyFilename, true);
+                    var (result, stdOutputs, stdErrors) = GeneralHelpers.RunProcessVerbosely(ctx.Output, true);
                     if (result == 0)
                     {
                         programOutputs.AddRange(stdOutputs ?? new List<string>());
@@ -33,9 +33,9 @@ namespace Fifth.Test
                 }
                 finally
                 {
-                    Program.DeleteFile(Path.ChangeExtension(assemblyFilename, "pdb"));
-                    Program.DeleteFile(Path.ChangeExtension(assemblyFilename, "dll"));
-                    Program.DeleteFile(assemblyFilename);
+                    Program.DeleteFile(Path.ChangeExtension(ctx.Output, "pdb"));
+                    Program.DeleteFile(Path.ChangeExtension(ctx.Output, "dll"));
+                    Program.DeleteFile(ctx.Output);
                 }
             }
 

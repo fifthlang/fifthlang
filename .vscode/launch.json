@@ -4,14 +4,14 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
+
         {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "fifth.dll",
-            "args": [ "--file-name", "${workspaceFolder}/doc/examples/ex3.comp.5th"],
+            "args": [ "--file-name", "${workspaceFolder}/doc/examples/ex.hello.5th", "--output", "${workspaceFolder}/doc/examples/hello" ],
             "cwd": "${workspaceFolder}/fifth/bin/Debug/net6.0/",
             "console": "internalConsole",
             "stopAtEntry": false

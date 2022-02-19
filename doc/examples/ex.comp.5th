@@ -1,0 +1,9 @@
+main(): int {
+    return print('hello world');
+}
+
+print(s: string) : int{
+    a: int = 5;
+    b: int = 6;
+    return a+b;
+}

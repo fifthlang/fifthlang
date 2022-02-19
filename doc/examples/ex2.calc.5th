@@ -1,7 +1,0 @@
-int main()
-    => doCalc(5,6);
-
-int doCalc(int x, int y) =>
-    int a = x + y,
-    write("hello world"),
-    a;

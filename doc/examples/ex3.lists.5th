@@ -1,8 +1,0 @@
-
-void main() =>
-    int[] nums = [0,1,2,3,4,5,6,7,8,9],
-    int[] evens = [x | x <- nums, x % 2 == 0],
-    int[] odds  = [x | x <- nums, x % 2 == 1],
-    int[] recombined = evens + odds,
-    int[] fifths = [x*5 | x <- recombined],
-    map fifths \(x) => write(x, '\n');
