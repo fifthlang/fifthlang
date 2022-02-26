@@ -1,0 +1,73 @@
+namespace Fifth.AST
+{
+    using System;
+    using Symbols;
+    using Visitors;
+    using TypeSystem;
+    using PrimitiveTypes;
+    using TypeSystem.PrimitiveTypes;
+    using System.Collections.Generic;
+
+#region AST Nodes
+
+
+<# foreach (var ast in asts)  { #>
+    public partial class <#= ast.Name #> : <#= ast.Parent #>
+    {
+        public <#= ast.Name #>(<#
+var sep = "";
+foreach (var prop in ast.Props)  {
+#>
+<#= sep #><#= prop.Type  #> <#=prop.Name#><#
+sep=", ";
+} #>
+)<#= ast.PostCtor #>
+        {
+<#
+sep = "";
+foreach (var prop in ast.Props)  {
+#>
+            //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
+            this.<#=prop.Name#> = <#=prop.Name#>;
+<#
+sep=", ";
+} #>
+        }
+
+<# foreach (var prop in ast.Props)  { #>
+        public <#= prop.Type  #> <#= prop.Name #>{get;set;}
+<# } #>
+
+        public override void Accept(IAstVisitor visitor)
+        {
+            visitor.Enter<#= ast.Name #>(this);
+<# foreach (var prop in ast.Props)  {
+    if(!prop.IgnoreDuringVisit){
+        if(prop.IsCollection){
+#>
+            if(<#=prop.Name#> != null){
+                foreach (var e in <#=prop.Name#>)
+                {
+                    e.Accept(visitor);
+                }
+            }
+<#
+        }else{
+#>
+            if(<#=prop.Name#> != null) {
+                <#=prop.Name#>.Accept(visitor);
+            }
+<#
+        }
+    }
+} #>
+            visitor.Leave<#= ast.Name #>(this);
+        }
+
+        <#= ast.CustomCode #>
+    }
+
+<# } #>
+
+#endregion // AST Nodes
+}

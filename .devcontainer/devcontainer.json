@@ -19,7 +19,6 @@
 		"davidanson.vscode-markdownlint",
 		"EditorConfig.EditorConfig",
 		"fcrespo82.markdown-table-formatter",
-		"formulahendry.dotnet-test-explorer",
 		"github.copilot",
 		"jmrog.vscode-nuget-package-manager",
 		"marvhen.reflow-markdown",
@@ -29,6 +28,9 @@
 		"stardog-union.vscode-langserver-trig",
 		"yzhang.markdown-all-in-one",
 		"zbecknell.t4-support",
+
+    // testing
+    "formulahendry.dotnet-test-explorer","ms-vscode.test-adapter-converter", "hbenl.vscode-test-explorer"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

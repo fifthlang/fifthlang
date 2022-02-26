@@ -12,37 +12,22 @@ namespace Fifth.TypeSystem
             FormalParameterTypes = formalParameterTypes;
         }
 
-        public TypeId ReturnType { get; }
         public TypeId[] FormalParameterTypes { get; }
-        public string Name { get; }
-        public TypeId TypeId { get; set; }
         public TypeId[] GenericTypeParameters { get; }
-        public virtual bool Equals(IFunctionSignature? other)
-            => AreEqual(this, other);
+        public string Name { get; }
+        public TypeId ReturnType { get; }
+        public TypeId TypeId { get; set; }
 
-        public bool Equals(FunctionSignature? other)
-            => AreEqual(this, other);
-
-        public override bool Equals(object? obj)
-            => GetHashCode() == (obj?.GetHashCode()??0);
-            // => AreEqual(this, obj as IFunctionSignature);
-
-        public override int GetHashCode()
-        {
-            var x = new HashCode();
-            foreach (var parameterType in FormalParameterTypes)
-            {
-                x.Add(parameterType);
-            }
-            x.Add(Name);
-            x.Add(ReturnType);
-            return x.ToHashCode();
-        }
         public static bool AreEqual(IFunctionSignature x, IFunctionSignature y)
         {
-            if ((x == null && y != null) ||(x != null && y == null))
+            if (x is null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(x));
+            }
+
+            if (y is null)
+            {
+                throw new ArgumentNullException(nameof(y));
             }
 
             var returnTypesMatch = Equals(x.ReturnType, y.ReturnType);
@@ -60,7 +45,7 @@ namespace Fifth.TypeSystem
             var nameMatches = x.Name == y.Name;
             var tidMatches = Equals(x.TypeId, y.TypeId);
 
-            if ((x.GenericTypeParameters == null && y.GenericTypeParameters != null) ||(x.GenericTypeParameters != null && y.GenericTypeParameters == null))
+            if ((x.GenericTypeParameters == null && y.GenericTypeParameters != null) || (x.GenericTypeParameters != null && y.GenericTypeParameters == null))
             {
                 return false;
             }
@@ -71,14 +56,39 @@ namespace Fifth.TypeSystem
             }
 
             var genericTypeParamsMatch = true;
-            for (var i = 0; x.GenericTypeParameters != null &&  i < x.GenericTypeParameters.Length; i++)
+            for (var i = 0; x.GenericTypeParameters != null && i < x.GenericTypeParameters.Length; i++)
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 paramTypesMatch &= Equals(x.GenericTypeParameters[i], y.GenericTypeParameters[i]);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
 
             return returnTypesMatch && paramTypesMatch &&
                    nameMatches && tidMatches &&
                    genericTypeParamsMatch;
+        }
+
+        public virtual bool Equals(IFunctionSignature other)
+                    => AreEqual(this, other);
+
+        public bool Equals(FunctionSignature other)
+            => AreEqual(this, other);
+
+        public override bool Equals(object obj)
+            => GetHashCode() == (obj?.GetHashCode() ?? 0);
+
+        // => AreEqual(this, obj as IFunctionSignature);
+
+        public override int GetHashCode()
+        {
+            var x = new HashCode();
+            foreach (var parameterType in FormalParameterTypes)
+            {
+                x.Add(parameterType);
+            }
+            x.Add(Name);
+            x.Add(ReturnType);
+            return x.ToHashCode();
         }
     }
 

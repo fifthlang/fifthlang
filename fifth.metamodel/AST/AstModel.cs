@@ -2,6 +2,7 @@
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0021 // Use expression body for constructors
 
+
 namespace Fifth.AST.Visitors
 {
     using System;
@@ -451,14 +452,14 @@ namespace Fifth.AST
         }
 
         
-        public Assembly(string name, string strongNameKey, string versionNumber)
-        {
-            Name = name;
-            PublicKeyToken = strongNameKey;
-            Version = versionNumber;
-            References = new();
-        }
-    
+            public Assembly(string name, string strongNameKey, string versionNumber)
+            {
+                Name = name;
+                PublicKeyToken = strongNameKey;
+                Version = versionNumber;
+                References = new();
+            }
+        
     }
 
     public partial class AssemblyRef : AstNode
@@ -746,8 +747,8 @@ namespace Fifth.AST
         }
 
         
-    public Block(StatementList sl):this(sl.Statements){}
-    
+        public Block(StatementList sl):this(sl.Statements){}
+        
     }
 
     public partial class BoolValueExpression : LiteralExpression<bool>
@@ -1068,30 +1069,30 @@ namespace Fifth.AST
         }
 
         
-        public ParameterDeclarationList ParameterDeclarations { get; set; }
-        public string Typename { get; set; }
-        public string Name { get; set; }
-        public bool IsEntryPoint { get; set; }
-        public TypeId ReturnType { get; set; }
+            public ParameterDeclarationList ParameterDeclarations { get; set; }
+            public string Typename { get; set; }
+            public string Name { get; set; }
+            public bool IsEntryPoint { get; set; }
+            public TypeId ReturnType { get; set; }
 
-       public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
-        {
-            Name = name;
-            Typename = typename;
-            var list = new List<IParameterListItem>();
-
-            foreach (var (pname, ptypename) in parameters)
+        public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
             {
-                var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
-                list.Add(paramDef);
+                Name = name;
+                Typename = typename;
+                var list = new List<IParameterListItem>();
+
+                foreach (var (pname, ptypename) in parameters)
+                {
+                    var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
+                    list.Add(paramDef);
+                }
+
+                var paramDeclList = new ParameterDeclarationList(list);
+
+                ParameterDeclarations = paramDeclList;
+                IsEntryPoint = false;
             }
-
-            var paramDeclList = new ParameterDeclarationList(list);
-
-            ParameterDeclarations = paramDeclList;
-            IsEntryPoint = false;
-        }
-    
+        
     }
 
     public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
@@ -1373,8 +1374,8 @@ namespace Fifth.AST
         }
 
         
-        public PropertyDefinition BoundProperty { get; set; }
-    
+            public PropertyDefinition BoundProperty { get; set; }
+        
     }
 
     public partial class TypePropertyInit : AstNode
@@ -1450,31 +1451,31 @@ namespace Fifth.AST
         }
 
         
-        private string typeName;
-        public string TypeName
-        {
-            get
+            private string typeName;
+            public string TypeName
             {
-                if (TypeId != null)
+                get
                 {
-                    return TypeId.Lookup().Name;
+                    if (TypeId != null)
+                    {
+                        return TypeId.Lookup().Name;
+                    }
+                    return typeName;
                 }
-                return typeName;
-            }
-            set
-            {
-                if (!TypeRegistry.DefaultRegistry.TryGetTypeByName(value, out var type))
+                set
                 {
-                    throw new TypeCheckingException("Setting unrecognised type for variable");
+                    if (!TypeRegistry.DefaultRegistry.TryGetTypeByName(value, out var type))
+                    {
+                        throw new TypeCheckingException("Setting unrecognised type for variable");
+                    }
+
+                    typeName = type.Name; // in case we want to use some sort of mapping onto a canonical name
+                    TypeId = type.TypeId;
                 }
-
-                typeName = type.Name; // in case we want to use some sort of mapping onto a canonical name
-                TypeId = type.TypeId;
             }
-        }
-        public TypeId TypeId { get; set; }
+            public TypeId TypeId { get; set; }
 
-    
+        
     }
 
     public partial class VariableReference : BaseVarReference
@@ -1586,7 +1587,6 @@ namespace Fifth.AST
 
 
 #endregion // AST Nodes
-
 }
 
 namespace Fifth.TypeSystem
@@ -1704,6 +1704,7 @@ namespace Fifth.TypeSystem
 
     }
 }
+
 
 
 #pragma warning restore IDE1006 // Naming Styles
