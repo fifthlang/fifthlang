@@ -1,5 +1,4 @@
 
-
 namespace Fifth.AST.Visitors;
 using Fifth.AST;
 using Fifth.AST.Builders;
@@ -105,444 +104,665 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 
 public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 {
+    public AstNode Process(AstNode x, TContext ctx)
+    {
+        return x switch
+        {
+            Assembly node => ProcessAssembly(node, ctx),
+            AssemblyRef node => ProcessAssemblyRef(node, ctx),
+            ClassDefinition node => ProcessClassDefinition(node, ctx),
+            PropertyDefinition node => ProcessPropertyDefinition(node, ctx),
+            TypeCast node => ProcessTypeCast(node, ctx),
+            ReturnStatement node => ProcessReturnStatement(node, ctx),
+            StatementList node => ProcessStatementList(node, ctx),
+            AbsoluteIri node => ProcessAbsoluteIri(node, ctx),
+            AliasDeclaration node => ProcessAliasDeclaration(node, ctx),
+            AssignmentStmt node => ProcessAssignmentStmt(node, ctx),
+            BinaryExpression node => ProcessBinaryExpression(node, ctx),
+            Block node => ProcessBlock(node, ctx),
+            BoolValueExpression node => ProcessBoolValueExpression(node, ctx),
+            ShortValueExpression node => ProcessShortValueExpression(node, ctx),
+            IntValueExpression node => ProcessIntValueExpression(node, ctx),
+            LongValueExpression node => ProcessLongValueExpression(node, ctx),
+            FloatValueExpression node => ProcessFloatValueExpression(node, ctx),
+            DoubleValueExpression node => ProcessDoubleValueExpression(node, ctx),
+            DecimalValueExpression node => ProcessDecimalValueExpression(node, ctx),
+            StringValueExpression node => ProcessStringValueExpression(node, ctx),
+            DateValueExpression node => ProcessDateValueExpression(node, ctx),
+            ExpressionList node => ProcessExpressionList(node, ctx),
+            FifthProgram node => ProcessFifthProgram(node, ctx),
+            FuncCallExpression node => ProcessFuncCallExpression(node, ctx),
+            FunctionDefinition node => ProcessFunctionDefinition(node, ctx),
+            BuiltinFunctionDefinition node => ProcessBuiltinFunctionDefinition(node, ctx),
+            OverloadedFunctionDefinition node => ProcessOverloadedFunctionDefinition(node, ctx),
+            Identifier node => ProcessIdentifier(node, ctx),
+            IdentifierExpression node => ProcessIdentifierExpression(node, ctx),
+            IfElseStatement node => ProcessIfElseStatement(node, ctx),
+            ModuleImport node => ProcessModuleImport(node, ctx),
+            ParameterDeclaration node => ProcessParameterDeclaration(node, ctx),
+            ParameterDeclarationList node => ProcessParameterDeclarationList(node, ctx),
+            TypeCreateInstExpression node => ProcessTypeCreateInstExpression(node, ctx),
+            TypeInitialiser node => ProcessTypeInitialiser(node, ctx),
+            DestructuringParamDecl node => ProcessDestructuringParamDecl(node, ctx),
+            PropertyBinding node => ProcessPropertyBinding(node, ctx),
+            TypePropertyInit node => ProcessTypePropertyInit(node, ctx),
+            UnaryExpression node => ProcessUnaryExpression(node, ctx),
+            VariableDeclarationStatement node => ProcessVariableDeclarationStatement(node, ctx),
+            VariableReference node => ProcessVariableReference(node, ctx),
+            CompoundVariableReference node => ProcessCompoundVariableReference(node, ctx),
+            WhileExp node => ProcessWhileExp(node, ctx),
+            ExpressionStatement node => ProcessExpressionStatement(node, ctx),
+            Expression node => ProcessExpression(node, ctx),
+
+            { } node => node,
+        };
+    }
+
+
+
+
+
 
 
     public Assembly ProcessAssembly(Assembly node, TContext ctx)
     {
-        var result = AssemblyBuilder.CreateAssembly()
-            .WithName(node.Name)
-            .WithPublicKeyToken(node.PublicKeyToken)
-            .WithVersion(node.Version)
-            .WithProgram(node.Program)
-            .WithReferences(node.References)
-        .Build();
-        return result;
+
+
+    var builder = AssemblyBuilder.CreateAssembly();
+
+        builder.WithName(node.Name);
+            builder.WithPublicKeyToken(node.PublicKeyToken);
+            builder.WithVersion(node.Version);
+            builder.WithProgram((FifthProgram)Process(node.Program, ctx));
+            foreach(var x in node.References){
+            builder.AddingItemToReferences((AssemblyRef)Process((AssemblyRef)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public AssemblyRef ProcessAssemblyRef(AssemblyRef node, TContext ctx)
     {
-        var result = AssemblyRefBuilder.CreateAssemblyRef()
-            .WithName(node.Name)
-            .WithPublicKeyToken(node.PublicKeyToken)
-            .WithVersion(node.Version)
-        .Build();
-        return result;
+
+
+    var builder = AssemblyRefBuilder.CreateAssemblyRef();
+
+        builder.WithName(node.Name);
+            builder.WithPublicKeyToken(node.PublicKeyToken);
+            builder.WithVersion(node.Version);
+    
+        return builder.Build();
     }
 
 
     public ClassDefinition ProcessClassDefinition(ClassDefinition node, TContext ctx)
     {
-        var result = ClassDefinitionBuilder.CreateClassDefinition()
-            .WithName(node.Name)
-            .WithProperties(node.Properties)
-            .WithFunctions(node.Functions)
-        .Build();
-        return result;
+
+
+    var builder = ClassDefinitionBuilder.CreateClassDefinition();
+
+        builder.WithName(node.Name);
+            foreach(var x in node.Properties){
+            builder.AddingItemToProperties((PropertyDefinition)Process((PropertyDefinition)x, ctx));
+        }
+            foreach(var x in node.Functions){
+            builder.AddingItemToFunctions((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx)
     {
-        var result = PropertyDefinitionBuilder.CreatePropertyDefinition()
-            .WithName(node.Name)
-            .WithTypeName(node.TypeName)
-        .Build();
-        return result;
+
+
+    var builder = PropertyDefinitionBuilder.CreatePropertyDefinition();
+
+        builder.WithName(node.Name);
+            builder.WithTypeName(node.TypeName);
+    
+        return builder.Build();
     }
 
 
     public TypeCast ProcessTypeCast(TypeCast node, TContext ctx)
     {
-        var result = TypeCastBuilder.CreateTypeCast()
-            .WithSubExpression(node.SubExpression)
-            .WithTargetTid(node.TargetTid)
-        .Build();
-        return result;
+
+
+    var builder = TypeCastBuilder.CreateTypeCast();
+
+        builder.WithSubExpression((Expression)Process(node.SubExpression, ctx));
+            builder.WithTargetTid(node.TargetTid);
+    
+        return builder.Build();
     }
 
 
     public ReturnStatement ProcessReturnStatement(ReturnStatement node, TContext ctx)
     {
-        var result = ReturnStatementBuilder.CreateReturnStatement()
-            .WithSubExpression(node.SubExpression)
-            .WithTargetTid(node.TargetTid)
-        .Build();
-        return result;
+
+
+    var builder = ReturnStatementBuilder.CreateReturnStatement();
+
+        builder.WithSubExpression((Expression)Process(node.SubExpression, ctx));
+            builder.WithTargetTid(node.TargetTid);
+    
+        return builder.Build();
     }
 
 
     public StatementList ProcessStatementList(StatementList node, TContext ctx)
     {
-        var result = StatementListBuilder.CreateStatementList()
-            .WithStatements(node.Statements)
-        .Build();
-        return result;
+
+
+    var builder = StatementListBuilder.CreateStatementList();
+
+        foreach(var x in node.Statements){
+            builder.AddingItemToStatements((Statement)Process((Statement)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public AbsoluteIri ProcessAbsoluteIri(AbsoluteIri node, TContext ctx)
     {
-        var result = AbsoluteIriBuilder.CreateAbsoluteIri()
-            .WithUri(node.Uri)
-        .Build();
-        return result;
+
+
+    var builder = AbsoluteIriBuilder.CreateAbsoluteIri();
+
+        builder.WithUri(node.Uri);
+    
+        return builder.Build();
     }
 
 
     public AliasDeclaration ProcessAliasDeclaration(AliasDeclaration node, TContext ctx)
     {
-        var result = AliasDeclarationBuilder.CreateAliasDeclaration()
-            .WithIRI(node.IRI)
-            .WithName(node.Name)
-        .Build();
-        return result;
+
+
+    var builder = AliasDeclarationBuilder.CreateAliasDeclaration();
+
+        builder.WithIRI((AbsoluteIri)Process(node.IRI, ctx));
+            builder.WithName(node.Name);
+    
+        return builder.Build();
     }
 
 
     public AssignmentStmt ProcessAssignmentStmt(AssignmentStmt node, TContext ctx)
     {
-        var result = AssignmentStmtBuilder.CreateAssignmentStmt()
-            .WithExpression(node.Expression)
-            .WithVariableRef(node.VariableRef)
-        .Build();
-        return result;
+
+
+    var builder = AssignmentStmtBuilder.CreateAssignmentStmt();
+
+        builder.WithExpression((Expression)Process(node.Expression, ctx));
+            builder.WithVariableRef((BaseVarReference)Process(node.VariableRef, ctx));
+    
+        return builder.Build();
     }
 
 
     public BinaryExpression ProcessBinaryExpression(BinaryExpression node, TContext ctx)
     {
-        var result = BinaryExpressionBuilder.CreateBinaryExpression()
-            .WithLeft(node.Left)
-            .WithOp(node.Op)
-            .WithRight(node.Right)
-        .Build();
-        return result;
+
+
+    var builder = BinaryExpressionBuilder.CreateBinaryExpression();
+
+        builder.WithLeft((Expression)Process(node.Left, ctx));
+            builder.WithOp(node.Op);
+            builder.WithRight((Expression)Process(node.Right, ctx));
+    
+        return builder.Build();
     }
 
 
     public Block ProcessBlock(Block node, TContext ctx)
     {
-        var result = BlockBuilder.CreateBlock()
-            .WithStatements(node.Statements)
-        .Build();
-        return result;
+
+
+    var builder = BlockBuilder.CreateBlock();
+
+        foreach(var x in node.Statements){
+            builder.AddingItemToStatements((Statement)Process((Statement)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public BoolValueExpression ProcessBoolValueExpression(BoolValueExpression node, TContext ctx)
     {
-        var result = BoolValueExpressionBuilder.CreateBoolValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = BoolValueExpressionBuilder.CreateBoolValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public ShortValueExpression ProcessShortValueExpression(ShortValueExpression node, TContext ctx)
     {
-        var result = ShortValueExpressionBuilder.CreateShortValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = ShortValueExpressionBuilder.CreateShortValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public IntValueExpression ProcessIntValueExpression(IntValueExpression node, TContext ctx)
     {
-        var result = IntValueExpressionBuilder.CreateIntValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = IntValueExpressionBuilder.CreateIntValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public LongValueExpression ProcessLongValueExpression(LongValueExpression node, TContext ctx)
     {
-        var result = LongValueExpressionBuilder.CreateLongValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = LongValueExpressionBuilder.CreateLongValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public FloatValueExpression ProcessFloatValueExpression(FloatValueExpression node, TContext ctx)
     {
-        var result = FloatValueExpressionBuilder.CreateFloatValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = FloatValueExpressionBuilder.CreateFloatValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public DoubleValueExpression ProcessDoubleValueExpression(DoubleValueExpression node, TContext ctx)
     {
-        var result = DoubleValueExpressionBuilder.CreateDoubleValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = DoubleValueExpressionBuilder.CreateDoubleValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public DecimalValueExpression ProcessDecimalValueExpression(DecimalValueExpression node, TContext ctx)
     {
-        var result = DecimalValueExpressionBuilder.CreateDecimalValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = DecimalValueExpressionBuilder.CreateDecimalValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public StringValueExpression ProcessStringValueExpression(StringValueExpression node, TContext ctx)
     {
-        var result = StringValueExpressionBuilder.CreateStringValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = StringValueExpressionBuilder.CreateStringValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public DateValueExpression ProcessDateValueExpression(DateValueExpression node, TContext ctx)
     {
-        var result = DateValueExpressionBuilder.CreateDateValueExpression()
-            .WithTheValue(node.TheValue)
-        .Build();
-        return result;
+
+
+    var builder = DateValueExpressionBuilder.CreateDateValueExpression();
+
+        builder.WithTheValue(node.TheValue);
+    
+        return builder.Build();
     }
 
 
     public ExpressionList ProcessExpressionList(ExpressionList node, TContext ctx)
     {
-        var result = ExpressionListBuilder.CreateExpressionList()
-            .WithExpressions(node.Expressions)
-        .Build();
-        return result;
+
+
+    var builder = ExpressionListBuilder.CreateExpressionList();
+
+        foreach(var x in node.Expressions){
+            builder.AddingItemToExpressions((Expression)Process((Expression)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public FifthProgram ProcessFifthProgram(FifthProgram node, TContext ctx)
     {
-        var result = FifthProgramBuilder.CreateFifthProgram()
-            .WithAliases(node.Aliases)
-            .WithClasses(node.Classes)
-            .WithFunctions(node.Functions)
-        .Build();
-        return result;
+
+
+    var builder = FifthProgramBuilder.CreateFifthProgram();
+
+        foreach(var x in node.Aliases){
+            builder.AddingItemToAliases((AliasDeclaration)Process((AliasDeclaration)x, ctx));
+        }
+            foreach(var x in node.Classes){
+            builder.AddingItemToClasses((ClassDefinition)Process((ClassDefinition)x, ctx));
+        }
+            foreach(var x in node.Functions){
+            builder.AddingItemToFunctions((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public FuncCallExpression ProcessFuncCallExpression(FuncCallExpression node, TContext ctx)
     {
-        var result = FuncCallExpressionBuilder.CreateFuncCallExpression()
-            .WithActualParameters(node.ActualParameters)
-            .WithName(node.Name)
-        .Build();
-        return result;
+
+
+    var builder = FuncCallExpressionBuilder.CreateFuncCallExpression();
+
+        builder.WithActualParameters((ExpressionList)Process(node.ActualParameters, ctx));
+            builder.WithName(node.Name);
+    
+        return builder.Build();
     }
 
 
     public FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)
     {
-        var result = FunctionDefinitionBuilder.CreateFunctionDefinition()
-            .WithParameterDeclarations(node.ParameterDeclarations)
-            .WithBody(node.Body)
-            .WithTypename(node.Typename)
-            .WithName(node.Name)
-            .WithIsEntryPoint(node.IsEntryPoint)
-            .WithReturnType(node.ReturnType)
-        .Build();
-        return result;
+
+
+    var builder = FunctionDefinitionBuilder.CreateFunctionDefinition();
+
+        builder.WithParameterDeclarations((ParameterDeclarationList)Process(node.ParameterDeclarations, ctx));
+            builder.WithBody((Block)Process(node.Body, ctx));
+            builder.WithTypename(node.Typename);
+            builder.WithName(node.Name);
+            builder.WithIsEntryPoint(node.IsEntryPoint);
+            builder.WithReturnType(node.ReturnType);
+    
+        return builder.Build();
     }
 
 
     public BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)
     {
-        var result = BuiltinFunctionDefinitionBuilder.CreateBuiltinFunctionDefinition()
-        .Build();
-        return result;
+
+
+    var builder = BuiltinFunctionDefinitionBuilder.CreateBuiltinFunctionDefinition();
+
+
+        return builder.Build();
     }
 
 
     public OverloadedFunctionDefinition ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition node, TContext ctx)
     {
-        var result = OverloadedFunctionDefinitionBuilder.CreateOverloadedFunctionDefinition()
-            .WithOverloadClauses(node.OverloadClauses)
-            .WithSignature(node.Signature)
-        .Build();
-        return result;
+
+
+    var builder = OverloadedFunctionDefinitionBuilder.CreateOverloadedFunctionDefinition();
+
+        foreach(var x in node.OverloadClauses){
+            builder.AddingItemToOverloadClauses((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+        }
+            builder.WithSignature(node.Signature);
+    
+        return builder.Build();
     }
 
 
     public Identifier ProcessIdentifier(Identifier node, TContext ctx)
     {
-        var result = IdentifierBuilder.CreateIdentifier()
-            .WithValue(node.Value)
-        .Build();
-        return result;
+
+
+    var builder = IdentifierBuilder.CreateIdentifier();
+
+        builder.WithValue(node.Value);
+    
+        return builder.Build();
     }
 
 
     public IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx)
     {
-        var result = IdentifierExpressionBuilder.CreateIdentifierExpression()
-            .WithIdentifier(node.Identifier)
-        .Build();
-        return result;
+
+
+    var builder = IdentifierExpressionBuilder.CreateIdentifierExpression();
+
+        builder.WithIdentifier((Identifier)Process(node.Identifier, ctx));
+    
+        return builder.Build();
     }
 
 
     public IfElseStatement ProcessIfElseStatement(IfElseStatement node, TContext ctx)
     {
-        var result = IfElseStatementBuilder.CreateIfElseStatement()
-            .WithIfBlock(node.IfBlock)
-            .WithElseBlock(node.ElseBlock)
-            .WithCondition(node.Condition)
-        .Build();
-        return result;
+
+
+    var builder = IfElseStatementBuilder.CreateIfElseStatement();
+
+        builder.WithIfBlock((Block)Process(node.IfBlock, ctx));
+            builder.WithElseBlock((Block)Process(node.ElseBlock, ctx));
+            builder.WithCondition((Expression)Process(node.Condition, ctx));
+    
+        return builder.Build();
     }
 
 
     public ModuleImport ProcessModuleImport(ModuleImport node, TContext ctx)
     {
-        var result = ModuleImportBuilder.CreateModuleImport()
-            .WithModuleName(node.ModuleName)
-        .Build();
-        return result;
+
+
+    var builder = ModuleImportBuilder.CreateModuleImport();
+
+        builder.WithModuleName(node.ModuleName);
+    
+        return builder.Build();
     }
 
 
     public ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx)
     {
-        var result = ParameterDeclarationBuilder.CreateParameterDeclaration()
-            .WithParameterName(node.ParameterName)
-            .WithTypeName(node.TypeName)
-            .WithConstraint(node.Constraint)
-        .Build();
-        return result;
+
+
+    var builder = ParameterDeclarationBuilder.CreateParameterDeclaration();
+
+        builder.WithParameterName((Identifier)Process(node.ParameterName, ctx));
+            builder.WithTypeName(node.TypeName);
+            builder.WithConstraint((Expression)Process(node.Constraint, ctx));
+    
+        return builder.Build();
     }
 
 
     public ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)
     {
-        var result = ParameterDeclarationListBuilder.CreateParameterDeclarationList()
-            .WithParameterDeclarations(node.ParameterDeclarations)
-        .Build();
-        return result;
+
+
+    var builder = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
+
+        foreach(var x in node.ParameterDeclarations){
+            builder.AddingItemToParameterDeclarations(x);
+        }
+    
+        return builder.Build();
     }
 
 
     public TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx)
     {
-        var result = TypeCreateInstExpressionBuilder.CreateTypeCreateInstExpression()
-        .Build();
-        return result;
+
+
+    var builder = TypeCreateInstExpressionBuilder.CreateTypeCreateInstExpression();
+
+
+        return builder.Build();
     }
 
 
     public TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx)
     {
-        var result = TypeInitialiserBuilder.CreateTypeInitialiser()
-            .WithTypeName(node.TypeName)
-            .WithPropertyInitialisers(node.PropertyInitialisers)
-        .Build();
-        return result;
+
+
+    var builder = TypeInitialiserBuilder.CreateTypeInitialiser();
+
+        builder.WithTypeName(node.TypeName);
+            foreach(var x in node.PropertyInitialisers){
+            builder.AddingItemToPropertyInitialisers((TypePropertyInit)Process((TypePropertyInit)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public DestructuringParamDecl ProcessDestructuringParamDecl(DestructuringParamDecl node, TContext ctx)
     {
-        var result = DestructuringParamDeclBuilder.CreateDestructuringParamDecl()
-            .WithTypeName(node.TypeName)
-            .WithParameterName(node.ParameterName)
-            .WithPropertyBindings(node.PropertyBindings)
-        .Build();
-        return result;
+
+
+    var builder = DestructuringParamDeclBuilder.CreateDestructuringParamDecl();
+
+        builder.WithTypeName(node.TypeName);
+            builder.WithParameterName(node.ParameterName);
+            foreach(var x in node.PropertyBindings){
+            builder.AddingItemToPropertyBindings((PropertyBinding)Process((PropertyBinding)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx)
     {
-        var result = PropertyBindingBuilder.CreatePropertyBinding()
-            .WithBoundPropertyName(node.BoundPropertyName)
-            .WithBoundVariableName(node.BoundVariableName)
-            .WithConstraint(node.Constraint)
-        .Build();
-        return result;
+
+
+    var builder = PropertyBindingBuilder.CreatePropertyBinding();
+
+        builder.WithBoundPropertyName(node.BoundPropertyName);
+            builder.WithBoundVariableName(node.BoundVariableName);
+            builder.WithConstraint((Expression)Process(node.Constraint, ctx));
+    
+        return builder.Build();
     }
 
 
     public TypePropertyInit ProcessTypePropertyInit(TypePropertyInit node, TContext ctx)
     {
-        var result = TypePropertyInitBuilder.CreateTypePropertyInit()
-            .WithName(node.Name)
-            .WithValue(node.Value)
-        .Build();
-        return result;
+
+
+    var builder = TypePropertyInitBuilder.CreateTypePropertyInit();
+
+        builder.WithName(node.Name);
+            builder.WithValue((Expression)Process(node.Value, ctx));
+    
+        return builder.Build();
     }
 
 
     public UnaryExpression ProcessUnaryExpression(UnaryExpression node, TContext ctx)
     {
-        var result = UnaryExpressionBuilder.CreateUnaryExpression()
-            .WithOperand(node.Operand)
-            .WithOp(node.Op)
-        .Build();
-        return result;
+
+
+    var builder = UnaryExpressionBuilder.CreateUnaryExpression();
+
+        builder.WithOperand((Expression)Process(node.Operand, ctx));
+            builder.WithOp(node.Op);
+    
+        return builder.Build();
     }
 
 
     public VariableDeclarationStatement ProcessVariableDeclarationStatement(VariableDeclarationStatement node, TContext ctx)
     {
-        var result = VariableDeclarationStatementBuilder.CreateVariableDeclarationStatement()
-            .WithExpression(node.Expression)
-            .WithName(node.Name)
-        .Build();
-        return result;
+
+
+    var builder = VariableDeclarationStatementBuilder.CreateVariableDeclarationStatement();
+
+        builder.WithExpression((Expression)Process(node.Expression, ctx));
+            builder.WithName((Identifier)Process(node.Name, ctx));
+    
+        return builder.Build();
     }
 
 
     public VariableReference ProcessVariableReference(VariableReference node, TContext ctx)
     {
-        var result = VariableReferenceBuilder.CreateVariableReference()
-            .WithName(node.Name)
-        .Build();
-        return result;
+
+
+    var builder = VariableReferenceBuilder.CreateVariableReference();
+
+        builder.WithName(node.Name);
+    
+        return builder.Build();
     }
 
 
     public CompoundVariableReference ProcessCompoundVariableReference(CompoundVariableReference node, TContext ctx)
     {
-        var result = CompoundVariableReferenceBuilder.CreateCompoundVariableReference()
-            .WithComponentReferences(node.ComponentReferences)
-        .Build();
-        return result;
+
+
+    var builder = CompoundVariableReferenceBuilder.CreateCompoundVariableReference();
+
+        foreach(var x in node.ComponentReferences){
+            builder.AddingItemToComponentReferences((VariableReference)Process((VariableReference)x, ctx));
+        }
+    
+        return builder.Build();
     }
 
 
     public WhileExp ProcessWhileExp(WhileExp node, TContext ctx)
     {
-        var result = WhileExpBuilder.CreateWhileExp()
-            .WithCondition(node.Condition)
-            .WithLoopBlock(node.LoopBlock)
-        .Build();
-        return result;
+
+
+    var builder = WhileExpBuilder.CreateWhileExp();
+
+        builder.WithCondition((Expression)Process(node.Condition, ctx));
+            builder.WithLoopBlock(node.LoopBlock);
+    
+        return builder.Build();
     }
 
 
     public ExpressionStatement ProcessExpressionStatement(ExpressionStatement node, TContext ctx)
     {
-        var result = ExpressionStatementBuilder.CreateExpressionStatement()
-            .WithExpression(node.Expression)
-        .Build();
-        return result;
+
+
+    var builder = ExpressionStatementBuilder.CreateExpressionStatement();
+
+        builder.WithExpression((Expression)Process(node.Expression, ctx));
+    
+        return builder.Build();
     }
 
 
     public Expression ProcessExpression(Expression node, TContext ctx)
     {
-        var result = ExpressionBuilder.CreateExpression()
-        .Build();
-        return result;
+
+
+    var builder = ExpressionBuilder.CreateExpression();
+
+
+        return builder.Build();
     }
 
 }

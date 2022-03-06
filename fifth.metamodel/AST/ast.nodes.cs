@@ -829,12 +829,6 @@ namespace Fifth.AST
         public override void Accept(IAstVisitor visitor)
         {
             visitor.EnterParameterDeclarationList(this);
-            if(ParameterDeclarations != null){
-                foreach (var e in ParameterDeclarations)
-                {
-                    e.Accept(visitor);
-                }
-            }
             visitor.LeaveParameterDeclarationList(this);
         }
 

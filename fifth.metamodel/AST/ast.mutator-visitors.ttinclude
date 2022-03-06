@@ -19,18 +19,54 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 
 public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 {
+    public AstNode Process(AstNode x, TContext ctx)
+    {
+        return x switch
+        {
+<# foreach (var ast in asts)  { #>
+            <#= ast.Name #> node => Process<#= ast.Name #>(node, ctx),
+<# } #>
+
+            { } node => node,
+        };
+    }
+
+
+
+
+
 
 <# foreach (var ast in asts)  { #>
 
     public <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
     {
-        var result = <#= ast.Name #>Builder.Create<#= ast.Name #>()
+
+
+    var builder = <#= ast.Name #>Builder.Create<#= ast.Name #>();
+
 <# foreach (var prop in ast.Props)  {
-#>
-            .With<#= prop.Name #>(node.<#=prop.Name#>)
-<# } #>
-        .Build();
-        return result;
+if (prop.IgnoreDuringVisit){
+    if (prop.IsCollection){#>
+        foreach(var x in node.<#=prop.Name#>){
+            builder.AddingItemTo<#= prop.Name #>(x);
+        }
+    <#} else {#>
+        builder.With<#= prop.Name #>(node.<#=prop.Name#>);
+    <#}
+} else {
+    if (prop.IsCollection){#>
+        foreach(var x in node.<#=prop.Name#>){
+            builder.AddingItemTo<#= prop.Name #>((<#= prop.Type #>)Process((<#= prop.Type #>)x, ctx));
+        }
+    <#} else {#>
+        builder.With<#= prop.Name #>((<#= prop.Type #>)Process(node.<#=prop.Name#>, ctx));
+    <#}
+}
+
+
+ } /* for each prop */ #>
+
+        return builder.Build();
     }
 
 <# } #>

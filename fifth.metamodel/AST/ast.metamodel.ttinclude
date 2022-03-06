@@ -355,7 +355,7 @@ var asts = new dynamic[]
         PostCtor="",
         Props = new PropertySpec[]
         {
-            new PropertySpec(name: "OverloadClauses", type: "IFunctionDefinition", isCollection: true, ignoreDuringVisit: false),
+            new PropertySpec(name: "OverloadClauses", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition"),
             new PropertySpec(name: "Signature", type: "IFunctionSignature", isCollection: false, ignoreDuringVisit: true)
         }
     },
@@ -426,7 +426,7 @@ var asts = new dynamic[]
         PostCtor="",
         Props = new PropertySpec[]
         {
-            new PropertySpec(name: "ParameterDeclarations", type: "IParameterListItem", isCollection: true)
+            new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclaration", isCollection: true, ignoreDuringVisit: true, interfaceName: "IParameterListItem")
         }
     },
     new
