@@ -1,6 +1,5 @@
 namespace Fifth.LangProcessingPhases
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using AST;
@@ -12,16 +11,17 @@ namespace Fifth.LangProcessingPhases
     /// </summary>
     public class OverloadTransformingVisitor : BaseAstVisitor
     {
+        private int clauseCounter;
+
         public override void EnterFifthProgram(FifthProgram ctx)
         {
             var overloads = ctx.Functions.Where(f => f is OverloadedFunctionDefinition).ToArray();
-            for (int i = 0; i < overloads.Length; i++)
+            for (var i = 0; i < overloads.Length; i++)
             {
                 ProcessOverloadedFunctionDefinition(overloads[i] as OverloadedFunctionDefinition);
             }
         }
 
-        private int clauseCounter;
         public void ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
         {
             clauseCounter = 1;
@@ -36,8 +36,8 @@ namespace Fifth.LangProcessingPhases
 
             var guardFunction = GenerateGuardFunction(ctx, clauses);
             var newFunctions = clauses.Select(c => c.Item2);
-            newFunctions =newFunctions.Prepend(guardFunction);
-            SubstituteFunctionDefinitions((IFunctionCollection) ctx.ParentNode, new[] {ctx}, newFunctions);
+            newFunctions = newFunctions.Prepend(guardFunction);
+            SubstituteFunctionDefinitions((IFunctionCollection)ctx.ParentNode, new[] { ctx }, newFunctions);
         }
 
         private IFunctionDefinition GenerateGuardFunction(OverloadedFunctionDefinition ctx, List<(Expression, IFunctionDefinition)> clauses)
@@ -60,14 +60,14 @@ namespace Fifth.LangProcessingPhases
                 var funcCallExpression = new FuncCallExpression(new ExpressionList(args), clause.Item2.Name);
                 if (clause.Item1 != null)
                 {
-                    var ifBlock = BlockBuilder.NewBlock()
+                    var ifBlock = BlockBuilder.CreateBlock()
                                               .WithStatement(new ReturnStatement(funcCallExpression,
                                                   clause.Item2.ReturnType))
-                                              .AsAstNode();
-                    var ieb = IfElseBuilder.NewIfElse()
+                                              .Build();
+                    var ieb = IfElseStatementBuilder.CreateIfElseStatement()
                                            .WithCondition(clause.Item1)
                                            .WithIfBlock(ifBlock)
-                                           .AsAstNode();
+                                           .Build();
                     ifStatements.Add(ieb);
                 }
                 else
@@ -90,34 +90,8 @@ namespace Fifth.LangProcessingPhases
                 {
                     fb.WithParam(pd.ParameterName.Value, pd.TypeName);
                 }
-                
             }
 
-            return fb.AsAstNode();
-        }
-
-        /// <summary>
-        /// transforms the function into a form that can be envoked from a dispatcher guard function
-        /// </summary>
-        /// <param name="clause">the original function to transform</param>
-        /// <returns>a new function</returns>
-        private IFunctionDefinition GetSubclauseFunction(IFunctionDefinition clause)
-        {
-            var fb = FunctionBuilder
-                     .NewFunction()
-                     .Called($"{clause.Name}_subclause{clauseCounter}")
-                     .WithBody(clause.Body)
-                     .WithReturnType(clause.Typename)
-                     .WithSameParentAs((AstNode) clause);
-            foreach (var pd in clause.ParameterDeclarations.ParameterDeclarations)
-            {
-                fb.WithParam(pd.ParameterName.Value, pd.TypeName);
-            }
-            // get all the bindings
-            // create a new function with unique name
-            // normalise param list and insert into function
-            // add binding var decls to front of body
-            // insert body of old function into new function
             return fb.AsAstNode();
         }
 
@@ -140,7 +114,7 @@ namespace Fifth.LangProcessingPhases
             Expression e = null;
             while (conditions.Count > 0)
             {
-                if (e==null)
+                if (e == null)
                 {
                     e = conditions.Dequeue();
                 }
@@ -151,6 +125,31 @@ namespace Fifth.LangProcessingPhases
             }
 
             return e;
+        }
+
+        /// <summary>
+        /// transforms the function into a form that can be envoked from a dispatcher guard function
+        /// </summary>
+        /// <param name="clause">the original function to transform</param>
+        /// <returns>a new function</returns>
+        private IFunctionDefinition GetSubclauseFunction(IFunctionDefinition clause)
+        {
+            var fb = FunctionBuilder
+                     .NewFunction()
+                     .Called($"{clause.Name}_subclause{clauseCounter}")
+                     .WithBody(clause.Body)
+                     .WithReturnType(clause.Typename)
+                     .WithSameParentAs((AstNode)clause);
+            foreach (var pd in clause.ParameterDeclarations.ParameterDeclarations)
+            {
+                fb.WithParam(pd.ParameterName.Value, pd.TypeName);
+            }
+            // get all the bindings
+            // create a new function with unique name
+            // normalise param list and insert into function
+            // add binding var decls to front of body
+            // insert body of old function into new function
+            return fb.AsAstNode();
         }
 
         private void SubstituteFunctionDefinitions(IFunctionCollection functionContainer, IEnumerable<IFunctionDefinition> functionsToRemove, IEnumerable<IFunctionDefinition> functionsToAdd)

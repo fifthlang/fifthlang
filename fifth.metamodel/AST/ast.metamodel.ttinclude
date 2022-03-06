@@ -11,17 +11,17 @@ var asts = new dynamic[]
                 Name = name;
                 PublicKeyToken = strongNameKey;
                 Version = versionNumber;
-                References = new();
+                References = new List<AssemblyRef>();
             }
         ",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "PublicKeyToken", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Version", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Program", Type = "FifthProgram", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "References", Type = "List<AssemblyRef>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "PublicKeyToken", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Version", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Program", type: "FifthProgram"),
+            new PropertySpec(name: "References", type: "AssemblyRef", isCollection: true)
         }
     },
     new
@@ -30,11 +30,11 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "PublicKeyToken", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Version", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "PublicKeyToken", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Version", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -43,11 +43,11 @@ var asts = new dynamic[]
         Parent = "ScopeAstNode, ITypedAstNode, IFunctionCollection",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Properties", Type = "List<PropertyDefinition>", IsCollection=true, IgnoreDuringVisit = false},
-            new {Name = "Functions", Type = "List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Properties", type: "PropertyDefinition", isCollection: true),
+            new PropertySpec(name: "Functions", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition")
         }
     },
     new {
@@ -55,10 +55,10 @@ var asts = new dynamic[]
         Parent = "TypedAstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -67,10 +67,10 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "SubExpression", type: "Expression"),
+            new PropertySpec(name: "TargetTid", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -79,10 +79,10 @@ var asts = new dynamic[]
         Parent = "Statement",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "SubExpression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "TargetTid", Type = "TypeId", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "SubExpression", type: "Expression"),
+            new PropertySpec(name: "TargetTid", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -91,9 +91,9 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Statements", Type = "List<Statement>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Statements", type: "Statement", isCollection: true)
         }
     },
     new
@@ -102,9 +102,9 @@ var asts = new dynamic[]
         Parent = "TypedAstNode",
         CustomCode=@"",
         PostCtor=": base(PrimitiveUri.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Uri", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Uri", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -113,10 +113,10 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "IRI", Type = "AbsoluteIri", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "IRI", type: "AbsoluteIri"),
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -125,10 +125,10 @@ var asts = new dynamic[]
         Parent = "Statement",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "VariableRef", Type = "BaseVarReference", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Expression", type: "Expression"),
+            new PropertySpec(name: "VariableRef", type: "BaseVarReference")
         }
     },
     new
@@ -137,11 +137,11 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Left", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Op", Type = "Operator?", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Right", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
+            new PropertySpec(name: "Left", type: "Expression"),
+            new PropertySpec(name: "Op", type: "Operator?", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Right", type: "Expression")
         }
     },
     new
@@ -152,9 +152,9 @@ var asts = new dynamic[]
         public Block(StatementList sl):this(sl.Statements){}
         ",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Statements", Type = "List<Statement>", IsCollection=true, IgnoreDuringVisit = false},
+            new PropertySpec(name: "Statements", type: "Statement", isCollection: true)
         }
     },
     new
@@ -163,9 +163,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<bool>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveBool.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "bool", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "bool", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -174,9 +174,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<short>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveShort.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "short", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "short", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -185,9 +185,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<int>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveInteger.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "int", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "int", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -196,9 +196,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<long>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveLong.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "long", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "long", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -207,9 +207,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<float>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveFloat.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "float", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "float", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -218,9 +218,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<double>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDouble.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "double", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "double", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -229,9 +229,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<decimal>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDecimal.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "decimal", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "decimal", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -240,9 +240,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<string>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveString.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -251,9 +251,9 @@ var asts = new dynamic[]
         Parent = "LiteralExpression<DateTimeOffset>",
         CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDate.Default.TypeId)",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TheValue", Type = "DateTimeOffset", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "TheValue", type: "DateTimeOffset", isCollection: false, ignoreDuringVisit: true)
         }
     },
 
@@ -267,9 +267,9 @@ var asts = new dynamic[]
         Parent = "TypedAstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Expressions", Type = "List<Expression>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Expressions", type: "Expression", isCollection: true)
         }
     },
     new
@@ -278,11 +278,11 @@ var asts = new dynamic[]
         Parent = "ScopeAstNode, IFunctionCollection",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Aliases", Type = "List<AliasDeclaration>", IsCollection=true, IgnoreDuringVisit = false},
-            new {Name = "Classes", Type = "List<ClassDefinition>", IsCollection=true, IgnoreDuringVisit = false},
-            new {Name = "Functions", Type = "List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Aliases", type: "AliasDeclaration", isCollection: true),
+            new PropertySpec(name: "Classes", type: "ClassDefinition", isCollection: true),
+            new PropertySpec(name: "Functions", type: "FunctionDefinition", isCollection: true, interfaceName: "IFunctionDefinition")
         }
     },
     new
@@ -291,10 +291,10 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "ActualParameters", Type = "ExpressionList", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "ActualParameters", type: "ExpressionList"),
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -303,14 +303,14 @@ var asts = new dynamic[]
         Parent = "ScopeAstNode, IFunctionDefinition",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Type="ParameterDeclarationList", Name="ParameterDeclarations", IsCollection=false, IgnoreDuringVisit=false},
-            new {Type="Block", Name="Body", IsCollection=false, IgnoreDuringVisit=false},
-            new {Type="string", Name="Typename", IsCollection=false, IgnoreDuringVisit=true},
-            new {Type="string", Name="Name", IsCollection=false, IgnoreDuringVisit=true},
-            new {Type="bool", Name="IsEntryPoint", IsCollection=false, IgnoreDuringVisit=true},
-            new {Type="TypeId", Name="ReturnType", IsCollection=false, IgnoreDuringVisit=true},
+            new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclarationList", isCollection: false, ignoreDuringVisit: false),
+            new PropertySpec(name: "Body", type: "Block", isCollection: false, ignoreDuringVisit: false),
+            new PropertySpec(name: "Typename", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "IsEntryPoint", type: "bool", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "ReturnType", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -343,7 +343,7 @@ var asts = new dynamic[]
             }
         ",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
         }
     },
@@ -353,10 +353,10 @@ var asts = new dynamic[]
         Parent = "ScopeAstNode, IFunctionDefinition, ITypedAstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name="OverloadClauses", Type="List<IFunctionDefinition>", IsCollection=true, IgnoreDuringVisit=false},
-            new {Type="IFunctionSignature", Name="Signature", IsCollection=false, IgnoreDuringVisit=true}
+            new PropertySpec(name: "OverloadClauses", type: "IFunctionDefinition", isCollection: true, ignoreDuringVisit: false),
+            new PropertySpec(name: "Signature", type: "IFunctionSignature", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -365,9 +365,9 @@ var asts = new dynamic[]
         Parent = "TypedAstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Value", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Value", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -376,9 +376,9 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Identifier", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Identifier", type: "Identifier")
         }
     },
     new
@@ -387,11 +387,11 @@ var asts = new dynamic[]
         Parent = "Statement",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "IfBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "ElseBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Condition", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "IfBlock", type: "Block"),
+            new PropertySpec(name: "ElseBlock", type: "Block"),
+            new PropertySpec(name: "Condition", type: "Expression")
         }
     },
     new
@@ -400,9 +400,9 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "ModuleName", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "ModuleName", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -411,11 +411,11 @@ var asts = new dynamic[]
         Parent = "TypedAstNode, IParameterListItem",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "ParameterName", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Constraint", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "ParameterName", type: "Identifier"),
+            new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Constraint", type: "Expression")
         }
     },
     new
@@ -424,9 +424,9 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "ParameterDeclarations", Type = "List<IParameterListItem>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "ParameterDeclarations", type: "IParameterListItem", isCollection: true)
         }
     },
     new
@@ -435,7 +435,7 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
         }
     },
@@ -445,10 +445,10 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "PropertyInitialisers", Type = "List<TypePropertyInit>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "PropertyInitialisers", type: "TypePropertyInit", isCollection: true)
         }
     },
     new
@@ -457,11 +457,11 @@ var asts = new dynamic[]
         Parent = "TypedAstNode, IParameterListItem",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "TypeName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "ParameterName", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "PropertyBindings", Type = "List<PropertyBinding>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "ParameterName", type: "Identifier", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "PropertyBindings", type: "PropertyBinding", isCollection: true)
         }
     },
     new {
@@ -471,11 +471,11 @@ var asts = new dynamic[]
             public PropertyDefinition BoundProperty { get; set; }
         ",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "BoundPropertyName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "BoundVariableName", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Constraint", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "BoundPropertyName", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "BoundVariableName", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Constraint", type: "Expression")
         }
     },
     new {
@@ -483,10 +483,10 @@ var asts = new dynamic[]
         Parent = "AstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true},
-            new {Name = "Value", Type = "Expression", IsCollection=true, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+            new PropertySpec(name: "Value", type: "Expression")
         }
     },
     new{
@@ -494,10 +494,10 @@ var asts = new dynamic[]
         Parent = "Expression",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Operand", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Op", Type = "Operator", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Operand", type: "Expression"),
+            new PropertySpec(name: "Op", type: "Operator", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -531,10 +531,10 @@ var asts = new dynamic[]
 
         ",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "Name", Type = "Identifier", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Expression", type: "Expression"),
+            new PropertySpec(name: "Name", type: "Identifier")
         }
     },
     new
@@ -543,9 +543,9 @@ var asts = new dynamic[]
         Parent = "BaseVarReference",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Name", Type = "string", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -554,9 +554,9 @@ var asts = new dynamic[]
         Parent = "BaseVarReference",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "ComponentReferences", Type = "List<VariableReference>", IsCollection=true, IgnoreDuringVisit = false}
+            new PropertySpec(name: "ComponentReferences", type: "VariableReference", isCollection: true)
         }
     },
     new
@@ -565,10 +565,10 @@ var asts = new dynamic[]
         Parent = "Statement",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Condition", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false},
-            new {Name = "LoopBlock", Type = "Block", IsCollection=false, IgnoreDuringVisit = true}
+            new PropertySpec(name: "Condition", type: "Expression"),
+            new PropertySpec(name: "LoopBlock", type: "Block", isCollection: false, ignoreDuringVisit: true)
         }
     },
     new
@@ -577,9 +577,9 @@ var asts = new dynamic[]
         Parent = "Statement",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
-            new {Name = "Expression", Type = "Expression", IsCollection=false, IgnoreDuringVisit = false}
+            new PropertySpec(name: "Expression", type: "Expression")
         }
     },
     new
@@ -588,7 +588,7 @@ var asts = new dynamic[]
         Parent = "TypedAstNode",
         CustomCode=@"",
         PostCtor="",
-        Props = new dynamic[]
+        Props = new PropertySpec[]
         {
         }
     }

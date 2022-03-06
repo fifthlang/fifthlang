@@ -17,9 +17,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AST\AstModel.tt">
+    <None Update="AST\ast.mutator-visitors.tt">
+      <LastGenOutput>ast.mutator-visitors.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AstModel.cs</LastGenOutput>
+    </None>
+    <None Update="AST\ast.builders.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ast.builders.cs</LastGenOutput>
+    </None>
+    <None Update="AST\ast.typesystem.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ast.typesystem.cs</LastGenOutput>
+    </None>
+    <None Update="AST\ast.visitors.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ast.visitors.cs</LastGenOutput>
+    </None>
+    <None Update="AST\ast.nodes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ast.nodes.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -28,10 +44,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AST\AstModel.cs">
+    <Compile Update="AST\ast.mutator-visitors.cs">
+      <DependentUpon>ast.mutator-visitors.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>AstModel.tt</DependentUpon>
+    </Compile>
+    <Compile Update="AST\ast.builders.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ast.builders.tt</DependentUpon>
+    </Compile>
+    <Compile Update="AST\ast.typesystem.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ast.typesystem.tt</DependentUpon>
+    </Compile>
+    <Compile Update="AST\ast.visitors.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ast.visitors.tt</DependentUpon>
+    </Compile>
+    <Compile Update="AST\ast.nodes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ast.nodes.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

@@ -1,67 +1,85 @@
-namespace Fifth.AST.Builders
+namespace Fifth.AST.Builders;
+
+using System.Collections.Generic;
+using System.Linq;
+
+public partial class BlockBuilder
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    public class FunctionBuilder
+    public BlockBuilder WithStatement(Statement value)
     {
-        private Block body;
-        private string name;
-        private List<(string, string)> parameters = new();
-        private AstNode parentNode;
-        private TypeId returnType;
-        private string returnTypeName;
-
-        private FunctionBuilder()
+        if (_Statements == null)
         {
+            _Statements = new List<Statement> { };
         }
 
-        public static FunctionBuilder NewFunction()
-            => new FunctionBuilder();
-
-        public IFunctionDefinition AsAstNode()
+        if (_Statements is List<Statement> ls)
         {
-            var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null)).Cast<IParameterListItem>().ToList();
-            var paramDecls = new ParameterDeclarationList(pds);
-            var result = new FunctionDefinition(paramDecls, body, returnTypeName, name, name == "main", returnType);
-            result.ParentNode = parentNode;
-            return result;
+            ls.Add(value);
         }
+        return this;
+    }
+}
 
-        public FunctionBuilder Called(string funcName)
-        {
-            name = funcName;
-            return this;
-        }
+public class FunctionBuilder
+{
+    private Block body;
+    private string name;
+    private List<(string, string)> parameters = new();
+    private AstNode parentNode;
+    private TypeId returnType;
+    private string returnTypeName;
 
-        public FunctionBuilder WithBody(Block body)
-        {
-            this.body = body;
-            return this;
-        }
+    private FunctionBuilder()
+    {
+    }
 
-        public FunctionBuilder WithParam(string name, string typename)
-        {
-            parameters.Add((typename, name));
-            return this;
-        }
+    public static FunctionBuilder NewFunction()
+        => new FunctionBuilder();
 
-        public FunctionBuilder WithReturnType(string typename)
+    public IFunctionDefinition AsAstNode()
+    {
+        var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null)).Cast<IParameterListItem>().ToList();
+        var paramDecls = new ParameterDeclarationList(pds);
+        var result = new FunctionDefinition(paramDecls, body, returnTypeName, name, name == "main", returnType)
         {
-            returnTypeName = typename;
-            return this;
-        }
+            ParentNode = parentNode
+        };
+        return result;
+    }
 
-        public FunctionBuilder WithReturnType(TypeId tid)
-        {
-            returnType = tid;
-            return this;
-        }
+    public FunctionBuilder Called(string funcName)
+    {
+        name = funcName;
+        return this;
+    }
 
-        public FunctionBuilder WithSameParentAs(AstNode ctx)
-        {
-            this.parentNode = ctx.ParentNode;
-            return this;
-        }
+    public FunctionBuilder WithBody(Block body)
+    {
+        this.body = body;
+        return this;
+    }
+
+    public FunctionBuilder WithParam(string name, string typename)
+    {
+        parameters.Add((typename, name));
+        return this;
+    }
+
+    public FunctionBuilder WithReturnType(string typename)
+    {
+        returnTypeName = typename;
+        return this;
+    }
+
+    public FunctionBuilder WithReturnType(TypeId tid)
+    {
+        returnType = tid;
+        return this;
+    }
+
+    public FunctionBuilder WithSameParentAs(AstNode ctx)
+    {
+        parentNode = ctx.ParentNode;
+        return this;
     }
 }

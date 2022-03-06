@@ -98,8 +98,6 @@ namespace Fifth.TypeSystem
             => FunctionSignature.AreEqual(x, y);
 
         public override int GetHashCode(IFunctionSignature obj)
-        {
-            return HashCode.Combine(obj.Name, obj.FormalParameterTypes, obj.ReturnType);
-        }
+            => HashCode.Combine(obj.Name, obj.FormalParameterTypes, obj.ReturnType);
     }
 }

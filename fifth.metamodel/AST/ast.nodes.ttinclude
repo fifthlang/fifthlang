@@ -17,8 +17,7 @@ namespace Fifth.AST
         public <#= ast.Name #>(<#
 var sep = "";
 foreach (var prop in ast.Props)  {
-#>
-<#= sep #><#= prop.Type  #> <#=prop.Name#><#
+    #><#= sep #><#= GenTypeTypeHelpers.PluralType(prop)  #> <#=prop.Name#> <#
 sep=", ";
 } #>
 )<#= ast.PostCtor #>
@@ -35,7 +34,7 @@ sep=", ";
         }
 
 <# foreach (var prop in ast.Props)  { #>
-        public <#= prop.Type  #> <#= prop.Name #>{get;set;}
+        public <#= GenTypeTypeHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
 <# } #>
 
         public override void Accept(IAstVisitor visitor)
@@ -54,9 +53,7 @@ sep=", ";
 <#
         }else{
 #>
-            if(<#=prop.Name#> != null) {
-                <#=prop.Name#>.Accept(visitor);
-            }
+            <#=prop.Name#>?.Accept(visitor);
 <#
         }
     }

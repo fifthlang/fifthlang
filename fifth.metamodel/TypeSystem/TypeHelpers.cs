@@ -14,7 +14,7 @@ namespace Fifth.TypeSystem
         public static IFunctionSignature GetFunctionSignature(this IFunctionDefinition fd)
         {
             TypeRegistry.DefaultRegistry.TryGetTypeByName(fd.Typename, out var returnType);
-            List<TypeId> paramTypes = new List<TypeId>();
+            var paramTypes = new List<TypeId>();
             foreach (var paramTypeName in fd.ParameterDeclarations.ParameterDeclarations.Select(item => item.TypeName))
             {
                 if (TypeRegistry.DefaultRegistry.TryGetTypeByName(paramTypeName, out var paramTid))

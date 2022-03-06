@@ -1,0 +1,41 @@
+<#+
+
+public class PropertySpec
+{
+    public string Name {get; set;}
+    public string Type {get; set;}
+    public string InterfaceName {get; set;}
+    public bool IsCollection {get; set;}
+    public bool IgnoreDuringVisit {get; set;}
+
+    public PropertySpec(string name, string type, bool isCollection = false, bool ignoreDuringVisit = false, string interfaceName = null){
+        Name = name;
+        Type = type;
+        IsCollection = isCollection ;
+        IgnoreDuringVisit = ignoreDuringVisit;
+        InterfaceName = interfaceName;
+    }
+}
+#>
+
+<#+
+public static class GenTypeTypeHelpers
+{
+    public static string PluralType(dynamic astMetadata)
+    {
+        if (astMetadata?.IsCollection ?? false)
+        {
+            return $"List<{astMetadata.InterfaceName ?? astMetadata.Type}>";
+        }
+        return astMetadata.Type;
+    }
+
+    public static string PluralTypeInit(dynamic astMetadata)
+    {
+        if (astMetadata?.IsCollection ?? false)
+        {
+            return $"new List<{astMetadata.Type}>()";
+        }
+        return $"new {astMetadata.Type}()";
+    }
+} #>

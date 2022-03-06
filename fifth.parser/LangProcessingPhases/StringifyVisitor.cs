@@ -12,6 +12,7 @@ public class StringifyVisitor : IAstVisitor
     private readonly TextWriter tw;
     private int depth = 0;
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0021:Use expression body for constructors", Justification = "<Pending>")]
     public StringifyVisitor(TextWriter tw)
     {
         this.tw = tw;
@@ -303,14 +304,12 @@ public class StringifyVisitor : IAstVisitor
     }
 
     private void EnterTerminal<T>(T ctx, string value) where T : AstNode
-    {
-        tw.WriteLine($"{new string(' ', 2 * depth + 1)} . {value}: {ctx.GetType().Name}");
-    }
+        => tw.WriteLine($"{new string(' ', (2 * depth) + 1)} . {value}: {ctx.GetType().Name}");
 
     private void LeaveNonTerminal<T>(T ctx) where T : AstNode
         => depth--;
 
-    private void LeaveTerminal<T>(T ctx) where T : AstNode
+    private void LeaveTerminal<T>(T _) where T : AstNode
     {
     }
 }

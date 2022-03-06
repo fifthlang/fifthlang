@@ -1,0 +1,37 @@
+namespace Fifth.AST.Visitors;
+using Fifth.AST;
+using Fifth.AST.Builders;
+
+public interface IAstMutatorVisitor<TContext>
+{
+<# foreach (var ast in asts)  { #>
+    <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx);
+<# } #>
+}
+
+public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
+{
+<# foreach (var ast in asts)  { #>
+    public <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)=>node;
+<# } #>
+
+}
+
+public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
+{
+
+<# foreach (var ast in asts)  { #>
+
+    public <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
+    {
+        var result = <#= ast.Name #>Builder.Create<#= ast.Name #>()
+<# foreach (var prop in ast.Props)  {
+#>
+            .With<#= prop.Name #>(node.<#=prop.Name#>)
+<# } #>
+        .Build();
+        return result;
+    }
+
+<# } #>
+}

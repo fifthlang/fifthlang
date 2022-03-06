@@ -1,31 +1,29 @@
-namespace Fifth.TypeSystem
+namespace Fifth.TypeSystem;
+using AST;
+using Symbols;
+
+public interface ITypeChecker
 {
-    using AST;
-    using Symbols;
-
-    public interface ITypeChecker
-    {
 <# foreach (string astNodeType in asts.Select(a=>a.Name))  { #>
-        public IType Infer(IScope scope, <#= astNodeType #> node);
+    public IType Infer(IScope scope, <#= astNodeType #> node);
 <# } #>
-    }
+}
 
-    public partial class FunctionalTypeChecker
+public partial class FunctionalTypeChecker
+{
+
+    public IType Infer(AstNode exp)
     {
-
-        public IType Infer(AstNode exp)
+        var scope = exp.NearestScope();
+        return exp switch
         {
-            var scope = exp.NearestScope();
-            return exp switch
-            {
 <# foreach (string astNodeType in asts.Select(a=>a.Name))  { #>
-                <#= astNodeType #> node => Infer(scope, node),
+            <#= astNodeType #> node => Infer(scope, node),
 <# } #>
 
-                { } node => Infer(scope, node),
-            };
-        }
-
-
+            { } node => Infer(scope, node),
+        };
     }
+
+
 }
