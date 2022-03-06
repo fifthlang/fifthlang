@@ -34,7 +34,7 @@ public static class GenTypeTypeHelpers
     {
         if (astMetadata?.IsCollection ?? false)
         {
-            return $"new List<{astMetadata.Type}>()";
+            return $"new List<{astMetadata.InterfaceName ?? astMetadata.Type}>()";
         }
         return $"new {astMetadata.Type}()";
     }

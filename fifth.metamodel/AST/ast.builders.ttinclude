@@ -16,7 +16,15 @@ foreach (var ast in asts)  { #>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class <#= ast.Name #>Builder : INodeBuilder
     {
-        private <#= ast.Name #>Builder(){}
+        private <#= ast.Name #>Builder()
+        {
+<# foreach (var prop in ast.Props)  {
+    if(prop.IsCollection){ #>
+        _<#= prop.Name #> = <#= GenTypeTypeHelpers.PluralTypeInit(prop)#>;
+<# } /*if is collection*/ #>
+<# } /*for each prop*/ #>
+        }
+
         public static <#= ast.Name #>Builder Create<#= ast.Name #>() => new ();
         public <#= ast.Name #> Build()
           => new (<#
@@ -32,6 +40,14 @@ sep=", ";
             _<#= prop.Name #> = value;
             return this;
         }
-<# } #>
+
+<#
+    if (prop.IsCollection){#>
+        public <#= ast.Name #>Builder AddingItemTo<#= prop.Name #>(<#= prop.InterfaceName ?? prop.Type #> value){
+            _<#= prop.Name #>.Add(value);
+            return this;
+        }
+<#    }  /*if (prop.IsCollection)*/ #>
+<# } /* foreach prop */ #>
     }
-<# } #>
+<# } /*for each ast*/ #>
