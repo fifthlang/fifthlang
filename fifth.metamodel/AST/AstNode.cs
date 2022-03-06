@@ -1,6 +1,5 @@
 namespace Fifth.AST
 {
-    using System.IO;
     using Visitors;
 
     public abstract class AstNode : AnnotatedThing, IAstNode
@@ -16,5 +15,17 @@ namespace Fifth.AST
         public AstNode ParentNode { get; set; }
 
         public abstract void Accept(IAstVisitor visitor);
+
+        public T CopyMetadataInto<T>(T node)
+            where T : AstNode
+        {
+            // copy properties into node
+            node.ParentNode = ParentNode;
+            node.Column = Column;
+            node.Filename = Filename;
+            node.Line = Line;
+            node.OriginalText = OriginalText;
+            return CopyAnnotationsInto(node);
+        }
     }
 }

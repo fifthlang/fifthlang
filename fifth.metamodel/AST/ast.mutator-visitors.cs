@@ -106,7 +106,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 {
     public AstNode Process(AstNode x, TContext ctx)
     {
-        return x switch
+        var result = x switch
         {
             Assembly node => ProcessAssembly(node, ctx),
             AssemblyRef node => ProcessAssemblyRef(node, ctx),
@@ -156,6 +156,9 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 
             { } node => node,
         };
+        // in case result is totally new, copy in the metadata, so we don't lose any that's been generated previously
+        x.CopyMetadataInto(result);
+        return result;
     }
 
 

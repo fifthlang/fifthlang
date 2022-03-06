@@ -2,7 +2,6 @@ namespace Fifth.AST
 {
     using System.Collections.Generic;
 
-
     public abstract class AnnotatedThing : IAnnotated
     {
         private readonly IDictionary<string, object> annotations = new Dictionary<string, object>();
@@ -21,8 +20,18 @@ namespace Fifth.AST
             set => annotations[index] = value;
         }
 
+        public T CopyAnnotationsInto<T>(T thing)
+            where T : AnnotatedThing
+        {
+            foreach (var item in annotations)
+            {
+                thing[item.Key] = item.Value;
+            }
+            return thing;
+        }
+
         public bool HasAnnotation(string key)
-            => annotations.ContainsKey(key);
+                    => annotations.ContainsKey(key);
 
         public bool TryGetAnnotation<T>(string name, out T result)
         {
