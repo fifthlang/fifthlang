@@ -43,7 +43,8 @@ public static class FifthParserManager
 
         ast.Accept(new BuiltinInjectorVisitor());
         ast.Accept(new VerticalLinkageVisitor());
-        ast.Accept(new BoundVariableInlinerVisitor());
+        var (visitor, ctx) = NewBoundVariableInlinerVisitor.CreateVisitor();
+        ast = visitor.Process(ast as AstNode, ctx);
         ast.Accept(new CompoundVariableSplitterVisitor());
         ast.Accept(new OverloadGatheringVisitor());
         ast.Accept(new OverloadTransformingVisitor());

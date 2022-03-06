@@ -1,7 +1,7 @@
 <#
-var asts = new dynamic[]
+var asts = new AstNodeSpec[]
 {
-    new
+    new AstNodeSpec()
     {
         Name = "Assembly",
         Parent = "AstNode",
@@ -14,7 +14,6 @@ var asts = new dynamic[]
                 References = new List<AssemblyRef>();
             }
         ",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
@@ -24,12 +23,10 @@ var asts = new dynamic[]
             new PropertySpec(name: "References", type: "AssemblyRef", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "AssemblyRef",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
@@ -37,12 +34,10 @@ var asts = new dynamic[]
             new PropertySpec(name: "Version", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ClassDefinition",
         Parent = "ScopeAstNode, ITypedAstNode, IFunctionCollection",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
@@ -50,93 +45,79 @@ var asts = new dynamic[]
             new PropertySpec(name: "Functions", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition")
         }
     },
-    new {
+    new AstNodeSpec()
+    {
         Name = "PropertyDefinition",
         Parent = "TypedAstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
             new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "TypeCast",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "SubExpression", type: "Expression"),
             new PropertySpec(name: "TargetTid", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ReturnStatement",
         Parent = "Statement",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "SubExpression", type: "Expression"),
             new PropertySpec(name: "TargetTid", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "StatementList",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Statements", type: "Statement", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "AbsoluteIri",
         Parent = "TypedAstNode",
-        CustomCode=@"",
         PostCtor=": base(PrimitiveUri.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Uri", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "AliasDeclaration",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "IRI", type: "AbsoluteIri"),
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "AssignmentStmt",
         Parent = "Statement",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Expression", type: "Expression"),
             new PropertySpec(name: "VariableRef", type: "BaseVarReference")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "BinaryExpression",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Left", type: "Expression"),
@@ -144,112 +125,102 @@ var asts = new dynamic[]
             new PropertySpec(name: "Right", type: "Expression")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "Block",
         Parent = "ScopeAstNode",
         CustomCode=@"
         public Block(StatementList sl):this(sl.Statements){}
         ",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Statements", type: "Statement", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "BoolValueExpression",
         Parent = "LiteralExpression<bool>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveBool.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "bool", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ShortValueExpression",
         Parent = "LiteralExpression<short>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveShort.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "short", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "IntValueExpression",
         Parent = "LiteralExpression<int>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveInteger.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "int", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "LongValueExpression",
         Parent = "LiteralExpression<long>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveLong.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "long", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "FloatValueExpression",
         Parent = "LiteralExpression<float>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveFloat.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "float", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "DoubleValueExpression",
         Parent = "LiteralExpression<double>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDouble.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "double", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "DecimalValueExpression",
         Parent = "LiteralExpression<decimal>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDecimal.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "decimal", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "StringValueExpression",
         Parent = "LiteralExpression<string>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveString.Default.TypeId)",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TheValue", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "DateValueExpression",
         Parent = "LiteralExpression<DateTimeOffset>",
-        CustomCode=@"",
         PostCtor=": base(TheValue, PrimitiveDate.Default.TypeId)",
         Props = new PropertySpec[]
         {
@@ -261,23 +232,19 @@ var asts = new dynamic[]
 
 
 
-    new
+    new AstNodeSpec()
     {
         Name = "ExpressionList",
         Parent = "TypedAstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Expressions", type: "Expression", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "FifthProgram",
         Parent = "ScopeAstNode, IFunctionCollection",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Aliases", type: "AliasDeclaration", isCollection: true),
@@ -285,24 +252,20 @@ var asts = new dynamic[]
             new PropertySpec(name: "Functions", type: "FunctionDefinition", isCollection: true, interfaceName: "IFunctionDefinition")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "FuncCallExpression",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "ActualParameters", type: "ExpressionList"),
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "FunctionDefinition",
         Parent = "ScopeAstNode, IFunctionDefinition",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclarationList", isCollection: false, ignoreDuringVisit: false),
@@ -313,7 +276,7 @@ var asts = new dynamic[]
             new PropertySpec(name: "ReturnType", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "BuiltinFunctionDefinition",
         Parent = "AstNode, IFunctionDefinition",
@@ -342,51 +305,42 @@ var asts = new dynamic[]
                 IsEntryPoint = false;
             }
         ",
-        PostCtor="",
         Props = new PropertySpec[]
         {
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "OverloadedFunctionDefinition",
         Parent = "ScopeAstNode, IFunctionDefinition, ITypedAstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "OverloadClauses", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition"),
             new PropertySpec(name: "Signature", type: "IFunctionSignature", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "Identifier",
         Parent = "TypedAstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Value", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "IdentifierExpression",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Identifier", type: "Identifier")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "IfElseStatement",
         Parent = "Statement",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "IfBlock", type: "Block"),
@@ -394,23 +348,36 @@ var asts = new dynamic[]
             new PropertySpec(name: "Condition", type: "Expression")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ModuleImport",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "ModuleName", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
+    {
+        Name = "DestructuringParamDecl",
+        Parent = "ParameterDeclaration, IParameterListItem",
+        BypassCtorGeneration = true,
+        CustomCode=@"
+        public DestructuringParamDecl(Identifier parameterName, string typeName, Expression constraint, List<PropertyBinding> bindings)
+        : base(parameterName, typeName, constraint)
+        {
+            PropertyBindings = bindings;
+        }
+        ",
+        Props = new PropertySpec[]
+        {
+            new PropertySpec(name: "PropertyBindings", type: "PropertyBinding", isCollection: true)
+        }
+    },
+    new AstNodeSpec()
     {
         Name = "ParameterDeclaration",
         Parent = "TypedAstNode, IParameterListItem",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "ParameterName", type: "Identifier"),
@@ -418,59 +385,40 @@ var asts = new dynamic[]
             new PropertySpec(name: "Constraint", type: "Expression")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ParameterDeclarationList",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
-            new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclaration", isCollection: true, ignoreDuringVisit: true, interfaceName: "IParameterListItem")
+            new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclaration", isCollection: true, ignoreDuringVisit: false, interfaceName: "IParameterListItem")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "TypeCreateInstExpression",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "TypeInitialiser",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
             new PropertySpec(name: "PropertyInitialisers", type: "TypePropertyInit", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
-        Name = "DestructuringParamDecl",
-        Parent = "TypedAstNode, IParameterListItem",
-        CustomCode=@"",
-        PostCtor="",
-        Props = new PropertySpec[]
-        {
-            new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
-            new PropertySpec(name: "ParameterName", type: "Identifier", isCollection: false, ignoreDuringVisit: true),
-            new PropertySpec(name: "PropertyBindings", type: "PropertyBinding", isCollection: true)
-        }
-    },
-    new {
         Name = "PropertyBinding",
         Parent = "AstNode",
         CustomCode=@"
             public PropertyDefinition BoundProperty { get; set; }
         ",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "BoundPropertyName", type: "string", isCollection: false, ignoreDuringVisit: true),
@@ -478,29 +426,27 @@ var asts = new dynamic[]
             new PropertySpec(name: "Constraint", type: "Expression")
         }
     },
-    new {
+    new AstNodeSpec()
+    {
         Name = "TypePropertyInit",
         Parent = "AstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
             new PropertySpec(name: "Value", type: "Expression")
         }
     },
-    new{
+    new AstNodeSpec()
+    {
         Name = "UnaryExpression",
         Parent = "Expression",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Operand", type: "Expression"),
             new PropertySpec(name: "Op", type: "Operator", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "VariableDeclarationStatement",
         Parent = "Statement, ITypedAstNode",
@@ -530,64 +476,53 @@ var asts = new dynamic[]
             public TypeId TypeId { get; set; }
 
         ",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Expression", type: "Expression"),
             new PropertySpec(name: "Name", type: "Identifier")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "VariableReference",
         Parent = "BaseVarReference",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "CompoundVariableReference",
         Parent = "BaseVarReference",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "ComponentReferences", type: "VariableReference", isCollection: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "WhileExp",
         Parent = "Statement",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Condition", type: "Expression"),
             new PropertySpec(name: "LoopBlock", type: "Block", isCollection: false, ignoreDuringVisit: true)
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "ExpressionStatement",
         Parent = "Statement",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
             new PropertySpec(name: "Expression", type: "Expression")
         }
     },
-    new
+    new AstNodeSpec()
     {
         Name = "Expression",
         Parent = "TypedAstNode",
-        CustomCode=@"",
-        PostCtor="",
         Props = new PropertySpec[]
         {
         }

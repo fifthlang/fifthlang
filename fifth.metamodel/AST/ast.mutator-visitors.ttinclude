@@ -12,7 +12,7 @@ public interface IAstMutatorVisitor<TContext>
 public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 {
 <# foreach (var ast in asts)  { #>
-    public <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)=>node;
+    public virtual <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)=>node;
 <# } #>
 
 }
@@ -41,7 +41,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 
 <# foreach (var ast in asts)  { #>
 
-    public <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
+    public virtual <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
     {
 
 

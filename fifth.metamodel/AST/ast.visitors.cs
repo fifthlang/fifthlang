@@ -73,6 +73,8 @@ namespace Fifth.AST.Visitors
         public void LeaveIfElseStatement(IfElseStatement ctx);
         public void EnterModuleImport(ModuleImport ctx);
         public void LeaveModuleImport(ModuleImport ctx);
+        public void EnterDestructuringParamDecl(DestructuringParamDecl ctx);
+        public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx);
         public void EnterParameterDeclaration(ParameterDeclaration ctx);
         public void LeaveParameterDeclaration(ParameterDeclaration ctx);
         public void EnterParameterDeclarationList(ParameterDeclarationList ctx);
@@ -81,8 +83,6 @@ namespace Fifth.AST.Visitors
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
         public void LeaveTypeInitialiser(TypeInitialiser ctx);
-        public void EnterDestructuringParamDecl(DestructuringParamDecl ctx);
-        public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx);
         public void EnterPropertyBinding(PropertyBinding ctx);
         public void LeavePropertyBinding(PropertyBinding ctx);
         public void EnterTypePropertyInit(TypePropertyInit ctx);
@@ -167,6 +167,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveIfElseStatement(IfElseStatement ctx){}
         public virtual void EnterModuleImport(ModuleImport ctx){}
         public virtual void LeaveModuleImport(ModuleImport ctx){}
+        public virtual void EnterDestructuringParamDecl(DestructuringParamDecl ctx){}
+        public virtual void LeaveDestructuringParamDecl(DestructuringParamDecl ctx){}
         public virtual void EnterParameterDeclaration(ParameterDeclaration ctx){}
         public virtual void LeaveParameterDeclaration(ParameterDeclaration ctx){}
         public virtual void EnterParameterDeclarationList(ParameterDeclarationList ctx){}
@@ -175,8 +177,6 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
         public virtual void LeaveTypeInitialiser(TypeInitialiser ctx){}
-        public virtual void EnterDestructuringParamDecl(DestructuringParamDecl ctx){}
-        public virtual void LeaveDestructuringParamDecl(DestructuringParamDecl ctx){}
         public virtual void EnterPropertyBinding(PropertyBinding ctx){}
         public virtual void LeavePropertyBinding(PropertyBinding ctx){}
         public virtual void EnterTypePropertyInit(TypePropertyInit ctx){}
@@ -232,11 +232,11 @@ namespace Fifth.AST.Visitors
         public IdentifierExpression VisitIdentifierExpression(IdentifierExpression ctx);
         public IfElseStatement VisitIfElseStatement(IfElseStatement ctx);
         public ModuleImport VisitModuleImport(ModuleImport ctx);
+        public DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx);
         public ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx);
         public ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx);
         public TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx);
-        public DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx);
         public PropertyBinding VisitPropertyBinding(PropertyBinding ctx);
         public TypePropertyInit VisitTypePropertyInit(TypePropertyInit ctx);
         public UnaryExpression VisitUnaryExpression(UnaryExpression ctx);
@@ -284,11 +284,11 @@ namespace Fifth.AST.Visitors
                 IdentifierExpression node => VisitIdentifierExpression(node),
                 IfElseStatement node => VisitIfElseStatement(node),
                 ModuleImport node => VisitModuleImport(node),
+                DestructuringParamDecl node => VisitDestructuringParamDecl(node),
                 ParameterDeclaration node => VisitParameterDeclaration(node),
                 ParameterDeclarationList node => VisitParameterDeclarationList(node),
                 TypeCreateInstExpression node => VisitTypeCreateInstExpression(node),
                 TypeInitialiser node => VisitTypeInitialiser(node),
-                DestructuringParamDecl node => VisitDestructuringParamDecl(node),
                 PropertyBinding node => VisitPropertyBinding(node),
                 TypePropertyInit node => VisitTypePropertyInit(node),
                 UnaryExpression node => VisitUnaryExpression(node),
@@ -364,6 +364,8 @@ namespace Fifth.AST.Visitors
             => ctx;
         public virtual ModuleImport VisitModuleImport(ModuleImport ctx)
             => ctx;
+        public virtual DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx)
+            => ctx;
         public virtual ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx)
             => ctx;
         public virtual ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx)
@@ -371,8 +373,6 @@ namespace Fifth.AST.Visitors
         public virtual TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx)
             => ctx;
         public virtual TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx)
-            => ctx;
-        public virtual DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx)
             => ctx;
         public virtual PropertyBinding VisitPropertyBinding(PropertyBinding ctx)
             => ctx;

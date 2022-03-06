@@ -18,6 +18,31 @@ public class PropertySpec
 }
 #>
 
+
+<#+
+
+public class AstNodeSpec
+{
+    public string Name {get; set;}
+    public string Parent {get; set;}
+    public string CustomCode {get; set;}
+    public string PostCtor {get; set;}
+    public bool BypassCtorGeneration {get; set;}
+    public PropertySpec[] Props {get;set;}
+
+    public AstNodeSpec()
+    {
+        Name = "";
+        Parent = "";
+        CustomCode = "";
+        PostCtor = "";
+        BypassCtorGeneration = false;
+        Props = new PropertySpec[]{};
+    }
+}
+
+#>
+
 <#+
 public static class GenTypeTypeHelpers
 {

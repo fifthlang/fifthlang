@@ -36,11 +36,11 @@ public interface ITypeChecker
     public IType Infer(IScope scope, IdentifierExpression node);
     public IType Infer(IScope scope, IfElseStatement node);
     public IType Infer(IScope scope, ModuleImport node);
+    public IType Infer(IScope scope, DestructuringParamDecl node);
     public IType Infer(IScope scope, ParameterDeclaration node);
     public IType Infer(IScope scope, ParameterDeclarationList node);
     public IType Infer(IScope scope, TypeCreateInstExpression node);
     public IType Infer(IScope scope, TypeInitialiser node);
-    public IType Infer(IScope scope, DestructuringParamDecl node);
     public IType Infer(IScope scope, PropertyBinding node);
     public IType Infer(IScope scope, TypePropertyInit node);
     public IType Infer(IScope scope, UnaryExpression node);
@@ -91,11 +91,11 @@ public partial class FunctionalTypeChecker
             IdentifierExpression node => Infer(scope, node),
             IfElseStatement node => Infer(scope, node),
             ModuleImport node => Infer(scope, node),
+            DestructuringParamDecl node => Infer(scope, node),
             ParameterDeclaration node => Infer(scope, node),
             ParameterDeclarationList node => Infer(scope, node),
             TypeCreateInstExpression node => Infer(scope, node),
             TypeInitialiser node => Infer(scope, node),
-            DestructuringParamDecl node => Infer(scope, node),
             PropertyBinding node => Infer(scope, node),
             TypePropertyInit node => Infer(scope, node),
             UnaryExpression node => Infer(scope, node),

@@ -14,24 +14,28 @@ namespace Fifth.AST
 <# foreach (var ast in asts)  { #>
     public partial class <#= ast.Name #> : <#= ast.Parent #>
     {
+<#  if(!ast.BypassCtorGeneration){ #>
+
         public <#= ast.Name #>(<#
-var sep = "";
-foreach (var prop in ast.Props)  {
+    var sep = "";
+    foreach (var prop in ast.Props)  {
     #><#= sep #><#= GenTypeTypeHelpers.PluralType(prop)  #> <#=prop.Name#> <#
-sep=", ";
-} #>
-)<#= ast.PostCtor #>
+    sep=", ";
+    } #>
+    )<#= ast.PostCtor #>
         {
-<#
-sep = "";
-foreach (var prop in ast.Props)  {
-#>
+    <#
+    sep = "";
+    foreach (var prop in ast.Props)  {
+    #>
             //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
             this.<#=prop.Name#> = <#=prop.Name#>;
-<#
-sep=", ";
-} #>
+    <#
+    sep=", ";
+    } #>
         }
+
+<#  } /*if not bypass ctor gen*/ #>
 
 <# foreach (var prop in ast.Props)  { #>
         public <#= GenTypeTypeHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}

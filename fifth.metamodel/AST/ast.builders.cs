@@ -802,6 +802,30 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
+    public partial class DestructuringParamDeclBuilder : INodeBuilder
+    {
+        private DestructuringParamDeclBuilder()
+        {
+        _PropertyBindings = new List<PropertyBinding>();
+        }
+
+        public static DestructuringParamDeclBuilder CreateDestructuringParamDecl() => new ();
+        public DestructuringParamDecl Build()
+          => new (_PropertyBindings);
+
+        private List<PropertyBinding> _PropertyBindings;
+        public DestructuringParamDeclBuilder WithPropertyBindings(List<PropertyBinding> value){
+            _PropertyBindings = value;
+            return this;
+        }
+
+        public DestructuringParamDeclBuilder AddingItemToPropertyBindings(PropertyBinding value){
+            _PropertyBindings.Add(value);
+            return this;
+        }
+    }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class ParameterDeclarationBuilder : INodeBuilder
     {
         private ParameterDeclarationBuilder()
@@ -895,42 +919,6 @@ public interface INodeBuilder{}
 
         public TypeInitialiserBuilder AddingItemToPropertyInitialisers(TypePropertyInit value){
             _PropertyInitialisers.Add(value);
-            return this;
-        }
-    }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DestructuringParamDeclBuilder : INodeBuilder
-    {
-        private DestructuringParamDeclBuilder()
-        {
-        _PropertyBindings = new List<PropertyBinding>();
-        }
-
-        public static DestructuringParamDeclBuilder CreateDestructuringParamDecl() => new ();
-        public DestructuringParamDecl Build()
-          => new (_TypeName, _ParameterName, _PropertyBindings);
-
-        private string _TypeName;
-        public DestructuringParamDeclBuilder WithTypeName(string value){
-            _TypeName = value;
-            return this;
-        }
-
-        private Identifier _ParameterName;
-        public DestructuringParamDeclBuilder WithParameterName(Identifier value){
-            _ParameterName = value;
-            return this;
-        }
-
-        private List<PropertyBinding> _PropertyBindings;
-        public DestructuringParamDeclBuilder WithPropertyBindings(List<PropertyBinding> value){
-            _PropertyBindings = value;
-            return this;
-        }
-
-        public DestructuringParamDeclBuilder AddingItemToPropertyBindings(PropertyBinding value){
-            _PropertyBindings.Add(value);
             return this;
         }
     }
