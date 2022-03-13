@@ -1,17 +1,7 @@
-<#@ template debug="false" hostspecific="false" language="C#" compilerOptions="/langversion:10"  #>
-<#@ output extension=".cs" #>
-<#@ assembly name="System.Core" #>
-<#@ assembly name="Microsoft.CSharp" #>
-<#@ import namespace="System.Dynamic" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0021 // Use expression body for constructors
 
 <#@ include file="ast.metamodel.ttinclude"#>
-<#@ include file="ast.shared-functions.ttinclude"#>
 <#@ include file="ast.nodes.ttinclude"#>
 
 

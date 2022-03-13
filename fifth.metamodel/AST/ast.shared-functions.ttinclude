@@ -46,6 +46,9 @@ public class AstNodeSpec
 <#+
 public static class GenTypeTypeHelpers
 {
+    public static string DisplayProps(fifth.metamodel.metadata.AstNodeSpec ast)
+    =>fifth.metamodel.metadata.GenerationHelpers.DisplayProps(ast);
+
     public static string PluralType(dynamic astMetadata)
     {
         if (astMetadata?.IsCollection ?? false)

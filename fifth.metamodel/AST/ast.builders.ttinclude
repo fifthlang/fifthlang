@@ -11,16 +11,19 @@ using System.Collections.Generic;
 public interface INodeBuilder{}
 
 <#
-foreach (var ast in asts)  { #>
+foreach (var ast in asts)  {
+    var allProps = GenerationHelpers.GetPropertyListInherited(ast).Select(ps=>ps.Prop);
+
+#>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class <#= ast.Name #>Builder : INodeBuilder
     {
         private <#= ast.Name #>Builder()
         {
-<# foreach (var prop in ast.Props)  {
+<# foreach (var prop in allProps)  {
     if(prop.IsCollection){ #>
-        _<#= prop.Name #> = <#= GenTypeTypeHelpers.PluralTypeInit(prop)#>;
+        _<#= prop.Name #> = <#= GenerationHelpers.PluralTypeInit(prop)#>;
 <# } /*if is collection*/ #>
 <# } /*for each prop*/ #>
         }
@@ -28,15 +31,16 @@ foreach (var ast in asts)  { #>
         public static <#= ast.Name #>Builder Create<#= ast.Name #>() => new ();
         public <#= ast.Name #> Build()
           => new (<#
+
 var sep = "";
-foreach (var prop in ast.Props)  {
+foreach (var prop in allProps)  {
 #><#= sep #>_<#=prop.Name#><#
 sep=", ";
 } #>);
 
-<# foreach (var prop in ast.Props)  { #>
-        private <#= GenTypeTypeHelpers.PluralType(prop) #> _<#= prop.Name #>;
-        public <#= ast.Name #>Builder With<#= prop.Name #>(<#= GenTypeTypeHelpers.PluralType(prop) #> value){
+<# foreach (var prop in allProps)  { #>
+        private <#= GenerationHelpers.PluralType(prop) #> _<#= prop.Name #>;
+        public <#= ast.Name #>Builder With<#= prop.Name #>(<#= GenerationHelpers.PluralType(prop) #> value){
             _<#= prop.Name #> = value;
             return this;
         }

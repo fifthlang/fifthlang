@@ -1,4 +1,5 @@
 
+
 namespace Fifth.AST.Visitors
 {
     using System;

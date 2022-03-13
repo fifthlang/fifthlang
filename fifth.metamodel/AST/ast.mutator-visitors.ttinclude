@@ -39,15 +39,17 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 
 
 
-<# foreach (var ast in asts)  { #>
+<# foreach (var ast in asts)  {
+    var allProps = GenerationHelpers.GetPropertyListInherited(ast).Select(ps=>ps.Prop);
 
+ #>
     public virtual <#= ast.Name #> Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
     {
 
 
     var builder = <#= ast.Name #>Builder.Create<#= ast.Name #>();
 
-<# foreach (var prop in ast.Props)  {
+<# foreach (var prop in allProps)  {
 if (prop.IgnoreDuringVisit){
     if (prop.IsCollection){#>
         foreach(var x in node.<#=prop.Name#>){

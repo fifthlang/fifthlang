@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.parser", "fifth.parser\fifth.parser.csproj", "{E6D0A2DE-CE41-4868-8D95-F54AC86D57E1}"
 EndProject
@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.codegenerator", "fift
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fifth.System", "fifthlang.system\Fifth.System.csproj", "{58051B4E-EFEE-4EE3-A193-A90EE099C2C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.metamodel.metadata", "fifth.metamodel.metadata\fifth.metamodel.metadata.csproj", "{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{58051B4E-EFEE-4EE3-A193-A90EE099C2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58051B4E-EFEE-4EE3-A193-A90EE099C2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58051B4E-EFEE-4EE3-A193-A90EE099C2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

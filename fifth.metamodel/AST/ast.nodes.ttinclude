@@ -11,19 +11,41 @@ namespace Fifth.AST
 #region AST Nodes
 
 
-<# foreach (var ast in asts)  { #>
+<# foreach (var ast in asts)  {
+    var someProps = GenerationHelpers.GetPropertyListInherited(ast);
+    var inheritedProps = GenerationHelpers.GetOnlyInheritedProperties(ast).Select(ps=>ps.Prop);
+    var isDerivedFromNonBase = GenerationHelpers.IsDerivedFromNonBaseAstType(ast);
+#>
     public partial class <#= ast.Name #> : <#= ast.Parent #>
     {
-<#  if(!ast.BypassCtorGeneration){ #>
 
         public <#= ast.Name #>(<#
     var sep = "";
-    foreach (var prop in ast.Props)  {
-    #><#= sep #><#= GenTypeTypeHelpers.PluralType(prop)  #> <#=prop.Name#> <#
+    foreach (var prop in someProps.Select(p=>p.Prop))  {
+        var typeName = GenerationHelpers.PluralType(prop);
+        #><#= sep #><#= typeName #> <#=prop.Name#> <# sep=", "; } #>
+    )
+
+<#
+if( string.IsNullOrEmpty(ast.PostCtor) && inheritedProps.Any() ){
+// this part looks at the AST node to see if there is a non-base parent (i.e. polymorphic type)
+// this type will have properties and a ctor to pass them into. So, extract out the inherited
+// params and pass them into the base class instead.
+#>
+:base(<#
+    sep = "";
+    foreach (var ps in inheritedProps)  {
+    #><#= sep #><#=ps.Name#> <#
     sep=", ";
     } #>
-    )<#= ast.PostCtor #>
-        {
+    )
+<#} else {
+// if this AST node has a prop PostCtor, then it means that the passing of params on to the base
+// is taken care of already.  In which case, don't generate a base class call
+#>
+    <#= ast.PostCtor #>
+<#}#>
+{
     <#
     sep = "";
     foreach (var prop in ast.Props)  {
@@ -35,10 +57,8 @@ namespace Fifth.AST
     } #>
         }
 
-<#  } /*if not bypass ctor gen*/ #>
-
 <# foreach (var prop in ast.Props)  { #>
-        public <#= GenTypeTypeHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
+        public <#= GenerationHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
 <# } #>
 
         public override void Accept(IAstVisitor visitor)

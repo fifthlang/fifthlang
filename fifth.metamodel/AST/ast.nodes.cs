@@ -1,6 +1,6 @@
-
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0021 // Use expression body for constructors
+
 
 
 namespace Fifth.AST
@@ -20,7 +20,9 @@ namespace Fifth.AST
     {
 
         public Assembly(string Name , string PublicKeyToken , string Version , FifthProgram Program , List<AssemblyRef> References     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
                 //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
@@ -32,7 +34,6 @@ namespace Fifth.AST
                 //_ = References ?? throw new ArgumentNullException(nameof(References));
             this.References = References;
             }
-
 
         public string Name{get;set;}
         public string PublicKeyToken{get;set;}
@@ -68,7 +69,9 @@ namespace Fifth.AST
     {
 
         public AssemblyRef(string Name , string PublicKeyToken , string Version     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
                 //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
@@ -76,7 +79,6 @@ namespace Fifth.AST
                 //_ = Version ?? throw new ArgumentNullException(nameof(Version));
             this.Version = Version;
             }
-
 
         public string Name{get;set;}
         public string PublicKeyToken{get;set;}
@@ -95,7 +97,9 @@ namespace Fifth.AST
     {
 
         public ClassDefinition(string Name , List<PropertyDefinition> Properties , List<IFunctionDefinition> Functions     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
                 //_ = Properties ?? throw new ArgumentNullException(nameof(Properties));
@@ -103,7 +107,6 @@ namespace Fifth.AST
                 //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
             this.Functions = Functions;
             }
-
 
         public string Name{get;set;}
         public List<PropertyDefinition> Properties{get;set;}
@@ -134,13 +137,14 @@ namespace Fifth.AST
     {
 
         public PropertyDefinition(string Name , string TypeName     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
                 //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
             this.TypeName = TypeName;
             }
-
 
         public string Name{get;set;}
         public string TypeName{get;set;}
@@ -158,13 +162,14 @@ namespace Fifth.AST
     {
 
         public TypeCast(Expression SubExpression , TypeId TargetTid     )
-        {
+
+    
+{
                 //_ = SubExpression ?? throw new ArgumentNullException(nameof(SubExpression));
             this.SubExpression = SubExpression;
                 //_ = TargetTid ?? throw new ArgumentNullException(nameof(TargetTid));
             this.TargetTid = TargetTid;
             }
-
 
         public Expression SubExpression{get;set;}
         public TypeId TargetTid{get;set;}
@@ -183,13 +188,14 @@ namespace Fifth.AST
     {
 
         public ReturnStatement(Expression SubExpression , TypeId TargetTid     )
-        {
+
+    
+{
                 //_ = SubExpression ?? throw new ArgumentNullException(nameof(SubExpression));
             this.SubExpression = SubExpression;
                 //_ = TargetTid ?? throw new ArgumentNullException(nameof(TargetTid));
             this.TargetTid = TargetTid;
             }
-
 
         public Expression SubExpression{get;set;}
         public TypeId TargetTid{get;set;}
@@ -208,11 +214,12 @@ namespace Fifth.AST
     {
 
         public StatementList(List<Statement> Statements     )
-        {
+
+    
+{
                 //_ = Statements ?? throw new ArgumentNullException(nameof(Statements));
             this.Statements = Statements;
             }
-
 
         public List<Statement> Statements{get;set;}
 
@@ -234,12 +241,13 @@ namespace Fifth.AST
     public partial class AbsoluteIri : TypedAstNode
     {
 
-        public AbsoluteIri(string Uri     ): base(PrimitiveUri.Default.TypeId)
-        {
+        public AbsoluteIri(string Uri     )
+
+    
+{
                 //_ = Uri ?? throw new ArgumentNullException(nameof(Uri));
             this.Uri = Uri;
             }
-
 
         public string Uri{get;set;}
 
@@ -256,13 +264,14 @@ namespace Fifth.AST
     {
 
         public AliasDeclaration(AbsoluteIri IRI , string Name     )
-        {
+
+    
+{
                 //_ = IRI ?? throw new ArgumentNullException(nameof(IRI));
             this.IRI = IRI;
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
             }
-
 
         public AbsoluteIri IRI{get;set;}
         public string Name{get;set;}
@@ -281,13 +290,14 @@ namespace Fifth.AST
     {
 
         public AssignmentStmt(Expression Expression , BaseVarReference VariableRef     )
-        {
+
+    
+{
                 //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
             this.Expression = Expression;
                 //_ = VariableRef ?? throw new ArgumentNullException(nameof(VariableRef));
             this.VariableRef = VariableRef;
             }
-
 
         public Expression Expression{get;set;}
         public BaseVarReference VariableRef{get;set;}
@@ -307,7 +317,9 @@ namespace Fifth.AST
     {
 
         public BinaryExpression(Expression Left , Operator? Op , Expression Right     )
-        {
+
+    
+{
                 //_ = Left ?? throw new ArgumentNullException(nameof(Left));
             this.Left = Left;
                 //_ = Op ?? throw new ArgumentNullException(nameof(Op));
@@ -315,7 +327,6 @@ namespace Fifth.AST
                 //_ = Right ?? throw new ArgumentNullException(nameof(Right));
             this.Right = Right;
             }
-
 
         public Expression Left{get;set;}
         public Operator? Op{get;set;}
@@ -336,11 +347,12 @@ namespace Fifth.AST
     {
 
         public Block(List<Statement> Statements     )
-        {
+
+    
+{
                 //_ = Statements ?? throw new ArgumentNullException(nameof(Statements));
             this.Statements = Statements;
             }
-
 
         public List<Statement> Statements{get;set;}
 
@@ -364,12 +376,13 @@ namespace Fifth.AST
     public partial class BoolValueExpression : LiteralExpression<bool>
     {
 
-        public BoolValueExpression(bool TheValue     ): base(TheValue, PrimitiveBool.Default.TypeId)
-        {
+        public BoolValueExpression(bool TheValue     )
+
+    : base(TheValue, PrimitiveBool.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public bool TheValue{get;set;}
 
@@ -385,12 +398,13 @@ namespace Fifth.AST
     public partial class ShortValueExpression : LiteralExpression<short>
     {
 
-        public ShortValueExpression(short TheValue     ): base(TheValue, PrimitiveShort.Default.TypeId)
-        {
+        public ShortValueExpression(short TheValue     )
+
+    : base(TheValue, PrimitiveShort.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public short TheValue{get;set;}
 
@@ -406,12 +420,13 @@ namespace Fifth.AST
     public partial class IntValueExpression : LiteralExpression<int>
     {
 
-        public IntValueExpression(int TheValue     ): base(TheValue, PrimitiveInteger.Default.TypeId)
-        {
+        public IntValueExpression(int TheValue     )
+
+    : base(TheValue, PrimitiveInteger.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public int TheValue{get;set;}
 
@@ -427,12 +442,13 @@ namespace Fifth.AST
     public partial class LongValueExpression : LiteralExpression<long>
     {
 
-        public LongValueExpression(long TheValue     ): base(TheValue, PrimitiveLong.Default.TypeId)
-        {
+        public LongValueExpression(long TheValue     )
+
+    : base(TheValue, PrimitiveLong.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public long TheValue{get;set;}
 
@@ -448,12 +464,13 @@ namespace Fifth.AST
     public partial class FloatValueExpression : LiteralExpression<float>
     {
 
-        public FloatValueExpression(float TheValue     ): base(TheValue, PrimitiveFloat.Default.TypeId)
-        {
+        public FloatValueExpression(float TheValue     )
+
+    : base(TheValue, PrimitiveFloat.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public float TheValue{get;set;}
 
@@ -469,12 +486,13 @@ namespace Fifth.AST
     public partial class DoubleValueExpression : LiteralExpression<double>
     {
 
-        public DoubleValueExpression(double TheValue     ): base(TheValue, PrimitiveDouble.Default.TypeId)
-        {
+        public DoubleValueExpression(double TheValue     )
+
+    : base(TheValue, PrimitiveDouble.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public double TheValue{get;set;}
 
@@ -490,12 +508,13 @@ namespace Fifth.AST
     public partial class DecimalValueExpression : LiteralExpression<decimal>
     {
 
-        public DecimalValueExpression(decimal TheValue     ): base(TheValue, PrimitiveDecimal.Default.TypeId)
-        {
+        public DecimalValueExpression(decimal TheValue     )
+
+    : base(TheValue, PrimitiveDecimal.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public decimal TheValue{get;set;}
 
@@ -511,12 +530,13 @@ namespace Fifth.AST
     public partial class StringValueExpression : LiteralExpression<string>
     {
 
-        public StringValueExpression(string TheValue     ): base(TheValue, PrimitiveString.Default.TypeId)
-        {
+        public StringValueExpression(string TheValue     )
+
+    : base(TheValue, PrimitiveString.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public string TheValue{get;set;}
 
@@ -532,12 +552,13 @@ namespace Fifth.AST
     public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
     {
 
-        public DateValueExpression(DateTimeOffset TheValue     ): base(TheValue, PrimitiveDate.Default.TypeId)
-        {
+        public DateValueExpression(DateTimeOffset TheValue     )
+
+    : base(TheValue, PrimitiveDate.Default.TypeId)
+{
                 //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
             this.TheValue = TheValue;
             }
-
 
         public DateTimeOffset TheValue{get;set;}
 
@@ -554,11 +575,12 @@ namespace Fifth.AST
     {
 
         public ExpressionList(List<Expression> Expressions     )
-        {
+
+    
+{
                 //_ = Expressions ?? throw new ArgumentNullException(nameof(Expressions));
             this.Expressions = Expressions;
             }
-
 
         public List<Expression> Expressions{get;set;}
 
@@ -581,7 +603,9 @@ namespace Fifth.AST
     {
 
         public FifthProgram(List<AliasDeclaration> Aliases , List<ClassDefinition> Classes , List<IFunctionDefinition> Functions     )
-        {
+
+    
+{
                 //_ = Aliases ?? throw new ArgumentNullException(nameof(Aliases));
             this.Aliases = Aliases;
                 //_ = Classes ?? throw new ArgumentNullException(nameof(Classes));
@@ -589,7 +613,6 @@ namespace Fifth.AST
                 //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
             this.Functions = Functions;
             }
-
 
         public List<AliasDeclaration> Aliases{get;set;}
         public List<ClassDefinition> Classes{get;set;}
@@ -626,13 +649,14 @@ namespace Fifth.AST
     {
 
         public FuncCallExpression(ExpressionList ActualParameters , string Name     )
-        {
+
+    
+{
                 //_ = ActualParameters ?? throw new ArgumentNullException(nameof(ActualParameters));
             this.ActualParameters = ActualParameters;
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
             }
-
 
         public ExpressionList ActualParameters{get;set;}
         public string Name{get;set;}
@@ -651,7 +675,9 @@ namespace Fifth.AST
     {
 
         public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block Body , string Typename , string Name , bool IsEntryPoint , TypeId ReturnType     )
-        {
+
+    
+{
                 //_ = ParameterDeclarations ?? throw new ArgumentNullException(nameof(ParameterDeclarations));
             this.ParameterDeclarations = ParameterDeclarations;
                 //_ = Body ?? throw new ArgumentNullException(nameof(Body));
@@ -665,7 +691,6 @@ namespace Fifth.AST
                 //_ = ReturnType ?? throw new ArgumentNullException(nameof(ReturnType));
             this.ReturnType = ReturnType;
             }
-
 
         public ParameterDeclarationList ParameterDeclarations{get;set;}
         public Block Body{get;set;}
@@ -689,9 +714,10 @@ namespace Fifth.AST
     {
 
         public BuiltinFunctionDefinition(    )
-        {
-            }
 
+    
+{
+            }
 
 
         public override void Accept(IAstVisitor visitor)
@@ -731,13 +757,14 @@ namespace Fifth.AST
     {
 
         public OverloadedFunctionDefinition(List<IFunctionDefinition> OverloadClauses , IFunctionSignature Signature     )
-        {
+
+    
+{
                 //_ = OverloadClauses ?? throw new ArgumentNullException(nameof(OverloadClauses));
             this.OverloadClauses = OverloadClauses;
                 //_ = Signature ?? throw new ArgumentNullException(nameof(Signature));
             this.Signature = Signature;
             }
-
 
         public List<IFunctionDefinition> OverloadClauses{get;set;}
         public IFunctionSignature Signature{get;set;}
@@ -761,11 +788,12 @@ namespace Fifth.AST
     {
 
         public Identifier(string Value     )
-        {
+
+    
+{
                 //_ = Value ?? throw new ArgumentNullException(nameof(Value));
             this.Value = Value;
             }
-
 
         public string Value{get;set;}
 
@@ -782,11 +810,12 @@ namespace Fifth.AST
     {
 
         public IdentifierExpression(Identifier Identifier     )
-        {
+
+    
+{
                 //_ = Identifier ?? throw new ArgumentNullException(nameof(Identifier));
             this.Identifier = Identifier;
             }
-
 
         public Identifier Identifier{get;set;}
 
@@ -804,7 +833,9 @@ namespace Fifth.AST
     {
 
         public IfElseStatement(Block IfBlock , Block ElseBlock , Expression Condition     )
-        {
+
+    
+{
                 //_ = IfBlock ?? throw new ArgumentNullException(nameof(IfBlock));
             this.IfBlock = IfBlock;
                 //_ = ElseBlock ?? throw new ArgumentNullException(nameof(ElseBlock));
@@ -812,7 +843,6 @@ namespace Fifth.AST
                 //_ = Condition ?? throw new ArgumentNullException(nameof(Condition));
             this.Condition = Condition;
             }
-
 
         public Block IfBlock{get;set;}
         public Block ElseBlock{get;set;}
@@ -834,11 +864,12 @@ namespace Fifth.AST
     {
 
         public ModuleImport(string ModuleName     )
-        {
+
+    
+{
                 //_ = ModuleName ?? throw new ArgumentNullException(nameof(ModuleName));
             this.ModuleName = ModuleName;
             }
-
 
         public string ModuleName{get;set;}
 
@@ -853,6 +884,14 @@ namespace Fifth.AST
 
     public partial class DestructuringParamDecl : ParameterDeclaration, IParameterListItem
     {
+
+        public DestructuringParamDecl(Identifier ParameterName , string TypeName , Expression Constraint , List<PropertyBinding> PropertyBindings     )
+
+:base(ParameterName , TypeName , Constraint     )
+{
+                //_ = PropertyBindings ?? throw new ArgumentNullException(nameof(PropertyBindings));
+            this.PropertyBindings = PropertyBindings;
+            }
 
         public List<PropertyBinding> PropertyBindings{get;set;}
 
@@ -869,19 +908,15 @@ namespace Fifth.AST
         }
 
         
-        public DestructuringParamDecl(Identifier parameterName, string typeName, Expression constraint, List<PropertyBinding> bindings)
-        : base(parameterName, typeName, constraint)
-        {
-            PropertyBindings = bindings;
-        }
-        
     }
 
     public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
     {
 
         public ParameterDeclaration(Identifier ParameterName , string TypeName , Expression Constraint     )
-        {
+
+    
+{
                 //_ = ParameterName ?? throw new ArgumentNullException(nameof(ParameterName));
             this.ParameterName = ParameterName;
                 //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
@@ -889,7 +924,6 @@ namespace Fifth.AST
                 //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
             this.Constraint = Constraint;
             }
-
 
         public Identifier ParameterName{get;set;}
         public string TypeName{get;set;}
@@ -910,11 +944,12 @@ namespace Fifth.AST
     {
 
         public ParameterDeclarationList(List<IParameterListItem> ParameterDeclarations     )
-        {
+
+    
+{
                 //_ = ParameterDeclarations ?? throw new ArgumentNullException(nameof(ParameterDeclarations));
             this.ParameterDeclarations = ParameterDeclarations;
             }
-
 
         public List<IParameterListItem> ParameterDeclarations{get;set;}
 
@@ -937,9 +972,10 @@ namespace Fifth.AST
     {
 
         public TypeCreateInstExpression(    )
-        {
-            }
 
+    
+{
+            }
 
 
         public override void Accept(IAstVisitor visitor)
@@ -955,13 +991,14 @@ namespace Fifth.AST
     {
 
         public TypeInitialiser(string TypeName , List<TypePropertyInit> PropertyInitialisers     )
-        {
+
+    
+{
                 //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
             this.TypeName = TypeName;
                 //_ = PropertyInitialisers ?? throw new ArgumentNullException(nameof(PropertyInitialisers));
             this.PropertyInitialisers = PropertyInitialisers;
             }
-
 
         public string TypeName{get;set;}
         public List<TypePropertyInit> PropertyInitialisers{get;set;}
@@ -985,7 +1022,9 @@ namespace Fifth.AST
     {
 
         public PropertyBinding(string BoundPropertyName , string BoundVariableName , Expression Constraint     )
-        {
+
+    
+{
                 //_ = BoundPropertyName ?? throw new ArgumentNullException(nameof(BoundPropertyName));
             this.BoundPropertyName = BoundPropertyName;
                 //_ = BoundVariableName ?? throw new ArgumentNullException(nameof(BoundVariableName));
@@ -993,7 +1032,6 @@ namespace Fifth.AST
                 //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
             this.Constraint = Constraint;
             }
-
 
         public string BoundPropertyName{get;set;}
         public string BoundVariableName{get;set;}
@@ -1015,13 +1053,14 @@ namespace Fifth.AST
     {
 
         public TypePropertyInit(string Name , Expression Value     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
                 //_ = Value ?? throw new ArgumentNullException(nameof(Value));
             this.Value = Value;
             }
-
 
         public string Name{get;set;}
         public Expression Value{get;set;}
@@ -1040,13 +1079,14 @@ namespace Fifth.AST
     {
 
         public UnaryExpression(Expression Operand , Operator Op     )
-        {
+
+    
+{
                 //_ = Operand ?? throw new ArgumentNullException(nameof(Operand));
             this.Operand = Operand;
                 //_ = Op ?? throw new ArgumentNullException(nameof(Op));
             this.Op = Op;
             }
-
 
         public Expression Operand{get;set;}
         public Operator Op{get;set;}
@@ -1065,13 +1105,14 @@ namespace Fifth.AST
     {
 
         public VariableDeclarationStatement(Expression Expression , Identifier Name     )
-        {
+
+    
+{
                 //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
             this.Expression = Expression;
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
             }
-
 
         public Expression Expression{get;set;}
         public Identifier Name{get;set;}
@@ -1116,11 +1157,12 @@ namespace Fifth.AST
     {
 
         public VariableReference(string Name     )
-        {
+
+    
+{
                 //_ = Name ?? throw new ArgumentNullException(nameof(Name));
             this.Name = Name;
             }
-
 
         public string Name{get;set;}
 
@@ -1137,11 +1179,12 @@ namespace Fifth.AST
     {
 
         public CompoundVariableReference(List<VariableReference> ComponentReferences     )
-        {
+
+    
+{
                 //_ = ComponentReferences ?? throw new ArgumentNullException(nameof(ComponentReferences));
             this.ComponentReferences = ComponentReferences;
             }
-
 
         public List<VariableReference> ComponentReferences{get;set;}
 
@@ -1164,13 +1207,14 @@ namespace Fifth.AST
     {
 
         public WhileExp(Expression Condition , Block LoopBlock     )
-        {
+
+    
+{
                 //_ = Condition ?? throw new ArgumentNullException(nameof(Condition));
             this.Condition = Condition;
                 //_ = LoopBlock ?? throw new ArgumentNullException(nameof(LoopBlock));
             this.LoopBlock = LoopBlock;
             }
-
 
         public Expression Condition{get;set;}
         public Block LoopBlock{get;set;}
@@ -1189,11 +1233,12 @@ namespace Fifth.AST
     {
 
         public ExpressionStatement(Expression Expression     )
-        {
+
+    
+{
                 //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
             this.Expression = Expression;
             }
-
 
         public Expression Expression{get;set;}
 
@@ -1211,9 +1256,10 @@ namespace Fifth.AST
     {
 
         public Expression(    )
-        {
-            }
 
+    
+{
+            }
 
 
         public override void Accept(IAstVisitor visitor)

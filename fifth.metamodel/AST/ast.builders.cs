@@ -1,4 +1,5 @@
 
+
 namespace Fifth.AST.Builders;
 
 using System;
@@ -811,7 +812,25 @@ public interface INodeBuilder{}
 
         public static DestructuringParamDeclBuilder CreateDestructuringParamDecl() => new ();
         public DestructuringParamDecl Build()
-          => new (_PropertyBindings);
+          => new (_ParameterName, _TypeName, _Constraint, _PropertyBindings);
+
+        private Identifier _ParameterName;
+        public DestructuringParamDeclBuilder WithParameterName(Identifier value){
+            _ParameterName = value;
+            return this;
+        }
+
+        private string _TypeName;
+        public DestructuringParamDeclBuilder WithTypeName(string value){
+            _TypeName = value;
+            return this;
+        }
+
+        private Expression _Constraint;
+        public DestructuringParamDeclBuilder WithConstraint(Expression value){
+            _Constraint = value;
+            return this;
+        }
 
         private List<PropertyBinding> _PropertyBindings;
         public DestructuringParamDeclBuilder WithPropertyBindings(List<PropertyBinding> value){

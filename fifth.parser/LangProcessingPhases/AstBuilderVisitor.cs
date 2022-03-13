@@ -3,7 +3,6 @@ namespace Fifth.LangProcessingPhases
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Antlr4.Runtime;
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using AST;
@@ -122,6 +121,16 @@ namespace Fifth.LangProcessingPhases
             throw new TypeCheckingException("Unable to find target type for cast");
         }
 
+        public override IAstNode VisitETypeCreateInst(FifthParser.ETypeCreateInstContext context)
+        {
+            var typeInitialiser = context.type_initialiser();
+            var propertyInits = from x in typeInitialiser._properties
+                                select VisitType_property_init(x);
+
+            var result = new TypeInitialiser(context.type_initialiser().typename.GetText(), propertyInits.Cast<TypePropertyInit>().ToList());
+            return result;
+        }
+
         public override IAstNode VisitEVarname([NotNull] FifthParser.EVarnameContext context)
         {
             var id = context.var_name().GetText();
@@ -161,7 +170,7 @@ namespace Fifth.LangProcessingPhases
                                            .ToList();
             var result = new FifthProgram(aliasDeclarations, classDeclarations, functionDeclarations)
                 .CaptureLocation(context.Start);
-            result.TargetAssemblyFileName = Path.GetFileName( Path.ChangeExtension(result.Filename, "exe"));
+            result.TargetAssemblyFileName = Path.GetFileName(Path.ChangeExtension(result.Filename, "exe"));
             return result;
         }
 
@@ -197,7 +206,7 @@ namespace Fifth.LangProcessingPhases
             var body = tmp as Block;
             var segments = from seg in context.name.identifier_chain()._segments
                            select seg.Text;
-            var name =string.Join('.', segments);
+            var name = string.Join('.', segments);
 
             var parameterDeclarationList =
                 parameterList ?? new ParameterDeclarationList(new List<IParameterListItem>());
@@ -227,7 +236,7 @@ namespace Fifth.LangProcessingPhases
             var identifierChain = parameterType.identifier_chain();
             var segments = from seg in identifierChain._segments
                            select seg.Text;
-            var type =string.Join('.', segments);
+            var type = string.Join('.', segments);
             var name = context.parameter_name().IDENTIFIER().GetText();
             Expression constraint = default;
             if (context.variable_constraint() != null)
@@ -248,10 +257,16 @@ namespace Fifth.LangProcessingPhases
                 propInitList.Add(Visit(pb));
             }
             var propInits = propInitList.Cast<PropertyBinding>().ToList();
-
-            return new DestructuringParamDecl(parameterType, new Identifier(parameterName), propInits)
+            // TODO:  Need to extract out the constraint for the whole decl
+            return new DestructuringParamDecl(new Identifier(parameterName), parameterType, null, propInits)
                 .CaptureLocation(context.Start);
         }
+
+        public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>
+            base.VisitParameter_name(context).CaptureLocation(context.Start);
+
+        public override IAstNode VisitParameter_type([NotNull] FifthParser.Parameter_typeContext context) =>
+            base.VisitParameter_type(context).CaptureLocation(context.Start);
 
         public override IAstNode VisitProperty_binding(FifthParser.Property_bindingContext ctx)
         {
@@ -265,12 +280,6 @@ namespace Fifth.LangProcessingPhases
             return new PropertyBinding(propName.Value, varName.Value, constraint)
                 .CaptureLocation(ctx.Start);
         }
-
-        public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>
-            base.VisitParameter_name(context).CaptureLocation(context.Start);
-
-        public override IAstNode VisitParameter_type([NotNull] FifthParser.Parameter_typeContext context) =>
-            base.VisitParameter_type(context).CaptureLocation(context.Start);
 
         public override IAstNode VisitProperty_declaration(FifthParser.Property_declarationContext context)
         {
@@ -312,16 +321,6 @@ namespace Fifth.LangProcessingPhases
             }
 
             return decl.CaptureLocation(context.Start);
-        }
-
-        public override IAstNode VisitETypeCreateInst(FifthParser.ETypeCreateInstContext context)
-        {
-            var typeInitialiser = context.type_initialiser();
-            var propertyInits = from x in typeInitialiser._properties
-                                select VisitType_property_init(x);
-
-            var result = new TypeInitialiser(context.type_initialiser().typename.GetText(), propertyInits.Cast<TypePropertyInit>().ToList());
-            return result;
         }
 
         public override IAstNode VisitSWhile(FifthParser.SWhileContext context)
