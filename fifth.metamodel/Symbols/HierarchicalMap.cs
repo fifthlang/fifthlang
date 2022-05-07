@@ -1,0 +1,19 @@
+﻿namespace Fifth.Symbols;
+
+using System.Collections.Generic;
+
+public class HierarchicalMap<TKey, TValue> : Dictionary<TKey, TValue>, IHierarchicalMap<TKey, TValue> where TKey : notnull
+{
+    public HierarchicalMap<TKey, TValue> Parent { get; set; }
+
+    public HierarchicalMap<TKey, TValue> CreateChild() => new HierarchicalMap<TKey, TValue> { Parent = this };
+
+    public bool TryResolve(TKey v, out TValue result)
+    {
+        if (TryGetValue(v, out result))
+        {
+            return true;
+        }
+        return Parent?.TryResolve(v, out result) ?? false;
+    }
+}

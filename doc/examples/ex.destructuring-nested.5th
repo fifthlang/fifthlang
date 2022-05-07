@@ -1,0 +1,35 @@
+class VitalStatistics {
+    Height: float;
+    Age: float;
+    Mass: float;    
+}
+
+class Person {
+    Name: string;
+    Vitals: VitalStatistics;
+}
+
+calculate_bmi(
+    p: Person {
+        name : Name,
+        v : Vitals {
+            age: Age | age > 60,
+            height: Height ,
+            mass: Mass
+        }
+    }) : float {
+    print ("calculating the BMI for " + name);
+    return mass / (height * height);
+}
+
+ main():void {
+    eric: Person = new Person{
+        Name = 'Eric Morecombe',
+        Vitals = new VitalStatistics{
+            Height = 1.93,
+            Age = 65,
+            Mass = 100
+        }
+    };
+    print(calculate_bmi(eric));
+}

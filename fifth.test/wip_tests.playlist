@@ -1,0 +1,30 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="fifth.test" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="Fifth.Test.Parser" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="NewBoundVariableInlinerVisitorTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Fifth.Test.Parser.NewBoundVariableInlinerVisitorTests.if_passed_a_destructuring_function_definition_will_transform_to_only_use_direct_variable_references" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="if_passed_a_destructuring_function_definition_will_transform_to_only_use_direct_variable_references" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

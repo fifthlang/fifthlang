@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		doc\examples\ex3.comp.5th = doc\examples\ex3.comp.5th
+		doc\examples\ex.destructuring.5th = doc\examples\ex.destructuring.5th
 		fifth.parser\grammar\Fifth.g4 = fifth.parser\grammar\Fifth.g4
 		..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_il_sample.il = ..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_il_sample.il
 		..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il = ..\..\Users\a30006806\AppData\Local\Temp\FifthTesting\fifth_test.il
@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.codegenerator", "fift
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fifth.System", "fifthlang.system\Fifth.System.csproj", "{58051B4E-EFEE-4EE3-A193-A90EE099C2C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fifth.metamodel.metadata", "fifth.metamodel.metadata\fifth.metamodel.metadata.csproj", "{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fifth.metamodel.metadata", "fifth.metamodel.metadata\fifth.metamodel.metadata.csproj", "{1213DA1F-9CC5-4870-8ACC-7CF9264A37E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

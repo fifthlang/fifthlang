@@ -1,18 +1,17 @@
-namespace Fifth.Symbols
+namespace Fifth.Symbols;
+
+using System.Collections.Generic;
+
+public class SymbolTable : Dictionary<string, ISymbolTableEntry>, ISymbolTable
 {
-    using System.Collections.Generic;
+    public IEnumerable<ISymbolTableEntry> All() => Values;
 
-    public class SymbolTable : Dictionary<string, ISymbolTableEntry>, ISymbolTable
+    public ISymbolTableEntry Resolve(string v)
     {
-        public IEnumerable<ISymbolTableEntry> All() => Values;
-
-        public ISymbolTableEntry Resolve(string v)
+        if (TryGetValue(v, out var result))
         {
-            if (TryGetValue(v, out var result))
-            {
-                return result;
-            }
-            return null;
+            return result;
         }
+        return null;
     }
 }
