@@ -1,5 +1,4 @@
 
-
 namespace Fifth.AST.Visitors
 {
     using System;
@@ -74,12 +73,14 @@ namespace Fifth.AST.Visitors
         public void LeaveIfElseStatement(IfElseStatement ctx);
         public void EnterModuleImport(ModuleImport ctx);
         public void LeaveModuleImport(ModuleImport ctx);
-        public void EnterDestructuringParamDecl(DestructuringParamDecl ctx);
-        public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx);
-        public void EnterParameterDeclaration(ParameterDeclaration ctx);
-        public void LeaveParameterDeclaration(ParameterDeclaration ctx);
         public void EnterParameterDeclarationList(ParameterDeclarationList ctx);
         public void LeaveParameterDeclarationList(ParameterDeclarationList ctx);
+        public void EnterParameterDeclaration(ParameterDeclaration ctx);
+        public void LeaveParameterDeclaration(ParameterDeclaration ctx);
+        public void EnterDestructuringDeclaration(DestructuringDeclaration ctx);
+        public void LeaveDestructuringDeclaration(DestructuringDeclaration ctx);
+        public void EnterDestructuringBinding(DestructuringBinding ctx);
+        public void LeaveDestructuringBinding(DestructuringBinding ctx);
         public void EnterTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
@@ -168,12 +169,14 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveIfElseStatement(IfElseStatement ctx){}
         public virtual void EnterModuleImport(ModuleImport ctx){}
         public virtual void LeaveModuleImport(ModuleImport ctx){}
-        public virtual void EnterDestructuringParamDecl(DestructuringParamDecl ctx){}
-        public virtual void LeaveDestructuringParamDecl(DestructuringParamDecl ctx){}
-        public virtual void EnterParameterDeclaration(ParameterDeclaration ctx){}
-        public virtual void LeaveParameterDeclaration(ParameterDeclaration ctx){}
         public virtual void EnterParameterDeclarationList(ParameterDeclarationList ctx){}
         public virtual void LeaveParameterDeclarationList(ParameterDeclarationList ctx){}
+        public virtual void EnterParameterDeclaration(ParameterDeclaration ctx){}
+        public virtual void LeaveParameterDeclaration(ParameterDeclaration ctx){}
+        public virtual void EnterDestructuringDeclaration(DestructuringDeclaration ctx){}
+        public virtual void LeaveDestructuringDeclaration(DestructuringDeclaration ctx){}
+        public virtual void EnterDestructuringBinding(DestructuringBinding ctx){}
+        public virtual void LeaveDestructuringBinding(DestructuringBinding ctx){}
         public virtual void EnterTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
@@ -233,9 +236,10 @@ namespace Fifth.AST.Visitors
         public IdentifierExpression VisitIdentifierExpression(IdentifierExpression ctx);
         public IfElseStatement VisitIfElseStatement(IfElseStatement ctx);
         public ModuleImport VisitModuleImport(ModuleImport ctx);
-        public DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx);
-        public ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx);
         public ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx);
+        public ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx);
+        public DestructuringDeclaration VisitDestructuringDeclaration(DestructuringDeclaration ctx);
+        public DestructuringBinding VisitDestructuringBinding(DestructuringBinding ctx);
         public TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx);
         public PropertyBinding VisitPropertyBinding(PropertyBinding ctx);
@@ -285,9 +289,10 @@ namespace Fifth.AST.Visitors
                 IdentifierExpression node => VisitIdentifierExpression(node),
                 IfElseStatement node => VisitIfElseStatement(node),
                 ModuleImport node => VisitModuleImport(node),
-                DestructuringParamDecl node => VisitDestructuringParamDecl(node),
-                ParameterDeclaration node => VisitParameterDeclaration(node),
                 ParameterDeclarationList node => VisitParameterDeclarationList(node),
+                ParameterDeclaration node => VisitParameterDeclaration(node),
+                DestructuringDeclaration node => VisitDestructuringDeclaration(node),
+                DestructuringBinding node => VisitDestructuringBinding(node),
                 TypeCreateInstExpression node => VisitTypeCreateInstExpression(node),
                 TypeInitialiser node => VisitTypeInitialiser(node),
                 PropertyBinding node => VisitPropertyBinding(node),
@@ -365,11 +370,13 @@ namespace Fifth.AST.Visitors
             => ctx;
         public virtual ModuleImport VisitModuleImport(ModuleImport ctx)
             => ctx;
-        public virtual DestructuringParamDecl VisitDestructuringParamDecl(DestructuringParamDecl ctx)
+        public virtual ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx)
             => ctx;
         public virtual ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx)
             => ctx;
-        public virtual ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx)
+        public virtual DestructuringDeclaration VisitDestructuringDeclaration(DestructuringDeclaration ctx)
+            => ctx;
+        public virtual DestructuringBinding VisitDestructuringBinding(DestructuringBinding ctx)
             => ctx;
         public virtual TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx)
             => ctx;
@@ -397,4 +404,3 @@ namespace Fifth.AST.Visitors
     }
 
 }
-

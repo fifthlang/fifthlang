@@ -380,6 +380,7 @@ namespace Fifth.TypeSystem
         {
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
             {
+                Infer(node.DestructuringDecl);
                 TypeInferred(node, t);
                 return t;
             }
@@ -430,18 +431,6 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypeInitialiser node)
             => default;
-
-        public IType Infer(IScope scope, DestructuringParamDecl node)
-        {
-            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
-            {
-                TypeInferred(node, t);
-                return t;
-            }
-
-            TypeNotFound(node);
-            return default;
-        }
 
         public IType Infer(IScope scope, PropertyBinding node)
         {
@@ -585,6 +574,19 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypePropertyInit node)
             => throw new NotImplementedException();
+        public IType Infer(IScope scope, DestructuringDeclaration node)
+        {
+            foreach (var binding in node.Bindings)
+            {
+                Infer(binding);
+            }
+
+            TypeNotRelevant(node);
+            return default;
+        }
+
+        public IType Infer(IScope scope, DestructuringBinding node)
+        => throw new NotImplementedException();
 
         #endregion Type Inference
 

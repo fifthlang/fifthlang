@@ -1800,13 +1800,13 @@ public partial class FifthParser : Parser {
 	}
 
 	public partial class Destructure_bindingContext : ParserRuleContext {
-		public Param_nameContext[] param_name() {
-			return GetRuleContexts<Param_nameContext>();
-		}
-		public Param_nameContext param_name(int i) {
-			return GetRuleContext<Param_nameContext>(i);
+		public Param_nameContext param_name() {
+			return GetRuleContext<Param_nameContext>(0);
 		}
 		public ITerminalNode COLON() { return GetToken(FifthParser.COLON, 0); }
+		public Param_typeContext param_type() {
+			return GetRuleContext<Param_typeContext>(0);
+		}
 		public Destructuring_declContext destructuring_decl() {
 			return GetRuleContext<Destructuring_declContext>(0);
 		}
@@ -1840,7 +1840,7 @@ public partial class FifthParser : Parser {
 			{
 			State = 266; param_name();
 			State = 267; Match(COLON);
-			State = 268; param_name();
+			State = 268; param_type();
 			State = 270;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
@@ -4317,7 +4317,7 @@ public partial class FifthParser : Parser {
 		'\x2', '\x109', '\x107', '\x3', '\x2', '\x2', '\x2', '\x10A', '\x10B', 
 		'\a', '\x14', '\x2', '\x2', '\x10B', '\x37', '\x3', '\x2', '\x2', '\x2', 
 		'\x10C', '\x10D', '\x5', '\x32', '\x1A', '\x2', '\x10D', '\x10E', '\a', 
-		'\x17', '\x2', '\x2', '\x10E', '\x110', '\x5', '\x32', '\x1A', '\x2', 
+		'\x17', '\x2', '\x2', '\x10E', '\x110', '\x5', '\x34', '\x1B', '\x2', 
 		'\x10F', '\x111', '\x5', '\x36', '\x1C', '\x2', '\x110', '\x10F', '\x3', 
 		'\x2', '\x2', '\x2', '\x110', '\x111', '\x3', '\x2', '\x2', '\x2', '\x111', 
 		'\x39', '\x3', '\x2', '\x2', '\x2', '\x112', '\x118', '\a', '&', '\x2', 

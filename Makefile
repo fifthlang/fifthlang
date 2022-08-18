@@ -7,9 +7,8 @@ DIR_TEST := fifth.test
 JVM := java
 ANTLR := tools/antlr-4.8-complete.jar
 ANTLR_ARGS := -Dlanguage=CSharp -visitor -listener -lib $(DIR_GRAMMAR)
-CC := dotnet
+CC := dotnet.exe
 CC_ARGS:=
-
 # SOURCES
 SRC_PARSER=$(wildcard $(DIR_PARSER)/**/*.cs)
 SRC_TEST=$(wildcard $(DIR_TEST)/**/*.cs)
@@ -35,6 +34,12 @@ $(BIN_PARSER): $(SRC_PARSER) grammar
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_PARSER)
 
-build: $(BIN_TEST)
+build: #$(BIN_TEST)
+	$(CC) $(CC_ARGS) build fifth.metamodel.metadata/fifth.metamodel.metadata.csproj
+	$(MAKE) -C fifth.metamodel/AST ast
+	$(CC) $(CC_ARGS) build ./fifthlang.sln
+
 test: $(BIN_TEST)
 	$(CC) test
+ast:
+	$(MAKE) -C fifth.metamodel/AST ast

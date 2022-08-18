@@ -1,3 +1,4 @@
+<#@ template language="C#" #>
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0021 // Use expression body for constructors
 

@@ -71,9 +71,21 @@ function_declaration
       body=function_body
     ;
 
+function_body
+    : block
+    ;
+
+function_name
+    : identifier_chain
+    ;
+
+function_type
+    : IDENTIFIER
+    ;
+
 // Ex: `x:int, y:float`
 formal_parameters
-    : parameter_declaration (COMMA parameter_declaration)*
+    : paramdecl (COMMA paramdecl)*
     ;
 
 // Ex: `( x:int, y:float )`
@@ -83,24 +95,24 @@ function_args
 
 // Ex: `addr:Address`
 // Ex: `p:Person{a:Age | a < 32}`
-parameter_declaration
-    : parameter_name COLON parameter_type variable_constraint?  # ParamDecl
-    | type_destructuring_paramdecl                              # ParamDeclWithTypeDestructure
+v1_parameter_declaration
+    : v1_parameter_name COLON v1_parameter_type variable_constraint?  # ParamDecl
+    | v1_type_destructuring_paramdecl                              # ParamDeclWithTypeDestructure
     ;
 
 // Ex: `p:Person{a:Age | a < 32}`
-type_destructuring_paramdecl
-    : parameter_name
+v1_type_destructuring_paramdecl
+    : v1_parameter_name
       COLON
-      parameter_type
+      v1_parameter_type
       OPENBRACE
-        bindings+=property_binding
-        ( COMMA bindings+=property_binding )*
+        bindings+=v1_property_binding
+        ( COMMA bindings+=v1_property_binding )*
       CLOSEBRACE
     ;
 
 // Ex: `age : Age | age < 32`
-property_binding
+v1_property_binding
     : bound_variable_name=var_name
       COLON
       property_name=var_name
@@ -112,24 +124,39 @@ variable_constraint
     ;
 
 // Ex:  foo.bar.baz
-parameter_type
+v1_parameter_type
     : identifier_chain
     ;
 
-parameter_name
+v1_parameter_name
     : IDENTIFIER
     ;
 
-function_body
-    : block
+
+// v2 Parameter declarations
+paramdecl
+    : param_name COLON param_type
+        ( variable_constraint?
+        | destructuring_decl )?
     ;
 
-function_name
+param_name
+    : IDENTIFIER
+    ;
+
+param_type
     : identifier_chain
     ;
 
-function_type
-    : IDENTIFIER
+destructuring_decl
+    : OPENBRACE
+        bindings+=destructure_binding
+        ( COMMA bindings+=destructure_binding )*
+      CLOSEBRACE
+    ;
+
+destructure_binding
+    : param_name COLON param_name destructuring_decl?
     ;
 
 // ========[STATEMENTS]=========

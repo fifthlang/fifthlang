@@ -1,5 +1,4 @@
 
-
 namespace Fifth.AST.Visitors;
 using Fifth.AST;
 using Fifth.AST.Builders;
@@ -37,9 +36,10 @@ public interface IAstMutatorVisitor<TContext>
     IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx);
     IfElseStatement ProcessIfElseStatement(IfElseStatement node, TContext ctx);
     ModuleImport ProcessModuleImport(ModuleImport node, TContext ctx);
-    DestructuringParamDecl ProcessDestructuringParamDecl(DestructuringParamDecl node, TContext ctx);
-    ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx);
     ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx);
+    ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx);
+    DestructuringDeclaration ProcessDestructuringDeclaration(DestructuringDeclaration node, TContext ctx);
+    DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx);
     TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx);
     TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx);
     PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx);
@@ -86,9 +86,10 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
     public virtual IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx)=>node;
     public virtual IfElseStatement ProcessIfElseStatement(IfElseStatement node, TContext ctx)=>node;
     public virtual ModuleImport ProcessModuleImport(ModuleImport node, TContext ctx)=>node;
-    public virtual DestructuringParamDecl ProcessDestructuringParamDecl(DestructuringParamDecl node, TContext ctx)=>node;
-    public virtual ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx)=>node;
     public virtual ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)=>node;
+    public virtual ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx)=>node;
+    public virtual DestructuringDeclaration ProcessDestructuringDeclaration(DestructuringDeclaration node, TContext ctx)=>node;
+    public virtual DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx)=>node;
     public virtual TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx)=>node;
     public virtual TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx)=>node;
     public virtual PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx)=>node;
@@ -140,9 +141,10 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             IdentifierExpression node => ProcessIdentifierExpression(node, ctx),
             IfElseStatement node => ProcessIfElseStatement(node, ctx),
             ModuleImport node => ProcessModuleImport(node, ctx),
-            DestructuringParamDecl node => ProcessDestructuringParamDecl(node, ctx),
-            ParameterDeclaration node => ProcessParameterDeclaration(node, ctx),
             ParameterDeclarationList node => ProcessParameterDeclarationList(node, ctx),
+            ParameterDeclaration node => ProcessParameterDeclaration(node, ctx),
+            DestructuringDeclaration node => ProcessDestructuringDeclaration(node, ctx),
+            DestructuringBinding node => ProcessDestructuringBinding(node, ctx),
             TypeCreateInstExpression node => ProcessTypeCreateInstExpression(node, ctx),
             TypeInitialiser node => ProcessTypeInitialiser(node, ctx),
             PropertyBinding node => ProcessPropertyBinding(node, ctx),
@@ -553,17 +555,14 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         return builder.Build();
     }
 
-    public virtual DestructuringParamDecl ProcessDestructuringParamDecl(DestructuringParamDecl node, TContext ctx)
+    public virtual ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)
     {
 
 
-    var builder = DestructuringParamDeclBuilder.CreateDestructuringParamDecl();
+    var builder = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
 
-        builder.WithParameterName((Identifier)Process(node.ParameterName, ctx));
-            builder.WithTypeName(node.TypeName);
-            builder.WithConstraint((Expression)Process(node.Constraint, ctx));
-            foreach(var x in node.PropertyBindings){
-            builder.AddingItemToPropertyBindings((PropertyBinding)Process((PropertyBinding)x, ctx));
+        foreach(var x in node.ParameterDeclarations){
+            builder.AddingItemToParameterDeclarations((ParameterDeclaration)Process((ParameterDeclaration)x, ctx));
         }
     
         return builder.Build();
@@ -578,19 +577,33 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         builder.WithParameterName((Identifier)Process(node.ParameterName, ctx));
             builder.WithTypeName(node.TypeName);
             builder.WithConstraint((Expression)Process(node.Constraint, ctx));
+            builder.WithDestructuringDecl((DestructuringDeclaration)Process(node.DestructuringDecl, ctx));
     
         return builder.Build();
     }
 
-    public virtual ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)
+    public virtual DestructuringDeclaration ProcessDestructuringDeclaration(DestructuringDeclaration node, TContext ctx)
     {
 
 
-    var builder = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
+    var builder = DestructuringDeclarationBuilder.CreateDestructuringDeclaration();
 
-        foreach(var x in node.ParameterDeclarations){
-            builder.AddingItemToParameterDeclarations((ParameterDeclaration)Process((ParameterDeclaration)x, ctx));
+        foreach(var x in node.Bindings){
+            builder.AddingItemToBindings((DestructuringBinding)Process((DestructuringBinding)x, ctx));
         }
+    
+        return builder.Build();
+    }
+
+    public virtual DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx)
+    {
+
+
+    var builder = DestructuringBindingBuilder.CreateDestructuringBinding();
+
+        builder.WithVarname(node.Varname);
+            builder.WithPropname(node.Propname);
+            builder.WithDestructuringDecl((DestructuringDeclaration)Process(node.DestructuringDecl, ctx));
     
         return builder.Build();
     }
@@ -726,4 +739,3 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     }
 
 }
-

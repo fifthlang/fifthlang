@@ -9,65 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AST\FloatValueExpression.cs" />
-    <Compile Remove="AST\Identifier.cs" />
-    <Compile Remove="AST\IdentifierExpression.cs" />
-    <Compile Remove="AST\IfElseStatement.cs" />
-    <Compile Remove="AST\IntValueExpression.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="AST\ast.mutator-visitors.tt">
-      <LastGenOutput>ast.mutator-visitors.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="AST\ast.builders.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ast.builders.cs</LastGenOutput>
-    </None>
-    <None Update="AST\ast.typesystem.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ast.typesystem.cs</LastGenOutput>
-    </None>
-    <None Update="AST\ast.visitors.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ast.visitors.cs</LastGenOutput>
-    </None>
-    <None Update="AST\ast.nodes.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ast.nodes.cs</LastGenOutput>
-    </None>
+    <ProjectReference Include="..\fifth.metamodel.metadata\fifth.metamodel.metadata.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="AST\ast.mutator-visitors.cs">
-      <DependentUpon>ast.mutator-visitors.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="AST\ast.builders.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ast.builders.tt</DependentUpon>
-    </Compile>
-    <Compile Update="AST\ast.typesystem.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ast.typesystem.tt</DependentUpon>
-    </Compile>
-    <Compile Update="AST\ast.visitors.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ast.visitors.tt</DependentUpon>
-    </Compile>
-    <Compile Update="AST\ast.nodes.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ast.nodes.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
 </Project>

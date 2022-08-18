@@ -1,30 +1,25 @@
-namespace Fifth.AST
-{
-    using System;
-    using Symbols;
-    using Visitors;
-    using TypeSystem;
-    using PrimitiveTypes;
-    using TypeSystem.PrimitiveTypes;
-    using System.Collections.Generic;
-
-#region AST Nodes
-
+namespace Fifth.AST;
+using System;
+using Symbols;
+using Visitors;
+using TypeSystem;
+using PrimitiveTypes;
+using TypeSystem.PrimitiveTypes;
+using System.Collections.Generic;
 
 <# foreach (var ast in asts)  {
-    var someProps = GenerationHelpers.GetPropertyListInherited(ast);
-    var inheritedProps = GenerationHelpers.GetOnlyInheritedProperties(ast).Select(ps=>ps.Prop);
-    var isDerivedFromNonBase = GenerationHelpers.IsDerivedFromNonBaseAstType(ast);
+var someProps = GenerationHelpers.GetPropertyListInherited(ast);
+var inheritedProps = GenerationHelpers.GetOnlyInheritedProperties(ast).Select(ps=>ps.Prop);
+var isDerivedFromNonBase = GenerationHelpers.IsDerivedFromNonBaseAstType(ast);
 #>
-    public partial class <#= ast.Name #> : <#= ast.Parent #>
-    {
-
-        public <#= ast.Name #>(<#
-    var sep = "";
-    foreach (var prop in someProps.Select(p=>p.Prop))  {
-        var typeName = GenerationHelpers.PluralType(prop);
-        #><#= sep #><#= typeName #> <#=prop.Name#> <# sep=", "; } #>
-    )
+public partial class <#= ast.Name #> : <#= ast.Parent #>
+{
+    public <#= ast.Name #>(<#
+var sep = "";
+foreach (var prop in someProps.Select(p=>p.Prop))  {
+    var typeName = GenerationHelpers.PluralType(prop);
+    #><#= sep #><#= typeName #> <#=prop.Name#> <# sep=", "; } #>
+)
 
 <#
 if( string.IsNullOrEmpty(ast.PostCtor) && inheritedProps.Any() ){
@@ -33,62 +28,59 @@ if( string.IsNullOrEmpty(ast.PostCtor) && inheritedProps.Any() ){
 // params and pass them into the base class instead.
 #>
 :base(<#
-    sep = "";
-    foreach (var ps in inheritedProps)  {
-    #><#= sep #><#=ps.Name#> <#
-    sep=", ";
-    } #>
-    )
+sep = "";
+foreach (var ps in inheritedProps)  {
+#><#= sep #><#=ps.Name#> <#
+sep=", ";
+} #>
+)
 <#} else {
 // if this AST node has a prop PostCtor, then it means that the passing of params on to the base
 // is taken care of already.  In which case, don't generate a base class call
 #>
-    <#= ast.PostCtor #>
+<#= ast.PostCtor #>
 <#}#>
 {
-    <#
-    sep = "";
-    foreach (var prop in ast.Props)  {
-    #>
-            //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
-            this.<#=prop.Name#> = <#=prop.Name#>;
-    <#
-    sep=", ";
-    } #>
-        }
+<#
+sep = "";
+foreach (var prop in ast.Props)  {
+#>
+        //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
+        this.<#=prop.Name#> = <#=prop.Name#>;
+<#
+sep=", ";
+} #>
+    }
 
 <# foreach (var prop in ast.Props)  { #>
-        public <#= GenerationHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
+    public <#= GenerationHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
 <# } #>
 
-        public override void Accept(IAstVisitor visitor)
-        {
-            visitor.Enter<#= ast.Name #>(this);
+    public override void Accept(IAstVisitor visitor)
+    {
+        visitor.Enter<#= ast.Name #>(this);
 <# foreach (var prop in ast.Props)  {
-    if(!prop.IgnoreDuringVisit){
-        if(prop.IsCollection){
+if(!prop.IgnoreDuringVisit){
+    if(prop.IsCollection){
 #>
-            if(<#=prop.Name#> != null){
-                foreach (var e in <#=prop.Name#>)
-                {
-                    e.Accept(visitor);
-                }
+        if(<#=prop.Name#> != null){
+            foreach (var e in <#=prop.Name#>)
+            {
+                e.Accept(visitor);
             }
+        }
 <#
-        }else{
+    }else{
 #>
-            <#=prop.Name#>?.Accept(visitor);
+        <#=prop.Name#>?.Accept(visitor);
 <#
-        }
     }
+}
 } #>
-            visitor.Leave<#= ast.Name #>(this);
-        }
-
-        <#= ast.CustomCode #>
+        visitor.Leave<#= ast.Name #>(this);
     }
+
+    <#= ast.CustomCode #>
+}
 
 <# } #>
-
-#endregion // AST Nodes
-}
