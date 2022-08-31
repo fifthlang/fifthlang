@@ -676,7 +676,8 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     var builder = VariableDeclarationStatementBuilder.CreateVariableDeclarationStatement();
 
         builder.WithExpression((Expression)Process(node.Expression, ctx));
-            builder.WithName((Identifier)Process(node.Name, ctx));
+            builder.WithName(node.Name);
+            builder.WithUnresolvedTypeName(node.UnresolvedTypeName);
     
         return builder.Build();
     }

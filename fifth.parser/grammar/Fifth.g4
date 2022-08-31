@@ -93,45 +93,9 @@ function_args
     : OPENPAREN formal_parameters? CLOSEPAREN
     ;
 
-// Ex: `addr:Address`
-// Ex: `p:Person{a:Age | a < 32}`
-v1_parameter_declaration
-    : v1_parameter_name COLON v1_parameter_type variable_constraint?  # ParamDecl
-    | v1_type_destructuring_paramdecl                              # ParamDeclWithTypeDestructure
-    ;
-
-// Ex: `p:Person{a:Age | a < 32}`
-v1_type_destructuring_paramdecl
-    : v1_parameter_name
-      COLON
-      v1_parameter_type
-      OPENBRACE
-        bindings+=v1_property_binding
-        ( COMMA bindings+=v1_property_binding )*
-      CLOSEBRACE
-    ;
-
-// Ex: `age : Age | age < 32`
-v1_property_binding
-    : bound_variable_name=var_name
-      COLON
-      property_name=var_name
-      variable_constraint?
-    ;
-
 variable_constraint
     : BAR constraint=exp
     ;
-
-// Ex:  foo.bar.baz
-v1_parameter_type
-    : identifier_chain
-    ;
-
-v1_parameter_name
-    : IDENTIFIER
-    ;
-
 
 // v2 Parameter declarations
 paramdecl
@@ -156,7 +120,7 @@ destructuring_decl
     ;
 
 destructure_binding
-    : param_name COLON param_name destructuring_decl?
+    : name=IDENTIFIER COLON propname=IDENTIFIER destructuring_decl?
     ;
 
 // ========[STATEMENTS]=========

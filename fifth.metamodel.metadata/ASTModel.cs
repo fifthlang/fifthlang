@@ -292,7 +292,7 @@ public static class ASTModel
 
                         foreach (var (pname, ptypename) in parameters)
                         {
-                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
+                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null, null);
                             list.Add(paramDef);
                         }
 
@@ -480,7 +480,8 @@ public static class ASTModel
             Props = new PropertySpec[]
             {
                 new PropertySpec(name: "Expression", type: "Expression"),
-                new PropertySpec(name: "Name", type: "Identifier")
+                new PropertySpec(name: "Name", type: "string", ignoreDuringVisit: true),
+                new PropertySpec(name: "UnresolvedTypeName", type: "string", ignoreDuringVisit: true)
             }
         },
         /*VariableReference*/new AstNodeSpec()

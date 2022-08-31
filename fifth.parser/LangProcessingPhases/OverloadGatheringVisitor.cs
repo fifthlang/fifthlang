@@ -79,7 +79,7 @@ namespace Fifth.LangProcessingPhases
             {
                 foreach (var pd in ctx.ParameterDeclarations.ParameterDeclarations)
                 {
-                    paramDecls.Add(new ParameterDeclaration(new Identifier(pd.ParameterName.Value), pd.TypeName, null));
+                    paramDecls.Add(new ParameterDeclaration(new Identifier(pd.ParameterName.Value), pd.TypeName, null, null));
                 }
             }
 

@@ -6,6 +6,7 @@ namespace Fifth.LangProcessingPhases
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using AST;
+    using Fifth.AST.Builders;
     using Parser.LangProcessingPhases;
     using TypeSystem;
 
@@ -176,17 +177,14 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitFormal_parameters([NotNull] FifthParser.Formal_parametersContext context)
         {
-            if (context == null)
+            var builder = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
+
+            foreach (var pd in context.paramdecl())
             {
-                return null;
+                builder.AddingItemToParameterDeclarations((ParameterDeclaration)Visit(pd));
             }
 
-            var parameters = new List<IParameterListItem>();
-            parameters.AddRange(
-                context.parameter_declaration()
-                    .Select(c => Visit(c))
-                    .Cast<IParameterListItem>());
-            return new ParameterDeclarationList(parameters).CaptureLocation(context.Start);
+            return builder.Build();
         }
 
         public override IAstNode VisitFunction_args([NotNull] FifthParser.Function_argsContext context) =>
@@ -230,55 +228,41 @@ namespace Fifth.LangProcessingPhases
         public override IAstNode VisitPackagename([NotNull] FifthParser.PackagenameContext context) =>
             base.VisitPackagename(context).CaptureLocation(context.Start);
 
-        public override IAstNode VisitParamDecl(FifthParser.ParamDeclContext context)
+        public override IAstNode VisitParamdecl([NotNull] FifthParser.ParamdeclContext context)
         {
-            var parameterType = context.parameter_type();
-            var identifierChain = parameterType.identifier_chain();
-            var segments = from seg in identifierChain._segments
-                           select seg.Text;
-            var type = string.Join('.', segments);
-            var name = context.parameter_name().IDENTIFIER().GetText();
-            Expression constraint = default;
+            var builder = ParameterDeclarationBuilder.CreateParameterDeclaration()
+                .WithParameterName(new Identifier(context.param_name().IDENTIFIER().GetText()))
+                .WithTypeName(context.param_type().GetText());
+
             if (context.variable_constraint() != null)
             {
-                constraint = (Expression)Visit(context.variable_constraint());
+                builder.WithConstraint( (Expression)Visit(context.variable_constraint()));
             }
-            return new ParameterDeclaration(new Identifier(name), type, constraint).CaptureLocation(context.Start);
+            if (context.destructuring_decl() != null)
+            {
+                builder.WithDestructuringDecl( (DestructuringDeclaration)Visit(context.destructuring_decl())); 
+            }
+
+            return builder.Build().CaptureLocation(context.Start);
+        }
+        public override IAstNode VisitDestructure_binding([NotNull] FifthParser.Destructure_bindingContext context)
+        {
+            var builder = DestructuringBindingBuilder.CreateDestructuringBinding().WithVarname(context.name.Text).WithPropname(context.propname.Text);
+            if (context.destructuring_decl() != null)
+            {
+                builder.WithDestructuringDecl((DestructuringDeclaration)Visit(context.destructuring_decl()));
+            }
+            return builder.Build().CaptureLocation(context.Start);
         }
 
-        public override IAstNode VisitParamDeclWithTypeDestructure(FifthParser.ParamDeclWithTypeDestructureContext context)
+        public override IAstNode VisitDestructuring_decl([NotNull] FifthParser.Destructuring_declContext context)
         {
-            var destrCtx = context.type_destructuring_paramdecl();
-            var parameterType = destrCtx.parameter_type().GetText();
-            var parameterName = destrCtx.parameter_name().GetText();
-            var propInitList = new List<IAstNode>();
-            foreach (var pb in destrCtx._bindings)
+            var builder = DestructuringDeclarationBuilder.CreateDestructuringDeclaration();
+            foreach (var binding in context._bindings)
             {
-                propInitList.Add(Visit(pb));
+                builder.AddingItemToBindings((DestructuringBinding)Visit(binding));
             }
-            var propInits = propInitList.Cast<PropertyBinding>().ToList();
-            // TODO:  Need to extract out the constraint for the whole decl
-            return new DestructuringParamDecl(new Identifier(parameterName), parameterType, null, propInits)
-                .CaptureLocation(context.Start);
-        }
-
-        public override IAstNode VisitParameter_name([NotNull] FifthParser.Parameter_nameContext context) =>
-            base.VisitParameter_name(context).CaptureLocation(context.Start);
-
-        public override IAstNode VisitParameter_type([NotNull] FifthParser.Parameter_typeContext context) =>
-            base.VisitParameter_type(context).CaptureLocation(context.Start);
-
-        public override IAstNode VisitProperty_binding(FifthParser.Property_bindingContext ctx)
-        {
-            var varName = VisitVar_name(ctx.bound_variable_name) as Identifier;
-            var propName = VisitVar_name(ctx.property_name) as Identifier;
-            Expression constraint = default;
-            if (ctx.variable_constraint() != null)
-            {
-                constraint = (Expression)Visit(ctx.variable_constraint());
-            }
-            return new PropertyBinding(propName.Value, varName.Value, constraint)
-                .CaptureLocation(ctx.Start);
+            return builder.Build().CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitProperty_declaration(FifthParser.Property_declarationContext context)
@@ -355,13 +339,10 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitVar_decl([NotNull] FifthParser.Var_declContext context)
         {
-            var nameId = base.Visit(context.var_name()) as Identifier;
-            var typename = context.type_name().GetText();
-            var decl = new VariableDeclarationStatement(null, nameId)
-            {
-                TypeName = typename // the setter will do the tid lookup internally
-            };
-            return decl.CaptureLocation(context.Start);
+            var builder = VariableDeclarationStatementBuilder.CreateVariableDeclarationStatement()
+                .WithName(context.var_name().GetText())
+                .WithUnresolvedTypeName(context.var_name().GetText());
+            return builder.Build().CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitVar_name([NotNull] FifthParser.Var_nameContext context)

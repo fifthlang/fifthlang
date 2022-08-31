@@ -43,14 +43,14 @@ public static class FifthParserManager
 
         ast.Accept(new BuiltinInjectorVisitor());
         ast.Accept(new VerticalLinkageVisitor());
-        var (visitor, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
-        ast = visitor.Process(ast as AstNode, ctx);
         ast.Accept(new CompoundVariableSplitterVisitor());
         ast.Accept(new OverloadGatheringVisitor());
         ast.Accept(new OverloadTransformingVisitor());
         ast.Accept(new VerticalLinkageVisitor());
         ast.Accept(new SymbolTableBuilderVisitor());
         ast.Accept(new TypeAnnotatorVisitor());
+        var (visitor, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
+        ast = visitor.Process(ast as AstNode, ctx);
         //ast.Accept(new StringifyVisitor(Console.Out));
         return ast;
     }

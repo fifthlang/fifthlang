@@ -38,7 +38,7 @@ public class FunctionBuilder
 
     public IFunctionDefinition AsAstNode()
     {
-        var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null)).Cast<IParameterListItem>().ToList();
+        var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null, null)).Cast<IParameterListItem>().ToList();
         var paramDecls = new ParameterDeclarationList(pds);
         var result = new FunctionDefinition(paramDecls, body, returnTypeName, name, name == "main", returnType)
         {

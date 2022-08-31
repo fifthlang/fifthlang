@@ -710,7 +710,7 @@ public partial class BuiltinFunctionDefinition : AstNode, IFunctionDefinition
 
                         foreach (var (pname, ptypename) in parameters)
                         {
-                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null);
+                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null, null);
                             list.Add(paramDef);
                         }
 
@@ -1091,7 +1091,7 @@ public partial class UnaryExpression : Expression
 
 public partial class VariableDeclarationStatement : Statement, ITypedAstNode
 {
-    public VariableDeclarationStatement(Expression Expression , Identifier Name )
+    public VariableDeclarationStatement(Expression Expression , string Name , string UnresolvedTypeName )
 
 
 {
@@ -1099,16 +1099,18 @@ public partial class VariableDeclarationStatement : Statement, ITypedAstNode
         this.Expression = Expression;
         //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
+        //_ = UnresolvedTypeName ?? throw new ArgumentNullException(nameof(UnresolvedTypeName));
+        this.UnresolvedTypeName = UnresolvedTypeName;
     }
 
     public Expression Expression{get;set;}
-    public Identifier Name{get;set;}
+    public string Name{get;set;}
+    public string UnresolvedTypeName{get;set;}
 
     public override void Accept(IAstVisitor visitor)
     {
         visitor.EnterVariableDeclarationStatement(this);
         Expression?.Accept(visitor);
-        Name?.Accept(visitor);
         visitor.LeaveVariableDeclarationStatement(this);
     }
 

@@ -18,33 +18,6 @@ namespace Fifth.Parser.LangProcessingPhases
             enclosingScope.Declare(ctx.Name, SymbolKind.PropertyDefinition, ctx);
         }
 
-        public override void EnterDestructuringParamDecl(DestructuringParamDecl ctx)
-        {
-            var enclosingScope = ctx.NearestScope();
-            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.TypeName, out var typeType))
-            {
-                PatternMatchers.Push(typeType.TypeId);
-            }
-            enclosingScope.Declare(ctx.ParameterName.Value, SymbolKind.PatternMatchingFormalParameter, ctx);
-        }
-
-        public override void EnterPropertyBinding(PropertyBinding ctx)
-        {
-            // find, from SymTab of the type of the current pattern match, the property that the binding relates to
-            // parent node should be the DestructuringParamDecl, that will link to the type defining the properties
-            var enclosingScope = ctx.NearestScope();
-            if (ctx.ParentNode is DestructuringParamDecl dpd)
-            {
-                var baseTypeForPatternMatch = PatternMatcherTid.Lookup() as UserDefinedType;
-                if (baseTypeForPatternMatch.Definition.TryResolve(ctx.BoundPropertyName, out var boundPropSte))
-                {
-                    ctx.BoundProperty = boundPropSte.Context as PropertyDefinition;
-                    // now we know what the binding relates to, we can create an ste in the scope, to record the relationship
-                    enclosingScope.Declare(ctx.BoundVariableName, SymbolKind.PatternBinding, ctx);
-                }
-            }
-        }
-
         public override void EnterTypePropertyInit(TypePropertyInit ctx)
         {
             var enclosingScope = ctx.NearestScope();
@@ -67,11 +40,6 @@ namespace Fifth.Parser.LangProcessingPhases
             }
         }
 
-        public override void LeaveDestructuringParamDecl(DestructuringParamDecl ctx)
-        {
-            PatternMatchers.Pop();
-        }
-
         public override void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
         {
             var enclosingScope = ctx.ParentNode.NearestScope();
@@ -79,7 +47,7 @@ namespace Fifth.Parser.LangProcessingPhases
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.Typename, out var t))
             {
                 ctx.ReturnType = t.TypeId;
-            }            
+            }
         }
 
         public override void EnterFunctionDefinition(FunctionDefinition ctx)
@@ -97,13 +65,19 @@ namespace Fifth.Parser.LangProcessingPhases
             => Declare(ctx.ParameterName.Value, SymbolKind.FormalParameter, ctx);
 
         public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
-            => Declare(ctx.Name.Value, SymbolKind.VariableDeclaration, ctx);
+            => Declare(ctx.Name, SymbolKind.VariableDeclaration, ctx);
 
         private void Declare<T>(string name, SymbolKind kind, T ctx, params (string, object)[] properties)
             where T : AstNode
         {
             var enclosingScope = ctx.NearestScope();
             enclosingScope.Declare(name, kind, ctx, properties);
+        }
+
+        public override void EnterClassDefinition(ClassDefinition ctx)
+        {
+            var enclosingScope = ctx.ParentNode.NearestScope();
+            enclosingScope.Declare(ctx.Name, SymbolKind.ClassDeclaration, ctx);
         }
     }
 }

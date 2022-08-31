@@ -201,50 +201,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction_args([NotNull] FifthParser.Function_argsContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>ParamDecl</c>
-	/// labeled alternative in <see cref="FifthParser.v1_parameter_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterParamDecl([NotNull] FifthParser.ParamDeclContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ParamDecl</c>
-	/// labeled alternative in <see cref="FifthParser.v1_parameter_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitParamDecl([NotNull] FifthParser.ParamDeclContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
-	/// labeled alternative in <see cref="FifthParser.v1_parameter_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>ParamDeclWithTypeDestructure</c>
-	/// labeled alternative in <see cref="FifthParser.v1_parameter_declaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitParamDeclWithTypeDestructure([NotNull] FifthParser.ParamDeclWithTypeDestructureContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.v1_type_destructuring_paramdecl"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterV1_type_destructuring_paramdecl([NotNull] FifthParser.V1_type_destructuring_paramdeclContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.v1_type_destructuring_paramdecl"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitV1_type_destructuring_paramdecl([NotNull] FifthParser.V1_type_destructuring_paramdeclContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.v1_property_binding"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterV1_property_binding([NotNull] FifthParser.V1_property_bindingContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.v1_property_binding"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitV1_property_binding([NotNull] FifthParser.V1_property_bindingContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.variable_constraint"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -254,26 +210,6 @@ public interface IFifthListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitVariable_constraint([NotNull] FifthParser.Variable_constraintContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.v1_parameter_type"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterV1_parameter_type([NotNull] FifthParser.V1_parameter_typeContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.v1_parameter_type"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitV1_parameter_type([NotNull] FifthParser.V1_parameter_typeContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="FifthParser.v1_parameter_name"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterV1_parameter_name([NotNull] FifthParser.V1_parameter_nameContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="FifthParser.v1_parameter_name"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitV1_parameter_name([NotNull] FifthParser.V1_parameter_nameContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="FifthParser.paramdecl"/>.
 	/// </summary>

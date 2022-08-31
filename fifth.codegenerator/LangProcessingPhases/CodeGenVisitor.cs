@@ -284,7 +284,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
                 foreach (var vd in locals.Decls)
                 {
                     vd[Constants.DeclarationOrdinal] = declCtr;
-                    w($"{sep} [{declCtr}] {MapType(vd.TypeId)} {vd.Name.Value}");
+                    w($"{sep} [{declCtr}] {MapType(vd.TypeId)} {vd.Name}");
                     declCtr++;
                     sep = ",";
                 }

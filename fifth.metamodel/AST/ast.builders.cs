@@ -1050,7 +1050,7 @@ public interface INodeBuilder{}
 
         public static VariableDeclarationStatementBuilder CreateVariableDeclarationStatement() => new ();
         public VariableDeclarationStatement Build()
-          => new (_Expression, _Name);
+          => new (_Expression, _Name, _UnresolvedTypeName);
 
         private Expression _Expression;
         public VariableDeclarationStatementBuilder WithExpression(Expression value){
@@ -1058,9 +1058,15 @@ public interface INodeBuilder{}
             return this;
         }
 
-        private Identifier _Name;
-        public VariableDeclarationStatementBuilder WithName(Identifier value){
+        private string _Name;
+        public VariableDeclarationStatementBuilder WithName(string value){
             _Name = value;
+            return this;
+        }
+
+        private string _UnresolvedTypeName;
+        public VariableDeclarationStatementBuilder WithUnresolvedTypeName(string value){
+            _UnresolvedTypeName = value;
             return this;
         }
 

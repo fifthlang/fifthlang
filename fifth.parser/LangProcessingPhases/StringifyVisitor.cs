@@ -57,8 +57,11 @@ public class StringifyVisitor : IAstVisitor
     public void EnterDecimalValueExpression(DecimalValueExpression ctx)
         => EnterTerminal(ctx, ctx.OriginalText);
 
-    public void EnterDestructuringParamDecl(DestructuringParamDecl ctx)
-        => EnterNonTerminal(ctx, ctx.ParameterName.Value);
+    public void EnterDestructuringBinding(DestructuringBinding ctx)
+        => EnterNonTerminal(ctx, ctx.OriginalText);
+
+    public void EnterDestructuringDeclaration(DestructuringDeclaration ctx)
+        => EnterNonTerminal(ctx, ctx.OriginalText);
 
     public void EnterDoubleValueExpression(DoubleValueExpression ctx)
         => EnterTerminal(ctx, ctx.OriginalText);
@@ -151,7 +154,7 @@ public class StringifyVisitor : IAstVisitor
         => EnterNonTerminal(ctx, ctx.OriginalText);
 
     public void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
-        => EnterNonTerminal(ctx, ctx.Name.Value);
+        => EnterNonTerminal(ctx, ctx.Name);
 
     public void EnterVariableReference(VariableReference ctx)
         => EnterTerminal(ctx, ctx.Name);
@@ -198,7 +201,10 @@ public class StringifyVisitor : IAstVisitor
     public void LeaveDecimalValueExpression(DecimalValueExpression ctx)
         => LeaveTerminal(ctx);
 
-    public void LeaveDestructuringParamDecl(DestructuringParamDecl ctx)
+    public void LeaveDestructuringBinding(DestructuringBinding ctx) 
+        => LeaveNonTerminal(ctx);
+
+    public void LeaveDestructuringDeclaration(DestructuringDeclaration ctx) 
         => LeaveNonTerminal(ctx);
 
     public void LeaveDoubleValueExpression(DoubleValueExpression ctx)

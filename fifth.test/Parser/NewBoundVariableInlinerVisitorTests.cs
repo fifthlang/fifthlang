@@ -21,8 +21,8 @@ class Person {
 }
 
 calculate_bmi(p: Person {
-    age: Age | age > 60,
-    height: Height ,
+    age: Age,
+    height: Height,
     weight: Weight
     }) : float {
     return weight / (height * height);
@@ -30,16 +30,11 @@ calculate_bmi(p: Person {
     [Test, Category("WIP")]
     public void if_passed_a_destructuring_function_definition_will_transform_to_only_use_direct_variable_references()
     {
-        var (sut, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
-        var decl = CreateDestructuringParamDecl();
-        var newdecl = sut.ProcessDestructuringParamDecl(decl, ctx);
-    }
-
-    private DestructuringParamDecl CreateDestructuringParamDecl()
-    {
         var ast = ParseProgram() as FifthProgram;
         var calculate_bmi = ast.Functions.First(f => f.Name == "calculate_bmi");
-        return calculate_bmi.ParameterDeclarations.ParameterDeclarations.First() as DestructuringParamDecl;
+        var visitor = new DestructuringPatternFlattenerVisitor();
+        var newdecl = (FunctionDefinition)visitor.Process((FunctionDefinition)calculate_bmi, new DummyContext());
+        newdecl.Should().NotBeNull();
     }
 
     private IAstNode ParseProgram()
@@ -47,6 +42,7 @@ calculate_bmi(p: Person {
         var ast = FifthParserManager.ParseProgramToAst(CharStreams.fromString(sampleDefinition));
         ast.Accept(new BuiltinInjectorVisitor());
         ast.Accept(new VerticalLinkageVisitor());
+        ast.Accept(new SymbolTableBuilderVisitor());
         return ast;
     }
 }
