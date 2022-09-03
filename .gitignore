@@ -397,3 +397,4 @@ src/fifth.parser/Parser/grammar/.antlr/fifthParser.java
 *.favdoc
 doc/examples/ex3.comp.exe
 doc/examples/ex3.comp.il
+.DS_Store
