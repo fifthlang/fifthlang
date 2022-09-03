@@ -120,7 +120,9 @@ destructuring_decl
     ;
 
 destructure_binding
-    : name=IDENTIFIER COLON propname=IDENTIFIER destructuring_decl?
+    : name=IDENTIFIER COLON propname=IDENTIFIER
+        ( variable_constraint
+        | destructuring_decl )?
     ;
 
 // ========[STATEMENTS]=========

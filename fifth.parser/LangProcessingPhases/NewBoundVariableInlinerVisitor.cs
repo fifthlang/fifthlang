@@ -90,6 +90,9 @@ public class PropertyBindingToVariableDeclarationTransformer : BaseAstVisitor
         // TODO Use symtab entry Kind to guide processing here.  it could be a class a paramdecl or something else here.
 
         var (scopeVarName, propertyDefinitionScope) = ResolutionScope.Peek();
+
+
+        // TODO I'm not sure that this will ever be used... consider removing
         if (propertyDefinitionScope.SymbolKind == SymbolKind.PropertyDefinition)
         {
             var pd = ResolutionScope.Peek().Item2.Context as PropertyDefinition;

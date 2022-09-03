@@ -392,6 +392,7 @@ public static class ASTModel
             {
                 new PropertySpec(name: "Varname", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "Propname", type: "string", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "Constraint", type: "Expression"),
                 new PropertySpec(name: "DestructuringDecl", type: "DestructuringDeclaration")
             }
         },

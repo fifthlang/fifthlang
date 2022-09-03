@@ -101,6 +101,7 @@ sum(): {numberType}{{
         get
         {
             yield return new TestCaseData("Fifth.Test.TestSampleCode.destructuring.5th").Returns("26.84635829149776");
+            yield return new TestCaseData("Fifth.Test.TestSampleCode.recursive-destructuring.5th").Returns("26.84635829149776");
         }
     }
 

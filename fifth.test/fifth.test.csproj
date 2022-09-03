@@ -10,12 +10,14 @@
     <None Remove="TestSampleCode\destructuring.5th" />
     <None Remove="TestSampleCode\overloading.5th" />
     <None Remove="TestSampleCode\property-access.5th" />
+    <None Remove="TestSampleCode\recursive-destructuring.5th" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TestSampleCode\class-definition.5th" />
     <EmbeddedResource Include="TestSampleCode\overloading.5th" />
     <EmbeddedResource Include="TestSampleCode\property-access.5th" />
     <EmbeddedResource Include="TestSampleCode\destructuring.5th" />
+    <EmbeddedResource Include="TestSampleCode\recursive-destructuring.5th" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.0.0-alpha0002" />
