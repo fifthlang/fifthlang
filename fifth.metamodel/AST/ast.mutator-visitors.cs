@@ -29,8 +29,8 @@ public interface IAstMutatorVisitor<TContext>
     ExpressionList ProcessExpressionList(ExpressionList node, TContext ctx);
     FifthProgram ProcessFifthProgram(FifthProgram node, TContext ctx);
     FuncCallExpression ProcessFuncCallExpression(FuncCallExpression node, TContext ctx);
-    FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx);
     BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx);
+    FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx);
     OverloadedFunctionDefinition ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition node, TContext ctx);
     Identifier ProcessIdentifier(Identifier node, TContext ctx);
     IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx);
@@ -42,7 +42,6 @@ public interface IAstMutatorVisitor<TContext>
     DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx);
     TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx);
     TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx);
-    PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx);
     TypePropertyInit ProcessTypePropertyInit(TypePropertyInit node, TContext ctx);
     UnaryExpression ProcessUnaryExpression(UnaryExpression node, TContext ctx);
     VariableDeclarationStatement ProcessVariableDeclarationStatement(VariableDeclarationStatement node, TContext ctx);
@@ -79,8 +78,8 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
     public virtual ExpressionList ProcessExpressionList(ExpressionList node, TContext ctx)=>node;
     public virtual FifthProgram ProcessFifthProgram(FifthProgram node, TContext ctx)=>node;
     public virtual FuncCallExpression ProcessFuncCallExpression(FuncCallExpression node, TContext ctx)=>node;
-    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)=>node;
     public virtual BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)=>node;
+    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)=>node;
     public virtual OverloadedFunctionDefinition ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition node, TContext ctx)=>node;
     public virtual Identifier ProcessIdentifier(Identifier node, TContext ctx)=>node;
     public virtual IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx)=>node;
@@ -92,7 +91,6 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
     public virtual DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx)=>node;
     public virtual TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx)=>node;
     public virtual TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx)=>node;
-    public virtual PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx)=>node;
     public virtual TypePropertyInit ProcessTypePropertyInit(TypePropertyInit node, TContext ctx)=>node;
     public virtual UnaryExpression ProcessUnaryExpression(UnaryExpression node, TContext ctx)=>node;
     public virtual VariableDeclarationStatement ProcessVariableDeclarationStatement(VariableDeclarationStatement node, TContext ctx)=>node;
@@ -108,6 +106,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 {
     public AstNode Process(AstNode x, TContext ctx)
     {
+        if (x == null) return x;
         var result = x switch
         {
             Assembly node => ProcessAssembly(node, ctx),
@@ -134,8 +133,8 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             ExpressionList node => ProcessExpressionList(node, ctx),
             FifthProgram node => ProcessFifthProgram(node, ctx),
             FuncCallExpression node => ProcessFuncCallExpression(node, ctx),
-            FunctionDefinition node => ProcessFunctionDefinition(node, ctx),
             BuiltinFunctionDefinition node => ProcessBuiltinFunctionDefinition(node, ctx),
+            FunctionDefinition node => ProcessFunctionDefinition(node, ctx),
             OverloadedFunctionDefinition node => ProcessOverloadedFunctionDefinition(node, ctx),
             Identifier node => ProcessIdentifier(node, ctx),
             IdentifierExpression node => ProcessIdentifierExpression(node, ctx),
@@ -147,7 +146,6 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             DestructuringBinding node => ProcessDestructuringBinding(node, ctx),
             TypeCreateInstExpression node => ProcessTypeCreateInstExpression(node, ctx),
             TypeInitialiser node => ProcessTypeInitialiser(node, ctx),
-            PropertyBinding node => ProcessPropertyBinding(node, ctx),
             TypePropertyInit node => ProcessTypePropertyInit(node, ctx),
             UnaryExpression node => ProcessUnaryExpression(node, ctx),
             VariableDeclarationStatement node => ProcessVariableDeclarationStatement(node, ctx),
@@ -210,7 +208,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             builder.AddingItemToProperties((PropertyDefinition)Process((PropertyDefinition)x, ctx));
         }
             foreach(var x in node.Functions){
-            builder.AddingItemToFunctions((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+            builder.AddingItemToFunctions((IFunctionDefinition)Process((FunctionDefinition)x, ctx));
         }
     
         return builder.Build();
@@ -451,7 +449,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             builder.AddingItemToClasses((ClassDefinition)Process((ClassDefinition)x, ctx));
         }
             foreach(var x in node.Functions){
-            builder.AddingItemToFunctions((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+            builder.AddingItemToFunctions((IFunctionDefinition)Process((FunctionDefinition)x, ctx));
         }
     
         return builder.Build();
@@ -469,14 +467,14 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         return builder.Build();
     }
 
-    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)
+    public virtual BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)
     {
 
 
-    var builder = FunctionDefinitionBuilder.CreateFunctionDefinition();
+    var builder = BuiltinFunctionDefinitionBuilder.CreateBuiltinFunctionDefinition();
 
         builder.WithParameterDeclarations((ParameterDeclarationList)Process(node.ParameterDeclarations, ctx));
-            builder.WithBody((Block)Process(node.Body, ctx));
+            builder.WithBody((Block?)Process(node.Body, ctx));
             builder.WithTypename(node.Typename);
             builder.WithName(node.Name);
             builder.WithIsEntryPoint(node.IsEntryPoint);
@@ -485,13 +483,19 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         return builder.Build();
     }
 
-    public virtual BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)
+    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)
     {
 
 
-    var builder = BuiltinFunctionDefinitionBuilder.CreateBuiltinFunctionDefinition();
+    var builder = FunctionDefinitionBuilder.CreateFunctionDefinition();
 
-
+        builder.WithParameterDeclarations((ParameterDeclarationList)Process(node.ParameterDeclarations, ctx));
+            builder.WithBody((Block?)Process(node.Body, ctx));
+            builder.WithTypename(node.Typename);
+            builder.WithName(node.Name);
+            builder.WithIsEntryPoint(node.IsEntryPoint);
+            builder.WithReturnType(node.ReturnType);
+    
         return builder.Build();
     }
 
@@ -502,7 +506,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     var builder = OverloadedFunctionDefinitionBuilder.CreateOverloadedFunctionDefinition();
 
         foreach(var x in node.OverloadClauses){
-            builder.AddingItemToOverloadClauses((FunctionDefinition)Process((FunctionDefinition)x, ctx));
+            builder.AddingItemToOverloadClauses((IFunctionDefinition)Process((FunctionDefinition)x, ctx));
         }
             builder.WithSignature(node.Signature);
     
@@ -562,7 +566,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     var builder = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
 
         foreach(var x in node.ParameterDeclarations){
-            builder.AddingItemToParameterDeclarations((ParameterDeclaration)Process((ParameterDeclaration)x, ctx));
+            builder.AddingItemToParameterDeclarations((IParameterListItem)Process((ParameterDeclaration)x, ctx));
         }
     
         return builder.Build();
@@ -603,6 +607,8 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 
         builder.WithVarname(node.Varname);
             builder.WithPropname(node.Propname);
+            builder.WithPropDecl(node.PropDecl);
+            builder.WithConstraint((Expression)Process(node.Constraint, ctx));
             builder.WithDestructuringDecl((DestructuringDeclaration)Process(node.DestructuringDecl, ctx));
     
         return builder.Build();
@@ -628,19 +634,6 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             foreach(var x in node.PropertyInitialisers){
             builder.AddingItemToPropertyInitialisers((TypePropertyInit)Process((TypePropertyInit)x, ctx));
         }
-    
-        return builder.Build();
-    }
-
-    public virtual PropertyBinding ProcessPropertyBinding(PropertyBinding node, TContext ctx)
-    {
-
-
-    var builder = PropertyBindingBuilder.CreatePropertyBinding();
-
-        builder.WithBoundPropertyName(node.BoundPropertyName);
-            builder.WithBoundVariableName(node.BoundVariableName);
-            builder.WithConstraint((Expression)Process(node.Constraint, ctx));
     
         return builder.Build();
     }

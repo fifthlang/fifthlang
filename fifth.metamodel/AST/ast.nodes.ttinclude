@@ -17,7 +17,8 @@ public partial class <#= ast.Name #> : <#= ast.Parent #>
     public <#= ast.Name #>(<#
 var sep = "";
 foreach (var prop in someProps.Select(p=>p.Prop))  {
-    var typeName = GenerationHelpers.PluralType(prop);
+    var typeName = GenerationHelpers.PluralType(prop) + (prop.IsNullable ==  true ? "?" : "");
+    var nullable = prop.IsNullable?"?":"";
     #><#= sep #><#= typeName #> <#=prop.Name#> <# sep=", "; } #>
 )
 
@@ -45,15 +46,16 @@ sep=", ";
 sep = "";
 foreach (var prop in ast.Props)  {
 #>
-        //_ = <#=prop.Name#> ?? throw new ArgumentNullException(nameof(<#=prop.Name#>));
         this.<#=prop.Name#> = <#=prop.Name#>;
 <#
 sep=", ";
 } #>
     }
 
-<# foreach (var prop in ast.Props)  { #>
-    public <#= GenerationHelpers.PluralType(prop)  #> <#= prop.Name #>{get;set;}
+<# foreach (var prop in ast.Props)  {
+    var nullable = prop.IsNullable ? "?" : "";
+ #>
+    public <#= GenerationHelpers.PluralType(prop) #><#= nullable #> <#= prop.Name #>{get;set;}
 <# } #>
 
     public override void Accept(IAstVisitor visitor)

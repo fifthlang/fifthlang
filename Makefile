@@ -34,12 +34,11 @@ $(BIN_PARSER): $(SRC_PARSER) grammar
 
 $(BIN_TEST): $(SRC_TEST) $(BIN_PARSER)
 
-build: #$(BIN_TEST)
-	$(CC) $(CC_ARGS) build fifth.metamodel.metadata/fifth.metamodel.metadata.csproj
-	$(MAKE) -C fifth.metamodel/AST ast
+build: ast #$(BIN_TEST)
 	$(CC) $(CC_ARGS) build ./fifthlang.sln
 
 test: $(BIN_TEST)
 	$(CC) test
 ast:
+	$(CC) $(CC_ARGS) build fifth.metamodel.metadata/fifth.metamodel.metadata.csproj
 	$(MAKE) -C fifth.metamodel/AST ast

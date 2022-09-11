@@ -78,14 +78,6 @@ sum(): {numberType}{{
         return outputs.FirstOrDefault();
     }
 
-    [TestCaseSource(typeof(CodeGenVisitorTests), nameof(DestructuringTestCases))]
-    [Category("WIP")]
-    public async Task<string> TestDestructuringCases(string resourceName)
-    {
-        var outputs = await TestUtilities.BuildRunAndTestProgramInResource(resourceName);
-        return outputs.FirstOrDefault();
-    }
-
     [TestCaseSource(typeof(CodeGenVisitorTests), nameof(StringFormattingTestCases))]
     public async Task<string> TestStringFormattingWorksThroughPrint(string format, string input)
     {
@@ -95,15 +87,6 @@ sum(): {numberType}{{
     }
 
     #region Test Cases
-
-    public static IEnumerable DestructuringTestCases
-    {
-        get
-        {
-            yield return new TestCaseData("Fifth.Test.TestSampleCode.destructuring.5th").Returns("26.84635829149776");
-            yield return new TestCaseData("Fifth.Test.TestSampleCode.recursive-destructuring.5th").Returns("26.84635829149776");
-        }
-    }
 
     public static IEnumerable StringFormattingTestCases
     {

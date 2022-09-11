@@ -21,6 +21,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
 {
     public AstNode Process(AstNode x, TContext ctx)
     {
+        if (x == null) return x;
         var result = x switch
         {
 <# foreach (var ast in asts)  { #>
@@ -61,10 +62,10 @@ if (prop.IgnoreDuringVisit){
 } else {
     if (prop.IsCollection){#>
         foreach(var x in node.<#=prop.Name#>){
-            builder.AddingItemTo<#= prop.Name #>((<#= prop.Type #>)Process((<#= prop.Type #>)x, ctx));
+            builder.AddingItemTo<#= prop.Name #>((<#= prop.InterfaceName ?? prop!.Type #>)Process((<#= prop.Type #>)x, ctx));
         }
     <#} else {#>
-        builder.With<#= prop.Name #>((<#= prop.Type #>)Process(node.<#=prop.Name#>, ctx));
+        builder.With<#= prop.Name #>((<#= prop.InterfaceName ?? prop!.Type #>)Process(node.<#=prop.Name#>, ctx));
     <#}
 }
 

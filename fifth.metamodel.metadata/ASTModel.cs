@@ -259,6 +259,19 @@ public static class ASTModel
                 new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true)
             }
         },
+        /*BuiltinFunctionDefinition*/new AstNodeSpec()
+        {
+            Name = "BuiltinFunctionDefinition",
+            Parent = "FunctionDefinition, IFunctionDefinition",
+            CustomCode=@"
+            public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
+               : base(new ParameterDeclarationList(parameters.Select(x => (IParameterListItem)new ParameterDeclaration(new Identifier(x.Item1), x.Item2, null, null)).ToList()),
+                null, typename, name, false, null){}
+                ",
+            Props = new PropertySpec[]
+            {
+            }
+        },
         /*FunctionDefinition*/new AstNodeSpec()
         {
             Name = "FunctionDefinition",
@@ -266,44 +279,11 @@ public static class ASTModel
             Props = new PropertySpec[]
             {
                 new PropertySpec(name: "ParameterDeclarations", type: "ParameterDeclarationList", isCollection: false, ignoreDuringVisit: false),
-                new PropertySpec(name: "Body", type: "Block", isCollection: false, ignoreDuringVisit: false),
+                new PropertySpec(name: "Body", type: "Block?", isCollection: false, ignoreDuringVisit: false),
                 new PropertySpec(name: "Typename", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "IsEntryPoint", type: "bool", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "ReturnType", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
-            }
-        },
-        /*BuiltinFunctionDefinition*/new AstNodeSpec()
-        {
-            Name = "BuiltinFunctionDefinition",
-            Parent = "AstNode, IFunctionDefinition",
-            CustomCode=@"
-                    public ParameterDeclarationList ParameterDeclarations { get; set; }
-                    public string Typename { get; set; }
-                    public string Name { get; set; }
-                    public bool IsEntryPoint { get; set; }
-                    public TypeId ReturnType { get; set; }
-
-                public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
-                    {
-                        Name = name;
-                        Typename = typename;
-                        var list = new List<IParameterListItem>();
-
-                        foreach (var (pname, ptypename) in parameters)
-                        {
-                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null, null);
-                            list.Add(paramDef);
-                        }
-
-                        var paramDeclList = new ParameterDeclarationList(list);
-
-                        ParameterDeclarations = paramDeclList;
-                        IsEntryPoint = false;
-                    }
-                ",
-            Props = new PropertySpec[]
-            {
             }
         },
         /*OverloadedFunctionDefinition*/new AstNodeSpec()
@@ -387,11 +367,13 @@ public static class ASTModel
         /*DestructuringBinding*/new AstNodeSpec()
         {
             Name = "DestructuringBinding",
-            Parent = "AstNode",
+            Parent = "TypedAstNode",
             Props = new PropertySpec[]
             {
                 new PropertySpec(name: "Varname", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "Propname", type: "string", isCollection: false, ignoreDuringVisit: true),
+                // propdecl gets filled in at a later date by a visitor after resolution
+                new PropertySpec(name: "PropDecl", type: "PropertyDefinition", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "Constraint", type: "Expression"),
                 new PropertySpec(name: "DestructuringDecl", type: "DestructuringDeclaration")
             }
@@ -412,20 +394,6 @@ public static class ASTModel
             {
                 new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "PropertyInitialisers", type: "TypePropertyInit", isCollection: true)
-            }
-        },
-        /*PropertyBinding*/new AstNodeSpec()
-        {
-            Name = "PropertyBinding",
-            Parent = "AstNode",
-            CustomCode=@"
-                    public PropertyDefinition BoundProperty { get; set; }
-                ",
-            Props = new PropertySpec[]
-            {
-                new PropertySpec(name: "BoundPropertyName", type: "string", isCollection: false, ignoreDuringVisit: true),
-                new PropertySpec(name: "BoundVariableName", type: "string", isCollection: false, ignoreDuringVisit: true),
-                new PropertySpec(name: "Constraint", type: "Expression")
             }
         },
         /*TypePropertyInit*/new AstNodeSpec()
@@ -532,3 +500,4 @@ public static class ASTModel
         }
     };
 }
+        

@@ -622,6 +622,55 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
+    public partial class BuiltinFunctionDefinitionBuilder : INodeBuilder
+    {
+        private BuiltinFunctionDefinitionBuilder()
+        {
+        }
+
+        public static BuiltinFunctionDefinitionBuilder CreateBuiltinFunctionDefinition() => new ();
+        public BuiltinFunctionDefinition Build()
+          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _ReturnType);
+
+        private ParameterDeclarationList _ParameterDeclarations;
+        public BuiltinFunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
+            _ParameterDeclarations = value;
+            return this;
+        }
+
+        private Block? _Body;
+        public BuiltinFunctionDefinitionBuilder WithBody(Block? value){
+            _Body = value;
+            return this;
+        }
+
+        private string _Typename;
+        public BuiltinFunctionDefinitionBuilder WithTypename(string value){
+            _Typename = value;
+            return this;
+        }
+
+        private string _Name;
+        public BuiltinFunctionDefinitionBuilder WithName(string value){
+            _Name = value;
+            return this;
+        }
+
+        private bool _IsEntryPoint;
+        public BuiltinFunctionDefinitionBuilder WithIsEntryPoint(bool value){
+            _IsEntryPoint = value;
+            return this;
+        }
+
+        private TypeId _ReturnType;
+        public BuiltinFunctionDefinitionBuilder WithReturnType(TypeId value){
+            _ReturnType = value;
+            return this;
+        }
+
+    }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class FunctionDefinitionBuilder : INodeBuilder
     {
         private FunctionDefinitionBuilder()
@@ -638,8 +687,8 @@ public interface INodeBuilder{}
             return this;
         }
 
-        private Block _Body;
-        public FunctionDefinitionBuilder WithBody(Block value){
+        private Block? _Body;
+        public FunctionDefinitionBuilder WithBody(Block? value){
             _Body = value;
             return this;
         }
@@ -667,19 +716,6 @@ public interface INodeBuilder{}
             _ReturnType = value;
             return this;
         }
-
-    }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class BuiltinFunctionDefinitionBuilder : INodeBuilder
-    {
-        private BuiltinFunctionDefinitionBuilder()
-        {
-        }
-
-        public static BuiltinFunctionDefinitionBuilder CreateBuiltinFunctionDefinition() => new ();
-        public BuiltinFunctionDefinition Build()
-          => new ();
 
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
@@ -895,7 +931,7 @@ public interface INodeBuilder{}
 
         public static DestructuringBindingBuilder CreateDestructuringBinding() => new ();
         public DestructuringBinding Build()
-          => new (_Varname, _Propname, _DestructuringDecl);
+          => new (_Varname, _Propname, _PropDecl, _Constraint, _DestructuringDecl);
 
         private string _Varname;
         public DestructuringBindingBuilder WithVarname(string value){
@@ -906,6 +942,18 @@ public interface INodeBuilder{}
         private string _Propname;
         public DestructuringBindingBuilder WithPropname(string value){
             _Propname = value;
+            return this;
+        }
+
+        private PropertyDefinition _PropDecl;
+        public DestructuringBindingBuilder WithPropDecl(PropertyDefinition value){
+            _PropDecl = value;
+            return this;
+        }
+
+        private Expression _Constraint;
+        public DestructuringBindingBuilder WithConstraint(Expression value){
+            _Constraint = value;
             return this;
         }
 
@@ -958,37 +1006,6 @@ public interface INodeBuilder{}
             _PropertyInitialisers.Add(value);
             return this;
         }
-    }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class PropertyBindingBuilder : INodeBuilder
-    {
-        private PropertyBindingBuilder()
-        {
-        }
-
-        public static PropertyBindingBuilder CreatePropertyBinding() => new ();
-        public PropertyBinding Build()
-          => new (_BoundPropertyName, _BoundVariableName, _Constraint);
-
-        private string _BoundPropertyName;
-        public PropertyBindingBuilder WithBoundPropertyName(string value){
-            _BoundPropertyName = value;
-            return this;
-        }
-
-        private string _BoundVariableName;
-        public PropertyBindingBuilder WithBoundVariableName(string value){
-            _BoundVariableName = value;
-            return this;
-        }
-
-        private Expression _Constraint;
-        public PropertyBindingBuilder WithConstraint(Expression value){
-            _Constraint = value;
-            return this;
-        }
-
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]

@@ -9,6 +9,23 @@ using TypeSystem;
 
 public static class FifthParserManager
 {
+    public static void ApplyLanguageAnalysisPhases(IAstNode ast)
+    {
+        ast.Accept(new BuiltinInjectorVisitor());
+        ast.Accept(new VerticalLinkageVisitor());
+        ast.Accept(new CompoundVariableSplitterVisitor());
+        ast.Accept(new OverloadGatheringVisitor());
+        ast.Accept(new OverloadTransformingVisitor());
+        ast.Accept(new VerticalLinkageVisitor());
+        ast.Accept(new SymbolTableBuilderVisitor());
+        ast.Accept(new DestructuringVisitor());
+        var (visitor, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
+        ast = visitor.Process(ast as AstNode, ctx);
+        ast.Accept(new TypeAnnotatorVisitor());
+        //ast.Accept(new StringifyVisitor(Console.Out));
+
+    }
+
     public static bool TryParse<T>(string source, out T ast, out List<FifthCompilationError> errors)
         where T : IAstNode
     {
@@ -40,18 +57,7 @@ public static class FifthParserManager
         {
             throw new Fifth.CompilationException("Unable to parse source to AST");
         }
-
-        ast.Accept(new BuiltinInjectorVisitor());
-        ast.Accept(new VerticalLinkageVisitor());
-        ast.Accept(new CompoundVariableSplitterVisitor());
-        ast.Accept(new OverloadGatheringVisitor());
-        ast.Accept(new OverloadTransformingVisitor());
-        ast.Accept(new VerticalLinkageVisitor());
-        ast.Accept(new SymbolTableBuilderVisitor());
-        ast.Accept(new TypeAnnotatorVisitor());
-        var (visitor, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
-        ast = visitor.Process(ast as AstNode, ctx);
-        //ast.Accept(new StringifyVisitor(Console.Out));
+        ApplyLanguageAnalysisPhases(ast);
         return ast;
     }
 

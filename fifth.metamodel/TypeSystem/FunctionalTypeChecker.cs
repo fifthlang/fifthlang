@@ -380,8 +380,8 @@ namespace Fifth.TypeSystem
         {
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
             {
-                Infer(node.DestructuringDecl);
                 TypeInferred(node, t);
+                Infer(node.DestructuringDecl);
                 return t;
             }
 
@@ -431,21 +431,6 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypeInitialiser node)
             => default;
-
-        public IType Infer(IScope scope, PropertyBinding node)
-        {
-            // resolve the base property definition that the node's unboundVariable is to be bound to.
-            var boundProperty = node.BoundProperty;
-            var boundPropertyTypeId = boundProperty?.TypeId;
-            if (boundProperty != null && boundPropertyTypeId != null)
-            {
-                var result = boundPropertyTypeId.Lookup();
-                TypeInferred(node, result);
-                return result;
-            }
-
-            return default;
-        }
 
         public IType Infer(IScope scope, Assembly node)
             => throw new NotImplementedException();
@@ -517,11 +502,11 @@ namespace Fifth.TypeSystem
             IType result = default;
             if (scope.TryResolve(node.Name, out var ste))
             {
-                if (ste.Context is PropertyBinding pb)
+                /*if (ste.Context is DestructuringBinding pb)
                 {
                     result = pb.BoundProperty.TypeId.Lookup();
                     TypeInferred(node, result);
-                }
+                }*/
 
                 if (ste.Context is VariableDeclarationStatement vds)
                 {
@@ -574,6 +559,7 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypePropertyInit node)
             => throw new NotImplementedException();
+        
         public IType Infer(IScope scope, DestructuringDeclaration node)
         {
             foreach (var binding in node.Bindings)
@@ -586,7 +572,20 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, DestructuringBinding node)
-        => throw new NotImplementedException();
+        {
+            if (node.PropDecl != null)
+            {
+                var typeOfProp = Infer(scope, node.PropDecl);
+                TypeInferred(node, typeOfProp);
+                return typeOfProp;
+            }
+            else
+            {
+                // TODO:  Is there an alternative way to find the type of the bound property
+                TypeNotFound(node);
+            }
+            return default;
+        }
 
         #endregion Type Inference
 

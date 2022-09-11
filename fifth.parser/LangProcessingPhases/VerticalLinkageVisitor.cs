@@ -106,9 +106,6 @@ public class VerticalLinkageVisitor : IAstVisitor
     public void EnterParameterDeclarationList(ParameterDeclarationList ctx)
         => EnterNonTerminal(ctx);
 
-    public void EnterPropertyBinding(PropertyBinding ctx)
-        => EnterNonTerminal(ctx);
-
     public void EnterPropertyDefinition(PropertyDefinition ctx)
         => EnterTerminal(ctx);
 
@@ -245,11 +242,8 @@ public class VerticalLinkageVisitor : IAstVisitor
     public void LeaveParameterDeclarationList(ParameterDeclarationList ctx)
         => LeaveNonTerminal(ctx);
 
-    public void LeavePropertyBinding(PropertyBinding ctx)
-        => LeaveNonTerminal(ctx);
-
     public void LeavePropertyDefinition(PropertyDefinition ctx)
-                                                                                                        => LeaveTerminal(ctx);
+        => LeaveTerminal(ctx);
 
     public void LeaveReturnStatement(ReturnStatement ctx)
         => LeaveNonTerminal(ctx);
@@ -264,7 +258,7 @@ public class VerticalLinkageVisitor : IAstVisitor
         => LeaveTerminal(ctx);
 
     public void LeaveTypeCast(TypeCast ctx)
-                        => LeaveNonTerminal(ctx);
+        => LeaveNonTerminal(ctx);
 
     public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx)
         => LeaveNonTerminal(ctx);

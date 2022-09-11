@@ -29,8 +29,8 @@ public interface ITypeChecker
     public IType Infer(IScope scope, ExpressionList node);
     public IType Infer(IScope scope, FifthProgram node);
     public IType Infer(IScope scope, FuncCallExpression node);
-    public IType Infer(IScope scope, FunctionDefinition node);
     public IType Infer(IScope scope, BuiltinFunctionDefinition node);
+    public IType Infer(IScope scope, FunctionDefinition node);
     public IType Infer(IScope scope, OverloadedFunctionDefinition node);
     public IType Infer(IScope scope, Identifier node);
     public IType Infer(IScope scope, IdentifierExpression node);
@@ -42,7 +42,6 @@ public interface ITypeChecker
     public IType Infer(IScope scope, DestructuringBinding node);
     public IType Infer(IScope scope, TypeCreateInstExpression node);
     public IType Infer(IScope scope, TypeInitialiser node);
-    public IType Infer(IScope scope, PropertyBinding node);
     public IType Infer(IScope scope, TypePropertyInit node);
     public IType Infer(IScope scope, UnaryExpression node);
     public IType Infer(IScope scope, VariableDeclarationStatement node);
@@ -85,8 +84,8 @@ public partial class FunctionalTypeChecker
             ExpressionList node => Infer(scope, node),
             FifthProgram node => Infer(scope, node),
             FuncCallExpression node => Infer(scope, node),
-            FunctionDefinition node => Infer(scope, node),
             BuiltinFunctionDefinition node => Infer(scope, node),
+            FunctionDefinition node => Infer(scope, node),
             OverloadedFunctionDefinition node => Infer(scope, node),
             Identifier node => Infer(scope, node),
             IdentifierExpression node => Infer(scope, node),
@@ -98,7 +97,6 @@ public partial class FunctionalTypeChecker
             DestructuringBinding node => Infer(scope, node),
             TypeCreateInstExpression node => Infer(scope, node),
             TypeInitialiser node => Infer(scope, node),
-            PropertyBinding node => Infer(scope, node),
             TypePropertyInit node => Infer(scope, node),
             UnaryExpression node => Infer(scope, node),
             VariableDeclarationStatement node => Infer(scope, node),

@@ -17,15 +17,10 @@ public partial class Assembly : AstNode
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
         this.PublicKeyToken = PublicKeyToken;
-        //_ = Version ?? throw new ArgumentNullException(nameof(Version));
         this.Version = Version;
-        //_ = Program ?? throw new ArgumentNullException(nameof(Program));
         this.Program = Program;
-        //_ = References ?? throw new ArgumentNullException(nameof(References));
         this.References = References;
     }
 
@@ -65,11 +60,8 @@ public partial class AssemblyRef : AstNode
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = PublicKeyToken ?? throw new ArgumentNullException(nameof(PublicKeyToken));
         this.PublicKeyToken = PublicKeyToken;
-        //_ = Version ?? throw new ArgumentNullException(nameof(Version));
         this.Version = Version;
     }
 
@@ -92,11 +84,8 @@ public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCol
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = Properties ?? throw new ArgumentNullException(nameof(Properties));
         this.Properties = Properties;
-        //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
         this.Functions = Functions;
     }
 
@@ -131,9 +120,7 @@ public partial class PropertyDefinition : TypedAstNode
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
         this.TypeName = TypeName;
     }
 
@@ -155,9 +142,7 @@ public partial class TypeCast : Expression
 
 
 {
-        //_ = SubExpression ?? throw new ArgumentNullException(nameof(SubExpression));
         this.SubExpression = SubExpression;
-        //_ = TargetTid ?? throw new ArgumentNullException(nameof(TargetTid));
         this.TargetTid = TargetTid;
     }
 
@@ -180,9 +165,7 @@ public partial class ReturnStatement : Statement
 
 
 {
-        //_ = SubExpression ?? throw new ArgumentNullException(nameof(SubExpression));
         this.SubExpression = SubExpression;
-        //_ = TargetTid ?? throw new ArgumentNullException(nameof(TargetTid));
         this.TargetTid = TargetTid;
     }
 
@@ -205,7 +188,6 @@ public partial class StatementList : AstNode
 
 
 {
-        //_ = Statements ?? throw new ArgumentNullException(nameof(Statements));
         this.Statements = Statements;
     }
 
@@ -232,7 +214,6 @@ public partial class AbsoluteIri : TypedAstNode
 
 
 {
-        //_ = Uri ?? throw new ArgumentNullException(nameof(Uri));
         this.Uri = Uri;
     }
 
@@ -253,9 +234,7 @@ public partial class AliasDeclaration : AstNode
 
 
 {
-        //_ = IRI ?? throw new ArgumentNullException(nameof(IRI));
         this.IRI = IRI;
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
     }
 
@@ -278,9 +257,7 @@ public partial class AssignmentStmt : Statement
 
 
 {
-        //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
         this.Expression = Expression;
-        //_ = VariableRef ?? throw new ArgumentNullException(nameof(VariableRef));
         this.VariableRef = VariableRef;
     }
 
@@ -304,11 +281,8 @@ public partial class BinaryExpression : Expression
 
 
 {
-        //_ = Left ?? throw new ArgumentNullException(nameof(Left));
         this.Left = Left;
-        //_ = Op ?? throw new ArgumentNullException(nameof(Op));
         this.Op = Op;
-        //_ = Right ?? throw new ArgumentNullException(nameof(Right));
         this.Right = Right;
     }
 
@@ -333,7 +307,6 @@ public partial class Block : ScopeAstNode
 
 
 {
-        //_ = Statements ?? throw new ArgumentNullException(nameof(Statements));
         this.Statements = Statements;
     }
 
@@ -362,7 +335,6 @@ public partial class BoolValueExpression : LiteralExpression<bool>
 
 : base(TheValue, PrimitiveBool.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -383,7 +355,6 @@ public partial class ShortValueExpression : LiteralExpression<short>
 
 : base(TheValue, PrimitiveShort.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -404,7 +375,6 @@ public partial class IntValueExpression : LiteralExpression<int>
 
 : base(TheValue, PrimitiveInteger.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -425,7 +395,6 @@ public partial class LongValueExpression : LiteralExpression<long>
 
 : base(TheValue, PrimitiveLong.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -446,7 +415,6 @@ public partial class FloatValueExpression : LiteralExpression<float>
 
 : base(TheValue, PrimitiveFloat.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -467,7 +435,6 @@ public partial class DoubleValueExpression : LiteralExpression<double>
 
 : base(TheValue, PrimitiveDouble.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -488,7 +455,6 @@ public partial class DecimalValueExpression : LiteralExpression<decimal>
 
 : base(TheValue, PrimitiveDecimal.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -509,7 +475,6 @@ public partial class StringValueExpression : LiteralExpression<string>
 
 : base(TheValue, PrimitiveString.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -530,7 +495,6 @@ public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
 
 : base(TheValue, PrimitiveDate.Default.TypeId)
 {
-        //_ = TheValue ?? throw new ArgumentNullException(nameof(TheValue));
         this.TheValue = TheValue;
     }
 
@@ -551,7 +515,6 @@ public partial class ExpressionList : TypedAstNode
 
 
 {
-        //_ = Expressions ?? throw new ArgumentNullException(nameof(Expressions));
         this.Expressions = Expressions;
     }
 
@@ -578,11 +541,8 @@ public partial class FifthProgram : ScopeAstNode, IFunctionCollection
 
 
 {
-        //_ = Aliases ?? throw new ArgumentNullException(nameof(Aliases));
         this.Aliases = Aliases;
-        //_ = Classes ?? throw new ArgumentNullException(nameof(Classes));
         this.Classes = Classes;
-        //_ = Functions ?? throw new ArgumentNullException(nameof(Functions));
         this.Functions = Functions;
     }
 
@@ -623,9 +583,7 @@ public partial class FuncCallExpression : Expression
 
 
 {
-        //_ = ActualParameters ?? throw new ArgumentNullException(nameof(ActualParameters));
         this.ActualParameters = ActualParameters;
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
     }
 
@@ -642,28 +600,44 @@ public partial class FuncCallExpression : Expression
     
 }
 
+public partial class BuiltinFunctionDefinition : FunctionDefinition, IFunctionDefinition
+{
+    public BuiltinFunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , TypeId ReturnType )
+
+:base(ParameterDeclarations , Body , Typename , Name , IsEntryPoint , ReturnType )
+{
+    }
+
+
+    public override void Accept(IAstVisitor visitor)
+    {
+        visitor.EnterBuiltinFunctionDefinition(this);
+        visitor.LeaveBuiltinFunctionDefinition(this);
+    }
+
+    
+            public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
+               : base(new ParameterDeclarationList(parameters.Select(x => (IParameterListItem)new ParameterDeclaration(new Identifier(x.Item1), x.Item2, null, null)).ToList()),
+                null, typename, name, false, null){}
+                
+}
+
 public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
 {
-    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block Body , string Typename , string Name , bool IsEntryPoint , TypeId ReturnType )
+    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , TypeId ReturnType )
 
 
 {
-        //_ = ParameterDeclarations ?? throw new ArgumentNullException(nameof(ParameterDeclarations));
         this.ParameterDeclarations = ParameterDeclarations;
-        //_ = Body ?? throw new ArgumentNullException(nameof(Body));
         this.Body = Body;
-        //_ = Typename ?? throw new ArgumentNullException(nameof(Typename));
         this.Typename = Typename;
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = IsEntryPoint ?? throw new ArgumentNullException(nameof(IsEntryPoint));
         this.IsEntryPoint = IsEntryPoint;
-        //_ = ReturnType ?? throw new ArgumentNullException(nameof(ReturnType));
         this.ReturnType = ReturnType;
     }
 
     public ParameterDeclarationList ParameterDeclarations{get;set;}
-    public Block Body{get;set;}
+    public Block? Body{get;set;}
     public string Typename{get;set;}
     public string Name{get;set;}
     public bool IsEntryPoint{get;set;}
@@ -680,57 +654,13 @@ public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
     
 }
 
-public partial class BuiltinFunctionDefinition : AstNode, IFunctionDefinition
-{
-    public BuiltinFunctionDefinition()
-
-
-{
-    }
-
-
-    public override void Accept(IAstVisitor visitor)
-    {
-        visitor.EnterBuiltinFunctionDefinition(this);
-        visitor.LeaveBuiltinFunctionDefinition(this);
-    }
-
-    
-                    public ParameterDeclarationList ParameterDeclarations { get; set; }
-                    public string Typename { get; set; }
-                    public string Name { get; set; }
-                    public bool IsEntryPoint { get; set; }
-                    public TypeId ReturnType { get; set; }
-
-                public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
-                    {
-                        Name = name;
-                        Typename = typename;
-                        var list = new List<IParameterListItem>();
-
-                        foreach (var (pname, ptypename) in parameters)
-                        {
-                            var paramDef = new ParameterDeclaration(new Identifier(pname), ptypename, null, null);
-                            list.Add(paramDef);
-                        }
-
-                        var paramDeclList = new ParameterDeclarationList(list);
-
-                        ParameterDeclarations = paramDeclList;
-                        IsEntryPoint = false;
-                    }
-                
-}
-
 public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
 {
     public OverloadedFunctionDefinition(List<IFunctionDefinition> OverloadClauses , IFunctionSignature Signature )
 
 
 {
-        //_ = OverloadClauses ?? throw new ArgumentNullException(nameof(OverloadClauses));
         this.OverloadClauses = OverloadClauses;
-        //_ = Signature ?? throw new ArgumentNullException(nameof(Signature));
         this.Signature = Signature;
     }
 
@@ -758,7 +688,6 @@ public partial class Identifier : TypedAstNode
 
 
 {
-        //_ = Value ?? throw new ArgumentNullException(nameof(Value));
         this.Value = Value;
     }
 
@@ -779,7 +708,6 @@ public partial class IdentifierExpression : Expression
 
 
 {
-        //_ = Identifier ?? throw new ArgumentNullException(nameof(Identifier));
         this.Identifier = Identifier;
     }
 
@@ -801,11 +729,8 @@ public partial class IfElseStatement : Statement
 
 
 {
-        //_ = IfBlock ?? throw new ArgumentNullException(nameof(IfBlock));
         this.IfBlock = IfBlock;
-        //_ = ElseBlock ?? throw new ArgumentNullException(nameof(ElseBlock));
         this.ElseBlock = ElseBlock;
-        //_ = Condition ?? throw new ArgumentNullException(nameof(Condition));
         this.Condition = Condition;
     }
 
@@ -831,7 +756,6 @@ public partial class ModuleImport : AstNode
 
 
 {
-        //_ = ModuleName ?? throw new ArgumentNullException(nameof(ModuleName));
         this.ModuleName = ModuleName;
     }
 
@@ -852,7 +776,6 @@ public partial class ParameterDeclarationList : AstNode
 
 
 {
-        //_ = ParameterDeclarations ?? throw new ArgumentNullException(nameof(ParameterDeclarations));
         this.ParameterDeclarations = ParameterDeclarations;
     }
 
@@ -879,13 +802,9 @@ public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
 
 
 {
-        //_ = ParameterName ?? throw new ArgumentNullException(nameof(ParameterName));
         this.ParameterName = ParameterName;
-        //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
         this.TypeName = TypeName;
-        //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
         this.Constraint = Constraint;
-        //_ = DestructuringDecl ?? throw new ArgumentNullException(nameof(DestructuringDecl));
         this.DestructuringDecl = DestructuringDecl;
     }
 
@@ -912,7 +831,6 @@ public partial class DestructuringDeclaration : AstNode
 
 
 {
-        //_ = Bindings ?? throw new ArgumentNullException(nameof(Bindings));
         this.Bindings = Bindings;
     }
 
@@ -933,27 +851,29 @@ public partial class DestructuringDeclaration : AstNode
     
 }
 
-public partial class DestructuringBinding : AstNode
+public partial class DestructuringBinding : TypedAstNode
 {
-    public DestructuringBinding(string Varname , string Propname , DestructuringDeclaration DestructuringDecl )
+    public DestructuringBinding(string Varname , string Propname , PropertyDefinition PropDecl , Expression Constraint , DestructuringDeclaration DestructuringDecl )
 
 
 {
-        //_ = Varname ?? throw new ArgumentNullException(nameof(Varname));
         this.Varname = Varname;
-        //_ = Propname ?? throw new ArgumentNullException(nameof(Propname));
         this.Propname = Propname;
-        //_ = DestructuringDecl ?? throw new ArgumentNullException(nameof(DestructuringDecl));
+        this.PropDecl = PropDecl;
+        this.Constraint = Constraint;
         this.DestructuringDecl = DestructuringDecl;
     }
 
     public string Varname{get;set;}
     public string Propname{get;set;}
+    public PropertyDefinition PropDecl{get;set;}
+    public Expression Constraint{get;set;}
     public DestructuringDeclaration DestructuringDecl{get;set;}
 
     public override void Accept(IAstVisitor visitor)
     {
         visitor.EnterDestructuringBinding(this);
+        Constraint?.Accept(visitor);
         DestructuringDecl?.Accept(visitor);
         visitor.LeaveDestructuringBinding(this);
     }
@@ -985,9 +905,7 @@ public partial class TypeInitialiser : Expression
 
 
 {
-        //_ = TypeName ?? throw new ArgumentNullException(nameof(TypeName));
         this.TypeName = TypeName;
-        //_ = PropertyInitialisers ?? throw new ArgumentNullException(nameof(PropertyInitialisers));
         this.PropertyInitialisers = PropertyInitialisers;
     }
 
@@ -1009,45 +927,13 @@ public partial class TypeInitialiser : Expression
     
 }
 
-public partial class PropertyBinding : AstNode
-{
-    public PropertyBinding(string BoundPropertyName , string BoundVariableName , Expression Constraint )
-
-
-{
-        //_ = BoundPropertyName ?? throw new ArgumentNullException(nameof(BoundPropertyName));
-        this.BoundPropertyName = BoundPropertyName;
-        //_ = BoundVariableName ?? throw new ArgumentNullException(nameof(BoundVariableName));
-        this.BoundVariableName = BoundVariableName;
-        //_ = Constraint ?? throw new ArgumentNullException(nameof(Constraint));
-        this.Constraint = Constraint;
-    }
-
-    public string BoundPropertyName{get;set;}
-    public string BoundVariableName{get;set;}
-    public Expression Constraint{get;set;}
-
-    public override void Accept(IAstVisitor visitor)
-    {
-        visitor.EnterPropertyBinding(this);
-        Constraint?.Accept(visitor);
-        visitor.LeavePropertyBinding(this);
-    }
-
-    
-                    public PropertyDefinition BoundProperty { get; set; }
-                
-}
-
 public partial class TypePropertyInit : AstNode
 {
     public TypePropertyInit(string Name , Expression Value )
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = Value ?? throw new ArgumentNullException(nameof(Value));
         this.Value = Value;
     }
 
@@ -1070,9 +956,7 @@ public partial class UnaryExpression : Expression
 
 
 {
-        //_ = Operand ?? throw new ArgumentNullException(nameof(Operand));
         this.Operand = Operand;
-        //_ = Op ?? throw new ArgumentNullException(nameof(Op));
         this.Op = Op;
     }
 
@@ -1095,11 +979,8 @@ public partial class VariableDeclarationStatement : Statement, ITypedAstNode
 
 
 {
-        //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
         this.Expression = Expression;
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
-        //_ = UnresolvedTypeName ?? throw new ArgumentNullException(nameof(UnresolvedTypeName));
         this.UnresolvedTypeName = UnresolvedTypeName;
     }
 
@@ -1148,7 +1029,6 @@ public partial class VariableReference : BaseVarReference
 
 
 {
-        //_ = Name ?? throw new ArgumentNullException(nameof(Name));
         this.Name = Name;
     }
 
@@ -1169,7 +1049,6 @@ public partial class CompoundVariableReference : BaseVarReference
 
 
 {
-        //_ = ComponentReferences ?? throw new ArgumentNullException(nameof(ComponentReferences));
         this.ComponentReferences = ComponentReferences;
     }
 
@@ -1196,9 +1075,7 @@ public partial class WhileExp : Statement
 
 
 {
-        //_ = Condition ?? throw new ArgumentNullException(nameof(Condition));
         this.Condition = Condition;
-        //_ = LoopBlock ?? throw new ArgumentNullException(nameof(LoopBlock));
         this.LoopBlock = LoopBlock;
     }
 
@@ -1221,7 +1098,6 @@ public partial class ExpressionStatement : Statement
 
 
 {
-        //_ = Expression ?? throw new ArgumentNullException(nameof(Expression));
         this.Expression = Expression;
     }
 

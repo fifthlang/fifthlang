@@ -59,10 +59,10 @@ namespace Fifth.AST.Visitors
         public void LeaveFifthProgram(FifthProgram ctx);
         public void EnterFuncCallExpression(FuncCallExpression ctx);
         public void LeaveFuncCallExpression(FuncCallExpression ctx);
-        public void EnterFunctionDefinition(FunctionDefinition ctx);
-        public void LeaveFunctionDefinition(FunctionDefinition ctx);
         public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
         public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
+        public void EnterFunctionDefinition(FunctionDefinition ctx);
+        public void LeaveFunctionDefinition(FunctionDefinition ctx);
         public void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public void EnterIdentifier(Identifier ctx);
@@ -85,8 +85,6 @@ namespace Fifth.AST.Visitors
         public void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public void EnterTypeInitialiser(TypeInitialiser ctx);
         public void LeaveTypeInitialiser(TypeInitialiser ctx);
-        public void EnterPropertyBinding(PropertyBinding ctx);
-        public void LeavePropertyBinding(PropertyBinding ctx);
         public void EnterTypePropertyInit(TypePropertyInit ctx);
         public void LeaveTypePropertyInit(TypePropertyInit ctx);
         public void EnterUnaryExpression(UnaryExpression ctx);
@@ -155,10 +153,10 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveFifthProgram(FifthProgram ctx){}
         public virtual void EnterFuncCallExpression(FuncCallExpression ctx){}
         public virtual void LeaveFuncCallExpression(FuncCallExpression ctx){}
-        public virtual void EnterFunctionDefinition(FunctionDefinition ctx){}
-        public virtual void LeaveFunctionDefinition(FunctionDefinition ctx){}
         public virtual void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
         public virtual void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
+        public virtual void EnterFunctionDefinition(FunctionDefinition ctx){}
+        public virtual void LeaveFunctionDefinition(FunctionDefinition ctx){}
         public virtual void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
         public virtual void LeaveOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
         public virtual void EnterIdentifier(Identifier ctx){}
@@ -181,8 +179,6 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveTypeCreateInstExpression(TypeCreateInstExpression ctx){}
         public virtual void EnterTypeInitialiser(TypeInitialiser ctx){}
         public virtual void LeaveTypeInitialiser(TypeInitialiser ctx){}
-        public virtual void EnterPropertyBinding(PropertyBinding ctx){}
-        public virtual void LeavePropertyBinding(PropertyBinding ctx){}
         public virtual void EnterTypePropertyInit(TypePropertyInit ctx){}
         public virtual void LeaveTypePropertyInit(TypePropertyInit ctx){}
         public virtual void EnterUnaryExpression(UnaryExpression ctx){}
@@ -229,8 +225,8 @@ namespace Fifth.AST.Visitors
         public ExpressionList VisitExpressionList(ExpressionList ctx);
         public FifthProgram VisitFifthProgram(FifthProgram ctx);
         public FuncCallExpression VisitFuncCallExpression(FuncCallExpression ctx);
-        public FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx);
         public BuiltinFunctionDefinition VisitBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
+        public FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx);
         public OverloadedFunctionDefinition VisitOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public Identifier VisitIdentifier(Identifier ctx);
         public IdentifierExpression VisitIdentifierExpression(IdentifierExpression ctx);
@@ -242,7 +238,6 @@ namespace Fifth.AST.Visitors
         public DestructuringBinding VisitDestructuringBinding(DestructuringBinding ctx);
         public TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx);
         public TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx);
-        public PropertyBinding VisitPropertyBinding(PropertyBinding ctx);
         public TypePropertyInit VisitTypePropertyInit(TypePropertyInit ctx);
         public UnaryExpression VisitUnaryExpression(UnaryExpression ctx);
         public VariableDeclarationStatement VisitVariableDeclarationStatement(VariableDeclarationStatement ctx);
@@ -282,8 +277,8 @@ namespace Fifth.AST.Visitors
                 ExpressionList node => VisitExpressionList(node),
                 FifthProgram node => VisitFifthProgram(node),
                 FuncCallExpression node => VisitFuncCallExpression(node),
-                FunctionDefinition node => VisitFunctionDefinition(node),
                 BuiltinFunctionDefinition node => VisitBuiltinFunctionDefinition(node),
+                FunctionDefinition node => VisitFunctionDefinition(node),
                 OverloadedFunctionDefinition node => VisitOverloadedFunctionDefinition(node),
                 Identifier node => VisitIdentifier(node),
                 IdentifierExpression node => VisitIdentifierExpression(node),
@@ -295,7 +290,6 @@ namespace Fifth.AST.Visitors
                 DestructuringBinding node => VisitDestructuringBinding(node),
                 TypeCreateInstExpression node => VisitTypeCreateInstExpression(node),
                 TypeInitialiser node => VisitTypeInitialiser(node),
-                PropertyBinding node => VisitPropertyBinding(node),
                 TypePropertyInit node => VisitTypePropertyInit(node),
                 UnaryExpression node => VisitUnaryExpression(node),
                 VariableDeclarationStatement node => VisitVariableDeclarationStatement(node),
@@ -356,9 +350,9 @@ namespace Fifth.AST.Visitors
             => ctx;
         public virtual FuncCallExpression VisitFuncCallExpression(FuncCallExpression ctx)
             => ctx;
-        public virtual FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
-            => ctx;
         public virtual BuiltinFunctionDefinition VisitBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
+            => ctx;
+        public virtual FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
             => ctx;
         public virtual OverloadedFunctionDefinition VisitOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
             => ctx;
@@ -381,8 +375,6 @@ namespace Fifth.AST.Visitors
         public virtual TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx)
             => ctx;
         public virtual TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx)
-            => ctx;
-        public virtual PropertyBinding VisitPropertyBinding(PropertyBinding ctx)
             => ctx;
         public virtual TypePropertyInit VisitTypePropertyInit(TypePropertyInit ctx)
             => ctx;

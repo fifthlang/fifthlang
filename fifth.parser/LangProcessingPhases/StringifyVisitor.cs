@@ -115,9 +115,6 @@ public class StringifyVisitor : IAstVisitor
     public void EnterParameterDeclarationList(ParameterDeclarationList ctx)
         => EnterNonTerminal(ctx, "[]");
 
-    public void EnterPropertyBinding(PropertyBinding ctx)
-        => EnterNonTerminal(ctx, $"{ctx.BoundVariableName} -> {ctx.BoundPropertyName}");
-
     public void EnterPropertyDefinition(PropertyDefinition ctx)
         => EnterTerminal(ctx, ctx.Name);
 
@@ -259,9 +256,6 @@ public class StringifyVisitor : IAstVisitor
         => LeaveTerminal(ctx);
 
     public void LeaveParameterDeclarationList(ParameterDeclarationList ctx)
-        => LeaveNonTerminal(ctx);
-
-    public void LeavePropertyBinding(PropertyBinding ctx)
         => LeaveNonTerminal(ctx);
 
     public void LeavePropertyDefinition(PropertyDefinition ctx)
