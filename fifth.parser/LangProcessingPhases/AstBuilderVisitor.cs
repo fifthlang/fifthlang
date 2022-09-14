@@ -37,15 +37,23 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitClass_definition(FifthParser.Class_definitionContext context)
         {
-            var name = context.name.Text;
-            var properties = context._properties
-                                    .Select(fctx => VisitProperty_declaration(fctx))
-                                    .Cast<PropertyDefinition>()
-                                    .ToList();
+            var b = ClassDefinitionBuilder.CreateClassDefinition()
+                                          .WithName(context.name.Text);
+            foreach (var property in context._properties)
+            {
+                b.AddingItemToProperties((PropertyDefinition)Visit(property));
+            }
 
-            var classDefinition = new ClassDefinition(name, properties, new List<IFunctionDefinition>()).CaptureLocation(context.Start);
-            TypeRegistry.DefaultRegistry.RegisterType(new UserDefinedType(classDefinition));
-            return classDefinition;
+            foreach (var function in context._functions)
+            {
+                b.AddingItemToFunctions((IFunctionDefinition)Visit(function));
+            }
+
+            var result =b.Build().CaptureLocation(context.Start);
+            var userDefinedType = new UserDefinedType(result);
+            TypeRegistry.DefaultRegistry.RegisterType(userDefinedType);
+            result.TypeId = userDefinedType.TypeId;
+            return result;
         }
 
         public override IAstNode VisitEAdd([NotNull] FifthParser.EAddContext context)
@@ -157,20 +165,23 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitFifth([NotNull] FifthParser.FifthContext context)
         {
-            var classDeclarations = context._classes
-                                           .Select(fctx => VisitClass_definition(fctx))
-                                           .Cast<ClassDefinition>()
-                                           .ToList();
-            var functionDeclarations = context._functions
-                                              .Select(fctx => VisitFunction_declaration(fctx))
-                                              .Cast<IFunctionDefinition>()
-                                              .ToList();
-            var aliasDeclarations = context.alias()
-                                           .Select(actx => VisitAlias(actx))
-                                           .Cast<AliasDeclaration>()
-                                           .ToList();
-            var result = new FifthProgram(aliasDeclarations, classDeclarations, functionDeclarations)
-                .CaptureLocation(context.Start);
+            var b = FifthProgramBuilder.CreateFifthProgram();
+            foreach (var @class in context._classes)
+            {
+                b.AddingItemToClasses((ClassDefinition)Visit(@class));
+            }
+
+            foreach (var function in context._functions)
+            {
+                b.AddingItemToFunctions((IFunctionDefinition)Visit(function));
+            }
+
+            foreach (var aliasContext in context.alias())
+            {
+                b.AddingItemToAliases((AliasDeclaration)Visit(aliasContext));
+            }
+
+            var result = b.Build().CaptureLocation(context.Start);
             result.TargetAssemblyFileName = Path.GetFileName(Path.ChangeExtension(result.Filename, "exe"));
             return result;
         }
@@ -240,7 +251,7 @@ namespace Fifth.LangProcessingPhases
             }
             if (context.destructuring_decl() != null)
             {
-                builder.WithDestructuringDecl( (DestructuringDeclaration)Visit(context.destructuring_decl())); 
+                builder.WithDestructuringDecl( (DestructuringDeclaration)Visit(context.destructuring_decl()));
             }
 
             return builder.Build().CaptureLocation(context.Start);

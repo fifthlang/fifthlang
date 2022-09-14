@@ -32,6 +32,12 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         };
         // in case result is totally new, copy in the metadata, so we don't lose any that's been generated previously
         x.CopyMetadataInto(result);
+
+        if (x is ITypedAstNode tn && result is ITypedAstNode rtn)
+        {
+            rtn.TypeId = tn.TypeId;
+        }
+
         return result;
     }
 

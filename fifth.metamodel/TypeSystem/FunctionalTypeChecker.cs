@@ -129,6 +129,7 @@ namespace Fifth.TypeSystem
             var rhsTid = Infer(be.Right);
             var (tid, lhsCoercion, rhsCoercion) =
                 OperatorPrecedenceCalculator.GetResultType(be.Op, lhsTid.TypeId, rhsTid.TypeId);
+            TypeInferred(be, tid.Lookup());
             return tid.Lookup();
         }
 
@@ -559,7 +560,7 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, TypePropertyInit node)
             => throw new NotImplementedException();
-        
+
         public IType Infer(IScope scope, DestructuringDeclaration node)
         {
             foreach (var binding in node.Bindings)
