@@ -2,7 +2,7 @@
 
 This folder contains descriptions of the semantics of each operation available as part of the language.
 
-There are three places where it is possible for an operation to hace side-effects:
+There are three places where it is possible for an operation to have side-effects:
 
 - In the environment - by creating, setting or modifying the binding for a variable in the scope.
 - On the stack - the ongoing dispatching of an operation has the effect of consuming or contributing elements on the stack of the scope

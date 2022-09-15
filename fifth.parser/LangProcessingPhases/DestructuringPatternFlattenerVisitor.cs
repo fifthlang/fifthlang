@@ -13,13 +13,6 @@ using Fifth.AST.Builders;
 /// </remarks>
 public class DestructuringPatternFlattenerVisitor : DefaultMutatorVisitor<DummyContext>
 {
-    public static (DestructuringPatternFlattenerVisitor, DummyContext) CreateVisitor()
-    {
-        var ctx = new DummyContext();
-        var visitor = new DestructuringPatternFlattenerVisitor();
-        return (visitor, ctx);
-    }
-
     public override FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, DummyContext ctx)
     {
         var fb = FunctionDefinitionBuilder.CreateFunctionDefinition()

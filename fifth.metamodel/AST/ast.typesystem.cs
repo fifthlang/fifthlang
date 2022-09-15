@@ -57,6 +57,7 @@ public partial class FunctionalTypeChecker
 
     public IType Infer(AstNode exp)
     {
+        if (exp == null) return default;
         var scope = exp.NearestScope();
         return exp switch
         {

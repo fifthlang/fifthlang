@@ -64,6 +64,7 @@ public class Program
     {
         var paths = new[]
         {
+                "tools/osx-x64.ilasm",
                 "ilasm.exe",
                 "ilasm",
                 "tools/ilasm.exe",

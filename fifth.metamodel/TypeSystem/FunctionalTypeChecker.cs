@@ -488,6 +488,10 @@ namespace Fifth.TypeSystem
 
         public IType Infer(IScope scope, VariableDeclarationStatement node)
         {
+            if (node.TypeName == null && node.UnresolvedTypeName != null)
+            {
+                node.TypeName = node.UnresolvedTypeName;
+            }
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
             {
                 TypeInferred(node, t);

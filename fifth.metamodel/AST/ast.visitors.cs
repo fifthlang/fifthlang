@@ -250,8 +250,9 @@ namespace Fifth.AST.Visitors
 
     public class DefaultRecursiveDescentVisitor : IAstRecursiveDescentVisitor
     {
-        public virtual AstNode Visit(AstNode ctx)
-        => ctx switch
+        public virtual AstNode Visit(AstNode ctx){
+            if(ctx == null) return ctx;
+            return ctx switch
             {
                 Assembly node => VisitAssembly(node),
                 AssemblyRef node => VisitAssemblyRef(node),
@@ -301,6 +302,7 @@ namespace Fifth.AST.Visitors
 
                 { } node => null,
             };
+        }
 
         public virtual Assembly VisitAssembly(Assembly ctx)
             => ctx;

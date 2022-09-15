@@ -19,8 +19,10 @@ public static class FifthParserManager
         ast.Accept(new VerticalLinkageVisitor());
         ast.Accept(new SymbolTableBuilderVisitor());
         ast.Accept(new DestructuringVisitor());
-        var (visitor, ctx) = DestructuringPatternFlattenerVisitor.CreateVisitor();
-        ast = visitor.Process(ast as AstNode, ctx);
+        ast = new DestructuringPatternFlattenerVisitor().Process(ast as AstNode, new DummyContext());
+        // with the introduction of a bunch of new vardecls by the destructuring flattener, we need to rebuild the symtab
+        ast.Accept(new VerticalLinkageVisitor());
+        ast.Accept(new SymbolTableBuilderVisitor());
         ast.Accept(new TypeAnnotatorVisitor());
         //ast.Accept(new StringifyVisitor(Console.Out));
 

@@ -25,7 +25,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0-beta.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
     <PackageReference Include="log4net" Version="2.0.12" />
-    <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" />
+    <!--PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" /-->
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
   <None Update="log4net.config" CopyToOutputDirectory="PreserveNewest" />
@@ -37,14 +37,11 @@
     <ProjectReference Include="..\fifth\fifth.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="tools\ilasm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="tools\ilasm.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Update="tools\ilasm" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="tools\osx-x64.ilasm" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="tools\ilasm.exe" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-<!---
+  <!--
   <ItemGroup Label="ILAsm NuGet Package">
     <PackageReference Include="runtime.win-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
@@ -55,5 +52,5 @@
     <Copy SourceFiles="$(Pkgruntime_linux-x64_Microsoft_NETCore_ILAsm)/runtimes/linux-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <Copy SourceFiles="$(Pkgruntime_osx-x64_Microsoft_NETCore_ILAsm)/runtimes/osx-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Darwin'))" />
   </Target>
--->
+  -->
 </Project>
