@@ -44,8 +44,20 @@ public static class ASTModel
             Props = new PropertySpec[]
             {
                 new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "Fields", type: "FieldDefinition", isCollection: true),
                 new PropertySpec(name: "Properties", type: "PropertyDefinition", isCollection: true),
                 new PropertySpec(name: "Functions", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition")
+            }
+        },
+        /*FieldDefinition*/new AstNodeSpec()
+        {
+            Name = "FieldDefinition",
+            Parent = "TypedAstNode",
+            Props = new PropertySpec[]
+            {
+                new PropertySpec(name: "BackingFieldFor", type: "PropertyDefinition?", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true)
             }
         },
         /*PropertyDefinition*/new AstNodeSpec()
@@ -54,6 +66,9 @@ public static class ASTModel
             Parent = "TypedAstNode",
             Props = new PropertySpec[]
             {
+                new PropertySpec(name: "BackingField", type: "FieldDefinition?", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "GetAccessor", type: "FunctionDefinition?", isCollection: false, ignoreDuringVisit: false),
+                new PropertySpec(name: "SetAccessor", type: "FunctionDefinition?", isCollection: false, ignoreDuringVisit: false),
                 new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "TypeName", type: "string", isCollection: false, ignoreDuringVisit: true)
             }
@@ -266,7 +281,7 @@ public static class ASTModel
             CustomCode=@"
             public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
                : base(new ParameterDeclarationList(parameters.Select(x => (IParameterListItem)new ParameterDeclaration(new Identifier(x.Item1), x.Item2, null, null)).ToList()),
-                null, typename, name, false, null){}
+                null, typename, name, false, false, null){}
                 ",
             Props = new PropertySpec[]
             {
@@ -283,6 +298,7 @@ public static class ASTModel
                 new PropertySpec(name: "Typename", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "IsEntryPoint", type: "bool", isCollection: false, ignoreDuringVisit: true),
+                new PropertySpec(name: "FunctionKind", type: "FunctionKind", isCollection: false, ignoreDuringVisit: true),
                 new PropertySpec(name: "ReturnType", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
             }
         },
@@ -500,4 +516,3 @@ public static class ASTModel
         }
     };
 }
-        

@@ -4,6 +4,7 @@ namespace Fifth.Symbols
     {
         BuiltinFunctionDeclaration,
         ClassDeclaration,
+        FieldDeclaration,
         FormalParameter,
         FunctionDeclaration,
         FunctionReference,

@@ -11,11 +11,19 @@ namespace Fifth.CodeGeneration
     public static class TypeMappings
     {
         public static bool HasMapping(TypeId fifthTid)
-            => DotnetPrimitiveNames.ContainsKey(fifthTid);
+        {
+            return DotnetPrimitiveNames.ContainsKey(fifthTid);
+        }
+
         public static string ToDotnetType(TypeId fifthTid)
-            => DotnetPrimitiveNames[fifthTid];
+        {
+            return DotnetPrimitiveNames[fifthTid];
+        }
+
         public static string ToBoxedDotnetType(TypeId fifthTid)
-            => DotnetBoxedTypes[fifthTid];
+        {
+            return DotnetBoxedTypes[fifthTid];
+        }
 
         public static readonly Dictionary<TypeId, string> DotnetPrimitiveNames = new()
         {

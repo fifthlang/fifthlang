@@ -40,7 +40,7 @@ public class FunctionBuilder
     {
         var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null, null)).Cast<IParameterListItem>().ToList();
         var paramDecls = new ParameterDeclarationList(pds);
-        var result = new FunctionDefinition(paramDecls, body, returnTypeName, name, name == "main", returnType)
+        var result = new FunctionDefinition(ParameterDeclarations: paramDecls, Body: body, Typename: returnTypeName, Name: name, IsEntryPoint: name == "main", FunctionKind: FunctionKind.Normal, ReturnType: returnType)
         {
             ParentNode = parentNode
         };

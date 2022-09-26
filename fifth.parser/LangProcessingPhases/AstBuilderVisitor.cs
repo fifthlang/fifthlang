@@ -209,19 +209,16 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitFunction_declaration([NotNull] FifthParser.Function_declarationContext context)
         {
-            var formals = context.args.formal_parameters();
-            var parameterList = VisitFormal_parameters(formals) as ParameterDeclarationList;
-            var tmp = VisitFunction_body(context.function_body());
-            var body = tmp as Block;
+            var fb = FunctionDefinitionBuilder.CreateFunctionDefinition();
             var segments = from seg in context.name.identifier_chain()._segments
                            select seg.Text;
             var name = string.Join('.', segments);
-
-            var parameterDeclarationList =
-                parameterList ?? new ParameterDeclarationList(new List<IParameterListItem>());
-            var typename = context.result_type.GetText();
-            var result = new FunctionDefinition(parameterDeclarationList, body, typename, name, name == "main", null);
-            return result.CaptureLocation(context.Start);
+            fb.WithName(name)
+              .WithFunctionKind(FunctionKind.Normal)
+              .WithParameterDeclarations((ParameterDeclarationList)Visit(context.args.formal_parameters()))
+              .WithBody((Block)Visit(context.function_body()))
+              .WithTypename(context.result_type.GetText());
+            return fb.Build().CaptureLocation(context.Start);
         }
 
         public override IAstNode VisitIri([NotNull] FifthParser.IriContext context) =>
@@ -278,10 +275,10 @@ namespace Fifth.LangProcessingPhases
 
         public override IAstNode VisitProperty_declaration(FifthParser.Property_declarationContext context)
         {
-            var name = context.name.Text;
-            var type = context.type.Text;
-
-            return new PropertyDefinition(name, type).CaptureLocation(context.Start);
+            return PropertyDefinitionBuilder.CreatePropertyDefinition()
+                                            .WithName(context.name.Text)
+                                            .WithTypeName(context.type.Text)
+                                            .Build();
         }
 
         public override IAstNode VisitSAssignment([NotNull] FifthParser.SAssignmentContext context)
@@ -300,11 +297,16 @@ namespace Fifth.LangProcessingPhases
             var ifBlockEL = VisitBlock(context.ifpart) as StatementList;
             var elseBlockEL = VisitBlock(context.elsepart) as StatementList;
             var result = new IfElseStatement(new Block(ifBlockEL), new Block(elseBlockEL), condNode);
+            result.TypeOfStatement = StatementType.IfElse;
             return result.CaptureLocation(context.Start);
         }
 
-        public override IAstNode VisitSReturn(FifthParser.SReturnContext context) =>
-            new ReturnStatement((Expression)Visit(context.exp()), null).CaptureLocation(context.Start);
+        public override IAstNode VisitSReturn(FifthParser.SReturnContext context)
+        {
+            var visitSReturn = new ReturnStatement((Expression)Visit(context.exp()), null).CaptureLocation(context.Start);
+            visitSReturn.TypeOfStatement = StatementType.Return;
+            return visitSReturn;
+        }
 
         public override IAstNode VisitSVarDecl([NotNull] FifthParser.SVarDeclContext context)
         {
@@ -315,6 +317,7 @@ namespace Fifth.LangProcessingPhases
                 decl.Expression = (Expression)exp;
             }
 
+            decl.TypeOfStatement = StatementType.VarDecl;
             return decl.CaptureLocation(context.Start);
         }
 
@@ -324,6 +327,7 @@ namespace Fifth.LangProcessingPhases
             var expressionList = Visit(context.looppart) as StatementList;
             var loopBlock = new Block(expressionList);
             var result = new WhileExp(condNode, loopBlock);
+            result.TypeOfStatement = StatementType.While;
             return result.CaptureLocation(context.Start);
             ;
         }

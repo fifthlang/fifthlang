@@ -78,6 +78,7 @@ namespace Fifth.LangProcessingPhases
             }
             var body = new Block(ifStatements);
 
+            // TODO: Use FunctionDefinitionBuilder
             var fb = FunctionBuilder
                    .NewFunction()
                    .Called(ctx.Name)

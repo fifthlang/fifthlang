@@ -9,17 +9,44 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
     using AST.Visitors;
     using BuiltinsGeneration;
     using PrimitiveTypes;
+    using Symbols;
     using TypeSystem;
     using Exception = Fifth.Exception;
 
     public class CodeGenVisitor : DefaultRecursiveDescentVisitor
     {
-
         private readonly TextWriter writer;
         private ulong labelCounter;
 
         public CodeGenVisitor(TextWriter writer)
-            => this.writer = writer;
+        {
+            this.writer = writer;
+        }
+
+        public override FieldDefinition VisitFieldDefinition(FieldDefinition ctx)
+        {
+            w($".field private {MapType(ctx.TypeId)} '{ctx.Name}'");
+            return ctx;
+        }
+
+        public override AssignmentStmt VisitAssignmentStmt(AssignmentStmt ctx)
+        {
+            Visit(ctx.Expression);
+            if (ctx.VariableRef is VariableReference vr)
+            {
+                var ord = GetVarOrdinal(vr);
+                if (ord.HasValue)
+                {
+                    w($"stloc.s {ord}");
+                }
+                else
+                {
+                    w($"stloc {vr.Name}");
+                }
+            }
+
+            return ctx;
+        }
 
         public string MapType(TypeId tid)
         {
@@ -33,7 +60,13 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
                 return TypeMappings.ToDotnetType(tid);
             }
 
-            return tid.Lookup().Name;
+            var tn = tid.Lookup().Name;
+            if (tid.Lookup() is UserDefinedType)
+            {
+                tn = $"class {tn}";
+            }
+
+            return tn;
         }
 
         public override Assembly VisitAssembly(Assembly ctx)
@@ -63,6 +96,53 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
               .ver 1:0:0:0
             }}");
             VisitFifthProgram(ctx.Program);
+            return ctx;
+        }
+
+        /// <summary>
+        /// Generate the expression IL for a compound variable reference.
+        /// </summary>
+        /// <param name="ctx">the AST node for the compound varref</param>
+        /// <returns>the same ctx</returns>
+        /// <remarks>
+        /// The process used by csc is to progressively access member references by getting the members onto the stack.
+        /// <example>
+        /// Here is an example of progressively accessing the members of an object graph (C#: x = p.Vitals.Height)
+        /// <code>
+        /// IL_0001: ldarg.0      // p
+        /// IL_0002: callvirt     instance class ConsoleApp1.VitalStatistics ConsoleApp1.Person::get_Vitals()
+        /// IL_0007: callvirt     instance float64 ConsoleApp1.VitalStatistics::get_Height()
+        /// IL_000c: stloc.0      // x
+        /// </code>
+        /// </example>
+        /// </remarks>
+        public override CompoundVariableReference VisitCompoundVariableReference(CompoundVariableReference ctx)
+        {
+            // special treatment for the first element, since it must be a directly in-scope variable...
+            var head = ctx.ComponentReferences.First();
+            if (head.SymTabEntry.SymbolKind == SymbolKind.VariableDeclaration)
+            {
+                // good. this is a local variable. (need to check it's a variable in THIS scope). so load it simply.
+                VisitVariableReference(head);
+            }
+            else if (head.SymTabEntry.SymbolKind == SymbolKind.FormalParameter)
+            {
+                // good. this is a local variable. (need to check it's a variable in THIS scope). so load it simply.
+                var pd = head.SymTabEntry.Context as ParameterDeclaration;
+                w($"ldarg.{pd[Constants.ArgOrdinal]}");
+            }
+
+            foreach (var vr in ctx.ComponentReferences.Skip(1))
+            {
+                if (vr.SymTabEntry.SymbolKind == SymbolKind.PropertyDefinition)
+                {
+                    var udtScope =
+                        vr.SymTabEntry.Context.ParentNode as ClassDefinition; // is there any other valid cast here?
+                    var tn = MapType(vr.TypeId);
+                    w($" callvirt instance {tn} {udtScope.Name}::get_{vr.Name}()");
+                }
+            }
+
             return ctx;
         }
 
@@ -149,11 +229,12 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
         {
             w($".class public  {ctx.Name} extends [System.Runtime]System.Object {{");
-            
+
             foreach (var propertyDefinition in ctx.Properties)
             {
                 VisitPropertyDefinition(propertyDefinition);
             }
+
             foreach (var functionDefinition in ctx.Functions)
             {
                 VisitFunctionDefinition(functionDefinition as FunctionDefinition);
@@ -183,6 +264,7 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             {
                 VisitClassDefinition(classDefinition);
             }
+
             w(@".class public Program {");
             foreach (var functionDefinition in ctx.Functions)
             {
@@ -256,16 +338,51 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
             w($"call {dotNetReturnType} Program::{ctx.Name}({argTypeNames})");
 
             return ctx;
-
         }
 
         public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
         {
+            var argOrdCtr = 0;
+            foreach (var parameterDeclaration in ctx.ParameterDeclarations.ParameterDeclarations)
+            {
+                if (parameterDeclaration is ParameterDeclaration pd)
+                {
+                    pd[Constants.ArgOrdinal] = argOrdCtr++;
+                }
+            }
+
             if (ctx == null)
             {
                 return ctx;
             }
 
+            switch (ctx.FunctionKind)
+            {
+                case FunctionKind.BuiltIn:
+                    GenerateBuiltinFunction(ctx);
+                    break;
+                case FunctionKind.Normal:
+                    GenerateNormalFunction(ctx);
+                    break;
+                case FunctionKind.Ctor:
+                    GenerateDefaultCtorFunction(ctx);
+                    break;
+                case FunctionKind.Getter:
+                    GenerateGetterFunction(ctx);
+                    break;
+                case FunctionKind.Setter:
+                    GenerateSetterFunction(ctx);
+                    break;
+            }
+
+            return ctx;
+        }
+
+        void GenerateDefaultCtorFunction(FunctionDefinition ctx) { }
+        void GenerateBuiltinFunction(FunctionDefinition ctx) { }
+
+        void GenerateNormalFunction(FunctionDefinition ctx)
+        {
             var args = ctx.ParameterDeclarations.ParameterDeclarations
                           .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
             w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
@@ -294,7 +411,43 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
             Visit(ctx.Body);
             w("}");
-            return ctx;
+        }
+
+        void GenerateGetterFunction(FunctionDefinition ctx)
+        {
+            var cd = ctx.ParentNode as ClassDefinition;
+            var pd = (PropertyDefinition)ctx["propdecl"];
+            var tn = MapType(pd.TypeId);
+
+            var fd = pd.BackingField;
+            w($@"
+   .method public hidebysig specialname instance {tn}
+    {ctx.Name}() cil managed
+    {{
+    ldarg.0      // this
+    ldfld        {tn} {cd.Name}::'{fd.Name}'
+    ret
+    }} // end method {cd.Name}::{ctx.Name}
+");
+        }
+
+        void GenerateSetterFunction(FunctionDefinition ctx)
+        {
+            var cd = ctx.ParentNode as ClassDefinition;
+            var pd = (PropertyDefinition)ctx["propdecl"];
+            var tn = MapType(pd.TypeId);
+            w($@"
+  .method public hidebysig specialname instance void
+    {ctx.Name}(
+      {tn} 'value'
+    ) cil managed
+    {{
+    ldarg.0      // this
+    ldarg.1      // 'value'
+    stfld        {tn} {cd.Name}::'{ctx.Name}'
+    ret
+    }} // end of method {cd.Name}::{ctx.Name}
+");
         }
 
         public override IfElseStatement VisitIfElseStatement(IfElseStatement ctx)
@@ -327,11 +480,13 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
         {
+            var tn = MapType(ctx.TypeId);
+
             var owningClassDefinition = ctx.ParentNode as ClassDefinition;
             var className = owningClassDefinition.Name;
-            w($"  .property instance {ctx.TypeName} {ctx.Name}(){{");
-            w($"      .get instance {ctx.TypeName} {className}::get_{ctx.Name}()");
-            w($"      .set instance void {className}::set_{ctx.Name}({ctx.TypeName})");
+            w($"  .property instance {tn} {ctx.Name}(){{");
+            w($"      .get instance {tn} {className}::get_{ctx.Name}()");
+            w($"      .set instance void {className}::set_{ctx.Name}({tn})");
             w("  }");
             return ctx;
         }
@@ -357,11 +512,11 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override VariableDeclarationStatement VisitVariableDeclarationStatement(VariableDeclarationStatement ctx)
         {
-            var ord = ctx.HasAnnotation(Constants.DeclarationOrdinal) ? ctx[Constants.DeclarationOrdinal] : ctx.Name;
+            var ord =  ctx.HasAnnotation(Constants.DeclarationOrdinal) ? ctx[Constants.DeclarationOrdinal] : ctx.Name;
             if (ctx.Expression != null)
             {
-                Visit(ctx.Expression);
-                w($"stloc.{ord}");
+            Visit(ctx.Expression);
+            w($"stloc.s {ord}");
             }
 
             return ctx;
@@ -369,14 +524,22 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
 
         public override VariableReference VisitVariableReference(VariableReference ctx)
         {
-            var ord = GetVarOrdinal(ctx);
-            if (ord.HasValue)
+            if (ctx.SymTabEntry.SymbolKind == SymbolKind.FormalParameter)
             {
-                w($"ldloc.{ord}");
+                var pd = ctx.SymTabEntry.Context as ParameterDeclaration;
+                w($"ldarg.{pd[Constants.ArgOrdinal]}");
             }
             else
             {
-                w($"ldloc.{ctx.Name}");
+                var ord = GetVarOrdinal(ctx);
+                if (ord.HasValue)
+                {
+                    w($"ldloc.s {ord}");
+                }
+                else
+                {
+                    w($"ldloc {ctx.Name}");
+                }
             }
 
             return ctx;

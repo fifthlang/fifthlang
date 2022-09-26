@@ -12,6 +12,12 @@ public class SymbolTableBuilderVisitor : BaseAstVisitor
     public Stack<TypeId> PatternMatchers { get; set; } = new Stack<TypeId>();
     public bool IsInPatternMatcher => PatternMatchers.Count > 0;
     public TypeId PatternMatcherTid => IsInPatternMatcher ? PatternMatchers.Peek() : default;
+    public override void EnterFieldDefinition(FieldDefinition ctx)
+    {
+        var enclosingScope = ctx.ParentNode.NearestScope();
+        enclosingScope.Declare(ctx.Name, SymbolKind.FieldDeclaration, ctx);
+    }
+
     public override void EnterPropertyDefinition(PropertyDefinition ctx)
     {
         var enclosingScope = ctx.ParentNode.NearestScope();
@@ -79,6 +85,4 @@ public class SymbolTableBuilderVisitor : BaseAstVisitor
         var enclosingScope = ctx.ParentNode.NearestScope();
         enclosingScope.Declare(ctx.Name, SymbolKind.ClassDeclaration, ctx);
     }
-
-
 }

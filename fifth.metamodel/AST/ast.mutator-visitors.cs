@@ -8,6 +8,7 @@ public interface IAstMutatorVisitor<TContext>
     Assembly ProcessAssembly(Assembly node, TContext ctx);
     AssemblyRef ProcessAssemblyRef(AssemblyRef node, TContext ctx);
     ClassDefinition ProcessClassDefinition(ClassDefinition node, TContext ctx);
+    FieldDefinition ProcessFieldDefinition(FieldDefinition node, TContext ctx);
     PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx);
     TypeCast ProcessTypeCast(TypeCast node, TContext ctx);
     ReturnStatement ProcessReturnStatement(ReturnStatement node, TContext ctx);
@@ -57,6 +58,7 @@ public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
     public virtual Assembly ProcessAssembly(Assembly node, TContext ctx)=>node;
     public virtual AssemblyRef ProcessAssemblyRef(AssemblyRef node, TContext ctx)=>node;
     public virtual ClassDefinition ProcessClassDefinition(ClassDefinition node, TContext ctx)=>node;
+    public virtual FieldDefinition ProcessFieldDefinition(FieldDefinition node, TContext ctx)=>node;
     public virtual PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx)=>node;
     public virtual TypeCast ProcessTypeCast(TypeCast node, TContext ctx)=>node;
     public virtual ReturnStatement ProcessReturnStatement(ReturnStatement node, TContext ctx)=>node;
@@ -112,6 +114,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             Assembly node => ProcessAssembly(node, ctx),
             AssemblyRef node => ProcessAssemblyRef(node, ctx),
             ClassDefinition node => ProcessClassDefinition(node, ctx),
+            FieldDefinition node => ProcessFieldDefinition(node, ctx),
             PropertyDefinition node => ProcessPropertyDefinition(node, ctx),
             TypeCast node => ProcessTypeCast(node, ctx),
             ReturnStatement node => ProcessReturnStatement(node, ctx),
@@ -210,6 +213,9 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     var builder = ClassDefinitionBuilder.CreateClassDefinition();
 
         builder.WithName(node.Name);
+            foreach(var x in node.Fields){
+            builder.AddingItemToFields((FieldDefinition)Process((FieldDefinition)x, ctx));
+        }
             foreach(var x in node.Properties){
             builder.AddingItemToProperties((PropertyDefinition)Process((PropertyDefinition)x, ctx));
         }
@@ -220,13 +226,29 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
         return builder.Build();
     }
 
+    public virtual FieldDefinition ProcessFieldDefinition(FieldDefinition node, TContext ctx)
+    {
+
+
+    var builder = FieldDefinitionBuilder.CreateFieldDefinition();
+
+        builder.WithBackingFieldFor(node.BackingFieldFor);
+            builder.WithName(node.Name);
+            builder.WithTypeName(node.TypeName);
+    
+        return builder.Build();
+    }
+
     public virtual PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx)
     {
 
 
     var builder = PropertyDefinitionBuilder.CreatePropertyDefinition();
 
-        builder.WithName(node.Name);
+        builder.WithBackingField(node.BackingField);
+            builder.WithGetAccessor((FunctionDefinition?)Process(node.GetAccessor, ctx));
+            builder.WithSetAccessor((FunctionDefinition?)Process(node.SetAccessor, ctx));
+            builder.WithName(node.Name);
             builder.WithTypeName(node.TypeName);
     
         return builder.Build();
@@ -484,6 +506,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             builder.WithTypename(node.Typename);
             builder.WithName(node.Name);
             builder.WithIsEntryPoint(node.IsEntryPoint);
+            builder.WithFunctionKind(node.FunctionKind);
             builder.WithReturnType(node.ReturnType);
     
         return builder.Build();
@@ -500,6 +523,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
             builder.WithTypename(node.Typename);
             builder.WithName(node.Name);
             builder.WithIsEntryPoint(node.IsEntryPoint);
+            builder.WithFunctionKind(node.FunctionKind);
             builder.WithReturnType(node.ReturnType);
     
         return builder.Build();

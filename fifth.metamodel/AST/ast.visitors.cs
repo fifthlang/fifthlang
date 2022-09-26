@@ -17,6 +17,8 @@ namespace Fifth.AST.Visitors
         public void LeaveAssemblyRef(AssemblyRef ctx);
         public void EnterClassDefinition(ClassDefinition ctx);
         public void LeaveClassDefinition(ClassDefinition ctx);
+        public void EnterFieldDefinition(FieldDefinition ctx);
+        public void LeaveFieldDefinition(FieldDefinition ctx);
         public void EnterPropertyDefinition(PropertyDefinition ctx);
         public void LeavePropertyDefinition(PropertyDefinition ctx);
         public void EnterTypeCast(TypeCast ctx);
@@ -111,6 +113,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveAssemblyRef(AssemblyRef ctx){}
         public virtual void EnterClassDefinition(ClassDefinition ctx){}
         public virtual void LeaveClassDefinition(ClassDefinition ctx){}
+        public virtual void EnterFieldDefinition(FieldDefinition ctx){}
+        public virtual void LeaveFieldDefinition(FieldDefinition ctx){}
         public virtual void EnterPropertyDefinition(PropertyDefinition ctx){}
         public virtual void LeavePropertyDefinition(PropertyDefinition ctx){}
         public virtual void EnterTypeCast(TypeCast ctx){}
@@ -204,6 +208,7 @@ namespace Fifth.AST.Visitors
         public Assembly VisitAssembly(Assembly ctx);
         public AssemblyRef VisitAssemblyRef(AssemblyRef ctx);
         public ClassDefinition VisitClassDefinition(ClassDefinition ctx);
+        public FieldDefinition VisitFieldDefinition(FieldDefinition ctx);
         public PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx);
         public TypeCast VisitTypeCast(TypeCast ctx);
         public ReturnStatement VisitReturnStatement(ReturnStatement ctx);
@@ -257,6 +262,7 @@ namespace Fifth.AST.Visitors
                 Assembly node => VisitAssembly(node),
                 AssemblyRef node => VisitAssemblyRef(node),
                 ClassDefinition node => VisitClassDefinition(node),
+                FieldDefinition node => VisitFieldDefinition(node),
                 PropertyDefinition node => VisitPropertyDefinition(node),
                 TypeCast node => VisitTypeCast(node),
                 ReturnStatement node => VisitReturnStatement(node),
@@ -309,6 +315,8 @@ namespace Fifth.AST.Visitors
         public virtual AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
             => ctx;
         public virtual ClassDefinition VisitClassDefinition(ClassDefinition ctx)
+            => ctx;
+        public virtual FieldDefinition VisitFieldDefinition(FieldDefinition ctx)
             => ctx;
         public virtual PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
             => ctx;

@@ -11,7 +11,9 @@ namespace Fifth.CodeGeneration.BuiltinsGeneration
         private readonly TextWriter writer;
 
         public PrintGenerator(TextWriter writer)
-            => this.writer = writer;
+        {
+            this.writer = writer;
+        }
 
 
         public void GenerateFor(FuncCallExpression ctx, BuiltinFunctionDefinition bif)

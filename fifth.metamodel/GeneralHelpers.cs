@@ -53,7 +53,15 @@ public static class GeneralHelpers
 
     public static (int errorCode, List<string> outputs, List<string> errors) RunProcess(string executable,
         params string[] args)
-    => RunProcessVerbosely(executable, false, args);
+    {
+        // if (Environment.OSVersion.Platform == PlatformID.Unix)
+        // {
+        //     ExecOnUnix($"{executable} {string.Join(", ", args)}");
+        //     return (0, new List<string>(), new List<string>());
+        // }
+
+        return RunProcessVerbosely(executable, true, args);
+    }
 
     public static (int errorCode, List<string> outputs, List<string> errors) RunProcessVerbosely(string executable, bool relayToStdOutErr, params string[] args)
     {

@@ -35,7 +35,7 @@ class Person {
 class VitalStatistics {
     Height: float;
     Age: float;
-    Weight: float; 
+    Weight: float;
 }
 
 calculate_bmi(p: Person {
@@ -60,7 +60,7 @@ calculate_bmi(p: Person {
     }
 
 
-    [Test, Category("WIP")]
+    [Test]
     public void can_desugar_recursive_destrdecls()
     {
         var ast = ParseProgram(recursiveDefinition) as FifthProgram;

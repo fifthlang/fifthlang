@@ -38,7 +38,9 @@ public class DestructuringPatternFlattenerVisitor : DefaultMutatorVisitor<DummyC
         }
         // 3. Generate body with additional statements
         fb.WithBody(bb.Build());
-        return fb.Build();
+        fb.WithFunctionKind(node.FunctionKind);
+        var result = fb.Build();
+        return result;
     }
 
     public override ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, DummyContext ctx)
@@ -52,6 +54,7 @@ public class DestructuringPatternFlattenerVisitor : DefaultMutatorVisitor<DummyC
             .WithParameterName(node.ParameterName)
             .WithTypeName(node.TypeName);
         // TODO Process the bindings and add statements
-        return pdb.Build();
+        var result = pdb.Build();
+        return node.CopyMetadataInto(result);
     }
 }

@@ -446,6 +446,18 @@ namespace Fifth.TypeSystem
             return node.TypeId.Lookup();
         }
 
+        public IType Infer(IScope scope, FieldDefinition node)
+        {
+            if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
+            {
+                TypeInferred(node, t);
+                return t;
+            }
+
+            TypeNotRelevant(node);
+            return default;
+        }
+
         public IType Infer(IScope scope, IFunctionDefinition node)
         {
             if (node is FunctionDefinition fd)
@@ -492,6 +504,11 @@ namespace Fifth.TypeSystem
             {
                 node.TypeName = node.UnresolvedTypeName;
             }
+
+            if (node.Expression != null)
+            {
+                Infer(node.Expression);
+            }
             if (TypeRegistry.DefaultRegistry.TryGetTypeByName(node.TypeName, out var t))
             {
                 TypeInferred(node, t);
@@ -507,6 +524,9 @@ namespace Fifth.TypeSystem
             IType result = default;
             if (scope.TryResolve(node.Name, out var ste))
             {
+                // if we got here, then it means we were able to resolve the target of the variable reference
+                // that's useful information for later, so let's store it with the reference.
+                node.SymTabEntry = ste;
                 /*if (ste.Context is DestructuringBinding pb)
                 {
                     result = pb.BoundProperty.TypeId.Lookup();
@@ -519,8 +539,22 @@ namespace Fifth.TypeSystem
                     TypeInferred(node, result);
                 }
 
+                if (ste.Context is FieldDefinition fieldDef)
+                {
+                    if (TypeRegistry.DefaultRegistry.TryGetTypeByName(fieldDef.TypeName, out var type))
+                    {
+                        fieldDef.TypeId = type.TypeId;
+                    }
+                    result = fieldDef.TypeId.Lookup();
+                    TypeInferred(node, result);
+                }
+
                 if (ste.Context is PropertyDefinition propDef)
                 {
+                    if (TypeRegistry.DefaultRegistry.TryGetTypeByName(propDef.TypeName, out var type))
+                    {
+                        propDef.TypeId = type.TypeId;
+                    }
                     result = propDef.TypeId.Lookup();
                     TypeInferred(node, result);
                 }

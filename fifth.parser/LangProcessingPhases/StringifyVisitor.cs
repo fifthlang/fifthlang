@@ -115,6 +115,8 @@ public class StringifyVisitor : IAstVisitor
     public void EnterParameterDeclarationList(ParameterDeclarationList ctx)
         => EnterNonTerminal(ctx, "[]");
 
+    public void LeaveFieldDefinition(FieldDefinition ctx) => LeaveNonTerminal(ctx);
+
     public void EnterPropertyDefinition(PropertyDefinition ctx)
         => EnterTerminal(ctx, ctx.Name);
 
@@ -189,6 +191,8 @@ public class StringifyVisitor : IAstVisitor
     public void LeaveClassDefinition(ClassDefinition ctx)
                             => LeaveNonTerminal(ctx);
 
+    public void EnterFieldDefinition(FieldDefinition ctx) => EnterNonTerminal(ctx, ctx.Name);
+
     public void LeaveCompoundVariableReference(CompoundVariableReference ctx)
         => LeaveNonTerminal(ctx);
 
@@ -198,10 +202,10 @@ public class StringifyVisitor : IAstVisitor
     public void LeaveDecimalValueExpression(DecimalValueExpression ctx)
         => LeaveTerminal(ctx);
 
-    public void LeaveDestructuringBinding(DestructuringBinding ctx) 
+    public void LeaveDestructuringBinding(DestructuringBinding ctx)
         => LeaveNonTerminal(ctx);
 
-    public void LeaveDestructuringDeclaration(DestructuringDeclaration ctx) 
+    public void LeaveDestructuringDeclaration(DestructuringDeclaration ctx)
         => LeaveNonTerminal(ctx);
 
     public void LeaveDoubleValueExpression(DoubleValueExpression ctx)

@@ -9,6 +9,8 @@ namespace Fifth.CodeGeneration.LangProcessingPhases
         public List<VariableDeclarationStatement> Decls { get; } = new();
 
         public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
-            => Decls.Add(ctx);
+        {
+            Decls.Add(ctx);
+        }
     }
 }

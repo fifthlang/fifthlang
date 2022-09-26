@@ -123,12 +123,15 @@ public class Program
     /// <returns>true if successfully compiled, false otherwise.</returns>
     public static bool TryCompile(CompilationContext ctx)
     {
-        var ilFilename = Path.ChangeExtension(ctx.Source, ".il");
+        var di = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "build"));
+        var filename = Path.GetFileName(ctx.Source);
+        var ilFilename = Path.Combine(di.FullName, Path.ChangeExtension(filename, ".il"));
+        //var ilFilename = Path.ChangeExtension(ctx.Source, ".il");
         try
         {
             if (string.IsNullOrWhiteSpace(ctx.Output))
             {
-                ctx.Output = Path.ChangeExtension(ctx.Source, ".exe");
+                ctx.Output = Path.ChangeExtension(ilFilename, ".exe");
             }
 
             if (FifthParserManager.TryParseFile<AST.Assembly>(ctx.Source, out var ast, out var errors))

@@ -1,0 +1,127 @@
+delimiters "$", "$"
+assembly(ctx) ::= <<.assembly $ctx.Name$
+            {
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = ( 01 00 08 00 00 00 00 00 )
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor() = ( 01 00 01 00 54 02 16 57 72 61 70 4E 6F 6E 45 78   // ....T..WrapNonEx
+                                                                                                                               63 65 70 74 69 6F 6E 54 68 72 6F 77 73 01 )       // ceptionThrows.
+
+              // --- The following custom attribute is added automatically, do not uncomment -------
+              //  .custom instance void [System.Runtime]System.Diagnostics.DebuggableAttribute::.ctor(valuetype [System.Runtime]System.Diagnostics.DebuggableAttribute/DebuggingModes) = ( 01 00 07 01 00 00 00 00 )
+
+              .custom instance void [System.Runtime]System.Runtime.Versioning.TargetFrameworkAttribute::.ctor(string) = ( 01 00 18 2E 4E 45 54 43 6F 72 65 41 70 70 2C 56   // ....NETCoreApp,V
+                                                                                                                          65 72 73 69 6F 6E 3D 76 35 2E 30 01 00 54 0E 14   // ersion=v5.0..T..
+                                                                                                                          46 72 61 6D 65 77 6F 72 6B 44 69 73 70 6C 61 79   // FrameworkDisplay
+                                                                                                                          4E 61 6D 65 00 )                                  // Name.
+              .hash algorithm 0x00008004
+              .ver 1:0:0:0
+>>
+
+assemblyRef(ctx) ::= << .assembly extern $ctx.Name$
+            {
+              .publickeytoken = ( $ctx.PublicKeyToken$ )
+              .ver $ctx.Version$
+            }
+>>
+
+fifthProgram(ctx) ::= <<
+.module $ctx.TargetFileName$
+$ctx.Classes:class()$
+
+.class public Program {
+  $ctx.Functions:function()$
+}
+>>
+
+class(ctx) ::= <<
+.class public  $ctx.Name$ extends [System.Runtime]System.Object {
+$ctx.Properties: property()$
+$ctx.Functions: function()$
+}
+>>
+
+function(ctx) ::= <<
+.method public static $MapType(ctx.ReturnType)$ $ctx.Name$ ($ctx.ParameterDeclarations:paramlist()$) cil managed
+{
+$if(ctx.IsEntryPoint)$
+.entrypoint
+$endif$
+$ctx: locals()$
+
+$ctx.Body: block()$
+}
+>>
+
+property(ctx) ::= <<
+
+>>
+
+paramlist(ctx) ::= <<
+$ctx.ParameterDeclarations:param(); separator=", "$
+>>
+
+param(ctx) ::= <<
+$MapType(ctx.TypeId)$ $ctx.ParameterName.Value$
+>>
+
+locals(ctx) ::= <<
+.locals init (
+    $GetLocals(ctx): local(); separator=", "$
+)
+>>
+
+local(ctx) ::= <<
+[$i0$] $MapType(ctx.TypeId)$ $ctx.Name$
+>>
+
+block(ctx) ::= <<
+$ctx.Statements: (ctx.StatementKind)()$
+>>
+
+IfElse(ctx, x) ::= <<
+$ctx.Condition: expression()$
+brfalse.s LBL_ELSE_$x$
+LBL_IF_$x$:
+$ctx.IfBlock: block()$
+br.s LBL_END_$x$
+LBL_ELSE_$x$:
+$ctx.ElseBlock: block()$
+LBL_END_$x$:
+>>
+
+While(ctx) ::= <<
+LBL_START:
+$ctx.Condition: expression()$
+brfalse.s LBL_END
+$ctx.LoopBlock: block()$
+br.s LBL_START
+LBL_END:
+>>
+
+With(ctx) ::= <<
+>>
+
+VarDecl(ctx, ord) ::= <<
+$! assume that the local decl was gathered at the head of the function, and all that's left is to assign the value !$
+$if(ctx.Expression)$ $ctx.Expression: expression()$ $endif$
+stloc.$ord$
+>>
+
+Assignment(ctx) ::= <<
+$!
+here we need to distinguish between assignments to local vardecls (where we need to know the ordinal value)
+and member props of some variable (where we need to use "callvirt instance")
+
+for now, just assume loc is 0
+!$
+$if(ctx.Expression)$ $ctx.Expression: expression()$ $endif$
+stloc.$ord$
+>>
+
+Return(ctx) ::= <<
+$if(ctx.SubExpression)$ $ctx.SubExpression: expression()$ $endif$
+
+>>
+
+expression(ctx) ::= <<
+
+>>

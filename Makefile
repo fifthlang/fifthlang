@@ -7,7 +7,7 @@ DIR_TEST := fifth.test
 JVM := java
 ANTLR := tools/antlr-4.8-complete.jar
 ANTLR_ARGS := -Dlanguage=CSharp -visitor -listener -lib $(DIR_GRAMMAR)
-CC := dotnet.exe
+CC := dotnet
 CC_ARGS:=
 # SOURCES
 SRC_PARSER=$(wildcard $(DIR_PARSER)/**/*.cs)
@@ -41,4 +41,4 @@ test: $(BIN_TEST)
 	$(CC) test
 ast:
 	$(CC) $(CC_ARGS) build fifth.metamodel.metadata/fifth.metamodel.metadata.csproj
-	$(MAKE) -C fifth.metamodel/AST ast
+	$(MAKE) CC=$(CC) -C fifth.metamodel/AST ast

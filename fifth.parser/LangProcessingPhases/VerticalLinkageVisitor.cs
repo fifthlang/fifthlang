@@ -106,6 +106,8 @@ public class VerticalLinkageVisitor : IAstVisitor
     public void EnterParameterDeclarationList(ParameterDeclarationList ctx)
         => EnterNonTerminal(ctx);
 
+    public void LeaveFieldDefinition(FieldDefinition ctx) => LeaveNonTerminal(ctx);
+
     public void EnterPropertyDefinition(PropertyDefinition ctx)
         => EnterTerminal(ctx);
 
@@ -175,6 +177,8 @@ public class VerticalLinkageVisitor : IAstVisitor
     public void LeaveClassDefinition(ClassDefinition ctx)
                             => LeaveNonTerminal(ctx);
 
+    public void EnterFieldDefinition(FieldDefinition ctx)
+        => EnterNonTerminal(ctx);
     public void LeaveCompoundVariableReference(CompoundVariableReference ctx)
         => LeaveNonTerminal(ctx);
 

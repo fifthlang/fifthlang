@@ -9,27 +9,33 @@ using TypeSystem;
 
 public static class FifthParserManager
 {
-    public static void ApplyLanguageAnalysisPhases(IAstNode ast)
+    public static AstNode ApplyLanguageAnalysisPhases(AstNode ast)
     {
         ast.Accept(new BuiltinInjectorVisitor());
+        ast.Accept(new ClassCtorInserter());
         ast.Accept(new VerticalLinkageVisitor());
+        ast.Accept(new PropertyToFieldExpander());
         ast.Accept(new CompoundVariableSplitterVisitor());
         ast.Accept(new OverloadGatheringVisitor());
         ast.Accept(new OverloadTransformingVisitor());
         ast.Accept(new VerticalLinkageVisitor());
         ast.Accept(new SymbolTableBuilderVisitor());
+        // after this point, it is the responsibility of any transformative visitors to keep the
+        // symtab in order.
         ast.Accept(new DestructuringVisitor());
         ast = new DestructuringPatternFlattenerVisitor().Process(ast as AstNode, new DummyContext());
         // with the introduction of a bunch of new vardecls by the destructuring flattener, we need to rebuild the symtab
         ast.Accept(new VerticalLinkageVisitor());
         ast.Accept(new SymbolTableBuilderVisitor());
+        //ast.Accept(new TypeAnnotatorVisitor());
+        ast.Accept(new VariableReferenceResolver());
         ast.Accept(new TypeAnnotatorVisitor());
         //ast.Accept(new StringifyVisitor(Console.Out));
-
+        return ast;
     }
 
     public static bool TryParse<T>(string source, out T ast, out List<FifthCompilationError> errors)
-        where T : IAstNode
+        where T : AstNode
     {
         TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
         InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
@@ -39,7 +45,7 @@ public static class FifthParserManager
     }
 
     public static bool TryParseFile<T>(string fileName, out T ast, out List<FifthCompilationError> errors)
-        where T : IAstNode
+        where T : AstNode
     {
         TypeRegistry.DefaultRegistry.LoadPrimitiveTypes();
         InbuiltOperatorRegistry.DefaultRegistry.LoadBuiltinOperators();
@@ -50,8 +56,8 @@ public static class FifthParserManager
 
     #region Core Drivers
 
-    public static IAstNode ParseAndAnnotate<T>(ICharStream source)
-        where T : IAstNode
+    public static AstNode ParseAndAnnotate<T>(ICharStream source)
+        where T : AstNode
     {
         var ast = ParseToAst<T>(source);
 
@@ -59,12 +65,12 @@ public static class FifthParserManager
         {
             throw new Fifth.CompilationException("Unable to parse source to AST");
         }
-        ApplyLanguageAnalysisPhases(ast);
+        ast = ApplyLanguageAnalysisPhases(ast);
         return ast;
     }
 
-    public static IAstNode ParseToAst<T>(ICharStream source)
-        where T : IAstNode
+    public static AstNode ParseToAst<T>(ICharStream source)
+        where T : AstNode
     {
         if (typeof(T) == typeof(Assembly))
         {

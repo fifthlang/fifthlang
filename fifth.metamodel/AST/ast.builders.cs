@@ -96,13 +96,14 @@ public interface INodeBuilder{}
     {
         private ClassDefinitionBuilder()
         {
+        _Fields = new List<FieldDefinition>();
         _Properties = new List<PropertyDefinition>();
         _Functions = new List<IFunctionDefinition>();
         }
 
         public static ClassDefinitionBuilder CreateClassDefinition() => new ();
         public ClassDefinition Build()
-          => new (_Name, _Properties, _Functions);
+          => new (_Name, _Fields, _Properties, _Functions);
 
         private string _Name;
         public ClassDefinitionBuilder WithName(string value){
@@ -110,6 +111,16 @@ public interface INodeBuilder{}
             return this;
         }
 
+        private List<FieldDefinition> _Fields;
+        public ClassDefinitionBuilder WithFields(List<FieldDefinition> value){
+            _Fields = value;
+            return this;
+        }
+
+        public ClassDefinitionBuilder AddingItemToFields(FieldDefinition value){
+            _Fields.Add(value);
+            return this;
+        }
         private List<PropertyDefinition> _Properties;
         public ClassDefinitionBuilder WithProperties(List<PropertyDefinition> value){
             _Properties = value;
@@ -133,6 +144,37 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
+    public partial class FieldDefinitionBuilder : INodeBuilder
+    {
+        private FieldDefinitionBuilder()
+        {
+        }
+
+        public static FieldDefinitionBuilder CreateFieldDefinition() => new ();
+        public FieldDefinition Build()
+          => new (_BackingFieldFor, _Name, _TypeName);
+
+        private PropertyDefinition? _BackingFieldFor;
+        public FieldDefinitionBuilder WithBackingFieldFor(PropertyDefinition? value){
+            _BackingFieldFor = value;
+            return this;
+        }
+
+        private string _Name;
+        public FieldDefinitionBuilder WithName(string value){
+            _Name = value;
+            return this;
+        }
+
+        private string _TypeName;
+        public FieldDefinitionBuilder WithTypeName(string value){
+            _TypeName = value;
+            return this;
+        }
+
+    }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class PropertyDefinitionBuilder : INodeBuilder
     {
         private PropertyDefinitionBuilder()
@@ -141,7 +183,25 @@ public interface INodeBuilder{}
 
         public static PropertyDefinitionBuilder CreatePropertyDefinition() => new ();
         public PropertyDefinition Build()
-          => new (_Name, _TypeName);
+          => new (_BackingField, _GetAccessor, _SetAccessor, _Name, _TypeName);
+
+        private FieldDefinition? _BackingField;
+        public PropertyDefinitionBuilder WithBackingField(FieldDefinition? value){
+            _BackingField = value;
+            return this;
+        }
+
+        private FunctionDefinition? _GetAccessor;
+        public PropertyDefinitionBuilder WithGetAccessor(FunctionDefinition? value){
+            _GetAccessor = value;
+            return this;
+        }
+
+        private FunctionDefinition? _SetAccessor;
+        public PropertyDefinitionBuilder WithSetAccessor(FunctionDefinition? value){
+            _SetAccessor = value;
+            return this;
+        }
 
         private string _Name;
         public PropertyDefinitionBuilder WithName(string value){
@@ -630,7 +690,7 @@ public interface INodeBuilder{}
 
         public static BuiltinFunctionDefinitionBuilder CreateBuiltinFunctionDefinition() => new ();
         public BuiltinFunctionDefinition Build()
-          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _ReturnType);
+          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _FunctionKind, _ReturnType);
 
         private ParameterDeclarationList _ParameterDeclarations;
         public BuiltinFunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
@@ -662,6 +722,12 @@ public interface INodeBuilder{}
             return this;
         }
 
+        private FunctionKind _FunctionKind;
+        public BuiltinFunctionDefinitionBuilder WithFunctionKind(FunctionKind value){
+            _FunctionKind = value;
+            return this;
+        }
+
         private TypeId _ReturnType;
         public BuiltinFunctionDefinitionBuilder WithReturnType(TypeId value){
             _ReturnType = value;
@@ -679,7 +745,7 @@ public interface INodeBuilder{}
 
         public static FunctionDefinitionBuilder CreateFunctionDefinition() => new ();
         public FunctionDefinition Build()
-          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _ReturnType);
+          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _FunctionKind, _ReturnType);
 
         private ParameterDeclarationList _ParameterDeclarations;
         public FunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
@@ -708,6 +774,12 @@ public interface INodeBuilder{}
         private bool _IsEntryPoint;
         public FunctionDefinitionBuilder WithIsEntryPoint(bool value){
             _IsEntryPoint = value;
+            return this;
+        }
+
+        private FunctionKind _FunctionKind;
+        public FunctionDefinitionBuilder WithFunctionKind(FunctionKind value){
+            _FunctionKind = value;
             return this;
         }
 

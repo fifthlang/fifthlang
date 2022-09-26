@@ -65,6 +65,10 @@ public class DestructuringVisitor : BaseAstVisitor
 
     public override void EnterParameterDeclaration(ParameterDeclaration ctx)
     {
+        if (ctx.DestructuringDecl == null)
+        {
+            return;
+        }
         var paramType = ctx.NearestScope().Resolve(ctx.TypeName);
         ResolutionScope.Push((ctx.ParameterName.Value, paramType));
     }
@@ -81,6 +85,10 @@ public class DestructuringVisitor : BaseAstVisitor
 
     public override void LeaveParameterDeclaration(ParameterDeclaration ctx)
     {
+        if (ctx.DestructuringDecl == null)
+        {
+            return;
+        }
         ResolutionScope.Pop();
     }
 }

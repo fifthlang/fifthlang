@@ -71,7 +71,7 @@ public class PropertyBindingToVariableDeclarationTransformer : BaseAstVisitor
         {
             var propdecl = (PropertyDefinition)db.PropDecl;
             var paramType = propdecl.NearestScope().Resolve(propdecl.TypeName);
-            ResolutionScope.Push((propdecl.Name, paramType));
+            ResolutionScope.Push((/*propdecl.Name*/ db.Varname, paramType));
 
         }
         // if it's a destr binding, then get the prop decl that it relates to from the annotations of the destrbinding.

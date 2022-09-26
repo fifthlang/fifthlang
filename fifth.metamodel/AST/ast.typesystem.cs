@@ -8,6 +8,7 @@ public interface ITypeChecker
     public IType Infer(IScope scope, Assembly node);
     public IType Infer(IScope scope, AssemblyRef node);
     public IType Infer(IScope scope, ClassDefinition node);
+    public IType Infer(IScope scope, FieldDefinition node);
     public IType Infer(IScope scope, PropertyDefinition node);
     public IType Infer(IScope scope, TypeCast node);
     public IType Infer(IScope scope, ReturnStatement node);
@@ -64,6 +65,7 @@ public partial class FunctionalTypeChecker
             Assembly node => Infer(scope, node),
             AssemblyRef node => Infer(scope, node),
             ClassDefinition node => Infer(scope, node),
+            FieldDefinition node => Infer(scope, node),
             PropertyDefinition node => Infer(scope, node),
             TypeCast node => Infer(scope, node),
             ReturnStatement node => Infer(scope, node),
