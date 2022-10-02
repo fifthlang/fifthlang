@@ -34,7 +34,9 @@ public class FunctionBuilder
     }
 
     public static FunctionBuilder NewFunction()
-        => new FunctionBuilder();
+    {
+        return new FunctionBuilder();
+    }
 
     public IFunctionDefinition AsAstNode()
     {

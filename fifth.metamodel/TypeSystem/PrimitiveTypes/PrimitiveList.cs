@@ -12,10 +12,15 @@ namespace Fifth.TypeSystem.PrimitiveTypes
 
         public List<object> List { get; private set; }
 
-        public IValueObject Head() => GetItemAt(0);
+        public IValueObject Head()
+        {
+            return GetItemAt(0);
+        }
 
         public PrimitiveList Tail()
-            => new(GenericTypeParameters[0]) {List = List.GetRange(1, List.Count - 1), TypeId = TypeId};
+        {
+            return new(GenericTypeParameters[0]) { List = List.GetRange(1, List.Count - 1), TypeId = TypeId };
+        }
 
         private IValueObject GetItemAt(int i)
         {

@@ -4,7 +4,11 @@ namespace Fifth
 
     public sealed record OperatorId
     {
-        public OperatorId(ulong value) => Value = value;
+        public OperatorId(ulong value)
+        {
+            Value = value;
+        }
+
         public ulong Value { get; }
     }
 }

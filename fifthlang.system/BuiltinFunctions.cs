@@ -9,7 +9,10 @@ namespace fifthlang.system
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
     public static class GlobalBuiltinFunctions
     {
-        public static string read() => Console.ReadLine();
+        public static string read()
+        {
+            return Console.ReadLine();
+        }
 
         public static string write(string s)
         {
@@ -17,7 +20,10 @@ namespace fifthlang.system
             return s;
         }
 
-        public static double sqrt(double f) => Math.Sqrt(f);
+        public static double sqrt(double f)
+        {
+            return Math.Sqrt(f);
+        }
 
         /*[Builtin(Keyword = "map")]
         public static List<object> map(List<object> l, FuncWrapper f)

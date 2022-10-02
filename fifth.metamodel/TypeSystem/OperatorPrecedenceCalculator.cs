@@ -53,7 +53,8 @@ namespace Fifth.TypeSystem
         }
 
         private static bool IsRelational(Operator op)
-            => op switch
+        {
+            return op switch
             {
                 Operator.And => true,
                 Operator.Or => true,
@@ -69,9 +70,12 @@ namespace Fifth.TypeSystem
                 Operator.GreaterThanOrEqual => true,
                 _ => false
             };
+        }
 
         private static bool IsNumerical(Operator op)
-            => !IsRelational(op);
+        {
+            return !IsRelational(op);
+        }
     }
 }
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.

@@ -11,7 +11,9 @@ namespace Fifth.AST.Builders
         }
 
         public static IfElseBuilder NewIfElse()
-            => new IfElseBuilder();
+        {
+            return new IfElseBuilder();
+        }
 
         public IfElseStatement AsAstNode()
         {

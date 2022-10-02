@@ -41,7 +41,9 @@ public static class GeneralHelpers
     }
 
     public static string Join<T>(this IEnumerable<T> seq, Func<T, string> accessor, string separator = ", ")
-        => string.Join(separator, seq.Select(accessor).ToArray());
+    {
+        return string.Join(separator, seq.Select(accessor).ToArray());
+    }
 
     public static IEnumerable<T> Map<T>(this IEnumerable<T> seq, Func<T, T> fn)
     {

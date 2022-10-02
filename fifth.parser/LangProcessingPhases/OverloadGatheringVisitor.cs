@@ -10,10 +10,14 @@ namespace Fifth.LangProcessingPhases
     public class OverloadGatheringVisitor : BaseAstVisitor
     {
         public override void EnterFifthProgram(FifthProgram ctx)
-            => Gather(ctx);
+        {
+            Gather(ctx);
+        }
 
         public override void EnterClassDefinition(ClassDefinition ctx)
-            => Gather(ctx);
+        {
+            Gather(ctx);
+        }
 
         void Gather(IFunctionCollection ctx)
         {

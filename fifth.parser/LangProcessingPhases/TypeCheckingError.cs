@@ -29,7 +29,9 @@ namespace Fifth.Parser.LangProcessingPhases
             int line,
             int column,
             IType[] types = default) : base(message, filename, line, column)
-            => Types = types;
+        {
+            Types = types;
+        }
 
         public IType[] Types { get; init; }
     }

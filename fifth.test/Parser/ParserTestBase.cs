@@ -69,25 +69,39 @@ namespace Fifth.Tests
         #region Parsing into Parse Tree
 
         protected static ParserRuleContext ParseIri(string fragment)
-            => GetParserFor(fragment).iri();
+        {
+            return GetParserFor(fragment).iri();
+        }
 
         protected static FifthContext ParseProgram(string fragment)
-            => GetParserFor(fragment).fifth();
+        {
+            return GetParserFor(fragment).fifth();
+        }
 
         protected static ParserRuleContext ParseExpression(string fragment)
-            => GetParserFor(fragment).exp();
+        {
+            return GetParserFor(fragment).exp();
+        }
 
         protected static ParserRuleContext ParseExpressionList(string fragment)
-            => GetParserFor(fragment).explist();
+        {
+            return GetParserFor(fragment).explist();
+        }
 
         protected static ParserRuleContext ParseBlock(string fragment)
-            => GetParserFor(fragment).block();
+        {
+            return GetParserFor(fragment).block();
+        }
 
         protected static ParserRuleContext ParseFunctionDecl(string fragment)
-            => GetParserFor(fragment).function_declaration();
+        {
+            return GetParserFor(fragment).function_declaration();
+        }
 
         protected static ParserRuleContext ParseDeclAssignment(string fragment)
-            => GetParserFor(fragment).exp();
+        {
+            return GetParserFor(fragment).exp();
+        }
 
         #endregion Parsing into Parse Tree
 

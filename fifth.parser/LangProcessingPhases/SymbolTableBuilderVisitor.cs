@@ -10,8 +10,22 @@ using TypeSystem;
 public class SymbolTableBuilderVisitor : BaseAstVisitor
 {
     public Stack<TypeId> PatternMatchers { get; set; } = new Stack<TypeId>();
-    public bool IsInPatternMatcher => PatternMatchers.Count > 0;
-    public TypeId PatternMatcherTid => IsInPatternMatcher ? PatternMatchers.Peek() : default;
+    public bool IsInPatternMatcher
+    {
+        get
+        {
+            return PatternMatchers.Count > 0;
+        }
+    }
+
+    public TypeId PatternMatcherTid
+    {
+        get
+        {
+            return IsInPatternMatcher ? PatternMatchers.Peek() : default;
+        }
+    }
+
     public override void EnterFieldDefinition(FieldDefinition ctx)
     {
         var enclosingScope = ctx.ParentNode.NearestScope();
@@ -68,10 +82,14 @@ public class SymbolTableBuilderVisitor : BaseAstVisitor
     }
 
     public override void EnterParameterDeclaration(ParameterDeclaration ctx)
-        => Declare(ctx.ParameterName.Value, SymbolKind.FormalParameter, ctx);
+    {
+        Declare(ctx.ParameterName.Value, SymbolKind.FormalParameter, ctx);
+    }
 
     public override void EnterVariableDeclarationStatement(VariableDeclarationStatement ctx)
-        => Declare(ctx.Name, SymbolKind.VariableDeclaration, ctx);
+    {
+        Declare(ctx.Name, SymbolKind.VariableDeclaration, ctx);
+    }
 
     private void Declare<T>(string name, SymbolKind kind, T ctx, params (string, object)[] properties)
         where T : AstNode

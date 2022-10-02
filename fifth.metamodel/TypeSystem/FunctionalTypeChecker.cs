@@ -97,13 +97,19 @@ namespace Fifth.TypeSystem
         */
 
         public IType Infer(IScope scope, AbsoluteIri node)
-            => PrimitiveUri.Default;
+        {
+            return PrimitiveUri.Default;
+        }
 
         public IType Infer(IScope scope, AliasDeclaration node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, AnnotatedThing node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope _, AssignmentStmt node)
         {
@@ -152,7 +158,9 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, Expression node)
-            => Infer(node);
+        {
+            return Infer(node);
+        }
 
         // throw new NotImplementedException();
         public IType Infer(IScope scope, ExpressionList node)
@@ -282,7 +290,9 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, OverloadedFunctionDefinition node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, Identifier node)
         {
@@ -343,7 +353,9 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, StatementList node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, DoubleValueExpression node)
         {
@@ -375,7 +387,9 @@ namespace Fifth.TypeSystem
 
 
         public IType Infer(IScope scope, ModuleImport node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, ParameterDeclaration node)
         {
@@ -425,19 +439,29 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, Statement node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, TypeCreateInstExpression node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, TypeInitialiser node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, Assembly node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, AssemblyRef node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, ClassDefinition node)
         {
@@ -496,7 +520,9 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, UnaryExpression node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, VariableDeclarationStatement node)
         {
@@ -588,16 +614,24 @@ namespace Fifth.TypeSystem
         }
 
         public IType Infer(IScope scope, WhileExp node)
-            => default;
+        {
+            return default;
+        }
 
         public IType Infer(IScope scope, TypedAstNode node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, ScopeAstNode node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, TypePropertyInit node)
-            => throw new NotImplementedException();
+        {
+            throw new NotImplementedException();
+        }
 
         public IType Infer(IScope scope, DestructuringDeclaration node)
         {

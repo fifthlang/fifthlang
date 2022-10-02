@@ -1,8 +1,5 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
 
-using System.IO;
-
-public record Version(int Major, int? Minor, int? Build, int? Patch);
 public class AssemblyDeclaration
 {
     public string Name;
@@ -49,4 +46,8 @@ public class AssemblyBuilder : BaseBuilder<AssemblyBuilder, AssemblyDeclaration>
     }
 
 
+    public AssemblyBuilder WithVersion(string s)
+    {
+        return WithVersion(new Version(s));
+    }
 }

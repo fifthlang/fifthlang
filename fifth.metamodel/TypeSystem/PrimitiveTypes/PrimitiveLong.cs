@@ -12,15 +12,27 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveLong Default { get; set; } = new();
 
         [Operation(Operator.Add)]
-        public static long Add(long left, long right) => left + right;
+        public static long Add(long left, long right)
+        {
+            return left + right;
+        }
 
         [Operation(Operator.Divide)]
-        public static long Divide(long left, long right) => left / right;
+        public static long Divide(long left, long right)
+        {
+            return left / right;
+        }
 
         [Operation(Operator.Multiply)]
-        public static long Multiply(long left, long right) => left * right;
+        public static long Multiply(long left, long right)
+        {
+            return left * right;
+        }
 
         [Operation(Operator.Subtract)]
-        public static long Subtract(long left, long right) => left - right;
+        public static long Subtract(long left, long right)
+        {
+            return left - right;
+        }
     }
 }

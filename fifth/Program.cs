@@ -138,8 +138,12 @@ public class Program
             {
                 using (var writer = File.CreateText(ilFilename))
                 {
-                    var codeGenVisitor = new CodeGenVisitor(writer);
-                    codeGenVisitor.VisitAssembly(ast);
+                    //var codeGenVisitor = new CodeGenVisitor(writer);
+                    //codeGenVisitor.VisitAssembly(ast);
+                    var ilg = new ILGenerator();
+                    ast.Accept(ilg);
+                    var il = ilg.sb.ToString();
+                    writer.Write(il);
                 }
 
                 var ilasmPath = FindIlasm();

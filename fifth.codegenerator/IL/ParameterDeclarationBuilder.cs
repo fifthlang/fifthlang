@@ -1,4 +1,5 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
+
 public class ParameterDeclaration
 {
     public string Name { get; set; }

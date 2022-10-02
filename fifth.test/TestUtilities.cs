@@ -78,7 +78,9 @@ namespace Fifth.Test
         }
 
         public static Task<string> CopyTestResourceToTempFile(string fullName)
-            => CopyEmbeddedResourceToTempFile(typeof(TestUtilities), fullName);
+        {
+            return CopyEmbeddedResourceToTempFile(typeof(TestUtilities), fullName);
+        }
 
         public static Task<string> LoadEmbeddedResourceToString(Type t, string fullName)
         {

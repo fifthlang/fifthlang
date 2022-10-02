@@ -1,4 +1,4 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
 
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +11,14 @@ public  class Literal<T> : Expression, ILiteralValue
     {
         Value = value;
     }
-    public string TypeName => typeof(T).Name;
+    public string TypeName
+    {
+        get
+        {
+            return typeof(T).Name;
+        }
+    }
+
     public T Value { get; set; }
 }
 
@@ -140,12 +147,15 @@ public class ExpressionBuilder : BaseBuilder<ExpressionBuilder, Expression>
     {
         switch (literalValue.TypeName)
         {
-            case "int":
+            case "Int32":
                 var lv = (Literal<int>)literalValue;
-                return $"locval {lv.Value}";
+                return $"ldc {lv.Value}";
+            case "Boolean":
+                var blv = (Literal<bool>)literalValue;
+                return $"ldc {blv.Value.ToString().ToLowerInvariant()}";
             case "Double":
                 var dlv = (Literal<double>)literalValue;
-                return $"locval {dlv.Value}";
+                return $"ldc {dlv.Value}";
             default:
                 return "unknown";
         }

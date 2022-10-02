@@ -1,4 +1,4 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
 
 using System.Text;
 

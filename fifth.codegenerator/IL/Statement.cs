@@ -1,12 +1,12 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
 
-using System.Collections.Specialized;
 using System.Text;
 
 public abstract class Statement { }
 
 public class VariableAssignmentStatement : Statement
 {
+    public int? Ordinal { get; set; }
     public string LHS { get; set; }
     public Expression RHS { get; set; }
 }
@@ -21,9 +21,9 @@ public class StatementBuilder : BaseBuilder<StatementBuilder, Statement>
     {
         Model = null;
     }
-    public StatementBuilder WithVariableAssignment(string lhs, Expression rhs)
+    public StatementBuilder WithVariableAssignment(string lhs, Expression rhs, int? ord)
     {
-        Model = new VariableAssignmentStatement { LHS = lhs, RHS = rhs };
+        Model = new VariableAssignmentStatement { LHS = lhs, RHS = rhs, Ordinal = ord};
         return this;
     }
     public StatementBuilder WithReturnStatement( Expression rhs)
@@ -43,11 +43,18 @@ public class StatementBuilder : BaseBuilder<StatementBuilder, Statement>
         return result;
     }
 
-    private string BuildAssignment(VariableAssignmentStatement variableAssignmentStatement)
+    private string BuildAssignment(VariableAssignmentStatement vas)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(ExpressionBuilder.Create(variableAssignmentStatement.RHS).Build());
-        sb.AppendLine($"stloc {variableAssignmentStatement.LHS}");
+        sb.AppendLine(ExpressionBuilder.Create(vas.RHS).Build());
+        if (vas.Ordinal.HasValue && vas.Ordinal.Value < 4)
+        {
+            sb.AppendLine( $"stloc.{vas.Ordinal}");
+        }
+        else
+        {
+            sb.AppendLine($"stloc.s {vas.LHS}");
+        }
         return sb.ToString();
     }
 

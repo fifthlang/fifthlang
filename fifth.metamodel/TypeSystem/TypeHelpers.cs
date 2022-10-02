@@ -26,12 +26,16 @@ namespace Fifth.TypeSystem
         }
 
         public static IFunctionSignature GetFuncType(this MethodInfo method)
-            => new FunctionSignature(method.Name, method.ReturnType.LookupType(),
+        {
+            return new FunctionSignature(method.Name, method.ReturnType.LookupType(),
                 method.GetParameters().Select(p => p.ParameterType.LookupType()).ToArray());
+        }
 
         public static IFunctionSignature GetFuncType(this FuncWrapper method)
-            => new FunctionSignature(null, method.ResultType.LookupType(),
+        {
+            return new FunctionSignature(null, method.ResultType.LookupType(),
                 method.ArgTypes.Select(p => p.LookupType()).ToArray());
+        }
 
         /// <summary>
         ///     try to resolve the type of the value and get its internal value
@@ -61,10 +65,14 @@ namespace Fifth.TypeSystem
         }
 
         public static bool Implements<TInterface>(this Type t)
-            => t.GetInterfaces().Contains(typeof(TInterface));
+        {
+            return t.GetInterfaces().Contains(typeof(TInterface));
+        }
 
         public static bool IsBuiltinType(string typename)
-            => LookupBuiltinType(typename) != null;
+        {
+            return LookupBuiltinType(typename) != null;
+        }
 
         public static IType Lookup(this TypeId tid)
         {
@@ -119,7 +127,9 @@ namespace Fifth.TypeSystem
         }
 
         public static IEnumerable<MethodInfo> MethodsHavingAttribute<TAttribute>(this Type t)
-            => t.GetMethods().Where(mi => mi.GetCustomAttributes(true).Any(attr => attr is TAttribute));
+        {
+            return t.GetMethods().Where(mi => mi.GetCustomAttributes(true).Any(attr => attr is TAttribute));
+        }
 
         public static ScopeAstNode NearestScope(this IAstNode node)
         {
@@ -144,10 +154,14 @@ namespace Fifth.TypeSystem
         }
 
         public static bool TryEncode(this BinaryExpression be, out ulong encoded)
-            => TryPack(out encoded, (ushort)be.Op!, be.Left.TypeId.Value, be.Right.TypeId.Value);
+        {
+            return TryPack(out encoded, (ushort)be.Op!, be.Left.TypeId.Value, be.Right.TypeId.Value);
+        }
 
         public static bool TryEncode(this UnaryExpression ue, out ulong encoded)
-            => TryPack(out encoded, (ushort)ue.Op, ue.Operand.TypeId.Value);
+        {
+            return TryPack(out encoded, (ushort)ue.Op, ue.Operand.TypeId.Value);
+        }
 
         public static bool TryGetAttribute<T>(this Type t, out T attr)
         {
@@ -227,7 +241,10 @@ namespace Fifth.TypeSystem
                             .Where(p => type.IsAssignableFrom(p));
         }
 
-        public static FuncWrapper Wrap(this MethodInfo method) => WrapMethodInfo(method);
+        public static FuncWrapper Wrap(this MethodInfo method)
+        {
+            return WrapMethodInfo(method);
+        }
 
         public static FuncWrapper WrapMethodInfo(MethodInfo method)
         {

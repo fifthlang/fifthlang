@@ -10,7 +10,9 @@ namespace Fifth.Parser.LangProcessingPhases
 
         public void SyntaxError(TextWriter output, IRecognizer recognizer, TResult offendingSymbol, int line,
             int charPositionInLine, string msg, RecognitionException e)
-            => throw new Exception($"line {line}:{charPositionInLine} {msg}");
+        {
+            throw new Exception($"line {line}:{charPositionInLine} {msg}");
+        }
 
         #endregion IAntlrErrorListener<TSymbol> Implementation
     }

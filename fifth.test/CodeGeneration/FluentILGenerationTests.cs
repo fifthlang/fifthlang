@@ -3,9 +3,10 @@ using NUnit.Framework;
 namespace Fifth.Test.CodeGeneration;
 
 using System.Net.WebSockets;
-using Fifth.CodeGeneration.ILGeneration;
+using Fifth.CodeGeneration.IL;
 
-[TestFixture, Category("CIL")]
+[TestFixture]
+[Category("CIL")]
 public class FluentILGenerationTests
 {
     [Test]
@@ -40,6 +41,7 @@ public class FluentILGenerationTests
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("module", "Foo");
     }
+
     [Test]
     public void CanCreateFieldDefinition()
     {
@@ -47,6 +49,7 @@ public class FluentILGenerationTests
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("field", "Foo", "Bar");
     }
+
     [Test]
     public void CanCreatePropertyDefinition()
     {
@@ -81,12 +84,12 @@ public class FluentILGenerationTests
                              .WithMethod(MethodBuilder.Create()
                                                       .WithName("FooMethod")
                                                       .WithType("FooType")
-                                                      .WithStatement( StatementBuilder.Create()
+                                                      .WithStatement(StatementBuilder.Create()
                                                           .WithVariableAssignment("someVar", ExpressionBuilder.Create()
                                                               .WithLiteral(5.0)
-                                                              .New() )
+                                                              .New(), 0)
                                                           .New()
-                                                          )
+                                                      )
                                                       .WithStatement(StatementBuilder.Create()
                                                           .WithReturnStatement(ExpressionBuilder.Create()
                                                               .WithFunctionCall("fooBar", "int")
@@ -95,5 +98,46 @@ public class FluentILGenerationTests
                                                       .New())
                              .Build();
         cb.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Test]
+    public void CanGenerateIfStatement()
+    {
+        var sut = IfStmtBuilder.Create()
+                               .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
+                               .WithIfStatement(StatementBuilder.Create()
+                                                                .WithReturnStatement(ExpressionBuilder.Create()
+                                                                    .WithFunctionCall("fooBar", "int")
+                                                                    .New())
+                                                                .New())
+                               .WithIfStatement(StatementBuilder.Create()
+                                                                .WithReturnStatement(ExpressionBuilder.Create()
+                                                                    .WithFunctionCall("fooBar", "int")
+                                                                    .New()).New())
+                               .WithElseStatement(StatementBuilder.Create()
+                                                                  .WithReturnStatement(ExpressionBuilder.Create()
+                                                                      .WithFunctionCall("fooBar", "int")
+                                                                      .New()).New())
+                               .Build();
+        sut.Should().NotBeNullOrWhiteSpace();
+        sut.Should().ContainAll("true", "fooBar");
+    }
+    [Test]
+    public void CanGenerateWhileStatement()
+    {
+        var sut = WhileStmtBuilder.Create()
+                               .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
+                               .WithStatement(StatementBuilder.Create()
+                                                                .WithReturnStatement(ExpressionBuilder.Create()
+                                                                    .WithFunctionCall("fooBar", "int")
+                                                                    .New())
+                                                                .New())
+                               .WithStatement(StatementBuilder.Create()
+                                                                .WithReturnStatement(ExpressionBuilder.Create()
+                                                                    .WithFunctionCall("fooBar", "int")
+                                                                    .New()).New())
+                               .Build();
+        sut.Should().NotBeNullOrWhiteSpace();
+        sut.Should().ContainAll("true","fooBar", "LBL_START", "LBL_END");
     }
 }

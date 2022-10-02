@@ -94,7 +94,10 @@ public class AstBuilderVisitorTest : ParserTestBase
     [TestCase(@"http://tempuri.com#fragid?blah=value%20vakgkjhg")]
     [TestCase(@"http://tempuri.com#fragid")]
     [TestCase(@"http://tempuri.com/blah#fragid")]
-    public void TestCanParseIri(string iriText) => _ = ParseIri(iriText).Should().NotBeNull();
+    public void TestCanParseIri(string iriText)
+    {
+        _ = ParseIri(iriText).Should().NotBeNull();
+    }
 
 
     [TestCase(@"

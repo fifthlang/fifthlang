@@ -42,7 +42,9 @@ namespace Fifth.TypeSystem
         }
 
         public bool TryGetType(TypeId typeId, out IType type)
-            => typeRegister.TryGetValue(typeId, out type);
+        {
+            return typeRegister.TryGetValue(typeId, out type);
+        }
 
         public bool TrySetType(IType type, out TypeId typeId)
         {
@@ -96,6 +98,8 @@ namespace Fifth.TypeSystem
         }
 
         public bool TryLookupType(Type t, out IType result)
-            => PrimitiveMappings.TryGetValue(t, out result);
+        {
+            return PrimitiveMappings.TryGetValue(t, out result);
+        }
     }
 }

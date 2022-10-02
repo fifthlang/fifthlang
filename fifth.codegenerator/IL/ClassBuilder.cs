@@ -1,7 +1,6 @@
-namespace Fifth.CodeGeneration.ILGeneration;
+namespace Fifth.CodeGeneration.IL;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 public enum ILVisibility

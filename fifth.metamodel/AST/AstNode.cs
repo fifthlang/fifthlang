@@ -4,9 +4,15 @@ namespace Fifth.AST
 
     public abstract class AstNode : AnnotatedThing, IAstNode
     {
-        protected AstNode() => ParentNode = default;
+        protected AstNode()
+        {
+            ParentNode = default;
+        }
 
-        protected AstNode(AstNode parentNode) => ParentNode = parentNode;
+        protected AstNode(AstNode parentNode)
+        {
+            ParentNode = parentNode;
+        }
 
         public int Column { get; set; }
         public string Filename { get; set; }

@@ -12,6 +12,9 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveString Default { get; } = new();
 
         [Operation(Operator.Add)]
-        public static string add_string_string(string left, string right) => left + right;
+        public static string add_string_string(string left, string right)
+        {
+            return left + right;
+        }
     }
 }

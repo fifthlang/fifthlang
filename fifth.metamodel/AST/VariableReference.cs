@@ -13,5 +13,7 @@ public partial class VariableReference
 public partial class CompoundVariableReference
 {
     public override string? ToString()
-        => string.Join('.', this.ComponentReferences.Select(cr => cr.Name).ToArray());
+    {
+        return string.Join('.', this.ComponentReferences.Select(cr => cr.Name).ToArray());
+    }
 }

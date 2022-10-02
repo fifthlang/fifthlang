@@ -15,7 +15,13 @@ namespace Fifth.TypeSystem
         {
         }
 
-        public FuncWrapper this[OperatorId index] => operationRegister[index];
+        public FuncWrapper this[OperatorId index]
+        {
+            get
+            {
+                return operationRegister[index];
+            }
+        }
 
         public void LoadBuiltinOperators()
         {

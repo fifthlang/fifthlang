@@ -17,7 +17,10 @@ namespace Fifth.AST
 
                 return default;
             }
-            set => annotations[index] = value;
+            set
+            {
+                annotations[index] = value;
+            }
         }
 
         public T CopyAnnotationsInto<T>(T thing)
@@ -31,7 +34,9 @@ namespace Fifth.AST
         }
 
         public bool HasAnnotation(string key)
-                    => annotations.ContainsKey(key);
+        {
+            return annotations.ContainsKey(key);
+        }
 
         public bool TryGetAnnotation<T>(string name, out T result)
         {

@@ -14,7 +14,9 @@ namespace Fifth.TypeSystem.PrimitiveTypes
     public abstract class PrimitiveNumeric : PrimitiveAny
     {
         protected PrimitiveNumeric(string name, ushort seniority = 0) : base(name)
-            => Seniority = seniority;
+        {
+            Seniority = seniority;
+        }
 
         public ushort Seniority { get; }
     }

@@ -26,7 +26,9 @@ public static class GenerationHelpers
     }
 
     public static List<PropStatus> GetOnlyInheritedProperties(AstNodeSpec ast)
-        => GetPropertyListInherited(ast).Where(p => p.IsInherited).ToList();
+    {
+        return GetPropertyListInherited(ast).Where(p => p.IsInherited).ToList();
+    }
 
     public static List<PropStatus> GetPropertyListInherited(AstNodeSpec ast)
     {
@@ -49,7 +51,9 @@ public static class GenerationHelpers
     }
 
     public static string GetSuperclassName(AstNodeSpec ast)
-                => ast.Parent.Split(',', ' ').ElementAt(0);
+    {
+        return ast.Parent.Split(',', ' ').ElementAt(0);
+    }
 
     public static bool IsDerivedFromNonBaseAstType(AstNodeSpec ast)
     {

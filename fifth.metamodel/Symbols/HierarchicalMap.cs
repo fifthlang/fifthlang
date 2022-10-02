@@ -6,7 +6,10 @@ public class HierarchicalMap<TKey, TValue> : Dictionary<TKey, TValue>, IHierarch
 {
     public HierarchicalMap<TKey, TValue> Parent { get; set; }
 
-    public HierarchicalMap<TKey, TValue> CreateChild() => new HierarchicalMap<TKey, TValue> { Parent = this };
+    public HierarchicalMap<TKey, TValue> CreateChild()
+    {
+        return new HierarchicalMap<TKey, TValue> { Parent = this };
+    }
 
     public bool TryResolve(TKey v, out TValue result)
     {

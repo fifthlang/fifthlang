@@ -12,6 +12,9 @@ namespace Fifth.PrimitiveTypes
         public static PrimitiveChar Default { get; set; } = new();
 
         [Operation(Operator.Add)]
-        public static string Add(char left, char right) => $"{left}{right}";
+        public static string Add(char left, char right)
+        {
+            return $"{left}{right}";
+        }
     }
 }

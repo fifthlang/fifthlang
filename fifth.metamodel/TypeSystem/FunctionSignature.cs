@@ -69,13 +69,19 @@ namespace Fifth.TypeSystem
         }
 
         public virtual bool Equals(IFunctionSignature other)
-                    => AreEqual(this, other);
+        {
+            return AreEqual(this, other);
+        }
 
         public bool Equals(FunctionSignature other)
-            => AreEqual(this, other);
+        {
+            return AreEqual(this, other);
+        }
 
         public override bool Equals(object obj)
-            => GetHashCode() == (obj?.GetHashCode() ?? 0);
+        {
+            return GetHashCode() == (obj?.GetHashCode() ?? 0);
+        }
 
         // => AreEqual(this, obj as IFunctionSignature);
 
@@ -95,9 +101,13 @@ namespace Fifth.TypeSystem
     public class SignaturesAreEqual : EqualityComparer<IFunctionSignature>
     {
         public override bool Equals(IFunctionSignature x, IFunctionSignature y)
-            => FunctionSignature.AreEqual(x, y);
+        {
+            return FunctionSignature.AreEqual(x, y);
+        }
 
         public override int GetHashCode(IFunctionSignature obj)
-            => HashCode.Combine(obj.Name, obj.FormalParameterTypes, obj.ReturnType);
+        {
+            return HashCode.Combine(obj.Name, obj.FormalParameterTypes, obj.ReturnType);
+        }
     }
 }

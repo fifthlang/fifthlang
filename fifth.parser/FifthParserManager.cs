@@ -124,7 +124,9 @@ public static class FifthParserManager
     }
 
     private static (string, string, string) GetAssemblyDetails()
-                => ("fifth", "", "");
+    {
+        return ("fifth", "", "");
+    }
 
     private static FifthParser GetParserFor(ICharStream source)
     {
@@ -184,19 +186,29 @@ public static class FifthParserManager
     #region Parsing into Parse Tree
 
     public static ParserRuleContext ParseBlock(ICharStream source)
-        => GetParserFor(source).block();
+    {
+        return GetParserFor(source).block();
+    }
 
     public static ParserRuleContext ParseExpression(ICharStream source)
-        => GetParserFor(source).exp();
+    {
+        return GetParserFor(source).exp();
+    }
 
     public static ParserRuleContext ParseExpressionList(ICharStream source)
-        => GetParserFor(source).explist();
+    {
+        return GetParserFor(source).explist();
+    }
 
     public static ParserRuleContext ParseFunctionDecl(ICharStream source)
-        => GetParserFor(source).function_declaration();
+    {
+        return GetParserFor(source).function_declaration();
+    }
 
     public static FifthParser.FifthContext ParseProgram(ICharStream source)
-                        => GetParserFor(source).fifth();
+    {
+        return GetParserFor(source).fifth();
+    }
 
     #endregion Parsing into Parse Tree
 }

@@ -55,53 +55,235 @@ public interface IAstMutatorVisitor<TContext>
 
 public partial class NullMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>
 {
-    public virtual Assembly ProcessAssembly(Assembly node, TContext ctx)=>node;
-    public virtual AssemblyRef ProcessAssemblyRef(AssemblyRef node, TContext ctx)=>node;
-    public virtual ClassDefinition ProcessClassDefinition(ClassDefinition node, TContext ctx)=>node;
-    public virtual FieldDefinition ProcessFieldDefinition(FieldDefinition node, TContext ctx)=>node;
-    public virtual PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx)=>node;
-    public virtual TypeCast ProcessTypeCast(TypeCast node, TContext ctx)=>node;
-    public virtual ReturnStatement ProcessReturnStatement(ReturnStatement node, TContext ctx)=>node;
-    public virtual StatementList ProcessStatementList(StatementList node, TContext ctx)=>node;
-    public virtual AbsoluteIri ProcessAbsoluteIri(AbsoluteIri node, TContext ctx)=>node;
-    public virtual AliasDeclaration ProcessAliasDeclaration(AliasDeclaration node, TContext ctx)=>node;
-    public virtual AssignmentStmt ProcessAssignmentStmt(AssignmentStmt node, TContext ctx)=>node;
-    public virtual BinaryExpression ProcessBinaryExpression(BinaryExpression node, TContext ctx)=>node;
-    public virtual Block ProcessBlock(Block node, TContext ctx)=>node;
-    public virtual BoolValueExpression ProcessBoolValueExpression(BoolValueExpression node, TContext ctx)=>node;
-    public virtual ShortValueExpression ProcessShortValueExpression(ShortValueExpression node, TContext ctx)=>node;
-    public virtual IntValueExpression ProcessIntValueExpression(IntValueExpression node, TContext ctx)=>node;
-    public virtual LongValueExpression ProcessLongValueExpression(LongValueExpression node, TContext ctx)=>node;
-    public virtual FloatValueExpression ProcessFloatValueExpression(FloatValueExpression node, TContext ctx)=>node;
-    public virtual DoubleValueExpression ProcessDoubleValueExpression(DoubleValueExpression node, TContext ctx)=>node;
-    public virtual DecimalValueExpression ProcessDecimalValueExpression(DecimalValueExpression node, TContext ctx)=>node;
-    public virtual StringValueExpression ProcessStringValueExpression(StringValueExpression node, TContext ctx)=>node;
-    public virtual DateValueExpression ProcessDateValueExpression(DateValueExpression node, TContext ctx)=>node;
-    public virtual ExpressionList ProcessExpressionList(ExpressionList node, TContext ctx)=>node;
-    public virtual FifthProgram ProcessFifthProgram(FifthProgram node, TContext ctx)=>node;
-    public virtual FuncCallExpression ProcessFuncCallExpression(FuncCallExpression node, TContext ctx)=>node;
-    public virtual BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)=>node;
-    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)=>node;
-    public virtual OverloadedFunctionDefinition ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition node, TContext ctx)=>node;
-    public virtual Identifier ProcessIdentifier(Identifier node, TContext ctx)=>node;
-    public virtual IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx)=>node;
-    public virtual IfElseStatement ProcessIfElseStatement(IfElseStatement node, TContext ctx)=>node;
-    public virtual ModuleImport ProcessModuleImport(ModuleImport node, TContext ctx)=>node;
-    public virtual ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)=>node;
-    public virtual ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx)=>node;
-    public virtual DestructuringDeclaration ProcessDestructuringDeclaration(DestructuringDeclaration node, TContext ctx)=>node;
-    public virtual DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx)=>node;
-    public virtual TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx)=>node;
-    public virtual TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx)=>node;
-    public virtual TypePropertyInit ProcessTypePropertyInit(TypePropertyInit node, TContext ctx)=>node;
-    public virtual UnaryExpression ProcessUnaryExpression(UnaryExpression node, TContext ctx)=>node;
-    public virtual VariableDeclarationStatement ProcessVariableDeclarationStatement(VariableDeclarationStatement node, TContext ctx)=>node;
-    public virtual VariableReference ProcessVariableReference(VariableReference node, TContext ctx)=>node;
-    public virtual CompoundVariableReference ProcessCompoundVariableReference(CompoundVariableReference node, TContext ctx)=>node;
-    public virtual WhileExp ProcessWhileExp(WhileExp node, TContext ctx)=>node;
-    public virtual ExpressionStatement ProcessExpressionStatement(ExpressionStatement node, TContext ctx)=>node;
-    public virtual Expression ProcessExpression(Expression node, TContext ctx)=>node;
+    public virtual Assembly ProcessAssembly(Assembly node, TContext ctx)
+    {
+        return node;
+    }
 
+    public virtual AssemblyRef ProcessAssemblyRef(AssemblyRef node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ClassDefinition ProcessClassDefinition(ClassDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual FieldDefinition ProcessFieldDefinition(FieldDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual PropertyDefinition ProcessPropertyDefinition(PropertyDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual TypeCast ProcessTypeCast(TypeCast node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ReturnStatement ProcessReturnStatement(ReturnStatement node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual StatementList ProcessStatementList(StatementList node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual AbsoluteIri ProcessAbsoluteIri(AbsoluteIri node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual AliasDeclaration ProcessAliasDeclaration(AliasDeclaration node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual AssignmentStmt ProcessAssignmentStmt(AssignmentStmt node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual BinaryExpression ProcessBinaryExpression(BinaryExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual Block ProcessBlock(Block node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual BoolValueExpression ProcessBoolValueExpression(BoolValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ShortValueExpression ProcessShortValueExpression(ShortValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual IntValueExpression ProcessIntValueExpression(IntValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual LongValueExpression ProcessLongValueExpression(LongValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual FloatValueExpression ProcessFloatValueExpression(FloatValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual DoubleValueExpression ProcessDoubleValueExpression(DoubleValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual DecimalValueExpression ProcessDecimalValueExpression(DecimalValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual StringValueExpression ProcessStringValueExpression(StringValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual DateValueExpression ProcessDateValueExpression(DateValueExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ExpressionList ProcessExpressionList(ExpressionList node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual FifthProgram ProcessFifthProgram(FifthProgram node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual FuncCallExpression ProcessFuncCallExpression(FuncCallExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual BuiltinFunctionDefinition ProcessBuiltinFunctionDefinition(BuiltinFunctionDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual FunctionDefinition ProcessFunctionDefinition(FunctionDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual OverloadedFunctionDefinition ProcessOverloadedFunctionDefinition(OverloadedFunctionDefinition node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual Identifier ProcessIdentifier(Identifier node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual IdentifierExpression ProcessIdentifierExpression(IdentifierExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual IfElseStatement ProcessIfElseStatement(IfElseStatement node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ModuleImport ProcessModuleImport(ModuleImport node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ParameterDeclarationList ProcessParameterDeclarationList(ParameterDeclarationList node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ParameterDeclaration ProcessParameterDeclaration(ParameterDeclaration node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual DestructuringDeclaration ProcessDestructuringDeclaration(DestructuringDeclaration node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual DestructuringBinding ProcessDestructuringBinding(DestructuringBinding node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual TypeCreateInstExpression ProcessTypeCreateInstExpression(TypeCreateInstExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual TypeInitialiser ProcessTypeInitialiser(TypeInitialiser node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual TypePropertyInit ProcessTypePropertyInit(TypePropertyInit node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual UnaryExpression ProcessUnaryExpression(UnaryExpression node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual VariableDeclarationStatement ProcessVariableDeclarationStatement(VariableDeclarationStatement node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual VariableReference ProcessVariableReference(VariableReference node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual CompoundVariableReference ProcessCompoundVariableReference(CompoundVariableReference node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual WhileExp ProcessWhileExp(WhileExp node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual ExpressionStatement ProcessExpressionStatement(ExpressionStatement node, TContext ctx)
+    {
+        return node;
+    }
+
+    public virtual Expression ProcessExpression(Expression node, TContext ctx)
+    {
+        return node;
+    }
 }
 
 public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TContext>

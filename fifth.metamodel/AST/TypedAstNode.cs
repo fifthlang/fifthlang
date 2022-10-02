@@ -6,7 +6,10 @@ namespace Fifth.AST
         {
         }
 
-        protected TypedAstNode(TypeId fifthType) => TypeId = fifthType;
+        protected TypedAstNode(TypeId fifthType)
+        {
+            TypeId = fifthType;
+        }
 
         public TypeId TypeId { get; set; }
     }
