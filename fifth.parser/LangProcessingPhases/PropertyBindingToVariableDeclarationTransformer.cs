@@ -41,10 +41,12 @@ public class PropertyBindingToVariableDeclarationTransformer : BaseAstVisitor
             {
                 ctx.PropDecl = propdecl;
                 // if propdecl is not null, it means we know that the RHS of the assignment is var ref to <scopeVarName>.(propdecl.Name)
-                var x = CompoundVariableReferenceBuilder.CreateCompoundVariableReference();
-                x.AddingItemToComponentReferences(new VariableReference(scopeVarName));
-                x.AddingItemToComponentReferences(new VariableReference(propdecl.Name));
-                b.WithExpression(x.Build());
+                var x = MemberAccessExpressionBuilder.CreateMemberAccessExpression()
+                                             .WithLHS(VariableReferenceBuilder.CreateVariableReference()
+                                                                              .WithName(scopeVarName).Build())
+                                             .WithRHS(new VariableReference(propdecl.Name))
+                                             .Build();
+                b.WithExpression(x);
                 b.WithUnresolvedTypeName(propdecl.TypeName);
             }
         }

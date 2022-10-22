@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CodeGeneration.IL;
 using CodeGeneration.LangProcessingPhases;
 
 // ReSharper disable once UnusedType.Global
@@ -140,9 +141,11 @@ public class Program
                 {
                     //var codeGenVisitor = new CodeGenVisitor(writer);
                     //codeGenVisitor.VisitAssembly(ast);
-                    var ilg = new ILGenerator();
-                    ast.Accept(ilg);
-                    var il = ilg.sb.ToString();
+                    var mb = new ILModelBuilder();
+                    _ = mb.Visit(ast);
+                    var ilast = mb.CompletedAssemblies.FirstOrDefault();
+                    var il = AssemblyDeclarationBuilder.Create(ilast).Build();
+                    // var il = ilg.sb.ToString();
                     writer.Write(il);
                 }
 

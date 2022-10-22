@@ -31,5 +31,7 @@ namespace Fifth.TypeSystem.PrimitiveTypes
 
             return default;
         }
+
+        public override string IlAbbreviation => String.Empty;
     }
 }

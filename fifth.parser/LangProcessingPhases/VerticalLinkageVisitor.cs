@@ -51,17 +51,7 @@ public class VerticalLinkageVisitor : IAstVisitor
         EnterTerminal(ctx);
     }
 
-    public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-    {
-        EnterNonTerminal(ctx);
-    }
-
     public void EnterClassDefinition(ClassDefinition ctx)
-    {
-        EnterNonTerminal(ctx);
-    }
-
-    public void EnterCompoundVariableReference(CompoundVariableReference ctx)
     {
         EnterNonTerminal(ctx);
     }
@@ -237,6 +227,11 @@ public class VerticalLinkageVisitor : IAstVisitor
         EnterTerminal(ctx);
     }
 
+    public void LeaveMemberAccessExpression(MemberAccessExpression ctx)
+    {
+        LeaveNonTerminal(ctx);
+    }
+
     public void EnterWhileExp(WhileExp ctx)
     {
         EnterNonTerminal(ctx);
@@ -282,11 +277,6 @@ public class VerticalLinkageVisitor : IAstVisitor
         LeaveTerminal(ctx);
     }
 
-    public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-    {
-        LeaveNonTerminal(ctx);
-    }
-
     public void LeaveClassDefinition(ClassDefinition ctx)
     {
         LeaveNonTerminal(ctx);
@@ -297,9 +287,9 @@ public class VerticalLinkageVisitor : IAstVisitor
         EnterNonTerminal(ctx);
     }
 
-    public void LeaveCompoundVariableReference(CompoundVariableReference ctx)
+    public void EnterMemberAccessExpression(MemberAccessExpression ctx)
     {
-        LeaveNonTerminal(ctx);
+        EnterNonTerminal(ctx);
     }
 
     public void LeaveDateValueExpression(DateValueExpression ctx)

@@ -31,6 +31,7 @@ public class VariableReferenceResolver : BaseAstVisitor
         _ = TryResolve(ctx, ctx.NearestScope(), out var _);
     }
 
+    /*
     public override void EnterCompoundVariableReference(CompoundVariableReference ctx)
     {
         var head = ctx.ComponentReferences.First();
@@ -89,4 +90,5 @@ public class VariableReferenceResolver : BaseAstVisitor
             }
         }
     }
+*/
 }

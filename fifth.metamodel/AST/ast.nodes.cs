@@ -10,6 +10,7 @@ using TypeSystem;
 using PrimitiveTypes;
 using TypeSystem.PrimitiveTypes;
 using System.Collections.Generic;
+using fifth.metamodel.metadata;
 
 public partial class Assembly : AstNode
 {
@@ -43,7 +44,7 @@ public partial class Assembly : AstNode
         visitor.LeaveAssembly(this);
     }
 
-
+    
                     public Assembly(string name, string strongNameKey, string versionNumber)
                     {
                         Name = name;
@@ -51,7 +52,7 @@ public partial class Assembly : AstNode
                         Version = versionNumber;
                         References = new List<AssemblyRef>();
                     }
-
+                
 }
 
 public partial class AssemblyRef : AstNode
@@ -75,7 +76,7 @@ public partial class AssemblyRef : AstNode
         visitor.LeaveAssemblyRef(this);
     }
 
-
+    
 }
 
 public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCollection
@@ -119,7 +120,7 @@ public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCol
         visitor.LeaveClassDefinition(this);
     }
 
-
+    
 }
 
 public partial class FieldDefinition : TypedAstNode
@@ -143,7 +144,7 @@ public partial class FieldDefinition : TypedAstNode
         visitor.LeaveFieldDefinition(this);
     }
 
-
+    
 }
 
 public partial class PropertyDefinition : TypedAstNode
@@ -173,7 +174,7 @@ public partial class PropertyDefinition : TypedAstNode
         visitor.LeavePropertyDefinition(this);
     }
 
-
+    
 }
 
 public partial class TypeCast : Expression
@@ -196,7 +197,7 @@ public partial class TypeCast : Expression
         visitor.LeaveTypeCast(this);
     }
 
-
+    
 }
 
 public partial class ReturnStatement : Statement
@@ -219,7 +220,7 @@ public partial class ReturnStatement : Statement
         visitor.LeaveReturnStatement(this);
     }
 
-
+    
 }
 
 public partial class StatementList : AstNode
@@ -245,7 +246,7 @@ public partial class StatementList : AstNode
         visitor.LeaveStatementList(this);
     }
 
-
+    
 }
 
 public partial class AbsoluteIri : TypedAstNode
@@ -265,7 +266,7 @@ public partial class AbsoluteIri : TypedAstNode
         visitor.LeaveAbsoluteIri(this);
     }
 
-
+    
 }
 
 public partial class AliasDeclaration : AstNode
@@ -288,7 +289,7 @@ public partial class AliasDeclaration : AstNode
         visitor.LeaveAliasDeclaration(this);
     }
 
-
+    
 }
 
 public partial class AssignmentStmt : Statement
@@ -312,7 +313,7 @@ public partial class AssignmentStmt : Statement
         visitor.LeaveAssignmentStmt(this);
     }
 
-
+    
 }
 
 public partial class BinaryExpression : Expression
@@ -338,7 +339,7 @@ public partial class BinaryExpression : Expression
         visitor.LeaveBinaryExpression(this);
     }
 
-
+    
 }
 
 public partial class Block : ScopeAstNode
@@ -364,9 +365,9 @@ public partial class Block : ScopeAstNode
         visitor.LeaveBlock(this);
     }
 
-
+    
                 public Block(StatementList sl):this(sl.Statements){}
-
+                
 }
 
 public partial class BoolValueExpression : LiteralExpression<bool>
@@ -386,7 +387,7 @@ public partial class BoolValueExpression : LiteralExpression<bool>
         visitor.LeaveBoolValueExpression(this);
     }
 
-
+    
 }
 
 public partial class ShortValueExpression : LiteralExpression<short>
@@ -406,7 +407,7 @@ public partial class ShortValueExpression : LiteralExpression<short>
         visitor.LeaveShortValueExpression(this);
     }
 
-
+    
 }
 
 public partial class IntValueExpression : LiteralExpression<int>
@@ -426,7 +427,7 @@ public partial class IntValueExpression : LiteralExpression<int>
         visitor.LeaveIntValueExpression(this);
     }
 
-
+    
 }
 
 public partial class LongValueExpression : LiteralExpression<long>
@@ -446,7 +447,7 @@ public partial class LongValueExpression : LiteralExpression<long>
         visitor.LeaveLongValueExpression(this);
     }
 
-
+    
 }
 
 public partial class FloatValueExpression : LiteralExpression<float>
@@ -466,7 +467,7 @@ public partial class FloatValueExpression : LiteralExpression<float>
         visitor.LeaveFloatValueExpression(this);
     }
 
-
+    
 }
 
 public partial class DoubleValueExpression : LiteralExpression<double>
@@ -486,7 +487,7 @@ public partial class DoubleValueExpression : LiteralExpression<double>
         visitor.LeaveDoubleValueExpression(this);
     }
 
-
+    
 }
 
 public partial class DecimalValueExpression : LiteralExpression<decimal>
@@ -506,7 +507,7 @@ public partial class DecimalValueExpression : LiteralExpression<decimal>
         visitor.LeaveDecimalValueExpression(this);
     }
 
-
+    
 }
 
 public partial class StringValueExpression : LiteralExpression<string>
@@ -526,7 +527,7 @@ public partial class StringValueExpression : LiteralExpression<string>
         visitor.LeaveStringValueExpression(this);
     }
 
-
+    
 }
 
 public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
@@ -546,7 +547,7 @@ public partial class DateValueExpression : LiteralExpression<DateTimeOffset>
         visitor.LeaveDateValueExpression(this);
     }
 
-
+    
 }
 
 public partial class ExpressionList : TypedAstNode
@@ -572,7 +573,7 @@ public partial class ExpressionList : TypedAstNode
         visitor.LeaveExpressionList(this);
     }
 
-
+    
 }
 
 public partial class FifthProgram : ScopeAstNode, IFunctionCollection
@@ -614,7 +615,7 @@ public partial class FifthProgram : ScopeAstNode, IFunctionCollection
         visitor.LeaveFifthProgram(this);
     }
 
-
+    
 }
 
 public partial class FuncCallExpression : Expression
@@ -637,34 +638,12 @@ public partial class FuncCallExpression : Expression
         visitor.LeaveFuncCallExpression(this);
     }
 
-
-}
-
-public partial class BuiltinFunctionDefinition : FunctionDefinition, IFunctionDefinition
-{
-    public BuiltinFunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , FunctionKind FunctionKind , TypeId ReturnType )
-
-:base(ParameterDeclarations , Body , Typename , Name , IsEntryPoint , FunctionKind , ReturnType )
-{
-    }
-
-
-    public override void Accept(IAstVisitor visitor)
-    {
-        visitor.EnterBuiltinFunctionDefinition(this);
-        visitor.LeaveBuiltinFunctionDefinition(this);
-    }
-
-
-            public BuiltinFunctionDefinition(string name, string typename, params (string, string)[] parameters)
-               : base(new ParameterDeclarationList(parameters.Select(x => (IParameterListItem)new ParameterDeclaration(new Identifier(x.Item1), x.Item2, null, null)).ToList()),
-                null, typename, name, false, FunctionKind.BuiltIn, null){}
-
+    
 }
 
 public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
 {
-    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , FunctionKind FunctionKind , TypeId ReturnType )
+    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , bool IsInstanceFunction , FunctionKind FunctionKind , TypeId ReturnType )
 
 
 {
@@ -673,6 +652,7 @@ public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
         this.Typename = Typename;
         this.Name = Name;
         this.IsEntryPoint = IsEntryPoint;
+        this.IsInstanceFunction = IsInstanceFunction;
         this.FunctionKind = FunctionKind;
         this.ReturnType = ReturnType;
     }
@@ -682,6 +662,7 @@ public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
     public string Typename{get;set;}
     public string Name{get;set;}
     public bool IsEntryPoint{get;set;}
+    public bool IsInstanceFunction{get;set;}
     public FunctionKind FunctionKind{get;set;}
     public TypeId ReturnType{get;set;}
 
@@ -693,7 +674,7 @@ public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
         visitor.LeaveFunctionDefinition(this);
     }
 
-
+    
 }
 
 public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefinition, ITypedAstNode
@@ -721,7 +702,7 @@ public partial class OverloadedFunctionDefinition : ScopeAstNode, IFunctionDefin
         visitor.LeaveOverloadedFunctionDefinition(this);
     }
 
-
+    
 }
 
 public partial class Identifier : TypedAstNode
@@ -741,7 +722,7 @@ public partial class Identifier : TypedAstNode
         visitor.LeaveIdentifier(this);
     }
 
-
+    
 }
 
 public partial class IdentifierExpression : Expression
@@ -762,7 +743,7 @@ public partial class IdentifierExpression : Expression
         visitor.LeaveIdentifierExpression(this);
     }
 
-
+    
 }
 
 public partial class IfElseStatement : Statement
@@ -789,7 +770,7 @@ public partial class IfElseStatement : Statement
         visitor.LeaveIfElseStatement(this);
     }
 
-
+    
 }
 
 public partial class ModuleImport : AstNode
@@ -809,7 +790,7 @@ public partial class ModuleImport : AstNode
         visitor.LeaveModuleImport(this);
     }
 
-
+    
 }
 
 public partial class ParameterDeclarationList : AstNode
@@ -835,7 +816,7 @@ public partial class ParameterDeclarationList : AstNode
         visitor.LeaveParameterDeclarationList(this);
     }
 
-
+    
 }
 
 public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
@@ -864,7 +845,7 @@ public partial class ParameterDeclaration : TypedAstNode, IParameterListItem
         visitor.LeaveParameterDeclaration(this);
     }
 
-
+    
 }
 
 public partial class DestructuringDeclaration : AstNode
@@ -890,7 +871,7 @@ public partial class DestructuringDeclaration : AstNode
         visitor.LeaveDestructuringDeclaration(this);
     }
 
-
+    
 }
 
 public partial class DestructuringBinding : TypedAstNode
@@ -920,7 +901,7 @@ public partial class DestructuringBinding : TypedAstNode
         visitor.LeaveDestructuringBinding(this);
     }
 
-
+    
 }
 
 public partial class TypeCreateInstExpression : Expression
@@ -938,7 +919,7 @@ public partial class TypeCreateInstExpression : Expression
         visitor.LeaveTypeCreateInstExpression(this);
     }
 
-
+    
 }
 
 public partial class TypeInitialiser : Expression
@@ -966,7 +947,7 @@ public partial class TypeInitialiser : Expression
         visitor.LeaveTypeInitialiser(this);
     }
 
-
+    
 }
 
 public partial class TypePropertyInit : AstNode
@@ -989,7 +970,7 @@ public partial class TypePropertyInit : AstNode
         visitor.LeaveTypePropertyInit(this);
     }
 
-
+    
 }
 
 public partial class UnaryExpression : Expression
@@ -1012,7 +993,7 @@ public partial class UnaryExpression : Expression
         visitor.LeaveUnaryExpression(this);
     }
 
-
+    
 }
 
 public partial class VariableDeclarationStatement : Statement, ITypedAstNode
@@ -1037,7 +1018,7 @@ public partial class VariableDeclarationStatement : Statement, ITypedAstNode
         visitor.LeaveVariableDeclarationStatement(this);
     }
 
-
+    
                     private string typeName;
                     public string TypeName
                     {
@@ -1062,7 +1043,7 @@ public partial class VariableDeclarationStatement : Statement, ITypedAstNode
                     }
                     public TypeId TypeId { get; set; }
 
-
+                
 }
 
 public partial class VariableReference : BaseVarReference
@@ -1082,33 +1063,31 @@ public partial class VariableReference : BaseVarReference
         visitor.LeaveVariableReference(this);
     }
 
-
+    
 }
 
-public partial class CompoundVariableReference : BaseVarReference
+public partial class MemberAccessExpression : Expression
 {
-    public CompoundVariableReference(List<VariableReference> ComponentReferences )
+    public MemberAccessExpression(Expression LHS , Expression RHS )
 
 
 {
-        this.ComponentReferences = ComponentReferences;
+        this.LHS = LHS;
+        this.RHS = RHS;
     }
 
-    public List<VariableReference> ComponentReferences{get;set;}
+    public Expression LHS{get;set;}
+    public Expression RHS{get;set;}
 
     public override void Accept(IAstVisitor visitor)
     {
-        visitor.EnterCompoundVariableReference(this);
-        if(ComponentReferences != null){
-            foreach (var e in ComponentReferences)
-            {
-                e.Accept(visitor);
-            }
-        }
-        visitor.LeaveCompoundVariableReference(this);
+        visitor.EnterMemberAccessExpression(this);
+        LHS?.Accept(visitor);
+        RHS?.Accept(visitor);
+        visitor.LeaveMemberAccessExpression(this);
     }
 
-
+    
 }
 
 public partial class WhileExp : Statement
@@ -1131,7 +1110,7 @@ public partial class WhileExp : Statement
         visitor.LeaveWhileExp(this);
     }
 
-
+    
 }
 
 public partial class ExpressionStatement : Statement
@@ -1152,7 +1131,7 @@ public partial class ExpressionStatement : Statement
         visitor.LeaveExpressionStatement(this);
     }
 
-
+    
 }
 
 public partial class Expression : TypedAstNode
@@ -1170,7 +1149,7 @@ public partial class Expression : TypedAstNode
         visitor.LeaveExpression(this);
     }
 
-
+    
 }
 
 

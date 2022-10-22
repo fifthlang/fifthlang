@@ -1,32 +1,13 @@
 namespace Fifth.CodeGeneration.IL;
 
-public class AssemblyDeclaration
-{
-    public string Name;
-    public Version Version;
-}
-public class AssemblyBuilder : BaseBuilder<AssemblyBuilder, AssemblyDeclaration>
-{
-    public AssemblyBuilder()
-    {
-        Model = new AssemblyDeclaration();
-        Model.Version = new Version(1,0,0,0);
-    }
+using System.Text;
 
-    public AssemblyBuilder WithName(string name)
-    {
-        Model.Name = name;
-        return this;
-    }
-
-    public AssemblyBuilder WithVersion(Version version)
-    {
-        Model.Version = version;
-        return this;
-    }
+public partial class AssemblyDeclarationBuilder
+{
     public override string Build()
     {
-        var result = $@".assembly {Model.Name}
+        var sb = new StringBuilder();
+        sb.AppendLine($@".assembly {Model.Name}
             {{
               .custom instance void [System.Runtime]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = ( 01 00 08 00 00 00 00 00 )
               .custom instance void [System.Runtime]System.Runtime.CompilerServices.RuntimeCompatibilityAttribute::.ctor() = ( 01 00 01 00 54 02 16 57 72 61 70 4E 6F 6E 45 78   // ....T..WrapNonEx
@@ -41,13 +22,9 @@ public class AssemblyBuilder : BaseBuilder<AssemblyBuilder, AssemblyDeclaration>
                                                                                                                           4E 61 6D 65 00 )                                  // Name.
               .hash algorithm 0x00008004
               .ver {WriteVersion(Model.Version)}
-            }}";
-        return result;
+            }}");
+        sb.AppendLine(ProgramDefinitionBuilder.Create(Model.Program).Build());
+        return sb.ToString();
     }
 
-
-    public AssemblyBuilder WithVersion(string s)
-    {
-        return WithVersion(new Version(s));
-    }
 }

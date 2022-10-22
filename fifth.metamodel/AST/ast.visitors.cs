@@ -61,8 +61,6 @@ namespace Fifth.AST.Visitors
         public void LeaveFifthProgram(FifthProgram ctx);
         public void EnterFuncCallExpression(FuncCallExpression ctx);
         public void LeaveFuncCallExpression(FuncCallExpression ctx);
-        public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
-        public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
         public void EnterFunctionDefinition(FunctionDefinition ctx);
         public void LeaveFunctionDefinition(FunctionDefinition ctx);
         public void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
@@ -95,8 +93,8 @@ namespace Fifth.AST.Visitors
         public void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx);
         public void EnterVariableReference(VariableReference ctx);
         public void LeaveVariableReference(VariableReference ctx);
-        public void EnterCompoundVariableReference(CompoundVariableReference ctx);
-        public void LeaveCompoundVariableReference(CompoundVariableReference ctx);
+        public void EnterMemberAccessExpression(MemberAccessExpression ctx);
+        public void LeaveMemberAccessExpression(MemberAccessExpression ctx);
         public void EnterWhileExp(WhileExp ctx);
         public void LeaveWhileExp(WhileExp ctx);
         public void EnterExpressionStatement(ExpressionStatement ctx);
@@ -157,8 +155,6 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveFifthProgram(FifthProgram ctx){}
         public virtual void EnterFuncCallExpression(FuncCallExpression ctx){}
         public virtual void LeaveFuncCallExpression(FuncCallExpression ctx){}
-        public virtual void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
-        public virtual void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx){}
         public virtual void EnterFunctionDefinition(FunctionDefinition ctx){}
         public virtual void LeaveFunctionDefinition(FunctionDefinition ctx){}
         public virtual void EnterOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx){}
@@ -191,8 +187,8 @@ namespace Fifth.AST.Visitors
         public virtual void LeaveVariableDeclarationStatement(VariableDeclarationStatement ctx){}
         public virtual void EnterVariableReference(VariableReference ctx){}
         public virtual void LeaveVariableReference(VariableReference ctx){}
-        public virtual void EnterCompoundVariableReference(CompoundVariableReference ctx){}
-        public virtual void LeaveCompoundVariableReference(CompoundVariableReference ctx){}
+        public virtual void EnterMemberAccessExpression(MemberAccessExpression ctx){}
+        public virtual void LeaveMemberAccessExpression(MemberAccessExpression ctx){}
         public virtual void EnterWhileExp(WhileExp ctx){}
         public virtual void LeaveWhileExp(WhileExp ctx){}
         public virtual void EnterExpressionStatement(ExpressionStatement ctx){}
@@ -230,7 +226,6 @@ namespace Fifth.AST.Visitors
         public ExpressionList VisitExpressionList(ExpressionList ctx);
         public FifthProgram VisitFifthProgram(FifthProgram ctx);
         public FuncCallExpression VisitFuncCallExpression(FuncCallExpression ctx);
-        public BuiltinFunctionDefinition VisitBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx);
         public FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx);
         public OverloadedFunctionDefinition VisitOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx);
         public Identifier VisitIdentifier(Identifier ctx);
@@ -247,7 +242,7 @@ namespace Fifth.AST.Visitors
         public UnaryExpression VisitUnaryExpression(UnaryExpression ctx);
         public VariableDeclarationStatement VisitVariableDeclarationStatement(VariableDeclarationStatement ctx);
         public VariableReference VisitVariableReference(VariableReference ctx);
-        public CompoundVariableReference VisitCompoundVariableReference(CompoundVariableReference ctx);
+        public MemberAccessExpression VisitMemberAccessExpression(MemberAccessExpression ctx);
         public WhileExp VisitWhileExp(WhileExp ctx);
         public ExpressionStatement VisitExpressionStatement(ExpressionStatement ctx);
         public Expression VisitExpression(Expression ctx);
@@ -284,7 +279,6 @@ namespace Fifth.AST.Visitors
                 ExpressionList node => VisitExpressionList(node),
                 FifthProgram node => VisitFifthProgram(node),
                 FuncCallExpression node => VisitFuncCallExpression(node),
-                BuiltinFunctionDefinition node => VisitBuiltinFunctionDefinition(node),
                 FunctionDefinition node => VisitFunctionDefinition(node),
                 OverloadedFunctionDefinition node => VisitOverloadedFunctionDefinition(node),
                 Identifier node => VisitIdentifier(node),
@@ -301,7 +295,7 @@ namespace Fifth.AST.Visitors
                 UnaryExpression node => VisitUnaryExpression(node),
                 VariableDeclarationStatement node => VisitVariableDeclarationStatement(node),
                 VariableReference node => VisitVariableReference(node),
-                CompoundVariableReference node => VisitCompoundVariableReference(node),
+                MemberAccessExpression node => VisitMemberAccessExpression(node),
                 WhileExp node => VisitWhileExp(node),
                 ExpressionStatement node => VisitExpressionStatement(node),
                 Expression node => VisitExpression(node),
@@ -311,234 +305,96 @@ namespace Fifth.AST.Visitors
         }
 
         public virtual Assembly VisitAssembly(Assembly ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ClassDefinition VisitClassDefinition(ClassDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual FieldDefinition VisitFieldDefinition(FieldDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual TypeCast VisitTypeCast(TypeCast ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ReturnStatement VisitReturnStatement(ReturnStatement ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual StatementList VisitStatementList(StatementList ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual AbsoluteIri VisitAbsoluteIri(AbsoluteIri ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual AliasDeclaration VisitAliasDeclaration(AliasDeclaration ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual AssignmentStmt VisitAssignmentStmt(AssignmentStmt ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual BinaryExpression VisitBinaryExpression(BinaryExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual Block VisitBlock(Block ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual BoolValueExpression VisitBoolValueExpression(BoolValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ShortValueExpression VisitShortValueExpression(ShortValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual IntValueExpression VisitIntValueExpression(IntValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual FloatValueExpression VisitFloatValueExpression(FloatValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual DoubleValueExpression VisitDoubleValueExpression(DoubleValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual DecimalValueExpression VisitDecimalValueExpression(DecimalValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual StringValueExpression VisitStringValueExpression(StringValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual DateValueExpression VisitDateValueExpression(DateValueExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ExpressionList VisitExpressionList(ExpressionList ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual FifthProgram VisitFifthProgram(FifthProgram ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual FuncCallExpression VisitFuncCallExpression(FuncCallExpression ctx)
-        {
-            return ctx;
-        }
-
-        public virtual BuiltinFunctionDefinition VisitBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual OverloadedFunctionDefinition VisitOverloadedFunctionDefinition(OverloadedFunctionDefinition ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual Identifier VisitIdentifier(Identifier ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual IdentifierExpression VisitIdentifierExpression(IdentifierExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual IfElseStatement VisitIfElseStatement(IfElseStatement ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ModuleImport VisitModuleImport(ModuleImport ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ParameterDeclarationList VisitParameterDeclarationList(ParameterDeclarationList ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual DestructuringDeclaration VisitDestructuringDeclaration(DestructuringDeclaration ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual DestructuringBinding VisitDestructuringBinding(DestructuringBinding ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual TypeCreateInstExpression VisitTypeCreateInstExpression(TypeCreateInstExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual TypeInitialiser VisitTypeInitialiser(TypeInitialiser ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual TypePropertyInit VisitTypePropertyInit(TypePropertyInit ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual UnaryExpression VisitUnaryExpression(UnaryExpression ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual VariableDeclarationStatement VisitVariableDeclarationStatement(VariableDeclarationStatement ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual VariableReference VisitVariableReference(VariableReference ctx)
-        {
-            return ctx;
-        }
-
-        public virtual CompoundVariableReference VisitCompoundVariableReference(CompoundVariableReference ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
+        public virtual MemberAccessExpression VisitMemberAccessExpression(MemberAccessExpression ctx)
+            => ctx;
         public virtual WhileExp VisitWhileExp(WhileExp ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual ExpressionStatement VisitExpressionStatement(ExpressionStatement ctx)
-        {
-            return ctx;
-        }
-
+            => ctx;
         public virtual Expression VisitExpression(Expression ctx)
-        {
-            return ctx;
-        }
+            => ctx;
+
     }
 
 }

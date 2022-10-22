@@ -1,37 +1,10 @@
 namespace Fifth.CodeGeneration.IL;
 
 using System.Text;
+using fifth.metamodel.metadata.il;
 
-public class PropertyDefinition
+public partial class PropertyDefinitionBuilder: BaseBuilder<PropertyDefinitionBuilder, PropertyDefinition>
 {
-    public string TypeName { get; set; }
-    public string Name { get; set; }
-    public ILVisibility Visibility { get; set; }
-    public ClassDefinition OwningClass { get; set; }
-}
-public class PropertyBuilder: BaseBuilder<PropertyBuilder, PropertyDefinition>
-{
-    public PropertyBuilder()
-    {
-        Model = new PropertyDefinition();
-    }
-
-    public PropertyBuilder WithName(string name)
-    {
-        Model.Name = name;
-        return this;
-    }
-    public PropertyBuilder WithType(string type)
-    {
-        Model.TypeName = type;
-        return this;
-    }
-
-    public PropertyBuilder WithOwningClass(ClassDefinition classdef)
-    {
-        Model.OwningClass = classdef;
-        return this;
-    }
     public override string Build()
     {
         var sb = new StringBuilder();

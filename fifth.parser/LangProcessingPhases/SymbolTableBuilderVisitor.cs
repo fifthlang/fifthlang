@@ -60,15 +60,6 @@ public class SymbolTableBuilderVisitor : BaseAstVisitor
         }
     }
 
-    public override void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-    {
-        var enclosingScope = ctx.ParentNode.NearestScope();
-        enclosingScope.Declare(ctx.Name, SymbolKind.BuiltinFunctionDeclaration, ctx);
-        if (TypeRegistry.DefaultRegistry.TryGetTypeByName(ctx.Typename, out var t))
-        {
-            ctx.ReturnType = t.TypeId;
-        }
-    }
 
     public override void EnterFunctionDefinition(FunctionDefinition ctx)
     {

@@ -7,5 +7,6 @@ namespace Fifth.TypeSystem.PrimitiveTypes
         }
 
         public static PrimitiveUri Default { get; } = new();
+        public override string IlAbbreviation => String.Empty;
     }
 }

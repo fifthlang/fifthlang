@@ -1,0 +1,15 @@
+<#@ template debug="true" hostspecific="false" language="C#" compilerOptions="/langversion:10"  #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Collections" #>
+<#@ assembly name="Microsoft.CSharp" #>
+<#@ assembly name="fifth.metamodel.metadata.dll" #>
+<#@ import namespace="System.Dynamic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="fifth.metamodel.metadata" #>
+<#
+    var buildableTypes =   ILMetamodelProvider.BuildableTypes;
+#>

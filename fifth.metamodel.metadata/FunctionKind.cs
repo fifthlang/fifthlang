@@ -1,8 +1,7 @@
-namespace Fifth.AST;
+namespace fifth.metamodel.metadata;
 
 public enum FunctionKind
 {
-    BuiltIn,
     Normal,
     Ctor,
     Getter,

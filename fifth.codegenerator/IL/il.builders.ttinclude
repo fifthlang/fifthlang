@@ -1,0 +1,37 @@
+namespace Fifth.CodeGeneration.IL;
+
+using System;
+using System.Collections.Generic;
+using CodeGeneration.IL;
+using fifth.metamodel.metadata.il;
+
+
+<#
+foreach (var t in buildableTypes)
+{
+    var allProps = t.BuildableProperties();
+
+#>
+    public partial class <#= t.Name #>Builder : BaseBuilder<<#= t.Name #>Builder,<#= t.FullName #>>
+    {
+        public <#= t.Name #>Builder()
+        {
+            Model = new();
+        }
+
+<# foreach (var prop in allProps)  { #>
+        public <#= t.Name #>Builder With<#= prop.Name #>(<#= prop.PropertyType.BuildTypeName() #> value){
+            Model.<#= prop.Name #> = value;
+            return this;
+        }
+
+<#
+    if (prop.PropertyType.IsCollectionType()){#>
+        public <#= t.Name #>Builder AddingItemTo<#= prop.Name #>(<#= prop.PropertyType.BuildInstanceTypeName() #> value){
+            Model.<#= prop.Name #>.Add(value);
+            return this;
+        }
+<#    }  /*if (prop.IsCollection)*/ #>
+<# } /* foreach prop */ #>
+    }
+<# } /*for each ast*/ #>

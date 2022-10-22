@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using AST;
 using AST.Builders;
 using AST.Visitors;
+using fifth.metamodel.metadata;
 
 /// <summary>
 /// Expands a property definition into a C#-style backing field and accessor functions.

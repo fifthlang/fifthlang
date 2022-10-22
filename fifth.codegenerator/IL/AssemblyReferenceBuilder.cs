@@ -1,33 +1,9 @@
 namespace Fifth.CodeGeneration.IL;
 
-public class AssemblyReference
-{
-    public string Name { get; set; }
-    public string PublicKeyToken { get; set; }
-    public Version Version { get; set; }
-}
-public class AssemblyReferenceBuilder:BaseBuilder<AssemblyReferenceBuilder, AssemblyReference>
-{
-    public AssemblyReferenceBuilder()
-    {
-        Model = new AssemblyReference();
-    }
+using fifth.metamodel.metadata.il;
 
-    public AssemblyReferenceBuilder WithName(string name)
-    {
-        Model.Name = name;
-        return this;
-    }
-    public AssemblyReferenceBuilder WithPublicKeyToken(string token)
-    {
-        Model.PublicKeyToken = token;
-        return this;
-    }
-    public AssemblyReferenceBuilder WithVersion(Version v)
-    {
-        Model.Version = v;
-        return this;
-    }
+public partial class AssemblyReferenceBuilder:BaseBuilder<AssemblyReferenceBuilder, AssemblyReference>
+{
     public override string Build()
     {
         var result = $@".assembly extern {Model.Name}

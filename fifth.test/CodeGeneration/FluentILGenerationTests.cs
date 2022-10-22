@@ -3,7 +3,9 @@ using NUnit.Framework;
 namespace Fifth.Test.CodeGeneration;
 
 using System.Net.WebSockets;
+using System.Reflection.Emit;
 using Fifth.CodeGeneration.IL;
+using fifth.metamodel.metadata.il;
 
 [TestFixture]
 [Category("CIL")]
@@ -12,10 +14,10 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateAssembly()
     {
-        var sut = AssemblyBuilder.Create()
-                                 .WithName("Foo")
-                                 .WithVersion(new Version(1, 2, 3, 4))
-                                 .Build();
+        var sut = AssemblyDeclarationBuilder.Create()
+                                            .WithName("Foo")
+                                            .WithVersion(new Version(1, 2, 3, 4))
+                                            .Build();
         sut.Should().NotBeNull()
            .And.NotBeEmpty()
            .And.Contain("Foo")
@@ -37,7 +39,7 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateModuleDeclaration()
     {
-        var sut = ModuleBuilder.Create().WithFileName("Foo").Build();
+        var sut = ModuleDeclarationBuilder.Create().WithFileName("Foo").Build();
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("module", "Foo");
     }
@@ -45,7 +47,7 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateFieldDefinition()
     {
-        var sut = FieldBuilder.Create().WithName("Foo").WithType("Bar").Build();
+        var sut = FieldDefinitionBuilder.Create().WithName("Foo").WithTypeName("Bar").Build();
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("field", "Foo", "Bar");
     }
@@ -53,7 +55,7 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreatePropertyDefinition()
     {
-        var sut = PropertyBuilder.Create().WithName("Foo").WithType("Bar").Build();
+        var sut = PropertyDefinitionBuilder.Create().WithName("Foo").WithTypeName("Bar").Build();
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("property", "Foo", "Bar");
     }
@@ -61,9 +63,9 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateClassDefinition()
     {
-        var sut = ClassBuilder.Create()
-                              .WithName("Foo")
-                              .Build();
+        var sut = ClassDefinitionBuilder.Create()
+                                        .WithName("Foo")
+                                        .Build();
         sut.Should().NotBeNullOrWhiteSpace();
         sut.Should().ContainAll("class", "Foo", "extends", "Object");
     }
@@ -71,73 +73,83 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateExtendedClassDescription()
     {
-        var cb = ClassBuilder.Create()
-                             .WithName("MyClass")
-                             .WithField(FieldBuilder.Create()
-                                                    .WithName("Field1")
-                                                    .WithType("Field1Type")
-                                                    .New())
-                             .WithProperty(PropertyBuilder.Create()
-                                                          .WithName("Prop1")
-                                                          .WithType("Prop1Type")
-                                                          .New())
-                             .WithMethod(MethodBuilder.Create()
-                                                      .WithName("FooMethod")
-                                                      .WithType("FooType")
-                                                      .WithStatement(StatementBuilder.Create()
-                                                          .WithVariableAssignment("someVar", ExpressionBuilder.Create()
-                                                              .WithLiteral(5.0)
-                                                              .New(), 0)
-                                                          .New()
-                                                      )
-                                                      .WithStatement(StatementBuilder.Create()
-                                                          .WithReturnStatement(ExpressionBuilder.Create()
-                                                              .WithFunctionCall("fooBar", "int")
-                                                              .New())
-                                                          .New())
-                                                      .New())
-                             .Build();
+        var cb = ClassDefinitionBuilder.Create()
+                                       .WithName("MyClass")
+                                       .AddingItemToFields(FieldDefinitionBuilder.Create()
+                                           .WithName("Field1")
+                                           .WithTypeName("Field1Type")
+                                           .New())
+                                       .AddingItemToProperties(PropertyDefinitionBuilder.Create()
+                                           .WithName("Prop1")
+                                           .WithTypeName("Prop1Type")
+                                           .New())
+                                       .AddingItemToMethods(MethodDefinitionBuilder.Create()
+                                           .WithName("FooMethod")
+                                           .WithReturnType("FooType")
+                                           .WithBody(BlockBuilder.Create()
+                                                                 .AddingItemToStatements(StatementBuilder.Create()
+                                                                     .WithVariableAssignment("someVar",
+                                                                         ExpressionBuilder.Create()
+                                                                             .WithLiteral(5.0)
+                                                                             .New(), 0)
+                                                                     .New()
+                                                                 ).AddingItemToStatements(StatementBuilder.Create()
+                                                                     .WithReturnStatement(ExpressionBuilder.Create()
+                                                                         .WithFunctionCall("fooBar", "int")
+                                                                         .New())
+                                                                     .New())
+                                                                 .New())
+                                           .New())
+                                       .Build();
         cb.Should().NotBeNullOrWhiteSpace();
     }
 
     [Test]
     public void CanGenerateIfStatement()
     {
-        var sut = IfStmtBuilder.Create()
-                               .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
-                               .WithIfStatement(StatementBuilder.Create()
-                                                                .WithReturnStatement(ExpressionBuilder.Create()
-                                                                    .WithFunctionCall("fooBar", "int")
-                                                                    .New())
-                                                                .New())
-                               .WithIfStatement(StatementBuilder.Create()
-                                                                .WithReturnStatement(ExpressionBuilder.Create()
-                                                                    .WithFunctionCall("fooBar", "int")
-                                                                    .New()).New())
-                               .WithElseStatement(StatementBuilder.Create()
-                                                                  .WithReturnStatement(ExpressionBuilder.Create()
-                                                                      .WithFunctionCall("fooBar", "int")
-                                                                      .New()).New())
-                               .Build();
+        var sut = IfStatementBuilder.Create()
+                                    .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
+                                    .WithIfBlock(
+                                        BlockBuilder.Create()
+                                                    .AddingItemToStatements(StatementBuilder.Create()
+                                                        .WithReturnStatement(ExpressionBuilder.Create()
+                                                            .WithFunctionCall("fooBar", "int")
+                                                            .New()).New()
+                                                    )
+                                                    .AddingItemToStatements(StatementBuilder.Create()
+                                                        .WithReturnStatement(ExpressionBuilder.Create()
+                                                            .WithFunctionCall("fooBar", "int")
+                                                            .New()).New())
+                                                    .New())
+                                    .WithElseBlock(
+                                        BlockBuilder.Create()
+                                                    .AddingItemToStatements(StatementBuilder.Create()
+                                                        .WithReturnStatement(ExpressionBuilder.Create()
+                                                            .WithFunctionCall("fooBar", "int")
+                                                            .New()).New()
+                                                    )
+                                                    .New())
+                                    .Build();
         sut.Should().NotBeNullOrWhiteSpace();
         sut.Should().ContainAll("true", "fooBar");
     }
+
     [Test]
     public void CanGenerateWhileStatement()
     {
         var sut = WhileStmtBuilder.Create()
-                               .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
-                               .WithStatement(StatementBuilder.Create()
-                                                                .WithReturnStatement(ExpressionBuilder.Create()
-                                                                    .WithFunctionCall("fooBar", "int")
-                                                                    .New())
-                                                                .New())
-                               .WithStatement(StatementBuilder.Create()
-                                                                .WithReturnStatement(ExpressionBuilder.Create()
-                                                                    .WithFunctionCall("fooBar", "int")
-                                                                    .New()).New())
-                               .Build();
+                                  .WithConditional(ExpressionBuilder.Create().WithLiteral(true).New())
+                                  .WithStatement(StatementBuilder.Create()
+                                                                 .WithReturnStatement(ExpressionBuilder.Create()
+                                                                     .WithFunctionCall("fooBar", "int")
+                                                                     .New())
+                                                                 .New())
+                                  .WithStatement(StatementBuilder.Create()
+                                                                 .WithReturnStatement(ExpressionBuilder.Create()
+                                                                     .WithFunctionCall("fooBar", "int")
+                                                                     .New()).New())
+                                  .Build();
         sut.Should().NotBeNullOrWhiteSpace();
-        sut.Should().ContainAll("true","fooBar", "LBL_START", "LBL_END");
+        sut.Should().ContainAll("true", "fooBar", "LBL_START", "LBL_END");
     }
 }

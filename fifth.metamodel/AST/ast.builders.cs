@@ -8,6 +8,7 @@ using TypeSystem;
 using PrimitiveTypes;
 using TypeSystem.PrimitiveTypes;
 using System.Collections.Generic;
+using fifth.metamodel.metadata;
 
 public interface INodeBuilder{}
 
@@ -20,15 +21,9 @@ public interface INodeBuilder{}
         _References = new List<AssemblyRef>();
         }
 
-        public static AssemblyBuilder CreateAssembly()
-        {
-            return new();
-        }
-
+        public static AssemblyBuilder CreateAssembly() => new ();
         public Assembly Build()
-        {
-            return new(_Name, _PublicKeyToken, _Version, _Program, _References);
-        }
+          => new (_Name, _PublicKeyToken, _Version, _Program, _References);
 
         private string _Name;
         public AssemblyBuilder WithName(string value){
@@ -73,15 +68,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static AssemblyRefBuilder CreateAssemblyRef()
-        {
-            return new();
-        }
-
+        public static AssemblyRefBuilder CreateAssemblyRef() => new ();
         public AssemblyRef Build()
-        {
-            return new(_Name, _PublicKeyToken, _Version);
-        }
+          => new (_Name, _PublicKeyToken, _Version);
 
         private string _Name;
         public AssemblyRefBuilder WithName(string value){
@@ -113,15 +102,9 @@ public interface INodeBuilder{}
         _Functions = new List<IFunctionDefinition>();
         }
 
-        public static ClassDefinitionBuilder CreateClassDefinition()
-        {
-            return new();
-        }
-
+        public static ClassDefinitionBuilder CreateClassDefinition() => new ();
         public ClassDefinition Build()
-        {
-            return new(_Name, _Fields, _Properties, _Functions);
-        }
+          => new (_Name, _Fields, _Properties, _Functions);
 
         private string _Name;
         public ClassDefinitionBuilder WithName(string value){
@@ -168,15 +151,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static FieldDefinitionBuilder CreateFieldDefinition()
-        {
-            return new();
-        }
-
+        public static FieldDefinitionBuilder CreateFieldDefinition() => new ();
         public FieldDefinition Build()
-        {
-            return new(_BackingFieldFor, _Name, _TypeName);
-        }
+          => new (_BackingFieldFor, _Name, _TypeName);
 
         private PropertyDefinition? _BackingFieldFor;
         public FieldDefinitionBuilder WithBackingFieldFor(PropertyDefinition? value){
@@ -205,15 +182,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static PropertyDefinitionBuilder CreatePropertyDefinition()
-        {
-            return new();
-        }
-
+        public static PropertyDefinitionBuilder CreatePropertyDefinition() => new ();
         public PropertyDefinition Build()
-        {
-            return new(_BackingField, _GetAccessor, _SetAccessor, _Name, _TypeName);
-        }
+          => new (_BackingField, _GetAccessor, _SetAccessor, _Name, _TypeName);
 
         private FieldDefinition? _BackingField;
         public PropertyDefinitionBuilder WithBackingField(FieldDefinition? value){
@@ -254,15 +225,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static TypeCastBuilder CreateTypeCast()
-        {
-            return new();
-        }
-
+        public static TypeCastBuilder CreateTypeCast() => new ();
         public TypeCast Build()
-        {
-            return new(_SubExpression, _TargetTid);
-        }
+          => new (_SubExpression, _TargetTid);
 
         private Expression _SubExpression;
         public TypeCastBuilder WithSubExpression(Expression value){
@@ -285,15 +250,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ReturnStatementBuilder CreateReturnStatement()
-        {
-            return new();
-        }
-
+        public static ReturnStatementBuilder CreateReturnStatement() => new ();
         public ReturnStatement Build()
-        {
-            return new(_SubExpression, _TargetTid);
-        }
+          => new (_SubExpression, _TargetTid);
 
         private Expression _SubExpression;
         public ReturnStatementBuilder WithSubExpression(Expression value){
@@ -317,15 +276,9 @@ public interface INodeBuilder{}
         _Statements = new List<Statement>();
         }
 
-        public static StatementListBuilder CreateStatementList()
-        {
-            return new();
-        }
-
+        public static StatementListBuilder CreateStatementList() => new ();
         public StatementList Build()
-        {
-            return new(_Statements);
-        }
+          => new (_Statements);
 
         private List<Statement> _Statements;
         public StatementListBuilder WithStatements(List<Statement> value){
@@ -346,15 +299,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static AbsoluteIriBuilder CreateAbsoluteIri()
-        {
-            return new();
-        }
-
+        public static AbsoluteIriBuilder CreateAbsoluteIri() => new ();
         public AbsoluteIri Build()
-        {
-            return new(_Uri);
-        }
+          => new (_Uri);
 
         private string _Uri;
         public AbsoluteIriBuilder WithUri(string value){
@@ -371,15 +318,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static AliasDeclarationBuilder CreateAliasDeclaration()
-        {
-            return new();
-        }
-
+        public static AliasDeclarationBuilder CreateAliasDeclaration() => new ();
         public AliasDeclaration Build()
-        {
-            return new(_IRI, _Name);
-        }
+          => new (_IRI, _Name);
 
         private AbsoluteIri _IRI;
         public AliasDeclarationBuilder WithIRI(AbsoluteIri value){
@@ -402,15 +343,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static AssignmentStmtBuilder CreateAssignmentStmt()
-        {
-            return new();
-        }
-
+        public static AssignmentStmtBuilder CreateAssignmentStmt() => new ();
         public AssignmentStmt Build()
-        {
-            return new(_Expression, _VariableRef);
-        }
+          => new (_Expression, _VariableRef);
 
         private Expression _Expression;
         public AssignmentStmtBuilder WithExpression(Expression value){
@@ -433,15 +368,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static BinaryExpressionBuilder CreateBinaryExpression()
-        {
-            return new();
-        }
-
+        public static BinaryExpressionBuilder CreateBinaryExpression() => new ();
         public BinaryExpression Build()
-        {
-            return new(_Left, _Op, _Right);
-        }
+          => new (_Left, _Op, _Right);
 
         private Expression _Left;
         public BinaryExpressionBuilder WithLeft(Expression value){
@@ -471,15 +400,9 @@ public interface INodeBuilder{}
         _Statements = new List<Statement>();
         }
 
-        public static BlockBuilder CreateBlock()
-        {
-            return new();
-        }
-
+        public static BlockBuilder CreateBlock() => new ();
         public Block Build()
-        {
-            return new(_Statements);
-        }
+          => new (_Statements);
 
         private List<Statement> _Statements;
         public BlockBuilder WithStatements(List<Statement> value){
@@ -500,15 +423,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static BoolValueExpressionBuilder CreateBoolValueExpression()
-        {
-            return new();
-        }
-
+        public static BoolValueExpressionBuilder CreateBoolValueExpression() => new ();
         public BoolValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private bool _TheValue;
         public BoolValueExpressionBuilder WithTheValue(bool value){
@@ -525,15 +442,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ShortValueExpressionBuilder CreateShortValueExpression()
-        {
-            return new();
-        }
-
+        public static ShortValueExpressionBuilder CreateShortValueExpression() => new ();
         public ShortValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private short _TheValue;
         public ShortValueExpressionBuilder WithTheValue(short value){
@@ -550,15 +461,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static IntValueExpressionBuilder CreateIntValueExpression()
-        {
-            return new();
-        }
-
+        public static IntValueExpressionBuilder CreateIntValueExpression() => new ();
         public IntValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private int _TheValue;
         public IntValueExpressionBuilder WithTheValue(int value){
@@ -575,15 +480,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static LongValueExpressionBuilder CreateLongValueExpression()
-        {
-            return new();
-        }
-
+        public static LongValueExpressionBuilder CreateLongValueExpression() => new ();
         public LongValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private long _TheValue;
         public LongValueExpressionBuilder WithTheValue(long value){
@@ -600,15 +499,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static FloatValueExpressionBuilder CreateFloatValueExpression()
-        {
-            return new();
-        }
-
+        public static FloatValueExpressionBuilder CreateFloatValueExpression() => new ();
         public FloatValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private float _TheValue;
         public FloatValueExpressionBuilder WithTheValue(float value){
@@ -625,15 +518,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static DoubleValueExpressionBuilder CreateDoubleValueExpression()
-        {
-            return new();
-        }
-
+        public static DoubleValueExpressionBuilder CreateDoubleValueExpression() => new ();
         public DoubleValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private double _TheValue;
         public DoubleValueExpressionBuilder WithTheValue(double value){
@@ -650,15 +537,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static DecimalValueExpressionBuilder CreateDecimalValueExpression()
-        {
-            return new();
-        }
-
+        public static DecimalValueExpressionBuilder CreateDecimalValueExpression() => new ();
         public DecimalValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private decimal _TheValue;
         public DecimalValueExpressionBuilder WithTheValue(decimal value){
@@ -675,15 +556,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static StringValueExpressionBuilder CreateStringValueExpression()
-        {
-            return new();
-        }
-
+        public static StringValueExpressionBuilder CreateStringValueExpression() => new ();
         public StringValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private string _TheValue;
         public StringValueExpressionBuilder WithTheValue(string value){
@@ -700,15 +575,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static DateValueExpressionBuilder CreateDateValueExpression()
-        {
-            return new();
-        }
-
+        public static DateValueExpressionBuilder CreateDateValueExpression() => new ();
         public DateValueExpression Build()
-        {
-            return new(_TheValue);
-        }
+          => new (_TheValue);
 
         private DateTimeOffset _TheValue;
         public DateValueExpressionBuilder WithTheValue(DateTimeOffset value){
@@ -726,15 +595,9 @@ public interface INodeBuilder{}
         _Expressions = new List<Expression>();
         }
 
-        public static ExpressionListBuilder CreateExpressionList()
-        {
-            return new();
-        }
-
+        public static ExpressionListBuilder CreateExpressionList() => new ();
         public ExpressionList Build()
-        {
-            return new(_Expressions);
-        }
+          => new (_Expressions);
 
         private List<Expression> _Expressions;
         public ExpressionListBuilder WithExpressions(List<Expression> value){
@@ -758,15 +621,9 @@ public interface INodeBuilder{}
         _Functions = new List<IFunctionDefinition>();
         }
 
-        public static FifthProgramBuilder CreateFifthProgram()
-        {
-            return new();
-        }
-
+        public static FifthProgramBuilder CreateFifthProgram() => new ();
         public FifthProgram Build()
-        {
-            return new(_Aliases, _Classes, _Functions);
-        }
+          => new (_Aliases, _Classes, _Functions);
 
         private List<AliasDeclaration> _Aliases;
         public FifthProgramBuilder WithAliases(List<AliasDeclaration> value){
@@ -807,15 +664,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static FuncCallExpressionBuilder CreateFuncCallExpression()
-        {
-            return new();
-        }
-
+        public static FuncCallExpressionBuilder CreateFuncCallExpression() => new ();
         public FuncCallExpression Build()
-        {
-            return new(_ActualParameters, _Name);
-        }
+          => new (_ActualParameters, _Name);
 
         private ExpressionList _ActualParameters;
         public FuncCallExpressionBuilder WithActualParameters(ExpressionList value){
@@ -832,82 +683,15 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class BuiltinFunctionDefinitionBuilder : INodeBuilder
-    {
-        private BuiltinFunctionDefinitionBuilder()
-        {
-        }
-
-        public static BuiltinFunctionDefinitionBuilder CreateBuiltinFunctionDefinition()
-        {
-            return new();
-        }
-
-        public BuiltinFunctionDefinition Build()
-        {
-            return new(_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _FunctionKind, _ReturnType);
-        }
-
-        private ParameterDeclarationList _ParameterDeclarations;
-        public BuiltinFunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
-            _ParameterDeclarations = value;
-            return this;
-        }
-
-        private Block? _Body;
-        public BuiltinFunctionDefinitionBuilder WithBody(Block? value){
-            _Body = value;
-            return this;
-        }
-
-        private string _Typename;
-        public BuiltinFunctionDefinitionBuilder WithTypename(string value){
-            _Typename = value;
-            return this;
-        }
-
-        private string _Name;
-        public BuiltinFunctionDefinitionBuilder WithName(string value){
-            _Name = value;
-            return this;
-        }
-
-        private bool _IsEntryPoint;
-        public BuiltinFunctionDefinitionBuilder WithIsEntryPoint(bool value){
-            _IsEntryPoint = value;
-            return this;
-        }
-
-        private FunctionKind _FunctionKind;
-        public BuiltinFunctionDefinitionBuilder WithFunctionKind(FunctionKind value){
-            _FunctionKind = value;
-            return this;
-        }
-
-        private TypeId _ReturnType;
-        public BuiltinFunctionDefinitionBuilder WithReturnType(TypeId value){
-            _ReturnType = value;
-            return this;
-        }
-
-    }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
     public partial class FunctionDefinitionBuilder : INodeBuilder
     {
         private FunctionDefinitionBuilder()
         {
         }
 
-        public static FunctionDefinitionBuilder CreateFunctionDefinition()
-        {
-            return new();
-        }
-
+        public static FunctionDefinitionBuilder CreateFunctionDefinition() => new ();
         public FunctionDefinition Build()
-        {
-            return new(_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _FunctionKind, _ReturnType);
-        }
+          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _IsInstanceFunction, _FunctionKind, _ReturnType);
 
         private ParameterDeclarationList _ParameterDeclarations;
         public FunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
@@ -939,6 +723,12 @@ public interface INodeBuilder{}
             return this;
         }
 
+        private bool _IsInstanceFunction;
+        public FunctionDefinitionBuilder WithIsInstanceFunction(bool value){
+            _IsInstanceFunction = value;
+            return this;
+        }
+
         private FunctionKind _FunctionKind;
         public FunctionDefinitionBuilder WithFunctionKind(FunctionKind value){
             _FunctionKind = value;
@@ -961,15 +751,9 @@ public interface INodeBuilder{}
         _OverloadClauses = new List<IFunctionDefinition>();
         }
 
-        public static OverloadedFunctionDefinitionBuilder CreateOverloadedFunctionDefinition()
-        {
-            return new();
-        }
-
+        public static OverloadedFunctionDefinitionBuilder CreateOverloadedFunctionDefinition() => new ();
         public OverloadedFunctionDefinition Build()
-        {
-            return new(_OverloadClauses, _Signature);
-        }
+          => new (_OverloadClauses, _Signature);
 
         private List<IFunctionDefinition> _OverloadClauses;
         public OverloadedFunctionDefinitionBuilder WithOverloadClauses(List<IFunctionDefinition> value){
@@ -996,15 +780,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static IdentifierBuilder CreateIdentifier()
-        {
-            return new();
-        }
-
+        public static IdentifierBuilder CreateIdentifier() => new ();
         public Identifier Build()
-        {
-            return new(_Value);
-        }
+          => new (_Value);
 
         private string _Value;
         public IdentifierBuilder WithValue(string value){
@@ -1021,15 +799,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static IdentifierExpressionBuilder CreateIdentifierExpression()
-        {
-            return new();
-        }
-
+        public static IdentifierExpressionBuilder CreateIdentifierExpression() => new ();
         public IdentifierExpression Build()
-        {
-            return new(_Identifier);
-        }
+          => new (_Identifier);
 
         private Identifier _Identifier;
         public IdentifierExpressionBuilder WithIdentifier(Identifier value){
@@ -1046,15 +818,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static IfElseStatementBuilder CreateIfElseStatement()
-        {
-            return new();
-        }
-
+        public static IfElseStatementBuilder CreateIfElseStatement() => new ();
         public IfElseStatement Build()
-        {
-            return new(_IfBlock, _ElseBlock, _Condition);
-        }
+          => new (_IfBlock, _ElseBlock, _Condition);
 
         private Block _IfBlock;
         public IfElseStatementBuilder WithIfBlock(Block value){
@@ -1083,15 +849,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ModuleImportBuilder CreateModuleImport()
-        {
-            return new();
-        }
-
+        public static ModuleImportBuilder CreateModuleImport() => new ();
         public ModuleImport Build()
-        {
-            return new(_ModuleName);
-        }
+          => new (_ModuleName);
 
         private string _ModuleName;
         public ModuleImportBuilder WithModuleName(string value){
@@ -1109,15 +869,9 @@ public interface INodeBuilder{}
         _ParameterDeclarations = new List<IParameterListItem>();
         }
 
-        public static ParameterDeclarationListBuilder CreateParameterDeclarationList()
-        {
-            return new();
-        }
-
+        public static ParameterDeclarationListBuilder CreateParameterDeclarationList() => new ();
         public ParameterDeclarationList Build()
-        {
-            return new(_ParameterDeclarations);
-        }
+          => new (_ParameterDeclarations);
 
         private List<IParameterListItem> _ParameterDeclarations;
         public ParameterDeclarationListBuilder WithParameterDeclarations(List<IParameterListItem> value){
@@ -1138,15 +892,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ParameterDeclarationBuilder CreateParameterDeclaration()
-        {
-            return new();
-        }
-
+        public static ParameterDeclarationBuilder CreateParameterDeclaration() => new ();
         public ParameterDeclaration Build()
-        {
-            return new(_ParameterName, _TypeName, _Constraint, _DestructuringDecl);
-        }
+          => new (_ParameterName, _TypeName, _Constraint, _DestructuringDecl);
 
         private Identifier _ParameterName;
         public ParameterDeclarationBuilder WithParameterName(Identifier value){
@@ -1182,15 +930,9 @@ public interface INodeBuilder{}
         _Bindings = new List<DestructuringBinding>();
         }
 
-        public static DestructuringDeclarationBuilder CreateDestructuringDeclaration()
-        {
-            return new();
-        }
-
+        public static DestructuringDeclarationBuilder CreateDestructuringDeclaration() => new ();
         public DestructuringDeclaration Build()
-        {
-            return new(_Bindings);
-        }
+          => new (_Bindings);
 
         private List<DestructuringBinding> _Bindings;
         public DestructuringDeclarationBuilder WithBindings(List<DestructuringBinding> value){
@@ -1211,15 +953,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static DestructuringBindingBuilder CreateDestructuringBinding()
-        {
-            return new();
-        }
-
+        public static DestructuringBindingBuilder CreateDestructuringBinding() => new ();
         public DestructuringBinding Build()
-        {
-            return new(_Varname, _Propname, _PropDecl, _Constraint, _DestructuringDecl);
-        }
+          => new (_Varname, _Propname, _PropDecl, _Constraint, _DestructuringDecl);
 
         private string _Varname;
         public DestructuringBindingBuilder WithVarname(string value){
@@ -1260,15 +996,10 @@ public interface INodeBuilder{}
         {
         }
 
-        public static TypeCreateInstExpressionBuilder CreateTypeCreateInstExpression()
-        {
-            return new();
-        }
-
+        public static TypeCreateInstExpressionBuilder CreateTypeCreateInstExpression() => new ();
         public TypeCreateInstExpression Build()
-        {
-            return new();
-        }
+          => new ();
+
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
@@ -1279,15 +1010,9 @@ public interface INodeBuilder{}
         _PropertyInitialisers = new List<TypePropertyInit>();
         }
 
-        public static TypeInitialiserBuilder CreateTypeInitialiser()
-        {
-            return new();
-        }
-
+        public static TypeInitialiserBuilder CreateTypeInitialiser() => new ();
         public TypeInitialiser Build()
-        {
-            return new(_TypeName, _PropertyInitialisers);
-        }
+          => new (_TypeName, _PropertyInitialisers);
 
         private string _TypeName;
         public TypeInitialiserBuilder WithTypeName(string value){
@@ -1314,15 +1039,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static TypePropertyInitBuilder CreateTypePropertyInit()
-        {
-            return new();
-        }
-
+        public static TypePropertyInitBuilder CreateTypePropertyInit() => new ();
         public TypePropertyInit Build()
-        {
-            return new(_Name, _Value);
-        }
+          => new (_Name, _Value);
 
         private string _Name;
         public TypePropertyInitBuilder WithName(string value){
@@ -1345,15 +1064,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static UnaryExpressionBuilder CreateUnaryExpression()
-        {
-            return new();
-        }
-
+        public static UnaryExpressionBuilder CreateUnaryExpression() => new ();
         public UnaryExpression Build()
-        {
-            return new(_Operand, _Op);
-        }
+          => new (_Operand, _Op);
 
         private Expression _Operand;
         public UnaryExpressionBuilder WithOperand(Expression value){
@@ -1376,15 +1089,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static VariableDeclarationStatementBuilder CreateVariableDeclarationStatement()
-        {
-            return new();
-        }
-
+        public static VariableDeclarationStatementBuilder CreateVariableDeclarationStatement() => new ();
         public VariableDeclarationStatement Build()
-        {
-            return new(_Expression, _Name, _UnresolvedTypeName);
-        }
+          => new (_Expression, _Name, _UnresolvedTypeName);
 
         private Expression _Expression;
         public VariableDeclarationStatementBuilder WithExpression(Expression value){
@@ -1413,15 +1120,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static VariableReferenceBuilder CreateVariableReference()
-        {
-            return new();
-        }
-
+        public static VariableReferenceBuilder CreateVariableReference() => new ();
         public VariableReference Build()
-        {
-            return new(_Name);
-        }
+          => new (_Name);
 
         private string _Name;
         public VariableReferenceBuilder WithName(string value){
@@ -1432,33 +1133,28 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class CompoundVariableReferenceBuilder : INodeBuilder
+    public partial class MemberAccessExpressionBuilder : INodeBuilder
     {
-        private CompoundVariableReferenceBuilder()
+        private MemberAccessExpressionBuilder()
         {
-        _ComponentReferences = new List<VariableReference>();
         }
 
-        public static CompoundVariableReferenceBuilder CreateCompoundVariableReference()
-        {
-            return new();
-        }
+        public static MemberAccessExpressionBuilder CreateMemberAccessExpression() => new ();
+        public MemberAccessExpression Build()
+          => new (_LHS, _RHS);
 
-        public CompoundVariableReference Build()
-        {
-            return new(_ComponentReferences);
-        }
-
-        private List<VariableReference> _ComponentReferences;
-        public CompoundVariableReferenceBuilder WithComponentReferences(List<VariableReference> value){
-            _ComponentReferences = value;
+        private Expression _LHS;
+        public MemberAccessExpressionBuilder WithLHS(Expression value){
+            _LHS = value;
             return this;
         }
 
-        public CompoundVariableReferenceBuilder AddingItemToComponentReferences(VariableReference value){
-            _ComponentReferences.Add(value);
+        private Expression _RHS;
+        public MemberAccessExpressionBuilder WithRHS(Expression value){
+            _RHS = value;
             return this;
         }
+
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
@@ -1468,15 +1164,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static WhileExpBuilder CreateWhileExp()
-        {
-            return new();
-        }
-
+        public static WhileExpBuilder CreateWhileExp() => new ();
         public WhileExp Build()
-        {
-            return new(_Condition, _LoopBlock);
-        }
+          => new (_Condition, _LoopBlock);
 
         private Expression _Condition;
         public WhileExpBuilder WithCondition(Expression value){
@@ -1499,15 +1189,9 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ExpressionStatementBuilder CreateExpressionStatement()
-        {
-            return new();
-        }
-
+        public static ExpressionStatementBuilder CreateExpressionStatement() => new ();
         public ExpressionStatement Build()
-        {
-            return new(_Expression);
-        }
+          => new (_Expression);
 
         private Expression _Expression;
         public ExpressionStatementBuilder WithExpression(Expression value){
@@ -1524,13 +1208,8 @@ public interface INodeBuilder{}
         {
         }
 
-        public static ExpressionBuilder CreateExpression()
-        {
-            return new();
-        }
-
+        public static ExpressionBuilder CreateExpression() => new ();
         public Expression Build()
-        {
-            return new();
-        }
+          => new ();
+
     }

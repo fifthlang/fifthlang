@@ -11,5 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
+    <ProjectReference Include="..\fifthlang.system\Fifth.System.csproj" />
   </ItemGroup>
 </Project>

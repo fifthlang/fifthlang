@@ -1,5 +1,7 @@
 namespace fifth.metamodel.metadata;
 
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 public class PropStatus
@@ -17,6 +19,7 @@ public static class GenerationHelpers
         {
             sb.AppendFormat("{0} : {1}\n", p.Prop.Name, p.IsInherited);
         }
+
         return sb.ToString();
     }
 
@@ -37,12 +40,13 @@ public static class GenerationHelpers
         {
             return result;
         }
+
         var parent = GetSuperclassName(ast);
         if (IsDerivedFromNonBaseAstType(ast))
         {
             var inheritedProps = GetPropertyListInherited(GetNodeByName(parent)!)
-                .Select(p => new PropStatus { Prop = p.Prop, IsInherited = true })
-                .ToList();
+                                 .Select(p => new PropStatus { Prop = p.Prop, IsInherited = true })
+                                 .ToList();
             result.AddRange(inheritedProps);
         }
 
@@ -61,6 +65,7 @@ public static class GenerationHelpers
         {
             return false;
         }
+
         var parent = GetSuperclassName(ast);
         return parent != "AstNode" && parent != "TypeAstNode" && parent != "ScopedAstNode";
     }
@@ -71,7 +76,63 @@ public static class GenerationHelpers
         {
             return $"List<{astMetadata.InterfaceName ?? astMetadata!.Type}>";
         }
+
         return astMetadata!.Type;
+    }
+
+    public static string BuildTypeName(this Type type)
+    {
+        var sb = new StringBuilder();
+        if (type.IsGenericType)
+        {
+            if (type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                sb.Append("List<");
+                var sep = "";
+                foreach (var typeArgument in type.GenericTypeArguments)
+                {
+                    sb.Append(sep);
+                    sb.Append(BuildTypeName(typeArgument));
+                    sep = ", ";
+                }
+
+                sb.Append(">");
+            }
+
+            if (type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                sb.Append(BuildTypeName(type.GenericTypeArguments.First()));
+                sb.Append("?");
+            }
+
+            return sb.ToString();
+        }
+
+        return type.FullName;
+    }
+    public static string BuildInstanceTypeName(this Type type)
+    {
+        if ( !type.IsCollectionType())
+        {
+            return BuildTypeName(type);
+        }
+
+        if (type.IsGenericType)
+        {
+            return BuildTypeName(type.GetGenericArguments().First());
+        }
+
+        return type.FullName;
+    }
+
+    public static bool IsCollectionType(this Type t)
+    {
+        if (t.IsGenericType)
+        {
+            return t.GetGenericTypeDefinition() == typeof(List<>);
+        }
+
+        return false;
     }
 
     public static string PluralTypeInit(PropertySpec astMetadata)
@@ -80,6 +141,7 @@ public static class GenerationHelpers
         {
             return $"new List<{astMetadata.InterfaceName ?? astMetadata!.Type}>()";
         }
+
         return $"new {astMetadata!.Type}()";
     }
 }

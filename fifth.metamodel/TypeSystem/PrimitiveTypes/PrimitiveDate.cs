@@ -9,5 +9,6 @@ namespace Fifth.PrimitiveTypes
         }
 
         public static PrimitiveDate Default { get; } = new();
+        public override string IlAbbreviation => String.Empty;
     }
 }

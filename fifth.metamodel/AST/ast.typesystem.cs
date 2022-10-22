@@ -30,7 +30,6 @@ public interface ITypeChecker
     public IType Infer(IScope scope, ExpressionList node);
     public IType Infer(IScope scope, FifthProgram node);
     public IType Infer(IScope scope, FuncCallExpression node);
-    public IType Infer(IScope scope, BuiltinFunctionDefinition node);
     public IType Infer(IScope scope, FunctionDefinition node);
     public IType Infer(IScope scope, OverloadedFunctionDefinition node);
     public IType Infer(IScope scope, Identifier node);
@@ -47,7 +46,7 @@ public interface ITypeChecker
     public IType Infer(IScope scope, UnaryExpression node);
     public IType Infer(IScope scope, VariableDeclarationStatement node);
     public IType Infer(IScope scope, VariableReference node);
-    public IType Infer(IScope scope, CompoundVariableReference node);
+    public IType Infer(IScope scope, MemberAccessExpression node);
     public IType Infer(IScope scope, WhileExp node);
     public IType Infer(IScope scope, ExpressionStatement node);
     public IType Infer(IScope scope, Expression node);
@@ -87,7 +86,6 @@ public partial class FunctionalTypeChecker
             ExpressionList node => Infer(scope, node),
             FifthProgram node => Infer(scope, node),
             FuncCallExpression node => Infer(scope, node),
-            BuiltinFunctionDefinition node => Infer(scope, node),
             FunctionDefinition node => Infer(scope, node),
             OverloadedFunctionDefinition node => Infer(scope, node),
             Identifier node => Infer(scope, node),
@@ -104,7 +102,7 @@ public partial class FunctionalTypeChecker
             UnaryExpression node => Infer(scope, node),
             VariableDeclarationStatement node => Infer(scope, node),
             VariableReference node => Infer(scope, node),
-            CompoundVariableReference node => Infer(scope, node),
+            MemberAccessExpression node => Infer(scope, node),
             WhileExp node => Infer(scope, node),
             ExpressionStatement node => Infer(scope, node),
             Expression node => Infer(scope, node),

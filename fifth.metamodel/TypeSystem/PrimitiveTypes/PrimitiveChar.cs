@@ -16,5 +16,7 @@ namespace Fifth.PrimitiveTypes
         {
             return $"{left}{right}";
         }
+
+        public override string IlAbbreviation => "u2";
     }
 }

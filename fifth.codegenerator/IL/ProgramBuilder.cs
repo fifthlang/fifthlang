@@ -1,34 +1,24 @@
 namespace Fifth.CodeGeneration.IL;
 
 using System.Collections.Generic;
+using System.Text;
+using fifth.metamodel.metadata.il;
 
-public class ProgramDefinition
+public partial class ProgramDefinitionBuilder : BaseBuilder<ProgramDefinitionBuilder, ProgramDefinition>
 {
-    public List<ClassDefinition> Classes { get; set; }
-    public List<MethodDefinition> Functions { get; set; }
-    public string TargetAsmFileName { get; set; }
-}
-public class ProgramBuilder : BaseBuilder<ProgramBuilder, ProgramDefinition>
-{
-    private ProgramDefinition progdef;
-    public ProgramBuilder()
-    {
-        progdef = new ProgramDefinition();
-    }
     public override string Build()
     {
-        throw new NotImplementedException();
-    }
+        var sb = new StringBuilder();
 
-    public ProgramBuilder WithClass(ClassDefinition cd)
-    {
-        progdef.Classes.Add(cd);
-        return this;
-    }
+        foreach (var c in Model.Classes)
+        {
+            sb.AppendLine(ClassDefinitionBuilder.Create(c).Build());
+        }
+        foreach (var f in Model.Functions)
+        {
+            sb.AppendLine(MethodDefinitionBuilder.Create(f).Build());
+        }
 
-    public ProgramBuilder WithAsmFileName(string ctxTargetAssemblyFileName)
-    {
-        progdef.TargetAsmFileName = ctxTargetAssemblyFileName;
-        return this;
+        return sb.ToString();
     }
 }

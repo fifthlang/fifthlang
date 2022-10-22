@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
+    <ProjectReference Include="..\fifthlang.system\Fifth.System.csproj" />
   </ItemGroup>
   <ItemGroup Label="ILAsm NuGet Package">
     <PackageReference Include="runtime.win-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
@@ -18,6 +19,15 @@
   <ItemGroup>
     <None Remove="templates\il.main.stg" />
     <EmbeddedResource Include="templates\il.main.stg" />
+    <None Update="IL\il.builders.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>il.builders.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="IL\il.builders.cs">
+      <DependentUpon>il.builders.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Target Name="CopyIlasm" AfterTargets="Build">
     <Copy SourceFiles="$(Pkgruntime_win-x64_Microsoft_NETCore_ILAsm)/runtimes/win-x64/native/ilasm.exe" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />

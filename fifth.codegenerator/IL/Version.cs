@@ -1,72 +1,32 @@
 namespace Fifth.CodeGeneration.IL;
 
-public class Version
+using System.Text;
+
+public partial class VersionBuilder
 {
-    public Version(int Major, int? Minor, int? Build, int? Patch)
+    public char RenderingDelimiter { get; set; } = ':';
+
+    public override string Build()
     {
-        this.Major = Major;
-        this.Minor = Minor;
-        this.Build = Build;
-        this.Patch = Patch;
-    }
-
-    public Version() { }
-
-    public Version(string s)
-    {
-        var segs = Array.Empty<string>();
-        if (s.Contains('.'))
+        var sb = new StringBuilder();
+        sb.Append(Model.Major);
+        sb.Append(RenderingDelimiter);
+        if (Model.Minor.HasValue)
         {
-            segs = s.Split('.');
+            sb.Append(Model.Minor);
+            sb.Append(RenderingDelimiter);
         }
-        else if (s.Contains(':'))
+        if (Model.Build.HasValue)
         {
-            segs = s.Split(':');
+            sb.Append(Model.Build);
+            sb.Append(RenderingDelimiter);
         }
-
-        if (segs.Length > 0)
+        if (Model.Patch.HasValue)
         {
-            if (int.TryParse(segs[0], out var major))
-            {
-                Major = major;
-            }
+            sb.Append(Model.Patch);
+            sb.Append(RenderingDelimiter);
         }
 
-        if (segs.Length > 1)
-        {
-            if (int.TryParse(segs[1], out var minor))
-            {
-                Minor = minor;
-            }
-        }
-
-        if (segs.Length > 2)
-        {
-            if (int.TryParse(segs[2], out var build))
-            {
-                Build = build;
-            }
-        }
-
-        if (segs.Length > 3)
-        {
-            if (int.TryParse(segs[3], out var patch))
-            {
-                Patch = patch;
-            }
-        }
-    }
-
-    public int Major { get; init; }
-    public int? Minor { get; init; }
-    public int? Build { get; init; }
-    public int? Patch { get; init; }
-
-    public void Deconstruct(out int Major, out int? Minor, out int? Build, out int? Patch)
-    {
-        Major = this.Major;
-        Minor = this.Minor;
-        Build = this.Build;
-        Patch = this.Patch;
+        return sb.ToString();
     }
 }

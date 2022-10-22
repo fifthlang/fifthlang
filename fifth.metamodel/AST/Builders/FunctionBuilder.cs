@@ -2,6 +2,7 @@ namespace Fifth.AST.Builders;
 
 using System.Collections.Generic;
 using System.Linq;
+using fifth.metamodel.metadata;
 
 public partial class BlockBuilder
 {
@@ -42,7 +43,7 @@ public class FunctionBuilder
     {
         var pds = parameters.Select(x => new ParameterDeclaration(new Identifier(x.Item2), x.Item1, null, null)).Cast<IParameterListItem>().ToList();
         var paramDecls = new ParameterDeclarationList(pds);
-        var result = new FunctionDefinition(ParameterDeclarations: paramDecls, Body: body, Typename: returnTypeName, Name: name, IsEntryPoint: name == "main", FunctionKind: FunctionKind.Normal, ReturnType: returnType)
+        var result = new FunctionDefinition(ParameterDeclarations: paramDecls, Body: body, Typename: returnTypeName, Name: name,IsInstanceFunction: false, IsEntryPoint: name == "main", FunctionKind: FunctionKind.Normal, ReturnType: returnType)
         {
             ParentNode = parentNode
         };

@@ -6,6 +6,7 @@ using TypeSystem;
 using PrimitiveTypes;
 using TypeSystem.PrimitiveTypes;
 using System.Collections.Generic;
+using fifth.metamodel.metadata;
 
 <# foreach (var ast in asts)  {
 var someProps = GenerationHelpers.GetPropertyListInherited(ast);

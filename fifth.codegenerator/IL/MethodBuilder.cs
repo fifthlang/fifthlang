@@ -1,54 +1,44 @@
 namespace Fifth.CodeGeneration.IL;
 
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using BuiltinsGeneration;
+using fifth.metamodel.metadata;
+using fifth.metamodel.metadata.il;
 
-public class MethodDefinition
+public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuilder, MethodDefinition>
 {
-    public string Name { get; set; }
-    public string ReturnType { get; set; }
-    public List<ParameterDeclaration> Parameters { get; set; } = new();
-    public ILVisibility Visibility { get; set; }
-    public List<Statement> Body { get; set; } = new();
-}
-public class MethodBuilder : BaseBuilder<MethodBuilder, MethodDefinition>
-{
-    public MethodBuilder()
-    {
-        Model = new MethodDefinition();
-    }
-
-    public MethodBuilder WithName(string name)
-    {
-        Model.Name = name;
-        return this;
-    }
-    public MethodBuilder WithType(string typeName)
-    {
-        Model.ReturnType = typeName;
-        return this;
-    }
-    public MethodBuilder WithParameter(ParameterDeclaration parameterDeclaration)
-    {
-        Model.Parameters.Add(parameterDeclaration);
-        return this;
-    }
-
-    public MethodBuilder WithVisibility(ILVisibility visibility)
-    {
-        Model.Visibility = visibility;
-        return this;
-    }
-    public MethodBuilder WithStatement(Statement s)
-    {
-        Model.Body.Add(s);
-        return this;
-    }
-    /*public MethodBuilder With()
-    {
-        return this;
-    }*/
     public override string Build()
+    {
+        return Model.FunctionKind switch
+            {
+                FunctionKind.Normal => GenerateNormalFunction(),
+                FunctionKind.Ctor => GenerateDefaultCtorFunction(),
+                FunctionKind.Getter => GenerateGetterFunction(),
+                FunctionKind.Setter => GenerateSetterFunction()
+            }
+            ;
+    }
+
+    private string GenerateSetterFunction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private string GenerateGetterFunction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private string GenerateDefaultCtorFunction()
+    {
+        throw new NotImplementedException();
+    }
+
+
+
+    private string GenerateNormalFunction()
     {
         var sb = new StringBuilder();
         sb.Append($".method {Model.Visibility} {Model.ReturnType} {Model.Name}(");
@@ -60,12 +50,28 @@ public class MethodBuilder : BaseBuilder<MethodBuilder, MethodDefinition>
             sep = ", ";
         }
 
-        sb.AppendLine(")cil managed\n{");
-        foreach (var statement in Model.Body)
-        {
-            sb.AppendLine(StatementBuilder.Create(statement).Build());
-        }
-        sb.AppendLine("}");
+        sb.AppendLine(")cil managed\n");
+        sb.AppendLine(BlockBuilder.Create(Model.Body).Build());
+        sb.AppendLine("");
         return sb.ToString();
     }
+    /*
+        switch (ctx.FunctionKind)
+        {
+            case FunctionKind.BuiltIn:
+                GenerateBuiltinFunction(ctx);
+                break;
+            case FunctionKind.Normal:
+                GenerateNormalFunction(ctx);
+                break;
+            case FunctionKind.Ctor:
+                GenerateDefaultCtorFunction(ctx);
+                break;
+            case FunctionKind.Getter:
+                GenerateGetterFunction(ctx);
+                break;
+            case FunctionKind.Setter:
+                GenerateSetterFunction(ctx);
+                break;
+        }*/
 }

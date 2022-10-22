@@ -15,7 +15,8 @@ public static class FifthParserManager
         ast.Accept(new ClassCtorInserter());
         ast.Accept(new VerticalLinkageVisitor());
         ast.Accept(new PropertyToFieldExpander());
-        ast.Accept(new CompoundVariableSplitterVisitor());
+        // does this vvv need to be replaced with an equivalent for member accesses?
+        //ast.Accept(new CompoundVariableSplitterVisitor());
         ast.Accept(new OverloadGatheringVisitor());
         ast.Accept(new OverloadTransformingVisitor());
         ast.Accept(new VerticalLinkageVisitor());

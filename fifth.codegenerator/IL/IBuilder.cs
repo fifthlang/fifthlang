@@ -8,4 +8,5 @@ public interface IBuilder<TModel>
     string Build();
     string Build(TModel model);
     void Build(StreamWriter writer);
+    TModel New();
 }

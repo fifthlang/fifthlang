@@ -283,11 +283,7 @@ namespace Fifth.TypeSystem
             return result;
         }
 
-        public IType Infer(IScope scope, BuiltinFunctionDefinition node)
-        {
-            TypeNotRelevant(node);
-            return default;
-        }
+
 
         public IType Infer(IScope scope, OverloadedFunctionDefinition node)
         {
@@ -595,22 +591,11 @@ namespace Fifth.TypeSystem
             return result;
         }
 
-        public IType Infer(IScope scope, CompoundVariableReference node)
+        public IType Infer(IScope scope, MemberAccessExpression node)
         {
-            // this is a variable that, to be resolved, one must walk up a chain to find
-            var innerScope = scope;
-            foreach (var vr in node.ComponentReferences)
-            {
-                var itype = Infer(innerScope, vr);
-                if (itype is UserDefinedType udt)
-                {
-                    innerScope = udt.Definition;
-                }
-            }
-
-            var result = node.ComponentReferences.Last().TypeId.Lookup();
-            TypeInferred(node, result);
-            return result;
+            // TODO: Much more to do here...
+            Infer(node.LHS);
+            return Infer(node.RHS);
         }
 
         public IType Infer(IScope scope, WhileExp node)

@@ -18,4 +18,6 @@ public class AstNodeSpec
     public string Parent { get; set; }
     public string PostCtor { get; set; }
     public PropertySpec[] Props { get; set; }
+
+    public string[] Commentary { get; set; } = Array.Empty<string>();
 }

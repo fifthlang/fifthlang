@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-public class WhileStatement : Statement
-{
-    public Expression Conditional { get; set; }
-    public List<Statement> LoopBlock { get; set; } = new();
-}
+using fifth.metamodel.metadata.il;
 
 public class WhileStmtBuilder : BaseBuilder<WhileStmtBuilder, WhileStatement>
 {
@@ -27,7 +23,7 @@ public class WhileStmtBuilder : BaseBuilder<WhileStmtBuilder, WhileStatement>
         sb.AppendLine(ExpressionBuilder.Create(Model.Conditional).Build());
         sb.AppendLine($"brfalse.s LBL_END_{labelId}");
 
-        foreach (var statement in Model.LoopBlock)
+        foreach (var statement in Model.LoopBlock.Statements)
         {
             sb.AppendLine(StatementBuilder.Create(statement).Build());
         }
@@ -46,7 +42,7 @@ public class WhileStmtBuilder : BaseBuilder<WhileStmtBuilder, WhileStatement>
 
     public WhileStmtBuilder WithStatement(Statement statement)
     {
-        Model.LoopBlock.Add(statement);
+        Model.LoopBlock.Statements.Add(statement);
         return this;
     }
 }

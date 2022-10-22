@@ -58,19 +58,9 @@ public class StringifyVisitor : IAstVisitor
         EnterTerminal(ctx, ctx.OriginalText);
     }
 
-    public void EnterBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-    {
-        EnterNonTerminal(ctx, ctx.Name);
-    }
-
     public void EnterClassDefinition(ClassDefinition ctx)
     {
         EnterNonTerminal(ctx, ctx.Name);
-    }
-
-    public void EnterCompoundVariableReference(CompoundVariableReference ctx)
-    {
-        EnterNonTerminal(ctx, ctx.OriginalText);
     }
 
     public void EnterDateValueExpression(DateValueExpression ctx)
@@ -247,6 +237,11 @@ public class StringifyVisitor : IAstVisitor
         EnterTerminal(ctx, ctx.Name);
     }
 
+    public void LeaveMemberAccessExpression(MemberAccessExpression ctx)
+    {
+        LeaveNonTerminal(ctx);
+    }
+
     public void EnterWhileExp(WhileExp ctx)
     {
         EnterNonTerminal(ctx, "...");
@@ -292,11 +287,6 @@ public class StringifyVisitor : IAstVisitor
         LeaveTerminal(ctx);
     }
 
-    public void LeaveBuiltinFunctionDefinition(BuiltinFunctionDefinition ctx)
-    {
-        LeaveNonTerminal(ctx);
-    }
-
     public void LeaveClassDefinition(ClassDefinition ctx)
     {
         LeaveNonTerminal(ctx);
@@ -307,9 +297,9 @@ public class StringifyVisitor : IAstVisitor
         EnterNonTerminal(ctx, ctx.Name);
     }
 
-    public void LeaveCompoundVariableReference(CompoundVariableReference ctx)
+    public void EnterMemberAccessExpression(MemberAccessExpression ctx)
     {
-        LeaveNonTerminal(ctx);
+        EnterNonTerminal(ctx, ctx.OriginalText);
     }
 
     public void LeaveDateValueExpression(DateValueExpression ctx)

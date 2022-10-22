@@ -9,17 +9,20 @@ namespace fifthlang.system
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
     public static class GlobalBuiltinFunctions
     {
+        [BuiltinFunction]
         public static string read()
         {
             return Console.ReadLine();
         }
 
+        [BuiltinFunction]
         public static string write(string s)
         {
             Console.WriteLine(s);
             return s;
         }
 
+        [BuiltinFunction]
         public static double sqrt(double f)
         {
             return Math.Sqrt(f);

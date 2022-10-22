@@ -1,5 +1,12 @@
 grammar Fifth;
 
+call_site:
+      var_name                          # exp_callsite_varname
+    | function_call                     # exp_callsite_func_call
+    | OPENPAREN innerexp=exp CLOSEPAREN # exp_callsite_parenthesised
+    ;
+
+
 fifth
     : module_import* alias*
     ( functions+=function_declaration
@@ -10,6 +17,10 @@ fifth
 
 function_call
     : function_name OPENPAREN exp (COMMA exp)* CLOSEPAREN
+    ;
+
+member_access_expression:
+    segments+=call_site (DOT segments+=call_site)*
     ;
 
 module_import
@@ -39,9 +50,6 @@ property_declaration
     : name=IDENTIFIER  COLON type=IDENTIFIER SEMICOLON
     ;
 
-member_access
-    : DOT IDENTIFIER
-    ;
 
 type_initialiser
     : typename=type_name OPENBRACE
@@ -65,9 +73,8 @@ type_property_init
 // Ex: Foo(x:int, y:int):int { . . . }
 function_declaration
     : name=function_name
-      args=function_args
-      COLON
-      result_type=function_type
+        OPENPAREN (args+=paramdecl (COMMA args+=paramdecl)*)? CLOSEPAREN
+      COLON result_type=function_type
       body=function_body
     ;
 
@@ -83,15 +90,6 @@ function_type
     : IDENTIFIER
     ;
 
-// Ex: `x:int, y:float`
-formal_parameters
-    : paramdecl (COMMA paramdecl)*
-    ;
-
-// Ex: `( x:int, y:float )`
-function_args
-    : OPENPAREN formal_parameters? CLOSEPAREN
-    ;
 
 variable_constraint
     : BAR constraint=exp
@@ -100,7 +98,7 @@ variable_constraint
 // v2 Parameter declarations
 paramdecl
     : param_name COLON param_type
-        ( variable_constraint?
+        ( variable_constraint
         | destructuring_decl )?
     ;
 
@@ -131,19 +129,22 @@ block
     ;
 
 statement
-    : IF OPENPAREN condition=exp CLOSEPAREN ifpart=block (ELSE elsepart=block)? # SIfElse
-    | WHILE OPENPAREN condition=exp CLOSEPAREN looppart=block                   # SWhile
-    | WITH exp  block                                                           # SWith // this is not useful as is
-    | decl=var_decl (ASSIGN exp)?                                               # SVarDecl
-    | var_name ASSIGN exp                                                       # SAssignment
-    | RETURN exp                                                                # SReturn
-    | exp                                                                       # SBareExpression
+    : IF OPENPAREN condition=exp CLOSEPAREN ifpart=block (ELSE elsepart=block)? # stmt_ifelse
+    | WHILE OPENPAREN condition=exp CLOSEPAREN looppart=block                   # stmt_while
+    | WITH exp  block                                                           # stmt_with // this is not useful as is
+    | decl=var_decl (ASSIGN exp)?                                               # stmt_vardecl
+    | var_name ASSIGN exp                                                       # stmt_assignment
+    | RETURN exp                                                                # stmt_return
+    | exp                                                                       # stmt_bareexpression
     ;
 
 var_decl
     :  var_name COLON ( type_name | list_type_signature )
     ;
 
+identifier_chain
+    : segments+=IDENTIFIER (DOT segments+=IDENTIFIER)*
+    ;
 
 // ========[EXPRESSIONS]=========
 explist
@@ -151,57 +152,37 @@ explist
     ;
 
 exp
-    : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # ETypeCast
-    | value=truth_value                                             # EBool
-    | value=INT                                                     # EInt
-    | value=FLOAT                                                   # EDouble
-    | value=STRING                                                  # EString
-    | value=truth_value                                             # EBoolean
-    | value=list                                                    # EList
-    | NOT operand=exp                                               # ELogicNegation
-    | MINUS operand=exp                                             # EArithNegation
-    | left=exp LT right=exp                                         # ELT
-    | left=exp GT right=exp                                         # EGT
-    | left=exp LEQ right=exp                                        # ELEQ
-    | left=exp GEQ right=exp                                        # EGEQ
-    | left=exp AND right=exp                                        # EAnd
-    | left=exp PLUS right=exp                                       # EAdd
-    | left=exp MINUS right=exp                                      # ESub
-    | left=exp TIMES right=exp                                      # EMul
-    | left=exp DIVIDE right=exp                                     # EDiv
-    | var_name                                                      # EVarname
-    | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN   # EFuncCall
-    | OPENPAREN innerexp=exp CLOSEPAREN                             # EParen
-    | NEW type_initialiser                                          # ETypeCreateInst
+    : OPENPAREN type=type_name CLOSEPAREN subexp=exp                # exp_typecast
+    | value=truth_value                                             # exp_bool
+    | value=INT                                                     # exp_int
+    | value=FLOAT                                                   # exp_double
+    | value=STRING                                                  # exp_string
+    | value=truth_value                                             # exp_boolean
+    | value=list                                                    # exp_list
+    | NOT operand=exp                                               # exp_logicnegation
+    | MINUS operand=exp                                             # exp_arithnegation
+    | left=exp LT right=exp                                         # exp_lt
+    | left=exp GT right=exp                                         # exp_gt
+    | left=exp LEQ right=exp                                        # exp_leq
+    | left=exp GEQ right=exp                                        # exp_geq
+    | left=exp AND right=exp                                        # exp_and
+    | left=exp PLUS right=exp                                       # exp_add
+    | left=exp MINUS right=exp                                      # exp_sub
+    | left=exp TIMES right=exp                                      # exp_mul
+    | left=exp DIVIDE right=exp                                     # exp_div
+    | var_name                                                      # exp_varname
+    | funcname=function_name OPENPAREN (args=explist)? CLOSEPAREN   # exp_funccall
+    | OPENPAREN innerexp=exp CLOSEPAREN                             # exp_paren
+    | NEW type_initialiser                                          # exp_typecreateinst
+    | member_access_expression                                      # exp_memberaccess
     ;
 
 truth_value
     : value=TRUE | value=FALSE
     ;
 
-// Ex: `foo.bar.baz`
-identifier_chain
-    : segments+=IDENTIFIER (DOT segments+=IDENTIFIER)*
-    ;
-var_name
-    : identifier_chain
-    ;
-
 
 // ========[KNOWLEDGE GRAPHS]=========
-alias
-    : ALIAS name=packagename AS uri=absoluteIri SEMICOLON
-    ;
-
-iri
-    : qNameIri | absoluteIri
-    ;
-
-
-qNameIri
-    : prefix=IDENTIFIER? COLON fragname=IDENTIFIER
-    ;
-
 absoluteIri
     : iri_scheme=IDENTIFIER
       COLON DIVIDE DIVIDE
@@ -212,24 +193,23 @@ absoluteIri
       // (QMARK iri_query_param (AMP iri_query_param)*)?
     ;
 
+alias
+    : ALIAS name=packagename AS uri=absoluteIri SEMICOLON
+    ;
+
+iri
+    : qNameIri | absoluteIri
+    ;
+
+
 iri_query_param
     : name=IDENTIFIER ASSIGN val=IDENTIFIER
     ;
 
-
-
-// ========[LISTS]=========
-
-// int[] nums = [0,1,2,3,4,5,6,7,8,9],
-// int[] evens = [x | x <- nums, x % 2 == 0],
-// int[] odds  = [x | x <- nums, x % 2 == 1],
-// int[] recombined = evens + odds,
-// int[] fifths = [x*5 | x <- recombined],
-
-
-list_type_signature
-    : type_name OPENBRACK CLOSEBRACK
+qNameIri
+    : prefix=IDENTIFIER? COLON fragname=IDENTIFIER
     ;
+
 
 list
     : OPENBRACK body=list_body CLOSEBRACK
@@ -240,6 +220,13 @@ list_body
     | list_comprehension    #EListComprehension
     ;
 
+list_comp_constraint
+    : exp // must be of type PrimitiveBoolean
+    ;
+list_comp_generator
+    : varname=var_name GEN value=var_name
+    ;
+
 list_literal
     : explist
     ;
@@ -248,12 +235,14 @@ list_comprehension
     : varname=var_name BAR gen=list_comp_generator (COMMA constraints=list_comp_constraint)
     ;
 
-list_comp_generator
-    : varname=var_name GEN value=var_name
+list_type_signature
+    : type_name OPENBRACK CLOSEBRACK
     ;
 
-list_comp_constraint
-    : exp // must be of type PrimitiveBoolean
+
+
+var_name
+    : IDENTIFIER
     ;
 
 

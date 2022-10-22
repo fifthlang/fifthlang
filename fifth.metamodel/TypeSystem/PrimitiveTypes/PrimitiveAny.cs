@@ -9,5 +9,6 @@ namespace Fifth.TypeSystem.PrimitiveTypes
 
         public string Name { get; }
         public TypeId TypeId { get; set; }
+        public virtual string IlAbbreviation => String.Empty;
     }
 }
