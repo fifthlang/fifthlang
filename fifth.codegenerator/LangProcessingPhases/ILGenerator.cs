@@ -44,11 +44,7 @@ public class ILGenerator : BaseAstVisitor
                         .New();
     }
 
-    public override void LeaveAssembly(Assembly ctx)
-    {
-        var ab = AssemblyBuilders.Pop();
-        sb.AppendLine(ab.Build());
-    }
+    public override void LeaveAssembly(Assembly ctx) => Emit(AssemblyBuilders.Pop());
 
     public override void EnterAssemblyRef(AssemblyRef ctx)
     {
@@ -59,12 +55,7 @@ public class ILGenerator : BaseAstVisitor
                            .New();
     }
 
-    public override void LeaveAssemblyRef(AssemblyRef ctx)
-    {
-        var ab = AssemblyRefBuilders.Pop();
-        sb.AppendLine(ab.Build());
-    }
-
+    public override void LeaveAssemblyRef(AssemblyRef ctx) => Emit(AssemblyRefBuilders.Pop());
     public override void EnterClassDefinition(ClassDefinition ctx)
     {
         ClassBuilders.Push(IL.ClassDefinitionBuilder.Create());
