@@ -38,7 +38,21 @@ public class StatementBuilder : BaseBuilder<StatementBuilder, Statement>
     private string BuildVariableDeclaration(VariableDeclarationStatement vds)
     {
         var sb = new StringBuilder();
-        // there's not really anything to do here, because the locals section needs to be custom build in the function body
+        // assume that the variable declaration part is extracted out elsewhere to form a locals block.
+        // here we action the assignment part of the decl, if there is one.
+        if (vds.InitialisationExpression != null)
+        {
+            sb.AppendLine(ExpressionBuilder.Create(vds.InitialisationExpression).Build());
+            if (vds.Ordinal.HasValue && vds.Ordinal.Value < 4)
+            {
+                sb.AppendLine($"stloc.{vds.Ordinal}");
+            }
+            else
+            {
+                sb.AppendLine($"stloc.s {vds.Name}");
+            }
+
+        }
         return sb.ToString();
     }
 

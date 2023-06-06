@@ -42,9 +42,22 @@ public partial class ExpressionBuilder : BaseBuilder<ExpressionBuilder, Expressi
             BinaryExpression be => BuildBinaryExp(be),
             FuncCallExp fce => BuildFuncCall(fce),
             VariableReferenceExpression vre => BuildVarRef(vre),
+            MemberAccessExpression mae => BuildMemberAccess(mae),
             _ => ""
         };
         return result;
+    }
+
+    private string BuildMemberAccess(MemberAccessExpression mae)
+    {
+        var sb = new StringBuilder();
+        // TODO:  there probably needs to be lots more here about identifying the class, etc
+        sb.Append("ldloc.s ");
+        sb.AppendLine(Create(mae.Lhs).Build());
+        var t = "string";
+        // TODO:  Need to augment the IL AST to allow it to carry all the info needed for this kind of call
+        sb.AppendLine($"callvirt instance {t} [System.Runtime]System.Object::{Create(mae.Rhs).Build()}()");
+        return sb.ToString();
     }
 
     private string BuildVarRef(VariableReferenceExpression vre)
@@ -217,7 +230,25 @@ public partial class VariableReferenceExpressionBuilder
 
 public partial class VariableDeclarationStatementBuilder
 {
-    public override string Build() => throw new NotImplementedException();
+    public override string Build()
+    {
+        var sb = new StringBuilder();
+        if (Model.InitialisationExpression is not null)
+        {
+            sb.AppendLine(ExpressionBuilderFactory.Create(Model.InitialisationExpression).Build());
+        }
+
+        if (Model.Ordinal is not null && Model.Ordinal <= 4)
+        {
+            sb.AppendLine($"stloc.s {Model.Ordinal}");
+        }
+        else
+        {
+            sb.Append($"stloc {Model.Name}");
+        }
+
+        return sb.ToString();
+    }
 }
 
 public partial class ExpressionStatementBuilder

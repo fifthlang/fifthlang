@@ -5,10 +5,44 @@ using System.Collections.Generic;
 using CodeGeneration.IL;
 using fifth.metamodel.metadata.il;
 
+<#
+    Console.WriteLine("NON IGNORED TYPES:");
+    foreach (var t in nonIgnoredTypes)
+    {
+        PrintTypeProps(t);
+    }
+    Console.WriteLine();
+    Console.WriteLine("All IL TYPES:");
+    foreach (var t in allIlTypes)
+    {
+        PrintTypeProps(t);
+    }
+    Console.WriteLine();
+
+    Console.WriteLine("BUILDABLE TYPES:");
+    foreach (var t in buildableTypes)
+    {
+        PrintTypeProps(t);
+    }
+
+    Console.WriteLine();
+    void PrintTypeProps(System.Type t)
+    {
+        Console.Write($"type {t.Name}(");
+        if(t.IsAbstract) Console.Write('a');
+        if(t.IsGenericType) Console.Write('g');
+        if(t.IsGenericTypeParameter) Console.Write('T');
+        Console.WriteLine(')');
+    }
+#>
+
+
+
 
 <#
 foreach (var t in buildableTypes)
 {
+    //Console.WriteLine($"type {t.Name}");
     var allProps = t.BuildableProperties();
 
 #>
@@ -19,19 +53,28 @@ foreach (var t in buildableTypes)
             Model = new();
         }
 
-<# foreach (var prop in allProps)  { #>
+<#
+    foreach (var prop in allProps)
+    {
+        //Console.WriteLine($"prop {prop.Name}");
+#>
         public <#= t.Name #>Builder With<#= prop.Name #>(<#= prop.PropertyType.BuildTypeName() #> value){
             Model.<#= prop.Name #> = value;
             return this;
         }
 
 <#
-    if (prop.PropertyType.IsCollectionType()){#>
+        if (prop.PropertyType.IsCollectionType()){
+#>
         public <#= t.Name #>Builder AddingItemTo<#= prop.Name #>(<#= prop.PropertyType.BuildInstanceTypeName() #> value){
             Model.<#= prop.Name #>.Add(value);
             return this;
         }
-<#    }  /*if (prop.IsCollection)*/ #>
-<# } /* foreach prop */ #>
+<#
+        }  /*if (prop.IsCollection)*/
+#>
+<#
+    } /* foreach prop */
+#>
     }
 <# } /*for each ast*/ #>

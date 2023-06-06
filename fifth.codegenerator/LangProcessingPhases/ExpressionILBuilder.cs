@@ -47,9 +47,9 @@ public class ExpressionILBuilder
     private static Expression GenerateMemberAccess(MemberAccessExpression mae)
     {
         return MemberAccessExpressionBuilder.Create()
-                                     .WithLhs(Generate(mae.LHS))
-                                     .WithRhs(Generate(mae.RHS))
-                                     .New();
+                                            .WithLhs(Generate(mae.LHS))
+                                            .WithRhs(Generate(mae.RHS))
+                                            .New();
     }
 
     static int? GetVarOrdinal(VariableReference ctx)
@@ -71,8 +71,8 @@ public class ExpressionILBuilder
     static Expression GenerateVarRef(VariableReference ctx)
     {
         var vrb = VariableReferenceExpressionBuilder.Create()
-            .WithName(ctx.Name)
-            .WithSymTabEntry(ctx.SymTabEntry);
+                                                    .WithName(ctx.Name)
+                                                    .WithSymTabEntry(ctx.SymTabEntry);
         var ord = GetVarOrdinal(ctx);
         if (ord.HasValue)
         {
@@ -81,7 +81,7 @@ public class ExpressionILBuilder
 
         vrb.WithIsParameterReference(ord.HasValue);
 
-        return vrb .New();
+        return vrb.New();
     }
 
     static Expression GenerateTypeCast(TypeCast e)
@@ -139,8 +139,9 @@ public class ExpressionILBuilder
 
     static Expression GenerateBinary(BinaryExpression e)
     {
+        var opcode = ToIlOpCode(e.Op);
         return BinaryExpressionBuilder.Create()
-                                      .WithOp(e.Op.ToString())
+                                      .WithOp(opcode)
                                       .WithLHS(Generate(e.Left))
                                       .WithRHS(Generate(e.Right))
                                       .New();
@@ -152,5 +153,14 @@ public class ExpressionILBuilder
                                      .WithOp(e.Op.ToString())
                                      .WithExp(Generate(e.Operand))
                                      .New();
+    }
+
+    static string? ToIlOpCode(Operator? op)
+    {
+        if (!op.HasValue)
+        {
+            return String.Empty;
+        }
+        return op.Value.ToIlOpCode();
     }
 }

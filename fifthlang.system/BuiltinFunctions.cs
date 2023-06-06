@@ -7,7 +7,7 @@ namespace fifthlang.system
     using System.Diagnostics.CodeAnalysis;
 
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
-    public static class GlobalBuiltinFunctions
+    public static class IO
     {
         [BuiltinFunction]
         public static string read()
@@ -22,21 +22,18 @@ namespace fifthlang.system
             return s;
         }
 
+
+    }
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Uses the naming conventions of fifth, not csharp")]
+    public static class Math
+    {
+
+
         [BuiltinFunction]
         public static double sqrt(double f)
         {
-            return Math.Sqrt(f);
+            return System.Math.Sqrt(f);
         }
 
-        /*[Builtin(Keyword = "map")]
-        public static List<object> map(List<object> l, FuncWrapper f)
-        {
-            foreach (var item in l)
-            {
-                f.Invoke(item);
-            }
-
-            return l;
-        }*/
     }
 }

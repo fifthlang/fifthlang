@@ -16,6 +16,7 @@ public class FluentILGenerationTests
     {
         var sut = AssemblyDeclarationBuilder.Create()
                                             .WithName("Foo")
+                                            .WithProgram(ProgramDefinitionBuilder.Create().WithTargetAsmFileName("helloworld").New())
                                             .WithVersion(new Version(1, 2, 3, 4))
                                             .Build();
         sut.Should().NotBeNull()

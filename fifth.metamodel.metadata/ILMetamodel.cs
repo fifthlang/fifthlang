@@ -22,19 +22,14 @@ public enum ILVisibility
 
 public class ClassDefinition
 {
-    public ClassDefinition()
-    {
-        Fields = new List<FieldDefinition>();
-        Properties = new List<PropertyDefinition>();
-        Methods = new List<MethodDefinition>();
-    }
-
-    public List<FieldDefinition> Fields { get; set; }
-    public List<PropertyDefinition> Properties { get; set; }
-    public List<MethodDefinition> Methods { get; set; }
+    public List<FieldDefinition> Fields { get; set; } = new();
+    public List<PropertyDefinition> Properties { get; set; } = new();
+    public List<MethodDefinition> Methods { get; set; } = new();
     public string Name { get; set; }
-    public ILVisibility Visibility { get; set; }
-    public string BaseClassName { get; set; }
+    public string Namespace { get; set; }
+    public List<ClassDefinition> BaseClasses { get; set; } = new();
+    public AssemblyDeclaration ParentAssembly { get; set; }
+    public ILVisibility Visibility { get; set; } = ILVisibility.Private;
 }
 
 public abstract class Expression
@@ -122,6 +117,25 @@ public interface ILiteralValue
     public string TypeName { get; }
 }
 
+public enum MemberType
+{
+    Unknown,
+    Field,
+    Property,
+    Method
+}
+
+[Ignore]
+public abstract class MemberDefinition
+{
+    public ClassDefinition ParentClass { get; set; }
+    public MemberType TypeOfMember { get; set; }
+    public bool IsVirtual { get; set; }
+    public bool IsStatic { get; set; }
+    public ILVisibility Visibility { get; set; }
+
+}
+
 public class MemberAccessExpression : Expression
 {
     public Expression Lhs { get; set; }
@@ -135,11 +149,10 @@ public class VariableReferenceExpression : Expression
     public int Ordinal { get; set; }
 }
 
-public class FieldDefinition
+public class FieldDefinition : MemberDefinition
 {
     public string TypeName { get; set; }
     public string Name { get; set; }
-    public ILVisibility Visibility { get; set; }
 }
 
 public class IfStatement : Statement
@@ -149,7 +162,7 @@ public class IfStatement : Statement
     public Block? ElseBlock { get; set; } = new();
 }
 
-public class MethodDefinition
+public class MethodDefinition : MemberDefinition
 {
     public string Name { get; set; }
     public string ReturnType { get; set; }
@@ -184,14 +197,14 @@ public class ProgramDefinition
 
 }
 
-public class PropertyDefinition
+public class PropertyDefinition : MemberDefinition
 {
     public string TypeName { get; set; }
     public string Name { get; set; }
-    public ILVisibility Visibility { get; set; }
-    public ClassDefinition OwningClass { get; set; }
+    public FieldDefinition? FieldDefinition { get; set; }
 }
 
+[Ignore]
 public abstract class Statement
 {}
 
@@ -225,7 +238,7 @@ public class Version
         this.Patch = Patch;
     }
 
-    public Version() { }
+    public Version():this(0,0,0,0) { }
 
     public Version(string s)
     {

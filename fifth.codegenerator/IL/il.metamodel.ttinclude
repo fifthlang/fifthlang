@@ -5,11 +5,14 @@
 <#@ assembly name="System.Collections" #>
 <#@ assembly name="Microsoft.CSharp" #>
 <#@ assembly name="fifth.metamodel.metadata.dll" #>
+<#@ import namespace="System" #>
 <#@ import namespace="System.Dynamic" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="fifth.metamodel.metadata" #>
 <#
-    var buildableTypes =   ILMetamodelProvider.BuildableTypes;
+    var allIlTypes = ILMetamodelProvider.AllILTypes;
+    var buildableTypes = ILMetamodelProvider.BuildableTypes;
+    var nonIgnoredTypes = ILMetamodelProvider.NonIgnoredTypes;
 #>

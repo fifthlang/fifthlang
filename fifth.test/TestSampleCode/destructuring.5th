@@ -20,6 +20,6 @@ calculate_bmi(p: Person {
         Age = 65,
         Weight = 100
     };
-    print(calculate_bmi(eric));
+    IO.write(calculate_bmi(eric));
 }
 

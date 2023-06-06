@@ -148,8 +148,10 @@ public class AstBuilderVisitor : FifthBaseVisitor<IAstNode>
 
     public override IAstNode VisitStmt_bareexpression(FifthParser.Stmt_bareexpressionContext context)
     {
-        throw new NotImplementedException();
-        //return base.VisitStmt_bareexpression(context);
+        return ExpressionStatementBuilder.CreateExpressionStatement()
+                                  .WithExpression((Expression)Visit(context.exp()))
+                                  .Build().CaptureLocation(context.Start);
+
     }
 
     public override IAstNode VisitIdentifier_chain(FifthParser.Identifier_chainContext context)

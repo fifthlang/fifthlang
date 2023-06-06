@@ -16,6 +16,7 @@ using ParameterDeclaration = AST.ParameterDeclaration;
 using PropertyDefinition = AST.PropertyDefinition;
 using ReturnStatement = AST.ReturnStatement;
 using Statement = fifth.metamodel.metadata.il.Statement;
+using VariableDeclarationStatement = AST.VariableDeclarationStatement;
 
 /// <summary>
 ///     A visitor responsible for translating the AST into an IL-oriented AST se[pcific to IL code generation.
@@ -166,6 +167,12 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
         {
             switch(s)
             {
+                case VariableDeclarationStatement vds:
+                    VisitVariableDeclarationStatement(vds);
+                    break;
+                case AssignmentStmt ass:
+                    VisitAssignmentStmt(ass);
+                    break;
                 case ReturnStatement rs:
                     VisitReturnStatement(rs);
                     break;
@@ -181,7 +188,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
                 default:
                     break;
             }
-            Visit(s);
+            //Visit(s);
         }
 
         // don't insert into recipient (they must do that since only the caller knows the context

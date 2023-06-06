@@ -90,29 +90,10 @@ public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuild
         sb.AppendLine(")cil managed\n")
           .AppendLine("{")
           .AppendLine(GenerateLocalsDecls())
-          .AppendLine(BlockBuilder.Create(Model.Body).Build())
+          .AppendLine(BlockBuilder.Create(Model.Body).Build(false))
           .AppendLine("}");
         return sb.ToString();
     }
-    /*
-        switch (ctx.FunctionKind)
-        {
-            case FunctionKind.BuiltIn:
-                GenerateBuiltinFunction(ctx);
-                break;
-            case FunctionKind.Normal:
-                GenerateNormalFunction(ctx);
-                break;
-            case FunctionKind.Ctor:
-                GenerateDefaultCtorFunction(ctx);
-                break;
-            case FunctionKind.Getter:
-                GenerateGetterFunction(ctx);
-                break;
-            case FunctionKind.Setter:
-                GenerateSetterFunction(ctx);
-                break;
-        }*/
 
     public string MapType(TypeId tid)
     {

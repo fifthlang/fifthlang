@@ -21,7 +21,8 @@ namespace Fifth.LangProcessingPhases
     {
         public override void EnterFifthProgram(FifthProgram ctx)
         {
-            WrapType(typeof(GlobalBuiltinFunctions));
+            WrapType(typeof(fifthlang.system.IO));
+            WrapType(typeof(fifthlang.system.Math));
 
 
             // ctx.Functions.Add(new BuiltinFunctionDefinition("print", "void", ("format", "string"), ("value", "string")));
@@ -36,18 +37,22 @@ namespace Fifth.LangProcessingPhases
                 return;
             }
 
+            var type = new TypeReflector(t);
+            var fields = from f in type.Fields select WrapField(f);
+            var properties = from p in type.Properties select WrapProperty(p);
+            var methods = from m in type.Methods where m.IsPublic && m.IsStatic select WrapMethod(m);
+
             var c = ClassDefinitionBuilder.CreateClassDefinition()
                                           .WithName(t.Name)
-                                          .WithFields(t.GetFields().Select(fi => WrapField(fi)).ToList())
-                                          .WithProperties(t.GetProperties().Select(pi => WrapProperty(pi)).ToList())
-                                          .WithFunctions(t.GetMethods(BindingFlags.Public|BindingFlags.Static|BindingFlags.Instance)
-                                                          .Select(mi => WrapMethod(mi)).ToList())
+                                          .WithFields(fields.ToList())
+                                          .WithProperties(properties.ToList())
+                                          .WithFunctions(methods.ToList())
                                           .Build();
             var userDefinedType = new UserDefinedType(c);
             TypeRegistry.DefaultRegistry.RegisterType(userDefinedType);
         }
 
-        public FieldDefinition WrapField(FieldInfo fi)
+        public FieldDefinition WrapField(FieldReflector fi)
         {
             if (TypeRegistry.DefaultRegistry.TryLookupType(fi.FieldType, out var ft))
             {
@@ -60,7 +65,7 @@ namespace Fifth.LangProcessingPhases
             return default;
         }
 
-        public PropertyDefinition WrapProperty(PropertyInfo pi)
+        public PropertyDefinition WrapProperty(PropertyReflector pi)
         {
             if (TypeRegistry.DefaultRegistry.TryLookupType(pi.PropertyType, out var ft))
             {
@@ -73,7 +78,7 @@ namespace Fifth.LangProcessingPhases
             return default;
         }
 
-        private IFunctionDefinition WrapMethod(MethodInfo mi)
+        private IFunctionDefinition WrapMethod(MethodReflector mi)
         {
             if (!TypeRegistry.DefaultRegistry.TryLookupType(mi.ReturnType, out var rettype))
             {
@@ -87,9 +92,9 @@ namespace Fifth.LangProcessingPhases
                                                    .WithIsEntryPoint(false);
 
             var pdlb = ParameterDeclarationListBuilder.CreateParameterDeclarationList();
-            foreach (var pi in mi.GetParameters())
+            foreach (var pi in mi.Parameters)
             {
-                if (TypeRegistry.DefaultRegistry.TryLookupType(pi.ParameterType, out var paramtype))
+                if (TypeRegistry.DefaultRegistry.TryLookupType(pi.ParamType, out var paramtype))
                 {
                     pdlb.AddingItemToParameterDeclarations(
                         ParameterDeclarationBuilder.CreateParameterDeclaration()
@@ -102,7 +107,7 @@ namespace Fifth.LangProcessingPhases
 
             builder.WithParameterDeclarations(pdlb.Build());
 
-            var argsAsExpressions = mi.GetParameters().Select(pi => (AST.Expression)VariableReferenceBuilder
+            var argsAsExpressions = mi.Parameters.Select(pi => (AST.Expression)VariableReferenceBuilder
                 .CreateVariableReference()
                 .WithName(pi.Name)
                 .Build());

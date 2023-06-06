@@ -6,6 +6,9 @@ using CodeGeneration.IL;
 using fifth.metamodel.metadata.il;
 
 
+
+
+
     public partial class AssemblyDeclarationBuilder : BaseBuilder<AssemblyDeclarationBuilder,fifth.metamodel.metadata.il.AssemblyDeclaration>
     {
         public AssemblyDeclarationBuilder()
@@ -52,6 +55,46 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class BinaryExpressionBuilder : BaseBuilder<BinaryExpressionBuilder,fifth.metamodel.metadata.il.BinaryExpression>
+    {
+        public BinaryExpressionBuilder()
+        {
+            Model = new();
+        }
+
+        public BinaryExpressionBuilder WithOp(System.String value){
+            Model.Op = value;
+            return this;
+        }
+
+        public BinaryExpressionBuilder WithLHS(fifth.metamodel.metadata.il.Expression value){
+            Model.LHS = value;
+            return this;
+        }
+
+        public BinaryExpressionBuilder WithRHS(fifth.metamodel.metadata.il.Expression value){
+            Model.RHS = value;
+            return this;
+        }
+
+    }
+    public partial class BlockBuilder : BaseBuilder<BlockBuilder,fifth.metamodel.metadata.il.Block>
+    {
+        public BlockBuilder()
+        {
+            Model = new();
+        }
+
+        public BlockBuilder WithStatements(List<fifth.metamodel.metadata.il.Statement> value){
+            Model.Statements = value;
+            return this;
+        }
+
+        public BlockBuilder AddingItemToStatements(fifth.metamodel.metadata.il.Statement value){
+            Model.Statements.Add(value);
+            return this;
+        }
+    }
     public partial class ClassDefinitionBuilder : BaseBuilder<ClassDefinitionBuilder,fifth.metamodel.metadata.il.ClassDefinition>
     {
         public ClassDefinitionBuilder()
@@ -91,77 +134,83 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public ClassDefinitionBuilder WithNamespace(System.String value){
+            Model.Namespace = value;
+            return this;
+        }
+
+        public ClassDefinitionBuilder WithBaseClasses(List<fifth.metamodel.metadata.il.ClassDefinition> value){
+            Model.BaseClasses = value;
+            return this;
+        }
+
+        public ClassDefinitionBuilder AddingItemToBaseClasses(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.BaseClasses.Add(value);
+            return this;
+        }
+        public ClassDefinitionBuilder WithParentAssembly(fifth.metamodel.metadata.il.AssemblyDeclaration value){
+            Model.ParentAssembly = value;
+            return this;
+        }
+
         public ClassDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
             Model.Visibility = value;
             return this;
         }
 
-        public ClassDefinitionBuilder WithBaseClassName(System.String value){
-            Model.BaseClassName = value;
-            return this;
-        }
-
     }
-    public partial class UnaryExpressionBuilder : BaseBuilder<UnaryExpressionBuilder,fifth.metamodel.metadata.il.UnaryExpression>
+    public partial class ExpressionStatementBuilder : BaseBuilder<ExpressionStatementBuilder,fifth.metamodel.metadata.il.ExpressionStatement>
     {
-        public UnaryExpressionBuilder()
+        public ExpressionStatementBuilder()
         {
             Model = new();
         }
 
-        public UnaryExpressionBuilder WithOp(System.String value){
-            Model.Op = value;
-            return this;
-        }
-
-        public UnaryExpressionBuilder WithExp(fifth.metamodel.metadata.il.Expression value){
-            Model.Exp = value;
-            return this;
-        }
-
-    }
-    public partial class BinaryExpressionBuilder : BaseBuilder<BinaryExpressionBuilder,fifth.metamodel.metadata.il.BinaryExpression>
-    {
-        public BinaryExpressionBuilder()
-        {
-            Model = new();
-        }
-
-        public BinaryExpressionBuilder WithOp(System.String value){
-            Model.Op = value;
-            return this;
-        }
-
-        public BinaryExpressionBuilder WithLHS(fifth.metamodel.metadata.il.Expression value){
-            Model.LHS = value;
-            return this;
-        }
-
-        public BinaryExpressionBuilder WithRHS(fifth.metamodel.metadata.il.Expression value){
-            Model.RHS = value;
-            return this;
-        }
-
-    }
-    public partial class TypeCastExpressionBuilder : BaseBuilder<TypeCastExpressionBuilder,fifth.metamodel.metadata.il.TypeCastExpression>
-    {
-        public TypeCastExpressionBuilder()
-        {
-            Model = new();
-        }
-
-        public TypeCastExpressionBuilder WithTargetTypeName(System.String value){
-            Model.TargetTypeName = value;
-            return this;
-        }
-
-        public TypeCastExpressionBuilder WithTargetTypeCilName(System.String value){
-            Model.TargetTypeCilName = value;
-            return this;
-        }
-
-        public TypeCastExpressionBuilder WithExpression(fifth.metamodel.metadata.il.Expression value){
+        public ExpressionStatementBuilder WithExpression(fifth.metamodel.metadata.il.Expression value){
             Model.Expression = value;
+            return this;
+        }
+
+    }
+    public partial class FieldDefinitionBuilder : BaseBuilder<FieldDefinitionBuilder,fifth.metamodel.metadata.il.FieldDefinition>
+    {
+        public FieldDefinitionBuilder()
+        {
+            Model = new();
+        }
+
+        public FieldDefinitionBuilder WithTypeName(System.String value){
+            Model.TypeName = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.ParentClass = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithTypeOfMember(fifth.metamodel.metadata.il.MemberType value){
+            Model.TypeOfMember = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsVirtual(System.Boolean value){
+            Model.IsVirtual = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsStatic(System.Boolean value){
+            Model.IsStatic = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
+            Model.Visibility = value;
             return this;
         }
 
@@ -207,75 +256,6 @@ using fifth.metamodel.metadata.il;
             return this;
         }
     }
-    public partial class MemberAccessExpressionBuilder : BaseBuilder<MemberAccessExpressionBuilder,fifth.metamodel.metadata.il.MemberAccessExpression>
-    {
-        public MemberAccessExpressionBuilder()
-        {
-            Model = new();
-        }
-
-        public MemberAccessExpressionBuilder WithLhs(fifth.metamodel.metadata.il.Expression value){
-            Model.Lhs = value;
-            return this;
-        }
-
-        public MemberAccessExpressionBuilder WithRhs(fifth.metamodel.metadata.il.Expression value){
-            Model.Rhs = value;
-            return this;
-        }
-
-    }
-    public partial class VariableReferenceExpressionBuilder : BaseBuilder<VariableReferenceExpressionBuilder,fifth.metamodel.metadata.il.VariableReferenceExpression>
-    {
-        public VariableReferenceExpressionBuilder()
-        {
-            Model = new();
-        }
-
-        public VariableReferenceExpressionBuilder WithName(System.String value){
-            Model.Name = value;
-            return this;
-        }
-
-        public VariableReferenceExpressionBuilder WithSymTabEntry(System.Object value){
-            Model.SymTabEntry = value;
-            return this;
-        }
-
-        public VariableReferenceExpressionBuilder WithIsParameterReference(System.Boolean value){
-            Model.IsParameterReference = value;
-            return this;
-        }
-
-        public VariableReferenceExpressionBuilder WithOrdinal(System.Int32 value){
-            Model.Ordinal = value;
-            return this;
-        }
-
-    }
-    public partial class FieldDefinitionBuilder : BaseBuilder<FieldDefinitionBuilder,fifth.metamodel.metadata.il.FieldDefinition>
-    {
-        public FieldDefinitionBuilder()
-        {
-            Model = new();
-        }
-
-        public FieldDefinitionBuilder WithTypeName(System.String value){
-            Model.TypeName = value;
-            return this;
-        }
-
-        public FieldDefinitionBuilder WithName(System.String value){
-            Model.Name = value;
-            return this;
-        }
-
-        public FieldDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
-            Model.Visibility = value;
-            return this;
-        }
-
-    }
     public partial class IfStatementBuilder : BaseBuilder<IfStatementBuilder,fifth.metamodel.metadata.il.IfStatement>
     {
         public IfStatementBuilder()
@@ -295,6 +275,24 @@ using fifth.metamodel.metadata.il;
 
         public IfStatementBuilder WithElseBlock(fifth.metamodel.metadata.il.Block value){
             Model.ElseBlock = value;
+            return this;
+        }
+
+    }
+    public partial class MemberAccessExpressionBuilder : BaseBuilder<MemberAccessExpressionBuilder,fifth.metamodel.metadata.il.MemberAccessExpression>
+    {
+        public MemberAccessExpressionBuilder()
+        {
+            Model = new();
+        }
+
+        public MemberAccessExpressionBuilder WithLhs(fifth.metamodel.metadata.il.Expression value){
+            Model.Lhs = value;
+            return this;
+        }
+
+        public MemberAccessExpressionBuilder WithRhs(fifth.metamodel.metadata.il.Expression value){
+            Model.Rhs = value;
             return this;
         }
 
@@ -340,23 +338,26 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-    }
-    public partial class BlockBuilder : BaseBuilder<BlockBuilder,fifth.metamodel.metadata.il.Block>
-    {
-        public BlockBuilder()
-        {
-            Model = new();
-        }
-
-        public BlockBuilder WithStatements(List<fifth.metamodel.metadata.il.Statement> value){
-            Model.Statements = value;
+        public MethodDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.ParentClass = value;
             return this;
         }
 
-        public BlockBuilder AddingItemToStatements(fifth.metamodel.metadata.il.Statement value){
-            Model.Statements.Add(value);
+        public MethodDefinitionBuilder WithTypeOfMember(fifth.metamodel.metadata.il.MemberType value){
+            Model.TypeOfMember = value;
             return this;
         }
+
+        public MethodDefinitionBuilder WithIsVirtual(System.Boolean value){
+            Model.IsVirtual = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsStatic(System.Boolean value){
+            Model.IsStatic = value;
+            return this;
+        }
+
     }
     public partial class ModuleDeclarationBuilder : BaseBuilder<ModuleDeclarationBuilder,fifth.metamodel.metadata.il.ModuleDeclaration>
     {
@@ -442,13 +443,87 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public PropertyDefinitionBuilder WithFieldDefinition(fifth.metamodel.metadata.il.FieldDefinition value){
+            Model.FieldDefinition = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.ParentClass = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithTypeOfMember(fifth.metamodel.metadata.il.MemberType value){
+            Model.TypeOfMember = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsVirtual(System.Boolean value){
+            Model.IsVirtual = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsStatic(System.Boolean value){
+            Model.IsStatic = value;
+            return this;
+        }
+
         public PropertyDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
             Model.Visibility = value;
             return this;
         }
 
-        public PropertyDefinitionBuilder WithOwningClass(fifth.metamodel.metadata.il.ClassDefinition value){
-            Model.OwningClass = value;
+    }
+    public partial class ReturnStatementBuilder : BaseBuilder<ReturnStatementBuilder,fifth.metamodel.metadata.il.ReturnStatement>
+    {
+        public ReturnStatementBuilder()
+        {
+            Model = new();
+        }
+
+        public ReturnStatementBuilder WithExp(fifth.metamodel.metadata.il.Expression value){
+            Model.Exp = value;
+            return this;
+        }
+
+    }
+    public partial class TypeCastExpressionBuilder : BaseBuilder<TypeCastExpressionBuilder,fifth.metamodel.metadata.il.TypeCastExpression>
+    {
+        public TypeCastExpressionBuilder()
+        {
+            Model = new();
+        }
+
+        public TypeCastExpressionBuilder WithTargetTypeName(System.String value){
+            Model.TargetTypeName = value;
+            return this;
+        }
+
+        public TypeCastExpressionBuilder WithTargetTypeCilName(System.String value){
+            Model.TargetTypeCilName = value;
+            return this;
+        }
+
+        public TypeCastExpressionBuilder WithExpression(fifth.metamodel.metadata.il.Expression value){
+            Model.Expression = value;
+            return this;
+        }
+
+    }
+    public partial class UnaryExpressionBuilder : BaseBuilder<UnaryExpressionBuilder,fifth.metamodel.metadata.il.UnaryExpression>
+    {
+        public UnaryExpressionBuilder()
+        {
+            Model = new();
+        }
+
+        public UnaryExpressionBuilder WithOp(System.String value){
+            Model.Op = value;
+            return this;
+        }
+
+        public UnaryExpressionBuilder WithExp(fifth.metamodel.metadata.il.Expression value){
+            Model.Exp = value;
             return this;
         }
 
@@ -504,15 +579,30 @@ using fifth.metamodel.metadata.il;
         }
 
     }
-    public partial class ReturnStatementBuilder : BaseBuilder<ReturnStatementBuilder,fifth.metamodel.metadata.il.ReturnStatement>
+    public partial class VariableReferenceExpressionBuilder : BaseBuilder<VariableReferenceExpressionBuilder,fifth.metamodel.metadata.il.VariableReferenceExpression>
     {
-        public ReturnStatementBuilder()
+        public VariableReferenceExpressionBuilder()
         {
             Model = new();
         }
 
-        public ReturnStatementBuilder WithExp(fifth.metamodel.metadata.il.Expression value){
-            Model.Exp = value;
+        public VariableReferenceExpressionBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public VariableReferenceExpressionBuilder WithSymTabEntry(System.Object value){
+            Model.SymTabEntry = value;
+            return this;
+        }
+
+        public VariableReferenceExpressionBuilder WithIsParameterReference(System.Boolean value){
+            Model.IsParameterReference = value;
+            return this;
+        }
+
+        public VariableReferenceExpressionBuilder WithOrdinal(System.Int32 value){
+            Model.Ordinal = value;
             return this;
         }
 
@@ -559,19 +649,6 @@ using fifth.metamodel.metadata.il;
 
         public WhileStatementBuilder WithLoopBlock(fifth.metamodel.metadata.il.Block value){
             Model.LoopBlock = value;
-            return this;
-        }
-
-    }
-    public partial class ExpressionStatementBuilder : BaseBuilder<ExpressionStatementBuilder,fifth.metamodel.metadata.il.ExpressionStatement>
-    {
-        public ExpressionStatementBuilder()
-        {
-            Model = new();
-        }
-
-        public ExpressionStatementBuilder WithExpression(fifth.metamodel.metadata.il.Expression value){
-            Model.Expression = value;
             return this;
         }
 

@@ -4,15 +4,16 @@ using System.Text;
 
 public partial class BlockBuilder
 {
-    public override string Build()
+    public override string Build() => Build(true);
+    public string Build(bool encloseInBraces)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("{");
+        if(encloseInBraces) sb.AppendLine("{");
         foreach (var statement in Model.Statements)
         {
             sb.AppendLine(StatementBuilder.Create(statement).Build());
         }
-        sb.AppendLine("}");
+        if(encloseInBraces) sb.AppendLine("}");
         return sb.ToString();
     }
 }

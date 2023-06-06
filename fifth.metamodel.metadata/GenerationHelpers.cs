@@ -82,6 +82,7 @@ public static class GenerationHelpers
 
     public static string BuildTypeName(this Type type)
     {
+        //Console.WriteLine($"Building type name for {type}");
         var sb = new StringBuilder();
         if (type.IsGenericType)
         {

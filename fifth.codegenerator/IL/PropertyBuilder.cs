@@ -9,7 +9,7 @@ public partial class PropertyDefinitionBuilder: BaseBuilder<PropertyDefinitionBu
     {
         var sb = new StringBuilder();
 
-            var className = Model.OwningClass?.Name ?? "Program";
+            var className = Model.ParentClass?.Name ?? "Program";
             sb.AppendLine($"  .property instance {Model.TypeName} {Model.Name}(){{");
             sb.AppendLine($"      .get instance {Model.TypeName} {className}::get_{Model.Name}()");
             sb.AppendLine($"      .set instance void {className}::set_{Model.Name}({Model.TypeName})");
