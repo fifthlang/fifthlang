@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
     <RootNamespace>Fifth.Test</RootNamespace>
@@ -28,8 +28,8 @@
     <!--PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" /-->
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-  <None Update="log4net.config" CopyToOutputDirectory="PreserveNewest" />
-</ItemGroup>
+    <None Update="log4net.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\fifth.codegenerator\fifth.codegenerator.csproj" />
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
