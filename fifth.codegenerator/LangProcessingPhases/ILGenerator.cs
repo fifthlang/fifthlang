@@ -25,13 +25,13 @@ using CILMM = fifth.metamodel.metadata.il;
 public class ILGenerator : BaseAstVisitor
 {
     private CurrentStack<AssemblyDeclarationBuilder> AssemblyBuilders = new();
+    private CurrentStack<ModuleDeclarationBuilder> ModuleDeclarationBuilders = new();
     private CurrentStack<AssemblyReferenceBuilder> AssemblyRefBuilders = new();
     private CurrentStack<BlockBuilder> BlockBuilders = new();
     private CurrentStack<IL.ClassDefinitionBuilder> ClassBuilders = new();
     private CurrentStack<IBuilder<CILMM.Expression>> ExpressionBuilders = new();
     private CurrentStack<IL.FieldDefinitionBuilder> FieldBuilders = new();
     private CurrentStack<MethodDefinitionBuilder> MethodBuilders = new();
-    private CurrentStack<ProgramDefinitionBuilder> ProgramBuilders = new();
     private CurrentStack<IL.PropertyDefinitionBuilder> PropertyBuilders = new();
     private CurrentStack<IBuilder<Statement>> StatementBuilders = new();
     public StringBuilder sb { get; set; } = new();
@@ -65,7 +65,7 @@ public class ILGenerator : BaseAstVisitor
     public override void LeaveClassDefinition(ClassDefinition ctx)
     {
         var ab = ClassBuilders.Pop();
-        ProgramBuilders.Current.AddingItemToClasses(ab.New());
+        ModuleDeclarationBuilders.Current.AddingItemToClasses(ab.New());
     }
 
     public override void EnterFieldDefinition(FieldDefinition ctx)
@@ -182,14 +182,14 @@ public class ILGenerator : BaseAstVisitor
 
     public override void EnterFifthProgram(FifthProgram ctx)
     {
-        ProgramBuilders.Push(ProgramDefinitionBuilder.Create());
-        ProgramBuilders.Current.WithTargetAsmFileName(ctx.TargetAssemblyFileName);
+        ModuleDeclarationBuilders.Push(ModuleDeclarationBuilder.Create());
+        ModuleDeclarationBuilders.Current.WithFileName(ctx.TargetAssemblyFileName);
     }
 
     public override void LeaveFifthProgram(FifthProgram ctx)
     {
         var sb = new StringBuilder();
-        var x = ProgramBuilders.Pop();
+        var x = ModuleDeclarationBuilders.Pop();
         sb.AppendLine(x.Build());
     }
 
@@ -212,7 +212,7 @@ public class ILGenerator : BaseAstVisitor
         var mb = MethodBuilders.Pop().New();
         if (ctx.ParentNode is FifthProgram p)
         {
-            ProgramBuilders.Current.AddingItemToFunctions(mb);
+            ModuleDeclarationBuilders.Current.AddingItemToFunctions(mb);
         }
         else
         {

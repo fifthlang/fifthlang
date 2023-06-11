@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CodeGeneration.IL;
 using CodeGeneration.LangProcessingPhases;
+using Fifth.CodeGeneration;
 
 // ReSharper disable once UnusedType.Global
 /// <summary>
@@ -144,8 +145,10 @@ public class Program
                     var mb = new ILModelBuilder();
                     _ = mb.Visit(ast);
                     var ilast = mb.CompletedAssemblies.FirstOrDefault();
-                    var il = AssemblyDeclarationBuilder.Create(ilast).Build();
+                    //var il = AssemblyDeclarationBuilder.Create(ilast).Build();
                     // var il = ilg.sb.ToString();
+                    var ILGenerator = new ILGenerationTemplates();
+                    var il = ILGenerator.ProcessTemplateAsync(ilast).Result;
                     writer.Write(il);
                 }
 

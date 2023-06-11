@@ -1,0 +1,9 @@
+@using RazorLight
+@using fifth.metamodel.metadata.il;
+@inherits TemplatePage<AssemblyReference>
+
+.assembly extern @Model.Name
+{
+  .publickeytoken = ( @Model.PublicKeyToken )
+  .ver @Model.Version
+}

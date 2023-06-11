@@ -23,7 +23,7 @@ public partial class AssemblyDeclarationBuilder
               .hash algorithm 0x00008004
               .ver {WriteVersion(Model.Version)}
             }}");
-        sb.AppendLine(ProgramDefinitionBuilder.Create(Model.Program).Build());
+        sb.AppendLine(ModuleDeclarationBuilder.Create(Model.PrimeModule).Build());
         return sb.ToString();
     }
 

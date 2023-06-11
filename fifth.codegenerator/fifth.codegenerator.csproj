@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <RootNamespace>Fifth.CodeGeneration</RootNamespace>
@@ -12,22 +12,36 @@
     <ProjectReference Include="..\fifthlang.system\Fifth.System.csproj" />
   </ItemGroup>
   <ItemGroup Label="ILAsm NuGet Package">
+    <PackageReference Include="RazorLight" Version="2.3.1" />
     <PackageReference Include="runtime.win-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="runtime.linux-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <PackageReference Include="runtime.osx-x64.Microsoft.NETCore.ILAsm" Version="6.0.0" GeneratePathProperty="true" Condition="$([MSBuild]::IsOSPlatform('Darwin'))" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="templates\il.main.stg" />
-    <EmbeddedResource Include="templates\il.main.stg" />
+    <None Remove="ILTemplates\assembly.cshtml" />
+    <None Remove="ILTemplates\assemblyReference.cshtml" />
+    <None Remove="ILTemplates\block.cshtml" />
+    <None Remove="ILTemplates\classdef.cshtml" />
+    <None Remove="ILTemplates\expression.cshtml" />
+    <None Remove="ILTemplates\field.cshtml" />
+    <None Remove="ILTemplates\method.cshtml" />
+    <None Remove="ILTemplates\module.cshtml" />
+    <None Remove="ILTemplates\property.cshtml" />
+    <None Remove="ILTemplates\statement.cshtml" />
+    <EmbeddedResource Include="ILTemplates\statement.cshtml" />
+    <EmbeddedResource Include="ILTemplates\expression.cshtml" />
+    <EmbeddedResource Include="ILTemplates\classdef.cshtml" />
+    <EmbeddedResource Include="ILTemplates\method.cshtml" />
+    <EmbeddedResource Include="ILTemplates\block.cshtml" />
+    <EmbeddedResource Include="ILTemplates\property.cshtml" />
+    <EmbeddedResource Include="ILTemplates\field.cshtml" />
+    <EmbeddedResource Include="ILTemplates\assembly.cshtml" />
+    <EmbeddedResource Include="ILTemplates\assemblyReference.cshtml" />
+    <EmbeddedResource Include="ILTemplates\module.cshtml" />
     <None Update="IL\il.builders.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>il.builders.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="IL\il.builders.cs">
-      <DependentUpon>il.builders.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <Target Name="CopyIlasm" AfterTargets="Build">
     <Copy SourceFiles="$(Pkgruntime_win-x64_Microsoft_NETCore_ILAsm)/runtimes/win-x64/native/ilasm.exe" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />

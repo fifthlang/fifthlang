@@ -1,0 +1,11 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@inherits BaseTemplatePage<Block>
+{
+
+@foreach(var s in Model.Statements){
+    await IncludeAsync("statement.cshtml", s);
+}
+
+}
+

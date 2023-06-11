@@ -19,45 +19,52 @@ using Statement = fifth.metamodel.metadata.il.Statement;
 using VariableDeclarationStatement = AST.VariableDeclarationStatement;
 
 /// <summary>
-///     A visitor responsible for translating the AST into an IL-oriented AST se[pcific to IL code generation.
+///     A visitor responsible for translating the AST into an IL-oriented AST specific to IL code generation.
 /// </summary>
 public class ILModelBuilder : DefaultRecursiveDescentVisitor
 {
     private CurrentStack<AssemblyDeclarationBuilder> AssemblyBuilders = new();
+    private CurrentStack<ModuleDeclarationBuilder> ModuleDeclarations = new();
     private CurrentStack<AssemblyReferenceBuilder> AssemblyRefBuilders = new();
     private CurrentStack<BlockBuilder> BlockBuilders = new();
     private CurrentStack<ClassDefinitionBuilder> ClassBuilders = new();
     private CurrentStack<IBuilder<fifth.metamodel.metadata.il.Expression>> ExpressionBuilders = new();
     private CurrentStack<FieldDefinitionBuilder> FieldBuilders = new();
     private CurrentStack<MethodDefinitionBuilder> MethodBuilders = new();
-    private CurrentStack<ProgramDefinitionBuilder> ProgramBuilders = new();
     private CurrentStack<PropertyDefinitionBuilder> PropertyBuilders = new();
     private CurrentStack<IBuilder<Statement>> StatementBuilders = new();
     public List<AssemblyDeclaration> CompletedAssemblies { get; set; } = new();
 
     public override FifthProgram VisitFifthProgram(FifthProgram ctx)
     {
-        ProgramBuilders.Push(ProgramDefinitionBuilder.Create());
-        ProgramBuilders.Current.WithTargetAsmFileName(ctx.TargetAssemblyFileName);
+        string defaultAssemblyFileName = "out";
+
+        AssemblyBuilders.Push(AssemblyDeclarationBuilder.Create());
+        AssemblyBuilders.Current
+            .WithVersion(new Version(1,0,0,0));
+        ModuleDeclarations.Push(ModuleDeclarationBuilder.Create());
+
+        ModuleDeclarations.Current.WithFileName(ctx.TargetAssemblyFileName ?? defaultAssemblyFileName);
 
         foreach (var @class in ctx.Classes)
         {
             Visit(@class);
         }
 
+        ClassBuilders.Push(ClassDefinitionBuilder.Create().WithName("Program"));
         foreach (var function in ctx.Functions)
         {
             VisitFunctionDefinition(function as FunctionDefinition);
         }
-        AssemblyBuilders.Current.WithProgram(ProgramBuilders.Pop().New());
+        ModuleDeclarations.Current.AddingItemToClasses(ClassBuilders.Pop().New());
+
+        var m = ModuleDeclarations.Pop().New();
+        AssemblyBuilders.Current.WithPrimeModule(m);
         return ctx;
     }
 
     public override Assembly VisitAssembly(Assembly ctx)
     {
-        AssemblyBuilders.Push(AssemblyDeclarationBuilder.Create());
-        AssemblyBuilders.Current.WithName(ctx.Name)
-                        .WithVersion(new Version(ctx.Version));
         VisitFifthProgram(ctx.Program);
         CompletedAssemblies.Add(AssemblyBuilders.Pop().New());
         return ctx;
@@ -84,7 +91,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
             Visit(fn as FunctionDefinition);
         }
 
-        ProgramBuilders.Current.AddingItemToClasses(ClassBuilders.Pop().New());
+        ModuleDeclarations.Current.AddingItemToClasses(ClassBuilders.Pop().New());
         return ctx;
     }
 
@@ -102,6 +109,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     {
         PropertyBuilders.Push(PropertyDefinitionBuilder.Create());
         PropertyBuilders.Current.WithName(ctx.Name)
+                        .WithParentClass(ClassBuilders.Current.Model)
                         .WithTypeName(ctx.TypeName)
                         .WithVisibility(ILVisibility.Public);
         ClassBuilders.Current.AddingItemToProperties(PropertyBuilders.Pop().New());
@@ -125,15 +133,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
         }
 
         var mb = MethodBuilders.Pop().New();
-        if (ctx.ParentNode is FifthProgram p)
-        {
-            ProgramBuilders.Current.AddingItemToFunctions(mb);
-        }
-        else
-        {
-            ClassBuilders.Current.AddingItemToMethods(mb);
-        }
-
+        ClassBuilders.Current.AddingItemToMethods(mb);
         return ctx;
     }
 

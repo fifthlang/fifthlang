@@ -26,11 +26,20 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-        public AssemblyDeclarationBuilder WithProgram(fifth.metamodel.metadata.il.ProgramDefinition value){
-            Model.Program = value;
+        public AssemblyDeclarationBuilder WithPrimeModule(fifth.metamodel.metadata.il.ModuleDeclaration value){
+            Model.PrimeModule = value;
             return this;
         }
 
+        public AssemblyDeclarationBuilder WithAssemblyReferences(List<fifth.metamodel.metadata.il.AssemblyReference> value){
+            Model.AssemblyReferences = value;
+            return this;
+        }
+
+        public AssemblyDeclarationBuilder AddingItemToAssemblyReferences(fifth.metamodel.metadata.il.AssemblyReference value){
+            Model.AssemblyReferences.Add(value);
+            return this;
+        }
     }
     public partial class AssemblyReferenceBuilder : BaseBuilder<AssemblyReferenceBuilder,fifth.metamodel.metadata.il.AssemblyReference>
     {
@@ -194,6 +203,11 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public FieldDefinitionBuilder WithAssociatedProperty(fifth.metamodel.metadata.il.PropertyDefinition value){
+            Model.AssociatedProperty = value;
+            return this;
+        }
+
         public FieldDefinitionBuilder WithTypeOfMember(fifth.metamodel.metadata.il.MemberType value){
             Model.TypeOfMember = value;
             return this;
@@ -338,8 +352,23 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public MethodDefinitionBuilder WithIsStatic(System.Boolean value){
+            Model.IsStatic = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsEntrypoint(System.Boolean value){
+            Model.IsEntrypoint = value;
+            return this;
+        }
+
         public MethodDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
             Model.ParentClass = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithAssociatedProperty(fifth.metamodel.metadata.il.PropertyDefinition value){
+            Model.AssociatedProperty = value;
             return this;
         }
 
@@ -350,11 +379,6 @@ using fifth.metamodel.metadata.il;
 
         public MethodDefinitionBuilder WithIsVirtual(System.Boolean value){
             Model.IsVirtual = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithIsStatic(System.Boolean value){
-            Model.IsStatic = value;
             return this;
         }
 
@@ -371,6 +395,24 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public ModuleDeclarationBuilder WithClasses(List<fifth.metamodel.metadata.il.ClassDefinition> value){
+            Model.Classes = value;
+            return this;
+        }
+
+        public ModuleDeclarationBuilder AddingItemToClasses(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.Classes.Add(value);
+            return this;
+        }
+        public ModuleDeclarationBuilder WithFunctions(List<fifth.metamodel.metadata.il.MethodDefinition> value){
+            Model.Functions = value;
+            return this;
+        }
+
+        public ModuleDeclarationBuilder AddingItemToFunctions(fifth.metamodel.metadata.il.MethodDefinition value){
+            Model.Functions.Add(value);
+            return this;
+        }
     }
     public partial class ParameterDeclarationBuilder : BaseBuilder<ParameterDeclarationBuilder,fifth.metamodel.metadata.il.ParameterDeclaration>
     {
@@ -394,37 +436,6 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-    }
-    public partial class ProgramDefinitionBuilder : BaseBuilder<ProgramDefinitionBuilder,fifth.metamodel.metadata.il.ProgramDefinition>
-    {
-        public ProgramDefinitionBuilder()
-        {
-            Model = new();
-        }
-
-        public ProgramDefinitionBuilder WithTargetAsmFileName(System.String value){
-            Model.TargetAsmFileName = value;
-            return this;
-        }
-
-        public ProgramDefinitionBuilder WithClasses(List<fifth.metamodel.metadata.il.ClassDefinition> value){
-            Model.Classes = value;
-            return this;
-        }
-
-        public ProgramDefinitionBuilder AddingItemToClasses(fifth.metamodel.metadata.il.ClassDefinition value){
-            Model.Classes.Add(value);
-            return this;
-        }
-        public ProgramDefinitionBuilder WithFunctions(List<fifth.metamodel.metadata.il.MethodDefinition> value){
-            Model.Functions = value;
-            return this;
-        }
-
-        public ProgramDefinitionBuilder AddingItemToFunctions(fifth.metamodel.metadata.il.MethodDefinition value){
-            Model.Functions.Add(value);
-            return this;
-        }
     }
     public partial class PropertyDefinitionBuilder : BaseBuilder<PropertyDefinitionBuilder,fifth.metamodel.metadata.il.PropertyDefinition>
     {
@@ -450,6 +461,11 @@ using fifth.metamodel.metadata.il;
 
         public PropertyDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
             Model.ParentClass = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithAssociatedProperty(fifth.metamodel.metadata.il.PropertyDefinition value){
+            Model.AssociatedProperty = value;
             return this;
         }
 

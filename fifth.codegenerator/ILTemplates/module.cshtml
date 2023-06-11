@@ -1,0 +1,10 @@
+@using RazorLight
+@using fifth.metamodel.metadata.il;
+@inherits TemplatePage<ModuleDeclaration>
+
+.module @Model.FileName
+
+@foreach (var @class in Model.Classes)
+{
+    await IncludeAsync("classdef.cshtml", @class);
+}

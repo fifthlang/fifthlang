@@ -4,7 +4,8 @@ public class AssemblyDeclaration
 {
     public string Name { get; set; }
     public Version Version { get; set; }
-    public ProgramDefinition Program { get; set; }
+    public ModuleDeclaration PrimeModule { get; set; }
+    public List<AssemblyReference> AssemblyReferences { get; set; } = new();
 }
 
 public class AssemblyReference
@@ -129,6 +130,7 @@ public enum MemberType
 public abstract class MemberDefinition
 {
     public ClassDefinition ParentClass { get; set; }
+    public PropertyDefinition AssociatedProperty { get; set; }
     public MemberType TypeOfMember { get; set; }
     public bool IsVirtual { get; set; }
     public bool IsStatic { get; set; }
@@ -170,6 +172,8 @@ public class MethodDefinition : MemberDefinition
     public ILVisibility Visibility { get; set; }
     public Block Body { get; set; }
     public FunctionKind FunctionKind { get; set; }
+    public bool IsStatic { get; set; }
+    public bool IsEntrypoint { get; set; }
 }
 
 public class Block
@@ -180,6 +184,8 @@ public class Block
 public class ModuleDeclaration
 {
     public string FileName { get; set; }
+    public List<ClassDefinition> Classes { get; set; } = new();
+    public List<MethodDefinition> Functions { get; set; } = new();
 }
 
 public class ParameterDeclaration
@@ -187,14 +193,6 @@ public class ParameterDeclaration
     public string Name { get; set; }
     public string TypeName { get; set; }
     public bool IsUDTType { get; set; }
-}
-
-public class ProgramDefinition
-{
-    public string TargetAsmFileName { get; set; }
-    public List<ClassDefinition> Classes { get; set; } = new();
-    public List<MethodDefinition> Functions { get; set; } = new();
-
 }
 
 public class PropertyDefinition : MemberDefinition

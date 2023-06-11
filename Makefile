@@ -14,8 +14,8 @@ SRC_PARSER=$(wildcard $(DIR_PARSER)/**/*.cs)
 SRC_TEST=$(wildcard $(DIR_TEST)/**/*.cs)
 
 # ASSEMBLIES
-BIN_PARSER=$(DIR_PARSER)/bin/Debug/netstandard2.0/fifth.parser.dll
-BIN_TEST=$(DIR_PARSER)/bin/Debug/netcoreapp3.1/fifth.test.dll
+BIN_PARSER=$(DIR_PARSER)/bin/Debug/net6.0/fifth.parser.dll
+BIN_TEST=$(DIR_PARSER)/bin/Debug/net6.0/fifth.test.dll
 
 .PHONY: all grammar test clean clean_grammar
 

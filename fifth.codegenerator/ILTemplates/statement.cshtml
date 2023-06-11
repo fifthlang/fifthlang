@@ -1,0 +1,70 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@using System.Threading;
+@inherits BaseTemplatePage<Statement>
+
+@{
+
+    if(Model is IfStatement x){
+        int labelCounter = 0;
+        Interlocked.Increment(ref labelCounter);
+        await IncludeAsync("expression.cshtml", x.Conditional);
+        <text>
+            @{await IncludeAsync("expression.cshtml", x.Conditional);}
+            brfalse.s LBL_ELSE_@labelCounter
+
+            LBL_IF_@labelCounter:
+            @{await IncludeAsync("block.cshtml", x.IfBlock);}
+            br.s LBL_END_@labelCounter
+
+            LBL_ELSE_@labelCounter:
+            @{await IncludeAsync("block.cshtml", x.ElseBlock);}
+
+            LBL_END_@labelCounter:
+        </text>
+    }
+    else if(Model is VariableAssignmentStatement vas)
+    {
+        await IncludeAsync("expression.cshtml", vas.RHS);
+        string ord = vas.Ordinal.ToString() ?? vas.LHS;
+        <text>stloc.s @vas.LHS</text>
+    }
+    else if(Model is VariableDeclarationStatement vds)
+    {
+        string ord = vds.Ordinal.HasValue ? vds.Ordinal.ToString() : vds.Name;
+        if (vds.InitialisationExpression != null)
+        {
+            await IncludeAsync("expression.cshtml", vds.InitialisationExpression);
+            <text>stloc.s @ord</text>
+        }
+
+    }
+    else if(Model is ReturnStatement rs)
+    {
+        if (rs.Exp != null)
+        {
+            await IncludeAsync("expression.cshtml", rs.Exp);
+            <text>ret</text>
+        }
+
+    }
+    else if(Model is WhileStatement ws)
+    {
+        await IncludeAsync("expression.cshtml", ws.Conditional);
+        <text>
+            @{await IncludeAsync("expression.cshtml", ws.Conditional);}
+            brfalse.s LBL_END
+
+            @{await IncludeAsync("block.cshtml", ws.LoopBlock);}
+
+            LBL_END:
+        </text>
+
+    }
+    else if(Model is ExpressionStatement es)
+    {
+        await IncludeAsync("expression.cshtml", es.Expression);
+
+    }
+
+}

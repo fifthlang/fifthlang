@@ -1,0 +1,96 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@inherits BaseTemplatePage<Expression>
+@{
+    if (Model is Literal<bool> lb)
+    {
+        <text>@lb.Value
+</text>
+    }
+    else if (Model is Literal<short> ls)
+    {
+        <text>ldc.i2 @ls.Value
+</text>
+    }
+    else if (Model is Literal<int> li)
+    {
+        <text>ldc.i4 @li.Value
+</text>
+    }
+    else if (Model is Literal<long> ll)
+    {
+        <text>ldc.i8 @ll.Value
+</text>
+    }
+    else if (Model is Literal<float> lf)
+    {
+        <text>ldc.r4 @lf.Value
+</text>
+    }
+    else if (Model is Literal<double> ld)
+    {
+        <text>ldc.r8 @ld.Value
+</text>
+    }
+    else if (Model is Literal<decimal> lde)
+    {
+        <text>@lde.Value
+</text>
+    }
+    else if (Model is Literal<char> lc)
+    {
+        <text>@lc.Value
+</text>
+    }
+    else if (Model is Literal<string> lst)
+    {
+        <text>@lst.Value
+</text>
+    }
+    else if (Model is Literal<DateOnly> lda)
+    {
+        <text>@lda.Value
+</text>
+    }
+    else if (Model is Literal<TimeOnly> lt)
+    {
+        <text>@lt.Value
+</text>
+    }
+    else if (Model is Literal<DateTimeOffset> ldto)
+    {
+        <text>@ldto.Value
+</text>
+    }
+    else if (Model is BinaryExpression be)
+    {
+        await IncludeAsync("expression.cshtml", be.LHS);
+        await IncludeAsync("expression.cshtml", be.RHS);
+        <text>@be.Op
+</text>
+    }
+    else if (Model is VariableReferenceExpression vre)
+    {
+        if (vre.IsParameterReference)
+        {
+            <text>ldarg.@(vre.Ordinal)
+</text>
+        }
+        else
+        {
+            <text>ldloc.s @vre.Name
+</text>
+        }
+    }
+    else if (Model is FuncCallExp fce)
+    {
+        var argTypeNames = string.Join(", ", fce.ArgTypes.ToArray());
+        <text>call @fce.ReturnType @(fce.ClassDefinition.Name)::@(fce.Name)(@argTypeNames)
+</text>
+    }
+    else if (Model is MemberAccessExpression mae)
+    {
+        await IncludeAsync("expression.cshtml", mae.Lhs);
+        await IncludeAsync("expression.cshtml", mae.Rhs);
+    }
+}

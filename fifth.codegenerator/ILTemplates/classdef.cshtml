@@ -1,0 +1,22 @@
+@using RazorLight
+@using fifth.metamodel.metadata.il;
+@inherits TemplatePage<ClassDefinition>
+
+.class public @Model.Name extends [System.Runtime]System.Object
+{
+    @foreach(var f in Model.Fields)
+    {
+        await IncludeAsync("field.cshtml", f);
+    }
+
+    @foreach (var p in Model.Properties)
+    {
+        await IncludeAsync("property.cshtml", p);}
+    }
+
+    @foreach (var m in Model.Methods)
+    {
+        await IncludeAsync("method.cshtml", m);
+    }
+
+}
