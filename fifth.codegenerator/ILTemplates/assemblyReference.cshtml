@@ -1,6 +1,7 @@
 @using RazorLight
+@using Fifth.CodeGeneration;
 @using fifth.metamodel.metadata.il;
-@inherits TemplatePage<AssemblyReference>
+@inherits BaseTemplatePage<AssemblyReference>
 
 .assembly extern @Model.Name
 {

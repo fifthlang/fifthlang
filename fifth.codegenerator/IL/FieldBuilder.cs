@@ -9,7 +9,7 @@ public partial class FieldDefinitionBuilder: BaseBuilder<FieldDefinitionBuilder,
     {
         var sb = new StringBuilder();
 
-        sb.Append($".field {Model.Visibility} {Model.TypeName} '{Model.Name}'");
+        sb.Append($".field {Model.Visibility} {Model.TheType.Name} '{Model.Name}'");
 
         return sb.ToString();
     }

@@ -65,13 +65,7 @@ namespace Fifth
         ///     Gets a value indicating whether this instance is a function wrapping a constant literal.
         /// </summary>
         /// <value><c>true</c> if this instance is a value; otherwise, <c>false</c>.</value>
-        public bool IsValue
-        {
-            get
-            {
-                return ArgTypes.Count == 0;
-            }
-        }
+        public bool IsValue => ArgTypes.Count == 0;
 
         /// <summary>
         ///     Gets the <see cref="Type" /> of the result returned by the Function.

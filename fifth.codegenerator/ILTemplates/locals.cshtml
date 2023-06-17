@@ -1,0 +1,24 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@inherits BaseTemplatePage<Block>
+@{
+    var locals = GetVarDecls(Model);
+    if (locals.Any())
+    {
+        <text>locals init (
+        </text>
+        var sep = "";
+        var ord = 0;
+        foreach (var decl in locals)
+        {
+            <text>@(sep)[@(ord++)] @decl.TypeName @decl.Name
+            </text>
+            sep = ",";
+        }
+        <text>)
+        </text>
+    }
+}
+
+@functions{
+}

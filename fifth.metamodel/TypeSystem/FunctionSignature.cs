@@ -15,6 +15,7 @@ namespace Fifth.TypeSystem
         public TypeId[] FormalParameterTypes { get; }
         public TypeId[] GenericTypeParameters { get; }
         public string Name { get; }
+        public string Namespace { get; }
         public TypeId ReturnType { get; }
         public TypeId TypeId { get; set; }
 

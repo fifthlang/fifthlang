@@ -210,6 +210,7 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     var builder = ClassDefinitionBuilder.CreateClassDefinition();
 
         builder.WithName(node.Name);
+            builder.WithNamespace(node.Namespace);
             foreach(var x in node.Fields){
             builder.AddingItemToFields((FieldDefinition)Process((FieldDefinition)x, ctx));
         }

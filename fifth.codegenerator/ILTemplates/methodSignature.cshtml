@@ -1,0 +1,38 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@using fifth.metamodel.metadata;
+@inherits BaseTemplatePage<MethodDefinition>
+@{
+    switch (Model.Visibility)
+    {
+        case MemberAccessability.Public:
+            <text> public</text>
+            break;
+        default: // todo: generate other visibilities
+            <text> protected</text>
+            break;
+    }
+
+    if (Model.Signature.CallingConvention == MethodCallingConvention.Default)
+    {
+        <text> static</text>
+    }
+    await IncludeAsync("typeReference.cshtml", Model.Signature.ReturnTypeSignature);
+
+    <text> @Model.Name (</text>
+
+    var sep = "";
+    foreach (var p in Model.Signature.ParameterSignatures)
+    {
+        <text> @sep</text>
+        await IncludeAsync("parameterSignature.cshtml", p);
+        sep = ",";
+    }
+    <text> )</text>
+
+    if (Model.CodeTypeFlags == CodeTypeFlag.cil)
+    {
+        <text> cil managed</text>
+    }
+
+}

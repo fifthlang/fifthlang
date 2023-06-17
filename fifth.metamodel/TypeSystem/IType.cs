@@ -5,6 +5,7 @@ namespace Fifth.TypeSystem
     public interface IType
     {
         public string Name { get; }
+        public string Namespace { get; }
         public TypeId TypeId { get; set; } // no more than 64K types
     }
 

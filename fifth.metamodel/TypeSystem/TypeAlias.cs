@@ -4,6 +4,7 @@ namespace Fifth.TypeSystem
     {
         public TypeId AliasedTypeId { get; set; }
         public string Name { get; }
+        public string Namespace { get; }
         public TypeId TypeId { get; set; }
     }
 }

@@ -104,11 +104,17 @@ public interface INodeBuilder{}
 
         public static ClassDefinitionBuilder CreateClassDefinition() => new ();
         public ClassDefinition Build()
-          => new (_Name, _Fields, _Properties, _Functions);
+          => new (_Name, _Namespace, _Fields, _Properties, _Functions);
 
         private string _Name;
         public ClassDefinitionBuilder WithName(string value){
             _Name = value;
+            return this;
+        }
+
+        private string _Namespace;
+        public ClassDefinitionBuilder WithNamespace(string value){
+            _Namespace = value;
             return this;
         }
 

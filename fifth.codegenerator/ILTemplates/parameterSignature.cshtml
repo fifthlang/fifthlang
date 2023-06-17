@@ -1,0 +1,10 @@
+@using Fifth.CodeGeneration;
+@using fifth.metamodel.metadata.il;
+@inherits BaseTemplatePage<ParameterSignature>
+@{
+    if (Model.InOut == InOutFlag.Out)
+    {
+        <text> out</text>
+    }
+    await IncludeAsync("typeReference.cshtml", Model.TypeReference);
+}

@@ -12,6 +12,7 @@ public class ClassCtorInserter : BaseAstVisitor
     {
         var f = FunctionDefinitionBuilder.CreateFunctionDefinition()
                                          .WithName("ctor")
+                                         .WithIsInstanceFunction(true)
                                          .WithFunctionKind(FunctionKind.Ctor)
                                          .WithParameterDeclarations(new ParameterDeclarationList(new List<IParameterListItem>()))
                                          .WithBody(new Block(new List<Statement>()))

@@ -162,7 +162,7 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-        public ClassDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
+        public ClassDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.MemberAccessability value){
             Model.Visibility = value;
             return this;
         }
@@ -188,13 +188,13 @@ using fifth.metamodel.metadata.il;
             Model = new();
         }
 
-        public FieldDefinitionBuilder WithTypeName(System.String value){
-            Model.TypeName = value;
+        public FieldDefinitionBuilder WithName(System.String value){
+            Model.Name = value;
             return this;
         }
 
-        public FieldDefinitionBuilder WithName(System.String value){
-            Model.Name = value;
+        public FieldDefinitionBuilder WithTheType(fifth.metamodel.metadata.il.TypeReference value){
+            Model.TheType = value;
             return this;
         }
 
@@ -213,17 +213,42 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-        public FieldDefinitionBuilder WithIsVirtual(System.Boolean value){
-            Model.IsVirtual = value;
-            return this;
-        }
-
         public FieldDefinitionBuilder WithIsStatic(System.Boolean value){
             Model.IsStatic = value;
             return this;
         }
 
-        public FieldDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
+        public FieldDefinitionBuilder WithIsFinal(System.Boolean value){
+            Model.IsFinal = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsVirtual(System.Boolean value){
+            Model.IsVirtual = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsStrict(System.Boolean value){
+            Model.IsStrict = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsAbstract(System.Boolean value){
+            Model.IsAbstract = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithIsSpecialName(System.Boolean value){
+            Model.IsSpecialName = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithHideBySig(System.Boolean value){
+            Model.HideBySig = value;
+            return this;
+        }
+
+        public FieldDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.MemberAccessability value){
             Model.Visibility = value;
             return this;
         }
@@ -311,6 +336,39 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class MemberRefBuilder : BaseBuilder<MemberRefBuilder,fifth.metamodel.metadata.il.MemberRef>
+    {
+        public MemberRefBuilder()
+        {
+            Model = new();
+        }
+
+        public MemberRefBuilder WithTarget(fifth.metamodel.metadata.il.MemberTarget value){
+            Model.Target = value;
+            return this;
+        }
+
+        public MemberRefBuilder WithClassDefinition(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.ClassDefinition = value;
+            return this;
+        }
+
+        public MemberRefBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public MemberRefBuilder WithSig(fifth.metamodel.metadata.il.MethodSignature value){
+            Model.Sig = value;
+            return this;
+        }
+
+        public MemberRefBuilder WithField(fifth.metamodel.metadata.il.FieldDefinition value){
+            Model.Field = value;
+            return this;
+        }
+
+    }
     public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuilder,fifth.metamodel.metadata.il.MethodDefinition>
     {
         public MethodDefinitionBuilder()
@@ -318,47 +376,33 @@ using fifth.metamodel.metadata.il;
             Model = new();
         }
 
+        public MethodDefinitionBuilder WithHeader(fifth.metamodel.metadata.il.MethodHeader value){
+            Model.Header = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithSignature(fifth.metamodel.metadata.il.MethodSignature value){
+            Model.Signature = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithImpl(fifth.metamodel.metadata.il.MethodImpl value){
+            Model.Impl = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithCodeTypeFlags(fifth.metamodel.metadata.il.CodeTypeFlag value){
+            Model.CodeTypeFlags = value;
+            return this;
+        }
+
         public MethodDefinitionBuilder WithName(System.String value){
             Model.Name = value;
             return this;
         }
 
-        public MethodDefinitionBuilder WithReturnType(System.String value){
-            Model.ReturnType = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithParameters(List<fifth.metamodel.metadata.il.ParameterDeclaration> value){
-            Model.Parameters = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder AddingItemToParameters(fifth.metamodel.metadata.il.ParameterDeclaration value){
-            Model.Parameters.Add(value);
-            return this;
-        }
-        public MethodDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
-            Model.Visibility = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithBody(fifth.metamodel.metadata.il.Block value){
-            Model.Body = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithFunctionKind(fifth.metamodel.metadata.FunctionKind value){
-            Model.FunctionKind = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithIsStatic(System.Boolean value){
-            Model.IsStatic = value;
-            return this;
-        }
-
-        public MethodDefinitionBuilder WithIsEntrypoint(System.Boolean value){
-            Model.IsEntrypoint = value;
+        public MethodDefinitionBuilder WithTheType(fifth.metamodel.metadata.il.TypeReference value){
+            Model.TheType = value;
             return this;
         }
 
@@ -377,8 +421,149 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public MethodDefinitionBuilder WithIsStatic(System.Boolean value){
+            Model.IsStatic = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsFinal(System.Boolean value){
+            Model.IsFinal = value;
+            return this;
+        }
+
         public MethodDefinitionBuilder WithIsVirtual(System.Boolean value){
             Model.IsVirtual = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsStrict(System.Boolean value){
+            Model.IsStrict = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsAbstract(System.Boolean value){
+            Model.IsAbstract = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithIsSpecialName(System.Boolean value){
+            Model.IsSpecialName = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithHideBySig(System.Boolean value){
+            Model.HideBySig = value;
+            return this;
+        }
+
+        public MethodDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.MemberAccessability value){
+            Model.Visibility = value;
+            return this;
+        }
+
+    }
+    public partial class MethodHeaderBuilder : BaseBuilder<MethodHeaderBuilder,fifth.metamodel.metadata.il.MethodHeader>
+    {
+        public MethodHeaderBuilder()
+        {
+            Model = new();
+        }
+
+        public MethodHeaderBuilder WithFunctionKind(fifth.metamodel.metadata.FunctionKind value){
+            Model.FunctionKind = value;
+            return this;
+        }
+
+        public MethodHeaderBuilder WithIsEntrypoint(System.Boolean value){
+            Model.IsEntrypoint = value;
+            return this;
+        }
+
+    }
+    public partial class MethodImplBuilder : BaseBuilder<MethodImplBuilder,fifth.metamodel.metadata.il.MethodImpl>
+    {
+        public MethodImplBuilder()
+        {
+            Model = new();
+        }
+
+        public MethodImplBuilder WithImplementationFlags(fifth.metamodel.metadata.il.ImplementationFlag value){
+            Model.ImplementationFlags = value;
+            return this;
+        }
+
+        public MethodImplBuilder WithIsManaged(System.Boolean value){
+            Model.IsManaged = value;
+            return this;
+        }
+
+        public MethodImplBuilder WithBody(fifth.metamodel.metadata.il.Block value){
+            Model.Body = value;
+            return this;
+        }
+
+    }
+    public partial class MethodRefBuilder : BaseBuilder<MethodRefBuilder,fifth.metamodel.metadata.il.MethodRef>
+    {
+        public MethodRefBuilder()
+        {
+            Model = new();
+        }
+
+        public MethodRefBuilder WithTarget(fifth.metamodel.metadata.il.MemberTarget value){
+            Model.Target = value;
+            return this;
+        }
+
+        public MethodRefBuilder WithClassDefinition(fifth.metamodel.metadata.il.ClassDefinition value){
+            Model.ClassDefinition = value;
+            return this;
+        }
+
+        public MethodRefBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public MethodRefBuilder WithSig(fifth.metamodel.metadata.il.MethodSignature value){
+            Model.Sig = value;
+            return this;
+        }
+
+        public MethodRefBuilder WithField(fifth.metamodel.metadata.il.FieldDefinition value){
+            Model.Field = value;
+            return this;
+        }
+
+    }
+    public partial class MethodSignatureBuilder : BaseBuilder<MethodSignatureBuilder,fifth.metamodel.metadata.il.MethodSignature>
+    {
+        public MethodSignatureBuilder()
+        {
+            Model = new();
+        }
+
+        public MethodSignatureBuilder WithCallingConvention(fifth.metamodel.metadata.il.MethodCallingConvention value){
+            Model.CallingConvention = value;
+            return this;
+        }
+
+        public MethodSignatureBuilder WithNumberOfParameters(System.UInt16 value){
+            Model.NumberOfParameters = value;
+            return this;
+        }
+
+        public MethodSignatureBuilder WithParameterSignatures(List<fifth.metamodel.metadata.il.ParameterSignature> value){
+            Model.ParameterSignatures = value;
+            return this;
+        }
+
+        public MethodSignatureBuilder AddingItemToParameterSignatures(fifth.metamodel.metadata.il.ParameterSignature value){
+            Model.ParameterSignatures.Add(value);
+            return this;
+        }
+        public MethodSignatureBuilder WithReturnTypeSignature(fifth.metamodel.metadata.il.TypeReference value){
+            Model.ReturnTypeSignature = value;
             return this;
         }
 
@@ -437,6 +622,34 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class ParameterSignatureBuilder : BaseBuilder<ParameterSignatureBuilder,fifth.metamodel.metadata.il.ParameterSignature>
+    {
+        public ParameterSignatureBuilder()
+        {
+            Model = new();
+        }
+
+        public ParameterSignatureBuilder WithInOut(fifth.metamodel.metadata.il.InOutFlag value){
+            Model.InOut = value;
+            return this;
+        }
+
+        public ParameterSignatureBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public ParameterSignatureBuilder WithTypeReference(fifth.metamodel.metadata.il.TypeReference value){
+            Model.TypeReference = value;
+            return this;
+        }
+
+        public ParameterSignatureBuilder WithIsUDTType(System.Boolean value){
+            Model.IsUDTType = value;
+            return this;
+        }
+
+    }
     public partial class PropertyDefinitionBuilder : BaseBuilder<PropertyDefinitionBuilder,fifth.metamodel.metadata.il.PropertyDefinition>
     {
         public PropertyDefinitionBuilder()
@@ -459,6 +672,11 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
+        public PropertyDefinitionBuilder WithTheType(fifth.metamodel.metadata.il.TypeReference value){
+            Model.TheType = value;
+            return this;
+        }
+
         public PropertyDefinitionBuilder WithParentClass(fifth.metamodel.metadata.il.ClassDefinition value){
             Model.ParentClass = value;
             return this;
@@ -474,17 +692,42 @@ using fifth.metamodel.metadata.il;
             return this;
         }
 
-        public PropertyDefinitionBuilder WithIsVirtual(System.Boolean value){
-            Model.IsVirtual = value;
-            return this;
-        }
-
         public PropertyDefinitionBuilder WithIsStatic(System.Boolean value){
             Model.IsStatic = value;
             return this;
         }
 
-        public PropertyDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.ILVisibility value){
+        public PropertyDefinitionBuilder WithIsFinal(System.Boolean value){
+            Model.IsFinal = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsVirtual(System.Boolean value){
+            Model.IsVirtual = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsStrict(System.Boolean value){
+            Model.IsStrict = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsAbstract(System.Boolean value){
+            Model.IsAbstract = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithIsSpecialName(System.Boolean value){
+            Model.IsSpecialName = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithHideBySig(System.Boolean value){
+            Model.HideBySig = value;
+            return this;
+        }
+
+        public PropertyDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.MemberAccessability value){
             Model.Visibility = value;
             return this;
         }
@@ -522,6 +765,29 @@ using fifth.metamodel.metadata.il;
 
         public TypeCastExpressionBuilder WithExpression(fifth.metamodel.metadata.il.Expression value){
             Model.Expression = value;
+            return this;
+        }
+
+    }
+    public partial class TypeReferenceBuilder : BaseBuilder<TypeReferenceBuilder,fifth.metamodel.metadata.il.TypeReference>
+    {
+        public TypeReferenceBuilder()
+        {
+            Model = new();
+        }
+
+        public TypeReferenceBuilder WithNamespace(System.String value){
+            Model.Namespace = value;
+            return this;
+        }
+
+        public TypeReferenceBuilder WithName(System.String value){
+            Model.Name = value;
+            return this;
+        }
+
+        public TypeReferenceBuilder WithModuleName(System.String value){
+            Model.ModuleName = value;
             return this;
         }
 

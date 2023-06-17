@@ -43,6 +43,7 @@ public static class ASTModel
             Props = new PropertySpec[]
             {
                 new(name: "Name", type: "string", isCollection: false, ignoreDuringVisit: true),
+                new(name: "Namespace", type: "string", isCollection: false, ignoreDuringVisit: true),
                 new(name: "Fields", type: "FieldDefinition", isCollection: true),
                 new(name: "Properties", type: "PropertyDefinition", isCollection: true),
                 new(name: "Functions", type: "FunctionDefinition", isCollection: true, ignoreDuringVisit: false, interfaceName: "IFunctionDefinition")

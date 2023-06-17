@@ -1,4 +1,4 @@
-﻿namespace Fifth.Parser.LangProcessingPhases;
+namespace Fifth.Parser.LangProcessingPhases;
 using AST.Visitors;
 using Fifth.AST;
 using Fifth.AST.Builders;
@@ -18,6 +18,9 @@ public class DestructuringPatternFlattenerVisitor : DefaultMutatorVisitor<DummyC
         var fb = FunctionDefinitionBuilder.CreateFunctionDefinition()
             .WithName(node.Name)
             .WithTypename(node.Typename)
+            .WithIsInstanceFunction(node.IsInstanceFunction)
+            .WithIsEntryPoint(node.IsEntryPoint)
+            .WithFunctionKind(node.FunctionKind)
             .WithReturnType(node.ReturnType);
 
         // gather the destructuring paramdecls, before they are erased

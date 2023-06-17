@@ -48,7 +48,12 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateFieldDefinition()
     {
-        var sut = FieldDefinitionBuilder.Create().WithName("Foo").WithTypeName("Bar").Build();
+        var barType = TypeReferenceBuilder.Create()
+                            .WithModuleName("mymodule")
+                            .WithNamespace("some.namespace")
+                            .WithName("Field1Type")
+                            .New();
+        var sut = FieldDefinitionBuilder.Create().WithName("Foo").WithTheType(barType).Build();
         sut.Should().NotBeNullOrWhiteSpace()
            .And.ContainAll("field", "Foo", "Bar");
     }
@@ -74,11 +79,22 @@ public class FluentILGenerationTests
     [Test]
     public void CanCreateExtendedClassDescription()
     {
+        var f1Type = TypeReferenceBuilder.Create()
+                            .WithModuleName("mymodule")
+                            .WithNamespace("some.namespace")
+                            .WithName("Field1Type")
+                            .New();
+        var fooType = TypeReferenceBuilder.Create()
+                            .WithModuleName("mymodule")
+                            .WithNamespace("some.namespace")
+                            .WithName("Foo")
+                            .New();
         var cb = ClassDefinitionBuilder.Create()
                                        .WithName("MyClass")
                                        .AddingItemToFields(FieldDefinitionBuilder.Create()
                                            .WithName("Field1")
-                                           .WithTypeName("Field1Type")
+                                           .WithTheType(f1Type)
+                                           .WithTypeOfMember(MemberType.Field)
                                            .New())
                                        .AddingItemToProperties(PropertyDefinitionBuilder.Create()
                                            .WithName("Prop1")
@@ -86,8 +102,11 @@ public class FluentILGenerationTests
                                            .New())
                                        .AddingItemToMethods(MethodDefinitionBuilder.Create()
                                            .WithName("FooMethod")
-                                           .WithReturnType("FooType")
-                                           .WithBody(BlockBuilder.Create()
+                                           .WithTheType(fooType)
+                                           .WithTypeOfMember(MemberType.Field)
+                                           .WithImpl(
+                                               MethodImplBuilder.Create()
+                                                                .WithBody(BlockBuilder.Create()
                                                                  .AddingItemToStatements(StatementBuilder.Create()
                                                                      .WithVariableAssignment("someVar",
                                                                          ExpressionBuilder.Create()
@@ -100,6 +119,8 @@ public class FluentILGenerationTests
                                                                          .New())
                                                                      .New())
                                                                  .New())
+                                                                .New()
+                                               ) //impl
                                            .New())
                                        .Build();
         cb.Should().NotBeNullOrWhiteSpace();

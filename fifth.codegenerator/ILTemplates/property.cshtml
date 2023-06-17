@@ -1,6 +1,7 @@
 @using RazorLight
+@using Fifth.CodeGeneration;
 @using fifth.metamodel.metadata.il;
-@inherits TemplatePage<PropertyDefinition>
+@inherits BaseTemplatePage<PropertyDefinition>
 
 .property instance @Model.TypeName @(Model.Name)(){
     .get instance @Model.TypeName @Model.ParentClass.Name::get_@(Model.Name)()

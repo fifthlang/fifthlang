@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AST;
 using AST.Visitors;
+using fifth.metamodel.metadata;
 using fifth.metamodel.metadata.il;
 using IL;
 using TypeSystem;
@@ -23,6 +24,9 @@ using VariableDeclarationStatement = AST.VariableDeclarationStatement;
 /// </summary>
 public class ILModelBuilder : DefaultRecursiveDescentVisitor
 {
+    // provide a place to place type refs generated from TypeIds (like a symbol table)
+    private readonly Dictionary<TypeId, TypeReference> TypeLookups = new();
+
     private CurrentStack<AssemblyDeclarationBuilder> AssemblyBuilders = new();
     private CurrentStack<ModuleDeclarationBuilder> ModuleDeclarations = new();
     private CurrentStack<AssemblyReferenceBuilder> AssemblyRefBuilders = new();
@@ -31,9 +35,28 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     private CurrentStack<IBuilder<fifth.metamodel.metadata.il.Expression>> ExpressionBuilders = new();
     private CurrentStack<FieldDefinitionBuilder> FieldBuilders = new();
     private CurrentStack<MethodDefinitionBuilder> MethodBuilders = new();
+    private CurrentStack<MethodSignatureBuilder> MethodSignatureBuilders = new();
     private CurrentStack<PropertyDefinitionBuilder> PropertyBuilders = new();
     private CurrentStack<IBuilder<Statement>> StatementBuilders = new();
     public List<AssemblyDeclaration> CompletedAssemblies { get; set; } = new();
+
+
+    private TypeReference GetTypeRef(TypeId t)
+    {
+        if (TypeLookups.TryGetValue(t, out var typeRef))
+        {
+            return typeRef;
+        }
+
+        var returnIType = t.Lookup();
+        var result = TypeReferenceBuilder.Create()
+                                         .WithModuleName(ModuleDeclarations.Current.Model.FileName)
+                                         .WithNamespace(returnIType.Namespace)
+                                         .WithName(returnIType.Name)
+                                         .New();
+        TypeLookups[t] = result;
+        return result;
+    }
 
     public override FifthProgram VisitFifthProgram(FifthProgram ctx)
     {
@@ -75,7 +98,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
         ClassBuilders.Push(ClassDefinitionBuilder.Create());
         ClassBuilders.Current
                      .WithName(ctx.Name)
-                     .WithVisibility(ILVisibility.Public);
+                     .WithVisibility(MemberAccessability.Public);
         foreach (var f in ctx.Fields)
         {
             Visit(f);
@@ -99,8 +122,8 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     {
         FieldBuilders.Push(FieldDefinitionBuilder.Create());
         FieldBuilders.Current.WithName(ctx.Name)
-                     .WithTypeName(ctx.TypeName)
-                     .WithVisibility(ILVisibility.Public);
+                     .WithTheType(GetTypeRef(ctx.TypeId))
+                     .WithVisibility(MemberAccessability.Public);
         ClassBuilders.Current.AddingItemToFields(FieldBuilders.Pop().New());
         return ctx;
     }
@@ -111,7 +134,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
         PropertyBuilders.Current.WithName(ctx.Name)
                         .WithParentClass(ClassBuilders.Current.Model)
                         .WithTypeName(ctx.TypeName)
-                        .WithVisibility(ILVisibility.Public);
+                        .WithVisibility(MemberAccessability.Public);
         ClassBuilders.Current.AddingItemToProperties(PropertyBuilders.Pop().New());
         return ctx;
     }
@@ -119,19 +142,52 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
     {
         MethodBuilders.Push(MethodDefinitionBuilder.Create());
+        MethodSignatureBuilders.Push(MethodSignatureBuilder.Create());
+        if (ctx.IsInstanceFunction && ctx.ParentNode is ClassDefinition)
+        {
+            MethodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Instance);
+        }
+        else
+        {
+            MethodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Default);
+        }
+
+        if (ctx.ReturnType is not null)
+        {
+            MethodSignatureBuilders.Current.WithReturnTypeSignature(GetTypeRef(ctx.ReturnType))
+                   .WithNumberOfParameters((ushort)ctx.ParameterDeclarations.ParameterDeclarations.Count);
+        }
+
         MethodBuilders.Current
-                      .WithName(ctx.Name)
-                      .WithVisibility(ILVisibility.Public)
-                      .WithReturnType(ctx.Typename);
+                      .WithHeader(MethodHeaderBuilder.Create()
+                                                     .WithFunctionKind(ctx.FunctionKind)
+                                                     .WithIsEntrypoint(ctx.IsEntryPoint)
+                                                     .New());
 
         VisitParameterDeclarationList(ctx.ParameterDeclarations);
+        MethodBuilders.Current
+                      .WithParentClass(ClassBuilders.Current.Model)
+                      .WithSignature(MethodSignatureBuilders.Pop().New())
+                      .WithName(ctx.Name)
+                      .WithVisibility(MemberAccessability.Public);
 
         if (ctx.Body != null)
         {
             VisitBlock(ctx.Body);
-            MethodBuilders.Current.WithBody(BlockBuilders.Pop().New());
+            MethodBuilders.Current.WithImpl(
+                MethodImplBuilder.Create()
+                                 .WithBody(BlockBuilders.Pop().New())
+                                 .WithImplementationFlags(ImplementationFlag.internalCall)
+                                 .WithIsManaged(true)
+                                 .New()
+                );
         }
 
+        if (ctx.FunctionKind == FunctionKind.Getter)
+        {
+            // should the IL generator need to know what the prop was?  It just needs to generate its statements.
+//            MethodBuilders.Current.WithAssociatedProperty(ctx.)
+        }
         var mb = MethodBuilders.Pop().New();
         ClassBuilders.Current.AddingItemToMethods(mb);
         return ctx;
@@ -149,14 +205,14 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
 
     public override ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx)
     {
-        var pd = ParameterDeclarationBuilder.Create()
+        var pd = ParameterSignatureBuilder.Create()
                                             .WithName(ctx.ParameterName.Value)
-                                            .WithTypeName(ctx.TypeName)
+                                            .WithTypeReference(GetTypeRef(ctx.TypeId))
                                             .WithIsUDTType(ctx.TypeId.Lookup() is UserDefinedType)
                                             .New();
         // we ignore the constraints and destructurings, because by this point we should have
         // desugared them into regular functions
-        MethodBuilders.Current.AddingItemToParameters(pd);
+        MethodSignatureBuilders.Current.AddingItemToParameterSignatures(pd);
         return ctx;
     }
 

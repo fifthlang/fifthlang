@@ -17,14 +17,13 @@ public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuild
 {
     public override string Build()
     {
-        return Model.FunctionKind switch
+        return Model.Header.FunctionKind switch
             {
                 FunctionKind.Normal => GenerateNormalFunction(),
                 FunctionKind.Ctor => GenerateDefaultCtorFunction(),
                 FunctionKind.Getter => GenerateGetterFunction(),
                 FunctionKind.Setter => GenerateSetterFunction()
-            }
-            ;
+            };
     }
 
     private string GenerateSetterFunction()
@@ -45,7 +44,7 @@ public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuild
     private IEnumerable<VariableDeclarationStatement> GetLocalDecls()
     {
         var result = new List<VariableDeclarationStatement>();
-        result.AddRange(from s in Model.Body.Statements
+        result.AddRange(from s in Model.Impl.Body.Statements
                         where s is VariableDeclarationStatement
                         select (VariableDeclarationStatement)s);
         return result;
@@ -78,19 +77,19 @@ public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuild
     private string GenerateNormalFunction()
     {
         var sb = new StringBuilder();
-        sb.Append($".method {Model.Visibility} {Model.ReturnType} {Model.Name}(");
+        sb.Append($".method {Model.Visibility} {Model.Signature.ReturnTypeSignature.Name} {Model.Name}(");
         var sep = "";
-        foreach (var pd in Model.Parameters)
+        foreach (var pd in Model.Signature.ParameterSignatures)
         {
             sb.Append(sep);
-            sb.Append(ParameterDeclarationBuilder.Create(pd).Build());
+            sb.Append(ParameterSignatureBuilder.Create(pd).Build());
             sep = ", ";
         }
 
         sb.AppendLine(")cil managed\n")
           .AppendLine("{")
           .AppendLine(GenerateLocalsDecls())
-          .AppendLine(BlockBuilder.Create(Model.Body).Build(false))
+          .AppendLine(BlockBuilder.Create(Model.Impl.Body).Build(false))
           .AppendLine("}");
         return sb.ToString();
     }
@@ -116,3 +115,55 @@ public partial class MethodDefinitionBuilder : BaseBuilder<MethodDefinitionBuild
         return tn;
     }
 }
+
+public partial class MemberRefBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+public partial class MethodRefBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public partial class MethodSignatureBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+public partial class MethodHeaderBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+public partial class TypeReferenceBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+public partial class MethodImplBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+public partial class ParameterSignatureBuilder
+{
+    public override string Build()
+    {
+        throw new NotImplementedException();
+    }
+}
+

@@ -81,17 +81,19 @@ public partial class AssemblyRef : AstNode
 
 public partial class ClassDefinition : ScopeAstNode, ITypedAstNode, IFunctionCollection
 {
-    public ClassDefinition(string Name , List<FieldDefinition> Fields , List<PropertyDefinition> Properties , List<IFunctionDefinition> Functions )
+    public ClassDefinition(string Name , string Namespace , List<FieldDefinition> Fields , List<PropertyDefinition> Properties , List<IFunctionDefinition> Functions )
 
 
 {
         this.Name = Name;
+        this.Namespace = Namespace;
         this.Fields = Fields;
         this.Properties = Properties;
         this.Functions = Functions;
     }
 
     public string Name{get;set;}
+    public string Namespace{get;set;}
     public List<FieldDefinition> Fields{get;set;}
     public List<PropertyDefinition> Properties{get;set;}
     public List<IFunctionDefinition> Functions{get;set;}

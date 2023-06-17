@@ -18,6 +18,13 @@ namespace Fifth.TypeSystem
                 return Definition.Name;
             }
         }
+        public string Namespace
+        {
+            get
+            {
+                return Definition.Namespace;
+            }
+        }
 
         public TypeId TypeId
         {

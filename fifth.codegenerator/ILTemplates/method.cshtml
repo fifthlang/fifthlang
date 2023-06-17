@@ -1,96 +1,55 @@
 @using Fifth.CodeGeneration;
-@using Fifth.CodeGeneration.LangProcessingPhases;
 @using fifth.metamodel.metadata.il;
-@using RazorLight
 @using fifth.metamodel.metadata;
 @inherits BaseTemplatePage<MethodDefinition>
 @{
-    if(Model.FunctionKind == FunctionKind.Normal) {
-        var args = string.Join(',', Model.Parameters.Select(pd => $"{pd.TypeName} {pd.Name}").ToArray());
-        <text>.method public static @Model.ReturnType @Model.Name (@args) cil managed </text>
-        if (Model.IsEntrypoint)
-        {
-            @(".entrypoint") ;
-        }
-        var locals = GetVarDecls(Model.Body);
-        if (locals.Any())
-        {
-            <text>locals init (</text>
-            var sep = "";
-            var ord = 0;
-            foreach (var decl in locals)
-            {
-                <text>@(sep)[@(ord++)] @decl.TypeName @decl.Name
-                </text>
-                sep = ",";
-            }
-            <text>)</text>
-        }
-        await IncludeAsync("block.cshtml", Model.Body);
-    }
-    else if (Model.FunctionKind == FunctionKind.Getter)
-    {
-        var cd = Model.ParentClass;
-        var pd = Model.AssociatedProperty;
-        var tn = Model.ReturnType;
-        var fd = pd.FieldDefinition;
 
-        <text>
-            .method public hidebysig specialname instance @tn @(Model.Name)() cil managed
-            {
-            ldarg.0      // this
-            ldfld        @tn @cd.Name::'@fd.Name'
-            ret
-            } // end method @cd.Name::@Model.Name
-        </text>
+var tn = RenderTypeReference(Model.Signature.ReturnTypeSignature);
 
-    }
-    else if (Model.FunctionKind == FunctionKind.Setter)
-    {
-        var cd2 = Model.ParentClass;
-        var pd2 = Model.AssociatedProperty;
-        var tn2 = Model.ReturnType;
-        <text>
-            .method public hidebysig specialname instance void @Model.Name ( @tn2 'value' ) cil managed
-            {
-            ldarg.0      // this
-            ldarg.1      // 'value'
-            stfld        @tn2 @cd2.Name::'@Model.Name'
-            ret
-            } // end of method @cd2.Name::@Model.Name
-        </text>
-    }
+<text> .method</text>
+
+switch (Model.Visibility)
+{
+    case MemberAccessability.Public:
+        <text> public</text>
+        break;
+    default: // todo: generate other visibilities
+        <text> protected</text>
+        break;
 }
 
-@functions{
-    private IEnumerable<VariableDeclarationStatement> GetVarDecls(Block b)
-    {
-        foreach (var s in b.Statements)
-        {
-            if (s is VariableDeclarationStatement x)
-            {
-                yield return x;
-            }
-            else if (s is IfStatement ifs)
-            {
-                foreach (var substatement in GetVarDecls(ifs.IfBlock))
-                {
-                    yield return substatement;
-                }
-                foreach (var substatement in GetVarDecls(ifs.ElseBlock))
-                {
-                    yield return substatement;
-                }
-            }
-            else if (s is WhileStatement ws)
-            {
-                foreach (var substatement in GetVarDecls(ws.LoopBlock))
-                {
-                    yield return substatement;
-                }
-            }
-        }
-    }
-    private void GenerateDefaultCtorFunction() { }
-    private void GenerateBuiltinFunction() { }
+if (Model.Signature.CallingConvention == MethodCallingConvention.Default)
+{
+    <text> static</text>
+}
+
+if (Model.Header.FunctionKind == FunctionKind.Getter || Model.Header.FunctionKind == FunctionKind.Setter)
+{
+        <text> hidebysig specialname</text>
+}
+
+<text>@tn @Model.Name (</text>
+
+var sep = "";
+foreach (var p in Model.Signature.ParameterSignatures)
+{
+    <text> @sep</text>
+    await IncludeAsync("parameterSignature.cshtml", p);
+    sep = ",";
+}
+<text> )</text>
+
+if (Model.CodeTypeFlags == CodeTypeFlag.cil)
+{
+    <text> cil managed
+    </text>
+}
+
+if (Model.Header.IsEntrypoint)
+{
+    <text> .entrypoint
+    </text>
+}
+await IncludeAsync("locals.cshtml", Model.Impl.Body);
+await IncludeAsync("block.cshtml", Model.Impl.Body);
 }
