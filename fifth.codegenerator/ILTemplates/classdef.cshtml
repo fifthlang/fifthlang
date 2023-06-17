@@ -1,6 +1,5 @@
 @using Fifth.CodeGeneration;
 @using fifth.metamodel.metadata.il;
-@using fifth.metamodel.metadata;
 @inherits BaseTemplatePage<ClassDefinition>
 
 .class public @Model.Name extends [System.Runtime]System.Object
@@ -12,7 +11,7 @@
 
     @foreach (var p in Model.Properties)
     {
-        await IncludeAsync("property.cshtml", p);}
+        await IncludeAsync("property.cshtml", p);
     }
 
     @foreach (var m in Model.Methods)

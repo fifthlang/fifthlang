@@ -56,6 +56,6 @@ public abstract class BaseTemplatePage<T> : TemplatePage<T>
     protected string RenderTypeReference(TypeReference tr)
     {
         if(tr is null) return String.Empty;
-        return string.IsNullOrWhiteSpace(tr.Namespace) ? $"{tr.Namespace}.{tr.Name}" : tr.Name;
+        return !string.IsNullOrWhiteSpace(tr.Namespace) ? $"{tr.Namespace}.{tr.Name}" : tr.Name;
     }
 }

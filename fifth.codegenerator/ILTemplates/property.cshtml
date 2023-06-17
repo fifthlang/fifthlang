@@ -3,7 +3,8 @@
 @using fifth.metamodel.metadata.il;
 @inherits BaseTemplatePage<PropertyDefinition>
 
-.property instance @Model.TypeName @(Model.Name)(){
-    .get instance @Model.TypeName @Model.ParentClass.Name::get_@(Model.Name)()
-    .set instance void @Model.ParentClass.Name::set_@(Model.Name)(@Model.TypeName)
+.property instance @(RenderTypeReference(Model.TheType)) @(Model.Name)()
+{
+    .get instance @(RenderTypeReference(Model.TheType)) @Model.ParentClass.Name::get_@(Model.Name)()
+    .set instance void @Model.ParentClass.Name::set_@(Model.Name)(@(RenderTypeReference(Model.TheType)))
 }

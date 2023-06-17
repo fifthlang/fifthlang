@@ -2,5 +2,5 @@
 @using fifth.metamodel.metadata.il;
 @inherits BaseTemplatePage<FieldDefinition>
 
-.field private @Model.TheType.Name '@Model.Name'
+.field private @(RenderTypeReference(Model.TheType)) '@Model.Name'
 
