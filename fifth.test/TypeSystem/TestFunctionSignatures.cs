@@ -1,5 +1,6 @@
 namespace Fifth.Test.TypeSystem
 {
+    using fifth.metamodel.metadata;
     using Fifth.TypeSystem;
     using NUnit.Framework;
 

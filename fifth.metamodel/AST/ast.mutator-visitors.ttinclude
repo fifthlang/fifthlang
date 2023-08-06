@@ -42,10 +42,6 @@ public partial class DefaultMutatorVisitor<TContext> : IAstMutatorVisitor<TConte
     }
 
 
-
-
-
-
 <# foreach (var ast in asts)  {
     var allProps = GenerationHelpers.GetPropertyListInherited(ast).Select(ps=>ps.Prop);
 
@@ -79,6 +75,77 @@ if (prop.IgnoreDuringVisit){
  } /* for each prop */ #>
 
         return builder.Build();
+    }
+
+<# } #>
+}
+
+
+public interface IAstMutatorVisitor2<TContext>
+{
+<# foreach (var ast in asts)  { #>
+    AstNode Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx);
+<# } #>
+}
+
+public partial class DefaultMutatorVisitor2<TContext> : IAstMutatorVisitor2<TContext>
+{
+    public AstNode Process(AstNode x, TContext ctx)
+    {
+        if (x == null) return x;
+        var result = x switch
+        {
+<# foreach (var ast in asts)  { #>
+            <#= ast.Name #> node => Process<#= ast.Name #>(node, ctx),
+<# } #>
+
+            { } node => node,
+        };
+        // in case result is totally new, copy in the metadata, so we don't lose any that's been generated previously
+        x.CopyMetadataInto(result);
+
+        if (x is ITypedAstNode tn && result is ITypedAstNode rtn)
+        {
+            rtn.TypeId = tn.TypeId;
+        }
+
+        return result;
+    }
+
+
+<# foreach (var ast in asts)  {
+    var allProps = GenerationHelpers.GetPropertyListInherited(ast).Select(ps=>ps.Prop);
+
+ #>
+    public virtual AstNode Process<#= ast.Name #>(<#= ast.Name #> node, TContext ctx)
+    {
+
+
+    var builder = <#= ast.Name #>Builder.Create<#= ast.Name #>();
+
+<# foreach (var prop in allProps)  {
+if (prop.IgnoreDuringVisit){
+    if (prop.IsCollection){#>
+        foreach(var x in node.<#=prop.Name#>){
+            builder.AddingItemTo<#= prop.Name #>(x);
+        }
+    <#} else {#>
+        builder.With<#= prop.Name #>(node.<#=prop.Name#>);
+    <#}
+} else {
+    if (prop.IsCollection){#>
+        foreach(var x in node.<#=prop.Name#>){
+            builder.AddingItemTo<#= prop.Name #>((<#= prop.InterfaceName ?? prop!.Type #>)Process((<#= prop.Type #>)x, ctx));
+        }
+    <#} else {#>
+        builder.With<#= prop.Name #>((<#= prop.InterfaceName ?? prop!.Type #>)Process(node.<#=prop.Name#>, ctx));
+    <#}
+}
+
+
+ } /* for each prop */ #>
+
+        return builder.Build() as AstNode;
     }
 
 <# } #>

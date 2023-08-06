@@ -1,102 +1,111 @@
 namespace Fifth.CodeGeneration.LangProcessingPhases;
 
+#region
+
 using System.Collections.Generic;
-using System.Linq;
 using AST;
 using AST.Visitors;
 using fifth.metamodel.metadata;
-using fifth.metamodel.metadata.il;
 using IL;
-using TypeSystem;
-using Block = AST.Block;
-using ClassDefinition = AST.ClassDefinition;
-using ExpressionStatement = AST.ExpressionStatement;
-using FieldDefinition = AST.FieldDefinition;
-using MemberAccessExpression = AST.MemberAccessExpression;
-using ParameterDeclaration = AST.ParameterDeclaration;
-using PropertyDefinition = AST.PropertyDefinition;
-using ReturnStatement = AST.ReturnStatement;
-using Statement = fifth.metamodel.metadata.il.Statement;
-using VariableDeclarationStatement = AST.VariableDeclarationStatement;
+using Version = fifth.metamodel.metadata.il.Version;
+
+#endregion
 
 /// <summary>
 ///     A visitor responsible for translating the AST into an IL-oriented AST specific to IL code generation.
 /// </summary>
+// ReSharper disable once InconsistentNaming
 public class ILModelBuilder : DefaultRecursiveDescentVisitor
 {
     // provide a place to place type refs generated from TypeIds (like a symbol table)
-    private readonly Dictionary<TypeId, TypeReference> TypeLookups = new();
+    private readonly Dictionary<TypeId, TypeReference> typeLookups = new();
 
-    private CurrentStack<AssemblyDeclarationBuilder> AssemblyBuilders = new();
-    private CurrentStack<ModuleDeclarationBuilder> ModuleDeclarations = new();
-    private CurrentStack<AssemblyReferenceBuilder> AssemblyRefBuilders = new();
-    private CurrentStack<BlockBuilder> BlockBuilders = new();
-    private CurrentStack<ClassDefinitionBuilder> ClassBuilders = new();
-    private CurrentStack<IBuilder<fifth.metamodel.metadata.il.Expression>> ExpressionBuilders = new();
-    private CurrentStack<FieldDefinitionBuilder> FieldBuilders = new();
-    private CurrentStack<MethodDefinitionBuilder> MethodBuilders = new();
-    private CurrentStack<MethodSignatureBuilder> MethodSignatureBuilders = new();
-    private CurrentStack<PropertyDefinitionBuilder> PropertyBuilders = new();
-    private CurrentStack<IBuilder<Statement>> StatementBuilders = new();
+    private readonly CurrentStack<AssemblyDeclarationBuilder> assemblyBuilders = new();
+    private CurrentStack<AssemblyReferenceBuilder> assemblyRefBuilders = new();
+    private readonly CurrentStack<BlockBuilder> blockBuilders = new();
+    private readonly CurrentStack<ClassDefinitionBuilder> classBuilders = new();
+    private CurrentStack<IBuilder<Expression>> expressionBuilders = new();
+    private readonly CurrentStack<FieldDefinitionBuilder> fieldBuilders = new();
+    private readonly CurrentStack<MethodDefinitionBuilder> methodBuilders = new();
+    private readonly CurrentStack<MethodSignatureBuilder> methodSignatureBuilders = new();
+    private readonly CurrentStack<ModuleDeclarationBuilder> moduleDeclarations = new();
+    private readonly CurrentStack<PropertyDefinitionBuilder> propertyBuilders = new();
+    private CurrentStack<IBuilder<Statement>> statementBuilders = new();
     public List<AssemblyDeclaration> CompletedAssemblies { get; set; } = new();
-
+    public Stack<fifth.metamodel.metadata.il.Expression> CompletedExpressions  { get; set; } = new();
 
     private TypeReference GetTypeRef(TypeId t)
     {
-        if (TypeLookups.TryGetValue(t, out var typeRef))
+        if (typeLookups.TryGetValue(t, out var typeRef))
         {
             return typeRef;
         }
 
         var returnIType = t.Lookup();
         var result = TypeReferenceBuilder.Create()
-                                         .WithModuleName(ModuleDeclarations.Current.Model.FileName)
+                                         .WithModuleName(moduleDeclarations.Current.Model.FileName)
                                          .WithNamespace(returnIType.Namespace)
                                          .WithName(returnIType.Name)
                                          .New();
-        TypeLookups[t] = result;
+        typeLookups[t] = result;
         return result;
     }
 
     public override FifthProgram VisitFifthProgram(FifthProgram ctx)
     {
-        string defaultAssemblyFileName = "out";
+        var defaultAssemblyFileName = "out";
 
-        AssemblyBuilders.Push(AssemblyDeclarationBuilder.Create());
-        AssemblyBuilders.Current
-            .WithVersion(new Version(1,0,0,0));
-        ModuleDeclarations.Push(ModuleDeclarationBuilder.Create());
+        assemblyBuilders.Push(AssemblyDeclarationBuilder.Create());
+        assemblyBuilders.Current
+                        .WithVersion(new Version(1, 0, 0, 0));
+        moduleDeclarations.Push(ModuleDeclarationBuilder.Create());
 
-        ModuleDeclarations.Current.WithFileName(ctx.TargetAssemblyFileName ?? defaultAssemblyFileName);
+        moduleDeclarations.Current.WithFileName(ctx.TargetAssemblyFileName ?? defaultAssemblyFileName);
 
         foreach (var @class in ctx.Classes)
         {
             Visit(@class);
         }
 
-        ClassBuilders.Push(ClassDefinitionBuilder.Create().WithName("Program"));
+        classBuilders.Push(ClassDefinitionBuilder.Create().WithName("Program"));
         foreach (var function in ctx.Functions)
         {
             VisitFunctionDefinition(function as FunctionDefinition);
         }
-        ModuleDeclarations.Current.AddingItemToClasses(ClassBuilders.Pop().New());
 
-        var m = ModuleDeclarations.Pop().New();
-        AssemblyBuilders.Current.WithPrimeModule(m);
+        moduleDeclarations.Current.AddingItemToClasses(classBuilders.Pop().New());
+
+        var m = moduleDeclarations.Pop().New();
+        assemblyBuilders.Current.WithPrimeModule(m);
         return ctx;
     }
 
     public override Assembly VisitAssembly(Assembly ctx)
     {
+        assemblyBuilders.Push(AssemblyDeclarationBuilder.Create());
+        foreach (var assemblyRef in ctx.References)
+        {
+            VisitAssemblyRef(assemblyRef);
+        }
         VisitFifthProgram(ctx.Program);
-        CompletedAssemblies.Add(AssemblyBuilders.Pop().New());
+        CompletedAssemblies.Add(assemblyBuilders.Pop().New());
+        return ctx;
+    }
+
+    public override AssemblyRef VisitAssemblyRef(AssemblyRef ctx)
+    {
+        assemblyRefBuilders.Push(AssemblyReferenceBuilder.Create());
+        assemblyRefBuilders.Current.WithName(ctx.Name)
+                           .WithPublicKeyToken(ctx.PublicKeyToken)
+                           .WithVersion(new Version(ctx.Version));
+        assemblyBuilders.Current.AddingItemToAssemblyReferences(assemblyRefBuilders.Pop().New());
         return ctx;
     }
 
     public override ClassDefinition VisitClassDefinition(ClassDefinition ctx)
     {
-        ClassBuilders.Push(ClassDefinitionBuilder.Create());
-        ClassBuilders.Current
+        classBuilders.Push(ClassDefinitionBuilder.Create());
+        classBuilders.Current
                      .WithName(ctx.Name)
                      .WithVisibility(MemberAccessability.Public);
         foreach (var f in ctx.Fields)
@@ -114,73 +123,74 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
             Visit(fn as FunctionDefinition);
         }
 
-        ModuleDeclarations.Current.AddingItemToClasses(ClassBuilders.Pop().New());
+        moduleDeclarations.Current.AddingItemToClasses(classBuilders.Pop().New());
         return ctx;
     }
 
     public override FieldDefinition VisitFieldDefinition(FieldDefinition ctx)
     {
-        FieldBuilders.Push(FieldDefinitionBuilder.Create());
-        FieldBuilders.Current.WithName(ctx.Name)
+        fieldBuilders.Push(FieldDefinitionBuilder.Create());
+        fieldBuilders.Current.WithName(ctx.Name)
                      .WithTheType(GetTypeRef(ctx.TypeId))
                      .WithVisibility(MemberAccessability.Public);
-        ClassBuilders.Current.AddingItemToFields(FieldBuilders.Pop().New());
+        classBuilders.Current.AddingItemToFields(fieldBuilders.Pop().New());
         return ctx;
     }
 
     public override PropertyDefinition VisitPropertyDefinition(PropertyDefinition ctx)
     {
-        PropertyBuilders.Push(PropertyDefinitionBuilder.Create());
-        PropertyBuilders.Current.WithName(ctx.Name)
-                        .WithParentClass(ClassBuilders.Current.Model)
+        propertyBuilders.Push(PropertyDefinitionBuilder.Create());
+        propertyBuilders.Current.WithName(ctx.Name)
+                        .WithParentClass(classBuilders.Current.Model)
                         .WithTypeName(ctx.TypeName)
                         .WithVisibility(MemberAccessability.Public);
-        ClassBuilders.Current.AddingItemToProperties(PropertyBuilders.Pop().New());
+        classBuilders.Current.AddingItemToProperties(propertyBuilders.Pop().New());
         return ctx;
     }
 
     public override FunctionDefinition VisitFunctionDefinition(FunctionDefinition ctx)
     {
-        MethodBuilders.Push(MethodDefinitionBuilder.Create());
-        MethodSignatureBuilders.Push(MethodSignatureBuilder.Create());
+        methodBuilders.Push(MethodDefinitionBuilder.Create());
+        methodSignatureBuilders.Push(MethodSignatureBuilder.Create());
         if (ctx.IsInstanceFunction && ctx.ParentNode is ClassDefinition)
         {
-            MethodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Instance);
+            methodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Instance);
         }
         else
         {
-            MethodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Default);
+            methodSignatureBuilders.Current.WithCallingConvention(MethodCallingConvention.Default);
         }
 
         if (ctx.ReturnType is not null)
         {
-            MethodSignatureBuilders.Current.WithReturnTypeSignature(GetTypeRef(ctx.ReturnType))
-                   .WithNumberOfParameters((ushort)ctx.ParameterDeclarations.ParameterDeclarations.Count);
+            methodSignatureBuilders.Current.WithReturnTypeSignature(GetTypeRef(ctx.ReturnType))
+                                   .WithNumberOfParameters(
+                                       (ushort)ctx.ParameterDeclarations.ParameterDeclarations.Count);
         }
 
-        MethodBuilders.Current
+        methodBuilders.Current
                       .WithHeader(MethodHeaderBuilder.Create()
                                                      .WithFunctionKind(ctx.FunctionKind)
                                                      .WithIsEntrypoint(ctx.IsEntryPoint)
                                                      .New());
 
         VisitParameterDeclarationList(ctx.ParameterDeclarations);
-        MethodBuilders.Current
-                      .WithParentClass(ClassBuilders.Current.Model)
-                      .WithSignature(MethodSignatureBuilders.Pop().New())
+        methodBuilders.Current
+                      .WithParentClass(classBuilders.Current.Model)
+                      .WithSignature(methodSignatureBuilders.Pop().New())
                       .WithName(ctx.Name)
                       .WithVisibility(MemberAccessability.Public);
 
         if (ctx.Body != null)
         {
             VisitBlock(ctx.Body);
-            MethodBuilders.Current.WithImpl(
+            methodBuilders.Current.WithImpl(
                 MethodImplBuilder.Create()
-                                 .WithBody(BlockBuilders.Pop().New())
+                                 .WithBody(blockBuilders.Pop().New())
                                  .WithImplementationFlags(ImplementationFlag.internalCall)
                                  .WithIsManaged(true)
                                  .New()
-                );
+            );
         }
 
         if (ctx.FunctionKind == FunctionKind.Getter)
@@ -188,8 +198,9 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
             // should the IL generator need to know what the prop was?  It just needs to generate its statements.
 //            MethodBuilders.Current.WithAssociatedProperty(ctx.)
         }
-        var mb = MethodBuilders.Pop().New();
-        ClassBuilders.Current.AddingItemToMethods(mb);
+
+        var mb = methodBuilders.Pop().New();
+        classBuilders.Current.AddingItemToMethods(mb);
         return ctx;
     }
 
@@ -206,22 +217,22 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     public override ParameterDeclaration VisitParameterDeclaration(ParameterDeclaration ctx)
     {
         var pd = ParameterSignatureBuilder.Create()
-                                            .WithName(ctx.ParameterName.Value)
-                                            .WithTypeReference(GetTypeRef(ctx.TypeId))
-                                            .WithIsUDTType(ctx.TypeId.Lookup() is UserDefinedType)
-                                            .New();
+                                          .WithName(ctx.ParameterName.Value)
+                                          .WithTypeReference(GetTypeRef(ctx.TypeId))
+                                          .WithIsUDTType(ctx.TypeId.Lookup() is UserDefinedType)
+                                          .New();
         // we ignore the constraints and destructurings, because by this point we should have
         // desugared them into regular functions
-        MethodSignatureBuilders.Current.AddingItemToParameterSignatures(pd);
+        methodSignatureBuilders.Current.AddingItemToParameterSignatures(pd);
         return ctx;
     }
 
     public override Block VisitBlock(Block ctx)
     {
-        BlockBuilders.Push(BlockBuilder.Create());
+        blockBuilders.Push(BlockBuilder.Create());
         foreach (var s in ctx.Statements)
         {
-            switch(s)
+            switch (s)
             {
                 case VariableDeclarationStatement vds:
                     VisitVariableDeclarationStatement(vds);
@@ -238,10 +249,8 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
                 case WhileExp wst:
                     VisitWhileExp(wst);
                     break;
-                case AST.ExpressionStatement expstmt:
+                case ExpressionStatement expstmt:
                     VisitExpressionStatement(expstmt);
-                    break;
-                default:
                     break;
             }
             //Visit(s);
@@ -256,16 +265,16 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
 
     public override ExpressionStatement VisitExpressionStatement(ExpressionStatement ctx)
     {
-        BlockBuilders.Current.AddingItemToStatements(
-        ExpressionStatementBuilder.Create()
-                                  .WithExpression(ExpressionILBuilder.Generate(ctx.Expression))
-                                  .New());
+        blockBuilders.Current.AddingItemToStatements(
+            ExpressionStatementBuilder.Create()
+                                      .WithExpression(ExpressionILBuilder.Generate(ctx.Expression))
+                                      .New());
         return ctx;
     }
 
     public override ReturnStatement VisitReturnStatement(ReturnStatement ctx)
     {
-        BlockBuilders.Current.AddingItemToStatements(
+        blockBuilders.Current.AddingItemToStatements(
             ReturnStatementBuilder.Create()
                                   .WithExp(ExpressionILBuilder.Generate(ctx.SubExpression))
                                   .New());
@@ -276,7 +285,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     {
         string vr;
         int? ord = null;
-        switch ((AST.Expression)ctx.VariableRef)
+        switch (ctx.VariableRef)
         {
             case VariableReference ivr:
                 var ilvr = ExpressionILBuilder.Generate(ivr) as VariableReferenceExpression;
@@ -300,7 +309,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
             builder.WithOrdinal(ord.Value);
         }
 
-        BlockBuilders.Current.AddingItemToStatements(builder.New());
+        blockBuilders.Current.AddingItemToStatements(builder.New());
 
         return ctx;
     }
@@ -311,18 +320,18 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
                                         .WithConditional(ExpressionILBuilder.Generate(ctx.Condition))
             ;
         Visit(ctx.IfBlock);
-        builder.WithIfBlock(BlockBuilders.Pop().New());
+        builder.WithIfBlock(blockBuilders.Pop().New());
         if (ctx.ElseBlock.Statements != null && ctx.ElseBlock.Statements.Count != 0)
         {
             Visit(ctx.ElseBlock);
-            builder.WithElseBlock(BlockBuilders.Pop().New());
+            builder.WithElseBlock(blockBuilders.Pop().New());
         }
 
-        BlockBuilders.Current.AddingItemToStatements(builder.New());
+        blockBuilders.Current.AddingItemToStatements(builder.New());
         return ctx;
     }
 
-    public override AST.VariableDeclarationStatement VisitVariableDeclarationStatement(AST.VariableDeclarationStatement ctx)
+    public override VariableDeclarationStatement VisitVariableDeclarationStatement(VariableDeclarationStatement ctx)
     {
         var b = VariableDeclarationStatementBuilder.Create()
                                                    .WithName(ctx.Name)
@@ -333,7 +342,7 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
             b.WithInitialisationExpression(ExpressionILBuilder.Generate(ctx.Expression));
         }
 
-        BlockBuilders.Current.AddingItemToStatements(b.New());
+        blockBuilders.Current.AddingItemToStatements(b.New());
         return ctx;
     }
 
@@ -342,9 +351,73 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
         var b = WhileStatementBuilder.Create();
         b.WithConditional(ExpressionILBuilder.Generate(ctx.Condition));
         Visit(ctx.LoopBlock);
-        b.WithLoopBlock(BlockBuilders.Pop().New());
-        BlockBuilders.Current.AddingItemToStatements(b.New());
+        b.WithLoopBlock(blockBuilders.Pop().New());
+        blockBuilders.Current.AddingItemToStatements(b.New());
         return ctx;
+    }
+
+    #endregion
+
+    #region Expression Handling
+
+    public override BinaryExpression VisitBinaryExpression(BinaryExpression ctx)
+    {
+        CompletedExpressions.Push(ExpressionILBuilder.Generate(ctx));
+        return ctx;
+    }
+
+    public override UnaryExpression VisitUnaryExpression(UnaryExpression ctx)
+    {
+        CompletedExpressions.Push(ExpressionILBuilder.Generate(ctx));
+        return ctx;
+    }
+
+    public override StringValueExpression VisitStringValueExpression(StringValueExpression ctx)
+    {
+        CompletedExpressions.Push(new StringLiteral(ctx.TheValue));
+        return base.VisitStringValueExpression(ctx);
+    }
+
+    public override BoolValueExpression VisitBoolValueExpression(BoolValueExpression ctx)
+    {
+        CompletedExpressions.Push(new BoolLiteral(ctx.TheValue));
+        return base.VisitBoolValueExpression(ctx);
+    }
+
+    public override ShortValueExpression VisitShortValueExpression(ShortValueExpression ctx)
+    {
+        CompletedExpressions.Push(new ShortLiteral(ctx.TheValue));
+        return base.VisitShortValueExpression(ctx);
+    }
+
+    public override IntValueExpression VisitIntValueExpression(IntValueExpression ctx)
+    {
+        CompletedExpressions.Push(new IntLiteral(ctx.TheValue));
+        return base.VisitIntValueExpression(ctx);
+    }
+
+    public override LongValueExpression VisitLongValueExpression(LongValueExpression ctx)
+    {
+        CompletedExpressions.Push(new LongLiteral(ctx.TheValue));
+        return base.VisitLongValueExpression(ctx);
+    }
+
+    public override FloatValueExpression VisitFloatValueExpression(FloatValueExpression ctx)
+    {
+        CompletedExpressions.Push(new FloatLiteral(ctx.TheValue));
+        return base.VisitFloatValueExpression(ctx);
+    }
+
+    public override DoubleValueExpression VisitDoubleValueExpression(DoubleValueExpression ctx)
+    {
+        CompletedExpressions.Push(new DoubleLiteral(ctx.TheValue));
+        return base.VisitDoubleValueExpression(ctx);
+    }
+
+    public override DecimalValueExpression VisitDecimalValueExpression(DecimalValueExpression ctx)
+    {
+        CompletedExpressions.Push(new DecimalLiteral(ctx.TheValue));
+        return base.VisitDecimalValueExpression(ctx);
     }
 
     #endregion

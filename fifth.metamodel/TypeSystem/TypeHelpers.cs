@@ -6,6 +6,7 @@ namespace Fifth.TypeSystem
     using System.Linq;
     using System.Reflection;
     using AST;
+    using fifth.metamodel.metadata;
     using PrimitiveTypes;
     using Expression = System.Linq.Expressions.Expression;
 

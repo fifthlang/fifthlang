@@ -1,5 +1,7 @@
 namespace Fifth.AST
 {
+    using fifth.metamodel.metadata;
+
     public abstract class LiteralExpression<T> : Expression
     {
         protected LiteralExpression(T value, TypeId type)

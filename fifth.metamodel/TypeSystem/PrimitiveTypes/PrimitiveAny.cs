@@ -1,5 +1,7 @@
 namespace Fifth.TypeSystem.PrimitiveTypes
 {
+    using fifth.metamodel.metadata;
+
     public abstract class PrimitiveAny : IType
     {
         protected PrimitiveAny(string name, string? @namespace = default)

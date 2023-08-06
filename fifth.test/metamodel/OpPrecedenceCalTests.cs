@@ -1,5 +1,6 @@
 namespace Fifth.Test.metamodel;
 
+using fifth.metamodel.metadata;
 using Fifth.TypeSystem;
 using PrimitiveTypes;
 

@@ -1,6 +1,7 @@
 namespace Fifth.TypeSystem.PrimitiveTypes
 {
     using System.Collections.Generic;
+    using fifth.metamodel.metadata;
     using Fifth.PrimitiveTypes;
 
     public class PrimitiveList : PrimitiveGeneric

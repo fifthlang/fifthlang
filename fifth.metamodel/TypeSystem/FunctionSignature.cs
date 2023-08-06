@@ -2,6 +2,7 @@ namespace Fifth.TypeSystem
 {
     using System;
     using System.Collections.Generic;
+    using fifth.metamodel.metadata;
 
     public class FunctionSignature : IFunctionSignature, IEquatable<FunctionSignature>, IEquatable<IFunctionSignature>
     {

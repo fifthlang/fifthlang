@@ -1,5 +1,7 @@
 namespace Fifth.AST
 {
+    using fifth.metamodel.metadata;
+
     public partial class OverloadedFunctionDefinition
     {
         public ParameterDeclarationList ParameterDeclarations { get; set; }

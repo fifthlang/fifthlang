@@ -1,6 +1,7 @@
 namespace Fifth.TypeSystem
 {
     using System;
+    using fifth.metamodel.metadata;
 
     public interface IType
     {

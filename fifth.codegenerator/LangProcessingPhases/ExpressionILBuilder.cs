@@ -1,21 +1,15 @@
 namespace Fifth.CodeGeneration.LangProcessingPhases;
 
+#region
+
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using AST;
-using BuiltinsGeneration;
-using fifth.metamodel.metadata.il;
 using IL;
-using Symbols;
-using TypeSystem;
 using TypeSystem.PrimitiveTypes;
-using BinaryExpression = AST.BinaryExpression;
-using Expression = fifth.metamodel.metadata.il.Expression;
-using MemberAccessExpression = AST.MemberAccessExpression;
-using ParameterDeclaration = AST.ParameterDeclaration;
-using UnaryExpression = AST.UnaryExpression;
+using ilmm = fifth.metamodel.metadata.il;
+
+#endregion
 
 /// <summary>
 ///     Takes over generation for the IL from the ILGenerator.  It does this because the composite pattern in use with
@@ -23,17 +17,17 @@ using UnaryExpression = AST.UnaryExpression;
 /// </summary>
 public class ExpressionILBuilder
 {
-    public static Expression Generate(AST.Expression e)
+    public static ilmm.Expression Generate(Expression e)
     {
         return e switch
         {
-            IntValueExpression exp => new Literal<int>(exp.TheValue),
-            ShortValueExpression exp => new Literal<short>(exp.TheValue),
-            LongValueExpression exp => new Literal<long>(exp.TheValue),
-            FloatValueExpression exp => new Literal<float>(exp.TheValue),
-            DoubleValueExpression exp => new Literal<double>(exp.TheValue),
-            DecimalValueExpression exp => new Literal<decimal>(exp.TheValue),
-            StringValueExpression exp => new Literal<string>(exp.TheValue),
+            IntValueExpression exp => new IntLiteral(exp.TheValue),
+            ShortValueExpression exp => new ShortLiteral(exp.TheValue),
+            LongValueExpression exp => new LongLiteral(exp.TheValue),
+            FloatValueExpression exp => new FloatLiteral(exp.TheValue),
+            DoubleValueExpression exp => new DoubleLiteral(exp.TheValue),
+            DecimalValueExpression exp => new DecimalLiteral(exp.TheValue),
+            StringValueExpression exp => new StringLiteral(exp.TheValue),
             UnaryExpression exp => GenerateUnary(exp),
             BinaryExpression exp => GenerateBinary(exp),
             FuncCallExpression exp => GenerateFuncCall(exp),
@@ -44,7 +38,7 @@ public class ExpressionILBuilder
         };
     }
 
-    private static Expression GenerateMemberAccess(MemberAccessExpression mae)
+    private static ilmm.Expression GenerateMemberAccess(MemberAccessExpression mae)
     {
         return MemberAccessExpressionBuilder.Create()
                                             .WithLhs(Generate(mae.LHS))
@@ -52,11 +46,11 @@ public class ExpressionILBuilder
                                             .New();
     }
 
-    static int? GetVarOrdinal(VariableReference ctx)
+    private static int? GetVarOrdinal(VariableReference ctx)
     {
         if (ctx.NearestScope().TryResolve(ctx.Name, out var ste))
         {
-            if (ste.Context is AST.VariableDeclarationStatement vds)
+            if (ste.Context is VariableDeclarationStatement vds)
             {
                 if (vds.HasAnnotation(Constants.DeclarationOrdinal))
                 {
@@ -68,7 +62,7 @@ public class ExpressionILBuilder
         return null;
     }
 
-    static Expression GenerateVarRef(VariableReference ctx)
+    private static ilmm.Expression GenerateVarRef(VariableReference ctx)
     {
         var vrb = VariableReferenceExpressionBuilder.Create()
                                                     .WithName(ctx.Name)
@@ -84,7 +78,7 @@ public class ExpressionILBuilder
         return vrb.New();
     }
 
-    static Expression GenerateTypeCast(TypeCast e)
+    private static ilmm.Expression GenerateTypeCast(TypeCast e)
     {
         var tcb = TypeCastExpressionBuilder.Create();
 
@@ -101,7 +95,7 @@ public class ExpressionILBuilder
         return tcb.New();
     }
 
-    static Expression GenerateFuncCall(FuncCallExpression ctx)
+    private static ilmm.Expression GenerateFuncCall(FuncCallExpression ctx)
     {
         List<string> dotnetTypes = new();
         if (ctx.ActualParameters != null && ctx.ActualParameters.Expressions != null)
@@ -137,7 +131,7 @@ public class ExpressionILBuilder
         return fcb.New();
     }
 
-    static Expression GenerateBinary(BinaryExpression e)
+    private static ilmm.Expression GenerateBinary(BinaryExpression e)
     {
         var opcode = ToIlOpCode(e.Op);
         return BinaryExpressionBuilder.Create()
@@ -147,7 +141,7 @@ public class ExpressionILBuilder
                                       .New();
     }
 
-    static Expression GenerateUnary(UnaryExpression e)
+    private static ilmm.Expression GenerateUnary(UnaryExpression e)
     {
         return UnaryExpressionBuilder.Create()
                                      .WithOp(e.Op.ToString())
@@ -155,12 +149,13 @@ public class ExpressionILBuilder
                                      .New();
     }
 
-    static string? ToIlOpCode(Operator? op)
+    private static string? ToIlOpCode(Operator? op)
     {
         if (!op.HasValue)
         {
-            return String.Empty;
+            return string.Empty;
         }
+
         return op.Value.ToIlOpCode();
     }
 }

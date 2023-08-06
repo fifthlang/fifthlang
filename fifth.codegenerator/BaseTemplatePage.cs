@@ -1,6 +1,7 @@
 namespace Fifth.CodeGeneration;
 
 using System.Collections.Generic;
+using fifth.metamodel.metadata;
 
 public abstract class BaseTemplatePage<T> : TemplatePage<T>
 {

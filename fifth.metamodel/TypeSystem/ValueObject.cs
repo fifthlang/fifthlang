@@ -1,6 +1,7 @@
 namespace Fifth.TypeSystem
 {
     using System.Collections.Generic;
+    using fifth.metamodel.metadata;
 
     /// <summary>
     ///     A runtime value that can be stored in an environment and shared between variable bindings

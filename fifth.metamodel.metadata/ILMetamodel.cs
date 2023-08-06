@@ -1,4 +1,5 @@
 // ReSharper disable once CheckNamespace
+
 namespace fifth.metamodel.metadata.il;
 
 #region Flags
@@ -20,34 +21,29 @@ public enum MemberAccessability
     Assem, // 0x0003 Accessibly by anyone in the Assembly
     Family, // 0x0004 Accessible only by type and sub-types
     FamORAssem, // 0x0005 Accessibly by sub-types anywhere, plus anyone in assembly
-    Public, // 0x0006 Accessibly by anyone who has visibility to this scope
-
+    Public // 0x0006 Accessibly by anyone who has visibility to this scope
 }
 
 public enum VtableLayoutMask
 {
     ReuseSlot, // 0x0000 Method reuses existing slot in vtable
-    NewSlot, // 0x0100 Method always gets a new slot in the vtable
+    NewSlot // 0x0100 Method always gets a new slot in the vtable
 }
-
-
 
 public enum InOutFlag
 {
     In, Out, Opt
 }
 
-public enum CodeTypeFlag : int
+public enum CodeTypeFlag
 {
     cil,
     native,
     optil,
-    runtime,
+    runtime
 }
 
-
-
-public enum ImplementationFlag : int
+public enum ImplementationFlag
 {
     forwardRef,
     preserveSig,
@@ -55,7 +51,6 @@ public enum ImplementationFlag : int
     synchronized,
     oninlining
 }
-
 
 public enum MethodCallingConvention
 {
@@ -65,10 +60,10 @@ public enum MethodCallingConvention
     InstanceVararg,
     Property
 }
+
 #endregion
 
 #region Assemblies
-
 
 public class AssemblyDeclaration
 {
@@ -84,9 +79,6 @@ public class AssemblyReference
     public string PublicKeyToken { get; set; }
     public Version Version { get; set; }
 }
-
-
-
 
 public class ModuleDeclaration
 {
@@ -105,7 +97,7 @@ public class Version
         this.Patch = Patch;
     }
 
-    public Version():this(0,0,0,0) { }
+    public Version() : this(0, 0, 0, 0) { }
 
     public Version(string s)
     {
@@ -166,11 +158,9 @@ public class Version
     }
 }
 
-
 #endregion
 
 #region Classes
-
 
 public class ClassDefinition
 {
@@ -183,7 +173,6 @@ public class ClassDefinition
     public AssemblyDeclaration ParentAssembly { get; set; }
     public MemberAccessability Visibility { get; set; } = MemberAccessability.Private;
 }
-
 
 #endregion
 
@@ -205,10 +194,10 @@ public abstract class MemberDefinition
     public bool IsAbstract { get; set; }
 
     public bool IsSpecialName { get; set; }
+
     // Method hides by name+sig, else just by name
     public bool HideBySig { get; set; }
     public MemberAccessability Visibility { get; set; }
-
 }
 
 public class MemberAccessExpression : Expression
@@ -230,6 +219,7 @@ public enum MemberTarget
 {
     Method, Field
 }
+
 #endregion
 
 #region Methods
@@ -240,6 +230,7 @@ public class ParameterDeclaration
     public string TypeName { get; set; }
     public bool IsUDTType { get; set; }
 }
+
 public class ParameterSignature
 {
     public InOutFlag InOut { get; set; }
@@ -248,36 +239,32 @@ public class ParameterSignature
     public bool IsUDTType { get; set; } // internal use
 }
 
-
 //Two method signatures are said to match if and only if:
-//     the calling conventions are identical; 
-//     both signatures are either static or instance; 
-//     the number of generic parameters is identical, if the method is generic; 
+//     the calling conventions are identical;
+//     both signatures are either static or instance;
+//     the number of generic parameters is identical, if the method is generic;
 //     for instance signatures the type of the this pointer of the overriding/hiding
 //signature is assignable-to (§I.8.7) the type of the this pointer of the
-//overridden/hidden signature; 
-//     the number and type signatures of the parameters are identical; and 
-//     the type signatures for the result are identical. [Note: This includes void 
+//overridden/hidden signature;
+//     the number and type signatures of the parameters are identical; and
+//     the type signatures for the result are identical. [Note: This includes void
 //(§II.23.2.11) if no value is returned.end note]
 public class MethodSignature
 {
-    public MethodCallingConvention CallingConvention{get;set;}
-    public ushort NumberOfParameters{get;set;}
+    public MethodCallingConvention CallingConvention { get; set; }
+    public ushort NumberOfParameters { get; set; }
     public List<ParameterSignature> ParameterSignatures { get; set; } = new();
-    public TypeReference ReturnTypeSignature {get;set;}
-
+    public TypeReference ReturnTypeSignature { get; set; }
 }
 
 public class MethodHeader
 {
     public FunctionKind FunctionKind { get; set; }
     public bool IsEntrypoint { get; set; }
-    
 }
 
 public class MethodRef : MemberRef
 {
-    
 }
 
 public class MethodImpl
@@ -315,7 +302,6 @@ public class FieldDefinition : MemberDefinition
 
 #region Properties
 
-
 public class PropertyDefinition : MemberDefinition
 {
     public string TypeName { get; set; }
@@ -323,19 +309,19 @@ public class PropertyDefinition : MemberDefinition
     public FieldDefinition? FieldDefinition { get; set; }
 }
 
-
 #endregion
 
 #region Statements
+
 [Ignore]
 public abstract class Statement
-{}
+{
+}
 
 public class Block
 {
     public List<Statement> Statements { get; set; } = new();
 }
-
 
 public class IfStatement : Statement
 {
@@ -357,41 +343,30 @@ public class VariableDeclarationStatement : Statement
     public string Name { get; set; }
     public string TypeName { get; set; }
     public Expression? InitialisationExpression { get; set; }
-
 }
+
 public class ReturnStatement : Statement
 {
     public Expression Exp { get; set; }
 }
-
 
 public class WhileStatement : Statement
 {
     public Expression Conditional { get; set; }
     public Block LoopBlock { get; set; } = new();
 }
+
 public class ExpressionStatement : Statement
 {
     public Expression Expression { get; set; }
 }
-
-
 
 #endregion
 
 #region Expressions
 
 public abstract class Expression
-{}
-
-[Ignore]
-public class Literal<T> : Expression, ILiteralValue
 {
-    public Literal(T value) => Value = value;
-
-    public T Value { get; set; }
-
-    public string TypeName => typeof(T).Name;
 }
 
 public class UnaryExpression : Expression
@@ -431,6 +406,7 @@ public class VariableReferenceExpression : Expression
     public bool IsParameterReference { get; set; }
     public int Ordinal { get; set; }
 }
+
 public interface ILiteralValue
 {
     public string TypeName { get; }
@@ -451,6 +427,7 @@ public class TypeCastExpression : Expression
     public string TargetTypeCilName { get; set; }
     public Expression Expression { get; set; }
 }
+
 public class FuncCallExp : Expression
 {
     public FuncCallExp()
@@ -470,6 +447,148 @@ public class FuncCallExp : Expression
     public string ReturnType { get; set; }
     public ClassDefinition ClassDefinition { get; set; }
     public List<string> ArgTypes { get; set; }
+}
+
+[Ignore]
+public class Literal<T> : Expression, ILiteralValue
+{
+    public Literal() => Value = default(T);
+    public Literal(T value) => Value = value;
+
+    public T? Value { get; set; }
+
+    [Ignore]public string TypeName => typeof(T).Name;
+}
+
+public class BoolLiteral : Literal<bool>
+{
+    public BoolLiteral(){}
+    public BoolLiteral(bool value) : base(value) { }
+}
+
+public class CharLiteral : Literal<char>
+{
+    public CharLiteral () { }
+    public CharLiteral(char value) : base(value) { }
+}
+
+public class StringLiteral : Literal<string>
+{
+    public StringLiteral () { }
+    public StringLiteral(string value) : base(value) { }
+}
+
+public class UriLiteral : Literal<Uri>
+{
+    public UriLiteral () { }
+    public UriLiteral(Uri value) : base(value) { }
+}
+
+public class DateTimeOffsetLiteral : Literal<DateTimeOffset>
+{
+    public DateTimeOffsetLiteral () { }
+    public DateTimeOffsetLiteral(DateTimeOffset value) : base(value) { }
+}
+
+public class DateOnlyLiteral : Literal<DateOnly>
+{
+    public DateOnlyLiteral () { }
+    public DateOnlyLiteral(DateOnly value) : base(value) { }
+}
+
+public class TimeOnlyLiteral : Literal<TimeOnly>
+{
+    public TimeOnlyLiteral () { }
+    public TimeOnlyLiteral(TimeOnly value) : base(value) { }
+}
+// public class UriLiteral:Literal<Uri>   { public UriLiteral(Uri value) : base(value) { } }
+// public class UriLiteral:Literal<Uri>   { public UriLiteral(Uri value) : base(value) { } }
+// public class UriLiteral : Literal<Uri>   { public UriLiteral(Uri value) : base(value) { } }
+
+/*
+integral data types
+sbyte	-128 to 127	Signed 8-bit integer	System.SByte
+byte	0 to 255	Unsigned 8-bit integer	System.Byte
+short	-32,768 to 32,767	Signed 16-bit integer	System.Int16
+ushort	0 to 65,535	Unsigned 16-bit integer	System.UInt16
+int	-2,147,483,648 to 2,147,483,647	Signed 32-bit integer	System.Int32
+uint	0 to 4,294,967,295	Unsigned 32-bit integer	System.UInt32
+long	-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807	Signed 64-bit integer	System.Int64
+ulong	0 to 18,446,744,073,709,551,615	Unsigned 64-bit integer	System.UInt64
+nint	Depends on platform (computed at runtime)	Signed 32-bit or 64-bit integer	System.IntPtr
+nuint	Depends on platform (computed at runtime)	Unsigned 32-bit or 64-bit integer	System.UIntPtr
+*/
+public class SByteLiteral : Literal<sbyte>
+{
+    public SByteLiteral () { }
+    public SByteLiteral(sbyte value) : base(value) { }
+}
+
+public class ByteLiteral : Literal<byte>
+{
+    public ByteLiteral () { }
+    public ByteLiteral(byte value) : base(value) { }
+}
+
+public class ShortLiteral : Literal<short>
+{
+    public ShortLiteral () { }
+    public ShortLiteral(short value) : base(value) { }
+}
+
+public class UShortLiteral : Literal<ushort>
+{
+    public UShortLiteral () { }
+    public UShortLiteral(ushort value) : base(value) { }
+}
+
+public class IntLiteral : Literal<int>
+{
+    public IntLiteral () { }
+    public IntLiteral(int value) : base(value) { }
+}
+
+public class UIntLiteral : Literal<uint>
+{
+    public UIntLiteral () { }
+    public UIntLiteral(uint value) : base(value) { }
+}
+
+public class LongLiteral : Literal<long>
+{
+    public LongLiteral () { }
+    public LongLiteral(long value) : base(value) { }
+}
+
+public class ULongLiteral : Literal<ulong>
+{
+    public ULongLiteral () { }
+    public ULongLiteral(ulong value) : base(value) { }
+}
+
+/*
+ * Floating point types
+    float	±1.5 x 10−45 to ±3.4 x 1038	~6-9 digits	4 bytes	System.Single
+    double	±5.0 × 10−324 to ±1.7 × 10308	~15-17 digits	8 bytes	System.Double
+    decimal	±1.0 x 10-28 to ±7.9228 x 1028	28-29 digits	16 bytes	System.Decimal
+
+ */
+public class FloatLiteral : Literal<float>
+{
+    public FloatLiteral() { }
+    public FloatLiteral(float value) : base(value) { }
+}
+
+public class DoubleLiteral : Literal<double>
+{
+    public DoubleLiteral() { }
+    public DoubleLiteral(double value) : base(value) { }
+}
+
+public class DecimalLiteral : Literal<decimal>
+{
+    public DecimalLiteral() { }
+    public DecimalLiteral(decimal value) : base(value) { }
 }
 
 #endregion

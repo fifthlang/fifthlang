@@ -104,6 +104,45 @@ using fifth.metamodel.metadata.il;
             return this;
         }
     }
+    public partial class BoolLiteralBuilder : BaseBuilder<BoolLiteralBuilder,fifth.metamodel.metadata.il.BoolLiteral>
+    {
+        public BoolLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public BoolLiteralBuilder WithValue(System.Boolean value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class ByteLiteralBuilder : BaseBuilder<ByteLiteralBuilder,fifth.metamodel.metadata.il.ByteLiteral>
+    {
+        public ByteLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public ByteLiteralBuilder WithValue(System.Byte value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class CharLiteralBuilder : BaseBuilder<CharLiteralBuilder,fifth.metamodel.metadata.il.CharLiteral>
+    {
+        public CharLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public CharLiteralBuilder WithValue(System.Char value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
     public partial class ClassDefinitionBuilder : BaseBuilder<ClassDefinitionBuilder,fifth.metamodel.metadata.il.ClassDefinition>
     {
         public ClassDefinitionBuilder()
@@ -164,6 +203,58 @@ using fifth.metamodel.metadata.il;
 
         public ClassDefinitionBuilder WithVisibility(fifth.metamodel.metadata.il.MemberAccessability value){
             Model.Visibility = value;
+            return this;
+        }
+
+    }
+    public partial class DateOnlyLiteralBuilder : BaseBuilder<DateOnlyLiteralBuilder,fifth.metamodel.metadata.il.DateOnlyLiteral>
+    {
+        public DateOnlyLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public DateOnlyLiteralBuilder WithValue(System.DateOnly value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class DateTimeOffsetLiteralBuilder : BaseBuilder<DateTimeOffsetLiteralBuilder,fifth.metamodel.metadata.il.DateTimeOffsetLiteral>
+    {
+        public DateTimeOffsetLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public DateTimeOffsetLiteralBuilder WithValue(System.DateTimeOffset value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class DecimalLiteralBuilder : BaseBuilder<DecimalLiteralBuilder,fifth.metamodel.metadata.il.DecimalLiteral>
+    {
+        public DecimalLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public DecimalLiteralBuilder WithValue(System.Decimal value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class DoubleLiteralBuilder : BaseBuilder<DoubleLiteralBuilder,fifth.metamodel.metadata.il.DoubleLiteral>
+    {
+        public DoubleLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public DoubleLiteralBuilder WithValue(System.Double value){
+            Model.Value = value;
             return this;
         }
 
@@ -254,6 +345,19 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class FloatLiteralBuilder : BaseBuilder<FloatLiteralBuilder,fifth.metamodel.metadata.il.FloatLiteral>
+    {
+        public FloatLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public FloatLiteralBuilder WithValue(System.Single value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
     public partial class FuncCallExpBuilder : BaseBuilder<FuncCallExpBuilder,fifth.metamodel.metadata.il.FuncCallExp>
     {
         public FuncCallExpBuilder()
@@ -314,6 +418,32 @@ using fifth.metamodel.metadata.il;
 
         public IfStatementBuilder WithElseBlock(fifth.metamodel.metadata.il.Block value){
             Model.ElseBlock = value;
+            return this;
+        }
+
+    }
+    public partial class IntLiteralBuilder : BaseBuilder<IntLiteralBuilder,fifth.metamodel.metadata.il.IntLiteral>
+    {
+        public IntLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public IntLiteralBuilder WithValue(System.Int32 value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class LongLiteralBuilder : BaseBuilder<LongLiteralBuilder,fifth.metamodel.metadata.il.LongLiteral>
+    {
+        public LongLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public LongLiteralBuilder WithValue(System.Int64 value){
+            Model.Value = value;
             return this;
         }
 
@@ -746,6 +876,58 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class SByteLiteralBuilder : BaseBuilder<SByteLiteralBuilder,fifth.metamodel.metadata.il.SByteLiteral>
+    {
+        public SByteLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public SByteLiteralBuilder WithValue(System.SByte value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class ShortLiteralBuilder : BaseBuilder<ShortLiteralBuilder,fifth.metamodel.metadata.il.ShortLiteral>
+    {
+        public ShortLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public ShortLiteralBuilder WithValue(System.Int16 value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class StringLiteralBuilder : BaseBuilder<StringLiteralBuilder,fifth.metamodel.metadata.il.StringLiteral>
+    {
+        public StringLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public StringLiteralBuilder WithValue(System.String value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class TimeOnlyLiteralBuilder : BaseBuilder<TimeOnlyLiteralBuilder,fifth.metamodel.metadata.il.TimeOnlyLiteral>
+    {
+        public TimeOnlyLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public TimeOnlyLiteralBuilder WithValue(System.TimeOnly value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
     public partial class TypeCastExpressionBuilder : BaseBuilder<TypeCastExpressionBuilder,fifth.metamodel.metadata.il.TypeCastExpression>
     {
         public TypeCastExpressionBuilder()
@@ -792,6 +974,32 @@ using fifth.metamodel.metadata.il;
         }
 
     }
+    public partial class UIntLiteralBuilder : BaseBuilder<UIntLiteralBuilder,fifth.metamodel.metadata.il.UIntLiteral>
+    {
+        public UIntLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public UIntLiteralBuilder WithValue(System.UInt32 value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class ULongLiteralBuilder : BaseBuilder<ULongLiteralBuilder,fifth.metamodel.metadata.il.ULongLiteral>
+    {
+        public ULongLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public ULongLiteralBuilder WithValue(System.UInt64 value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
     public partial class UnaryExpressionBuilder : BaseBuilder<UnaryExpressionBuilder,fifth.metamodel.metadata.il.UnaryExpression>
     {
         public UnaryExpressionBuilder()
@@ -806,6 +1014,32 @@ using fifth.metamodel.metadata.il;
 
         public UnaryExpressionBuilder WithExp(fifth.metamodel.metadata.il.Expression value){
             Model.Exp = value;
+            return this;
+        }
+
+    }
+    public partial class UriLiteralBuilder : BaseBuilder<UriLiteralBuilder,fifth.metamodel.metadata.il.UriLiteral>
+    {
+        public UriLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public UriLiteralBuilder WithValue(System.Uri value){
+            Model.Value = value;
+            return this;
+        }
+
+    }
+    public partial class UShortLiteralBuilder : BaseBuilder<UShortLiteralBuilder,fifth.metamodel.metadata.il.UShortLiteral>
+    {
+        public UShortLiteralBuilder()
+        {
+            Model = new();
+        }
+
+        public UShortLiteralBuilder WithValue(System.UInt16 value){
+            Model.Value = value;
             return this;
         }
 

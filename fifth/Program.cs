@@ -1,23 +1,26 @@
 namespace Fifth;
 
+#region
+
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CodeGeneration.IL;
+using AST;
+using CodeGeneration;
 using CodeGeneration.LangProcessingPhases;
-using Fifth.CodeGeneration;
+
+#endregion
 
 // ReSharper disable once UnusedType.Global
 /// <summary>
-/// Main CLI entry-point to the Fifth Compiler.
+///     Main CLI entry-point to the Fifth Compiler.
 /// </summary>
 public class Program
 {
     /// <summary>
-    /// Removes the file.
+    ///     Removes the file.
     /// </summary>
     /// <param name="filename">the file to delete</param>
     public static void DeleteFile(string filename)
@@ -35,7 +38,7 @@ public class Program
     }
 
     /// <summary>
-    /// Asynchronously execute assembly
+    ///     Asynchronously execute assembly
     /// </summary>
     /// <param name="assemblyFilename"></param>
     /// <returns></returns>
@@ -59,28 +62,23 @@ public class Program
     }
 
     /// <summary>
-    /// Finds a local, compatible, version of ilasm to use in code generation process.
+    ///     Finds a local, compatible, version of ilasm to use in code generation process.
     /// </summary>
     /// <returns>path of compatible ilasm</returns>
     public static string FindIlasm()
     {
         var paths = new[]
         {
-                "tools/osx-x64.ilasm",
-                "ilasm.exe",
-                "ilasm",
-                "tools/ilasm.exe",
-                "tools/ilasm",
-                "runtimes/win-x64/ilasm.exe",
-                "runtimes/linux-x64/ilasm",
-            };
+            "tools/osx-x64.ilasm", "ilasm.exe", "ilasm", "tools/ilasm.exe", "tools/ilasm",
+            "runtimes/win-x64/ilasm.exe", "runtimes/linux-x64/ilasm"
+        };
 
-        IEnumerable<string> acceptablePaths = paths.Where(File.Exists);
-        if (System.Environment.OSVersion.Platform == PlatformID.Unix)
+        var acceptablePaths = paths.Where(File.Exists);
+        if (Environment.OSVersion.Platform == PlatformID.Unix)
         {
             acceptablePaths = paths.Where(p => !p.EndsWith(".exe")).Where(File.Exists);
         }
-        else if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
+        else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
         {
             acceptablePaths = paths.Where(p => p.EndsWith(".exe")).Where(File.Exists);
         }
@@ -89,11 +87,12 @@ public class Program
         {
             return acceptablePaths.First();
         }
+
         throw new RuntimeException("Unable to locate IL Assembler");
     }
 
     /// <summary>
-    /// Entry-point to compiler
+    ///     Entry-point to compiler
     /// </summary>
     /// <param name="fileName">the 5th source file to compile</param>
     /// <param name="output">the name of the executable to emit</param>
@@ -119,7 +118,7 @@ public class Program
     }
 
     /// <summary>
-    /// Try to compile the source file to an assembly
+    ///     Try to compile the source file to an assembly
     /// </summary>
     /// <param name="ctx">details for coordinating the compilation process</param>
     /// <returns>true if successfully compiled, false otherwise.</returns>
@@ -136,7 +135,7 @@ public class Program
                 ctx.Output = Path.ChangeExtension(ilFilename, ".exe");
             }
 
-            if (FifthParserManager.TryParseFile<AST.Assembly>(ctx.Source, out var ast, out var errors))
+            if (FifthParserManager.TryParseFile<Assembly>(ctx.Source, out var ast, out var errors))
             {
                 using (var writer = File.CreateText(ilFilename))
                 {
@@ -185,12 +184,12 @@ public class Program
 }
 
 /// <summary>
-/// details for coordinating the compilation process
+///     details for coordinating the compilation process
 /// </summary>
 public struct CompilationContext
 {
     /// <summary>
-    /// create a context to corrdinate the compilation process
+    ///     create a context to corrdinate the compilation process
     /// </summary>
     /// <param name="source">the entrypoint source file to compile</param>
     /// <param name="output">the folder where output should be kept </param>
@@ -198,29 +197,29 @@ public struct CompilationContext
     /// <param name="args">the CLI arg vector</param>
     public CompilationContext(string source, string output, bool cleanup, string[] args)
     {
-        this.Source = source;
-        this.Output = output;
-        this.Cleanup = cleanup;
-        this.Args = args;
+        Source = source;
+        Output = output;
+        Cleanup = cleanup;
+        Args = args;
     }
 
     /// <summary>
-    /// the CLI arg vector
+    ///     the CLI arg vector
     /// </summary>
     public string[] Args { get; set; }
 
     /// <summary>
-    /// whether to cleanup intermediate files created during compilation
+    ///     whether to cleanup intermediate files created during compilation
     /// </summary>
     public bool Cleanup { get; set; }
 
     /// <summary>
-    /// the folder where output should be kept
+    ///     the folder where output should be kept
     /// </summary>
     public string Output { get; set; }
 
     /// <summary>
-    /// the entrypoint source file to compile
+    ///     the entrypoint source file to compile
     /// </summary>
     public string Source { get; set; }
 }

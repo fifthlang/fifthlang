@@ -2,6 +2,7 @@
 namespace Fifth.TypeSystem
 {
     using System;
+    using fifth.metamodel.metadata;
     using Fifth.PrimitiveTypes;
     using PrimitiveTypes;
 

@@ -25,7 +25,7 @@ public abstract class BaseBuilder<T, TModel> : IBuilder<TModel>
         return new T();
     }
 
-    public abstract string Build();
+    public virtual string Build()=> String.Empty;
 
     public virtual void Build(StreamWriter writer)
     {

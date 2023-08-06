@@ -1,6 +1,7 @@
 namespace Fifth.TypeSystem
 {
     using System.Collections.Generic;
+    using fifth.metamodel.metadata;
 
     public interface IValueObject
     {

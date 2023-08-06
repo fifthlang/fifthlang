@@ -4,6 +4,7 @@ namespace Fifth.TypeSystem
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
+    using fifth.metamodel.metadata;
     using Fifth.PrimitiveTypes;
 
     public sealed class TypeRegistry : ITypeRegistry

@@ -1,5 +1,6 @@
 namespace Fifth.PrimitiveTypes
 {
+    using fifth.metamodel.metadata;
     using TypeSystem;
     using TypeSystem.PrimitiveTypes;
 

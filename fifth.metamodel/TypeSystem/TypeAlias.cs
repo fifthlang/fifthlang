@@ -1,5 +1,7 @@
 namespace Fifth.TypeSystem
 {
+    using fifth.metamodel.metadata;
+
     public class TypeAlias : ITypeAlias
     {
         public TypeId AliasedTypeId { get; set; }

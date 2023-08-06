@@ -1,5 +1,7 @@
 namespace Fifth.TypeSystem
 {
+    using fifth.metamodel.metadata;
+
     public interface ITypeRegistry
     {
         public bool TryGetType(TypeId typeId, out IType type);

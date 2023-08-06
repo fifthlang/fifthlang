@@ -11,6 +11,10 @@ public class DummyContext
 {
 }
 
+/// <summary>
+/// Converts a property binding in a destructuring declaration, and converts it into a variable declaration within the method body.
+/// </summary>
+/// <seealso cref="Fifth.AST.Visitors.BaseAstVisitor" />
 public class PropertyBindingToVariableDeclarationTransformer : BaseAstVisitor
 {
     public Stack<(string, ISymbolTableEntry)> ResolutionScope { get; } = new();

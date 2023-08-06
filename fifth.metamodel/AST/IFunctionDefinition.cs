@@ -1,5 +1,7 @@
 namespace Fifth.AST
 {
+    using fifth.metamodel.metadata;
+
     public interface IFunctionDefinition : IVisitable, IAstNode
     {
         public ParameterDeclarationList ParameterDeclarations{get;set;}

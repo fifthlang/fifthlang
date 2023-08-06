@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using AST;
 using AST.Visitors;
+using fifth.metamodel.metadata;
 using Symbols;
 using TypeSystem;
 

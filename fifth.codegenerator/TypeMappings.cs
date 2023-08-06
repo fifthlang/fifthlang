@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fifth.CodeGeneration
 {
+    using fifth.metamodel.metadata;
     using PrimitiveTypes;
 
     public static class TypeMappings

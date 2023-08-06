@@ -1,5 +1,7 @@
 namespace Fifth.AST
 {
+    using fifth.metamodel.metadata;
+
     public partial class ClassDefinition
     {
         public TypeId TypeId { get; set; }

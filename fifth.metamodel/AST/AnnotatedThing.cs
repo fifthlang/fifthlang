@@ -5,6 +5,7 @@ namespace Fifth.AST
     public abstract class AnnotatedThing : IAnnotated
     {
         private readonly IDictionary<string, object> annotations = new Dictionary<string, object>();
+        public IDictionary<string, object> Annotations => annotations;
 
         public object this[string index]
         {

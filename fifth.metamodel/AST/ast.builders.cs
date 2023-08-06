@@ -10,11 +10,10 @@ using TypeSystem.PrimitiveTypes;
 using System.Collections.Generic;
 using fifth.metamodel.metadata;
 
-public interface INodeBuilder{}
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class AssemblyBuilder : INodeBuilder
+    public partial class AssemblyBuilder : BaseNodeBuilder<AssemblyBuilder, Assembly>
     {
         private AssemblyBuilder()
         {
@@ -23,7 +22,12 @@ public interface INodeBuilder{}
 
         public static AssemblyBuilder CreateAssembly() => new ();
         public Assembly Build()
-          => new (_Name, _PublicKeyToken, _Version, _Program, _References);
+        
+        {
+            var result = new Assembly(_Name, _PublicKeyToken, _Version, _Program, _References);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Name;
         public AssemblyBuilder WithName(string value){
@@ -62,7 +66,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class AssemblyRefBuilder : INodeBuilder
+    public partial class AssemblyRefBuilder : BaseNodeBuilder<AssemblyRefBuilder, AssemblyRef>
     {
         private AssemblyRefBuilder()
         {
@@ -70,7 +74,12 @@ public interface INodeBuilder{}
 
         public static AssemblyRefBuilder CreateAssemblyRef() => new ();
         public AssemblyRef Build()
-          => new (_Name, _PublicKeyToken, _Version);
+        
+        {
+            var result = new AssemblyRef(_Name, _PublicKeyToken, _Version);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Name;
         public AssemblyRefBuilder WithName(string value){
@@ -93,7 +102,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ClassDefinitionBuilder : INodeBuilder
+    public partial class ClassDefinitionBuilder : BaseNodeBuilder<ClassDefinitionBuilder, ClassDefinition>
     {
         private ClassDefinitionBuilder()
         {
@@ -104,7 +113,12 @@ public interface INodeBuilder{}
 
         public static ClassDefinitionBuilder CreateClassDefinition() => new ();
         public ClassDefinition Build()
-          => new (_Name, _Namespace, _Fields, _Properties, _Functions);
+        
+        {
+            var result = new ClassDefinition(_Name, _Namespace, _Fields, _Properties, _Functions);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Name;
         public ClassDefinitionBuilder WithName(string value){
@@ -151,7 +165,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class FieldDefinitionBuilder : INodeBuilder
+    public partial class FieldDefinitionBuilder : BaseNodeBuilder<FieldDefinitionBuilder, FieldDefinition>
     {
         private FieldDefinitionBuilder()
         {
@@ -159,7 +173,12 @@ public interface INodeBuilder{}
 
         public static FieldDefinitionBuilder CreateFieldDefinition() => new ();
         public FieldDefinition Build()
-          => new (_BackingFieldFor, _Name, _TypeName);
+        
+        {
+            var result = new FieldDefinition(_BackingFieldFor, _Name, _TypeName);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private PropertyDefinition? _BackingFieldFor;
         public FieldDefinitionBuilder WithBackingFieldFor(PropertyDefinition? value){
@@ -182,7 +201,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class PropertyDefinitionBuilder : INodeBuilder
+    public partial class PropertyDefinitionBuilder : BaseNodeBuilder<PropertyDefinitionBuilder, PropertyDefinition>
     {
         private PropertyDefinitionBuilder()
         {
@@ -190,7 +209,12 @@ public interface INodeBuilder{}
 
         public static PropertyDefinitionBuilder CreatePropertyDefinition() => new ();
         public PropertyDefinition Build()
-          => new (_BackingField, _GetAccessor, _SetAccessor, _Name, _TypeName);
+        
+        {
+            var result = new PropertyDefinition(_BackingField, _GetAccessor, _SetAccessor, _Name, _TypeName);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private FieldDefinition? _BackingField;
         public PropertyDefinitionBuilder WithBackingField(FieldDefinition? value){
@@ -225,7 +249,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class TypeCastBuilder : INodeBuilder
+    public partial class TypeCastBuilder : BaseNodeBuilder<TypeCastBuilder, TypeCast>
     {
         private TypeCastBuilder()
         {
@@ -233,7 +257,12 @@ public interface INodeBuilder{}
 
         public static TypeCastBuilder CreateTypeCast() => new ();
         public TypeCast Build()
-          => new (_SubExpression, _TargetTid);
+        
+        {
+            var result = new TypeCast(_SubExpression, _TargetTid);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _SubExpression;
         public TypeCastBuilder WithSubExpression(Expression value){
@@ -250,7 +279,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ReturnStatementBuilder : INodeBuilder
+    public partial class ReturnStatementBuilder : BaseNodeBuilder<ReturnStatementBuilder, ReturnStatement>
     {
         private ReturnStatementBuilder()
         {
@@ -258,7 +287,12 @@ public interface INodeBuilder{}
 
         public static ReturnStatementBuilder CreateReturnStatement() => new ();
         public ReturnStatement Build()
-          => new (_SubExpression, _TargetTid);
+        
+        {
+            var result = new ReturnStatement(_SubExpression, _TargetTid);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _SubExpression;
         public ReturnStatementBuilder WithSubExpression(Expression value){
@@ -275,7 +309,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class StatementListBuilder : INodeBuilder
+    public partial class StatementListBuilder : BaseNodeBuilder<StatementListBuilder, StatementList>
     {
         private StatementListBuilder()
         {
@@ -284,7 +318,12 @@ public interface INodeBuilder{}
 
         public static StatementListBuilder CreateStatementList() => new ();
         public StatementList Build()
-          => new (_Statements);
+        
+        {
+            var result = new StatementList(_Statements);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<Statement> _Statements;
         public StatementListBuilder WithStatements(List<Statement> value){
@@ -299,7 +338,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class AbsoluteIriBuilder : INodeBuilder
+    public partial class AbsoluteIriBuilder : BaseNodeBuilder<AbsoluteIriBuilder, AbsoluteIri>
     {
         private AbsoluteIriBuilder()
         {
@@ -307,7 +346,12 @@ public interface INodeBuilder{}
 
         public static AbsoluteIriBuilder CreateAbsoluteIri() => new ();
         public AbsoluteIri Build()
-          => new (_Uri);
+        
+        {
+            var result = new AbsoluteIri(_Uri);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Uri;
         public AbsoluteIriBuilder WithUri(string value){
@@ -318,7 +362,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class AliasDeclarationBuilder : INodeBuilder
+    public partial class AliasDeclarationBuilder : BaseNodeBuilder<AliasDeclarationBuilder, AliasDeclaration>
     {
         private AliasDeclarationBuilder()
         {
@@ -326,7 +370,12 @@ public interface INodeBuilder{}
 
         public static AliasDeclarationBuilder CreateAliasDeclaration() => new ();
         public AliasDeclaration Build()
-          => new (_IRI, _Name);
+        
+        {
+            var result = new AliasDeclaration(_IRI, _Name);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private AbsoluteIri _IRI;
         public AliasDeclarationBuilder WithIRI(AbsoluteIri value){
@@ -343,7 +392,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class AssignmentStmtBuilder : INodeBuilder
+    public partial class AssignmentStmtBuilder : BaseNodeBuilder<AssignmentStmtBuilder, AssignmentStmt>
     {
         private AssignmentStmtBuilder()
         {
@@ -351,7 +400,12 @@ public interface INodeBuilder{}
 
         public static AssignmentStmtBuilder CreateAssignmentStmt() => new ();
         public AssignmentStmt Build()
-          => new (_Expression, _VariableRef);
+        
+        {
+            var result = new AssignmentStmt(_Expression, _VariableRef);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Expression;
         public AssignmentStmtBuilder WithExpression(Expression value){
@@ -368,7 +422,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class BinaryExpressionBuilder : INodeBuilder
+    public partial class BinaryExpressionBuilder : BaseNodeBuilder<BinaryExpressionBuilder, BinaryExpression>
     {
         private BinaryExpressionBuilder()
         {
@@ -376,7 +430,12 @@ public interface INodeBuilder{}
 
         public static BinaryExpressionBuilder CreateBinaryExpression() => new ();
         public BinaryExpression Build()
-          => new (_Left, _Op, _Right);
+        
+        {
+            var result = new BinaryExpression(_Left, _Op, _Right);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Left;
         public BinaryExpressionBuilder WithLeft(Expression value){
@@ -399,7 +458,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class BlockBuilder : INodeBuilder
+    public partial class BlockBuilder : BaseNodeBuilder<BlockBuilder, Block>
     {
         private BlockBuilder()
         {
@@ -408,7 +467,12 @@ public interface INodeBuilder{}
 
         public static BlockBuilder CreateBlock() => new ();
         public Block Build()
-          => new (_Statements);
+        
+        {
+            var result = new Block(_Statements);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<Statement> _Statements;
         public BlockBuilder WithStatements(List<Statement> value){
@@ -423,7 +487,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class BoolValueExpressionBuilder : INodeBuilder
+    public partial class BoolValueExpressionBuilder : BaseNodeBuilder<BoolValueExpressionBuilder, BoolValueExpression>
     {
         private BoolValueExpressionBuilder()
         {
@@ -431,7 +495,12 @@ public interface INodeBuilder{}
 
         public static BoolValueExpressionBuilder CreateBoolValueExpression() => new ();
         public BoolValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new BoolValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private bool _TheValue;
         public BoolValueExpressionBuilder WithTheValue(bool value){
@@ -442,7 +511,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ShortValueExpressionBuilder : INodeBuilder
+    public partial class ShortValueExpressionBuilder : BaseNodeBuilder<ShortValueExpressionBuilder, ShortValueExpression>
     {
         private ShortValueExpressionBuilder()
         {
@@ -450,7 +519,12 @@ public interface INodeBuilder{}
 
         public static ShortValueExpressionBuilder CreateShortValueExpression() => new ();
         public ShortValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new ShortValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private short _TheValue;
         public ShortValueExpressionBuilder WithTheValue(short value){
@@ -461,7 +535,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class IntValueExpressionBuilder : INodeBuilder
+    public partial class IntValueExpressionBuilder : BaseNodeBuilder<IntValueExpressionBuilder, IntValueExpression>
     {
         private IntValueExpressionBuilder()
         {
@@ -469,7 +543,12 @@ public interface INodeBuilder{}
 
         public static IntValueExpressionBuilder CreateIntValueExpression() => new ();
         public IntValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new IntValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private int _TheValue;
         public IntValueExpressionBuilder WithTheValue(int value){
@@ -480,7 +559,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class LongValueExpressionBuilder : INodeBuilder
+    public partial class LongValueExpressionBuilder : BaseNodeBuilder<LongValueExpressionBuilder, LongValueExpression>
     {
         private LongValueExpressionBuilder()
         {
@@ -488,7 +567,12 @@ public interface INodeBuilder{}
 
         public static LongValueExpressionBuilder CreateLongValueExpression() => new ();
         public LongValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new LongValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private long _TheValue;
         public LongValueExpressionBuilder WithTheValue(long value){
@@ -499,7 +583,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class FloatValueExpressionBuilder : INodeBuilder
+    public partial class FloatValueExpressionBuilder : BaseNodeBuilder<FloatValueExpressionBuilder, FloatValueExpression>
     {
         private FloatValueExpressionBuilder()
         {
@@ -507,7 +591,12 @@ public interface INodeBuilder{}
 
         public static FloatValueExpressionBuilder CreateFloatValueExpression() => new ();
         public FloatValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new FloatValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private float _TheValue;
         public FloatValueExpressionBuilder WithTheValue(float value){
@@ -518,7 +607,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DoubleValueExpressionBuilder : INodeBuilder
+    public partial class DoubleValueExpressionBuilder : BaseNodeBuilder<DoubleValueExpressionBuilder, DoubleValueExpression>
     {
         private DoubleValueExpressionBuilder()
         {
@@ -526,7 +615,12 @@ public interface INodeBuilder{}
 
         public static DoubleValueExpressionBuilder CreateDoubleValueExpression() => new ();
         public DoubleValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new DoubleValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private double _TheValue;
         public DoubleValueExpressionBuilder WithTheValue(double value){
@@ -537,7 +631,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DecimalValueExpressionBuilder : INodeBuilder
+    public partial class DecimalValueExpressionBuilder : BaseNodeBuilder<DecimalValueExpressionBuilder, DecimalValueExpression>
     {
         private DecimalValueExpressionBuilder()
         {
@@ -545,7 +639,12 @@ public interface INodeBuilder{}
 
         public static DecimalValueExpressionBuilder CreateDecimalValueExpression() => new ();
         public DecimalValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new DecimalValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private decimal _TheValue;
         public DecimalValueExpressionBuilder WithTheValue(decimal value){
@@ -556,7 +655,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class StringValueExpressionBuilder : INodeBuilder
+    public partial class StringValueExpressionBuilder : BaseNodeBuilder<StringValueExpressionBuilder, StringValueExpression>
     {
         private StringValueExpressionBuilder()
         {
@@ -564,7 +663,12 @@ public interface INodeBuilder{}
 
         public static StringValueExpressionBuilder CreateStringValueExpression() => new ();
         public StringValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new StringValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _TheValue;
         public StringValueExpressionBuilder WithTheValue(string value){
@@ -575,7 +679,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DateValueExpressionBuilder : INodeBuilder
+    public partial class DateValueExpressionBuilder : BaseNodeBuilder<DateValueExpressionBuilder, DateValueExpression>
     {
         private DateValueExpressionBuilder()
         {
@@ -583,7 +687,12 @@ public interface INodeBuilder{}
 
         public static DateValueExpressionBuilder CreateDateValueExpression() => new ();
         public DateValueExpression Build()
-          => new (_TheValue);
+        
+        {
+            var result = new DateValueExpression(_TheValue);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private DateTimeOffset _TheValue;
         public DateValueExpressionBuilder WithTheValue(DateTimeOffset value){
@@ -594,7 +703,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ExpressionListBuilder : INodeBuilder
+    public partial class ExpressionListBuilder : BaseNodeBuilder<ExpressionListBuilder, ExpressionList>
     {
         private ExpressionListBuilder()
         {
@@ -603,7 +712,12 @@ public interface INodeBuilder{}
 
         public static ExpressionListBuilder CreateExpressionList() => new ();
         public ExpressionList Build()
-          => new (_Expressions);
+        
+        {
+            var result = new ExpressionList(_Expressions);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<Expression> _Expressions;
         public ExpressionListBuilder WithExpressions(List<Expression> value){
@@ -618,7 +732,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class FifthProgramBuilder : INodeBuilder
+    public partial class FifthProgramBuilder : BaseNodeBuilder<FifthProgramBuilder, FifthProgram>
     {
         private FifthProgramBuilder()
         {
@@ -629,7 +743,12 @@ public interface INodeBuilder{}
 
         public static FifthProgramBuilder CreateFifthProgram() => new ();
         public FifthProgram Build()
-          => new (_Aliases, _Classes, _Functions);
+        
+        {
+            var result = new FifthProgram(_Aliases, _Classes, _Functions);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<AliasDeclaration> _Aliases;
         public FifthProgramBuilder WithAliases(List<AliasDeclaration> value){
@@ -664,7 +783,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class FuncCallExpressionBuilder : INodeBuilder
+    public partial class FuncCallExpressionBuilder : BaseNodeBuilder<FuncCallExpressionBuilder, FuncCallExpression>
     {
         private FuncCallExpressionBuilder()
         {
@@ -672,7 +791,12 @@ public interface INodeBuilder{}
 
         public static FuncCallExpressionBuilder CreateFuncCallExpression() => new ();
         public FuncCallExpression Build()
-          => new (_ActualParameters, _Name);
+        
+        {
+            var result = new FuncCallExpression(_ActualParameters, _Name);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private ExpressionList _ActualParameters;
         public FuncCallExpressionBuilder WithActualParameters(ExpressionList value){
@@ -689,7 +813,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class FunctionDefinitionBuilder : INodeBuilder
+    public partial class FunctionDefinitionBuilder : BaseNodeBuilder<FunctionDefinitionBuilder, FunctionDefinition>
     {
         private FunctionDefinitionBuilder()
         {
@@ -697,7 +821,12 @@ public interface INodeBuilder{}
 
         public static FunctionDefinitionBuilder CreateFunctionDefinition() => new ();
         public FunctionDefinition Build()
-          => new (_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _IsInstanceFunction, _FunctionKind, _ReturnType);
+        
+        {
+            var result = new FunctionDefinition(_ParameterDeclarations, _Body, _Typename, _Name, _IsEntryPoint, _IsInstanceFunction, _FunctionKind, _ReturnType);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private ParameterDeclarationList _ParameterDeclarations;
         public FunctionDefinitionBuilder WithParameterDeclarations(ParameterDeclarationList value){
@@ -750,7 +879,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class OverloadedFunctionDefinitionBuilder : INodeBuilder
+    public partial class OverloadedFunctionDefinitionBuilder : BaseNodeBuilder<OverloadedFunctionDefinitionBuilder, OverloadedFunctionDefinition>
     {
         private OverloadedFunctionDefinitionBuilder()
         {
@@ -759,7 +888,12 @@ public interface INodeBuilder{}
 
         public static OverloadedFunctionDefinitionBuilder CreateOverloadedFunctionDefinition() => new ();
         public OverloadedFunctionDefinition Build()
-          => new (_OverloadClauses, _Signature);
+        
+        {
+            var result = new OverloadedFunctionDefinition(_OverloadClauses, _Signature);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<IFunctionDefinition> _OverloadClauses;
         public OverloadedFunctionDefinitionBuilder WithOverloadClauses(List<IFunctionDefinition> value){
@@ -780,7 +914,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class IdentifierBuilder : INodeBuilder
+    public partial class IdentifierBuilder : BaseNodeBuilder<IdentifierBuilder, Identifier>
     {
         private IdentifierBuilder()
         {
@@ -788,7 +922,12 @@ public interface INodeBuilder{}
 
         public static IdentifierBuilder CreateIdentifier() => new ();
         public Identifier Build()
-          => new (_Value);
+        
+        {
+            var result = new Identifier(_Value);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Value;
         public IdentifierBuilder WithValue(string value){
@@ -799,7 +938,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class IdentifierExpressionBuilder : INodeBuilder
+    public partial class IdentifierExpressionBuilder : BaseNodeBuilder<IdentifierExpressionBuilder, IdentifierExpression>
     {
         private IdentifierExpressionBuilder()
         {
@@ -807,7 +946,12 @@ public interface INodeBuilder{}
 
         public static IdentifierExpressionBuilder CreateIdentifierExpression() => new ();
         public IdentifierExpression Build()
-          => new (_Identifier);
+        
+        {
+            var result = new IdentifierExpression(_Identifier);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Identifier _Identifier;
         public IdentifierExpressionBuilder WithIdentifier(Identifier value){
@@ -818,7 +962,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class IfElseStatementBuilder : INodeBuilder
+    public partial class IfElseStatementBuilder : BaseNodeBuilder<IfElseStatementBuilder, IfElseStatement>
     {
         private IfElseStatementBuilder()
         {
@@ -826,7 +970,12 @@ public interface INodeBuilder{}
 
         public static IfElseStatementBuilder CreateIfElseStatement() => new ();
         public IfElseStatement Build()
-          => new (_IfBlock, _ElseBlock, _Condition);
+        
+        {
+            var result = new IfElseStatement(_IfBlock, _ElseBlock, _Condition);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Block _IfBlock;
         public IfElseStatementBuilder WithIfBlock(Block value){
@@ -849,7 +998,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ModuleImportBuilder : INodeBuilder
+    public partial class ModuleImportBuilder : BaseNodeBuilder<ModuleImportBuilder, ModuleImport>
     {
         private ModuleImportBuilder()
         {
@@ -857,7 +1006,12 @@ public interface INodeBuilder{}
 
         public static ModuleImportBuilder CreateModuleImport() => new ();
         public ModuleImport Build()
-          => new (_ModuleName);
+        
+        {
+            var result = new ModuleImport(_ModuleName);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _ModuleName;
         public ModuleImportBuilder WithModuleName(string value){
@@ -868,7 +1022,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ParameterDeclarationListBuilder : INodeBuilder
+    public partial class ParameterDeclarationListBuilder : BaseNodeBuilder<ParameterDeclarationListBuilder, ParameterDeclarationList>
     {
         private ParameterDeclarationListBuilder()
         {
@@ -877,7 +1031,12 @@ public interface INodeBuilder{}
 
         public static ParameterDeclarationListBuilder CreateParameterDeclarationList() => new ();
         public ParameterDeclarationList Build()
-          => new (_ParameterDeclarations);
+        
+        {
+            var result = new ParameterDeclarationList(_ParameterDeclarations);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<IParameterListItem> _ParameterDeclarations;
         public ParameterDeclarationListBuilder WithParameterDeclarations(List<IParameterListItem> value){
@@ -892,7 +1051,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ParameterDeclarationBuilder : INodeBuilder
+    public partial class ParameterDeclarationBuilder : BaseNodeBuilder<ParameterDeclarationBuilder, ParameterDeclaration>
     {
         private ParameterDeclarationBuilder()
         {
@@ -900,7 +1059,12 @@ public interface INodeBuilder{}
 
         public static ParameterDeclarationBuilder CreateParameterDeclaration() => new ();
         public ParameterDeclaration Build()
-          => new (_ParameterName, _TypeName, _Constraint, _DestructuringDecl);
+        
+        {
+            var result = new ParameterDeclaration(_ParameterName, _TypeName, _Constraint, _DestructuringDecl);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Identifier _ParameterName;
         public ParameterDeclarationBuilder WithParameterName(Identifier value){
@@ -929,7 +1093,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DestructuringDeclarationBuilder : INodeBuilder
+    public partial class DestructuringDeclarationBuilder : BaseNodeBuilder<DestructuringDeclarationBuilder, DestructuringDeclaration>
     {
         private DestructuringDeclarationBuilder()
         {
@@ -938,7 +1102,12 @@ public interface INodeBuilder{}
 
         public static DestructuringDeclarationBuilder CreateDestructuringDeclaration() => new ();
         public DestructuringDeclaration Build()
-          => new (_Bindings);
+        
+        {
+            var result = new DestructuringDeclaration(_Bindings);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private List<DestructuringBinding> _Bindings;
         public DestructuringDeclarationBuilder WithBindings(List<DestructuringBinding> value){
@@ -953,7 +1122,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class DestructuringBindingBuilder : INodeBuilder
+    public partial class DestructuringBindingBuilder : BaseNodeBuilder<DestructuringBindingBuilder, DestructuringBinding>
     {
         private DestructuringBindingBuilder()
         {
@@ -961,7 +1130,12 @@ public interface INodeBuilder{}
 
         public static DestructuringBindingBuilder CreateDestructuringBinding() => new ();
         public DestructuringBinding Build()
-          => new (_Varname, _Propname, _PropDecl, _Constraint, _DestructuringDecl);
+        
+        {
+            var result = new DestructuringBinding(_Varname, _Propname, _PropDecl, _Constraint, _DestructuringDecl);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Varname;
         public DestructuringBindingBuilder WithVarname(string value){
@@ -996,7 +1170,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class TypeCreateInstExpressionBuilder : INodeBuilder
+    public partial class TypeCreateInstExpressionBuilder : BaseNodeBuilder<TypeCreateInstExpressionBuilder, TypeCreateInstExpression>
     {
         private TypeCreateInstExpressionBuilder()
         {
@@ -1004,12 +1178,17 @@ public interface INodeBuilder{}
 
         public static TypeCreateInstExpressionBuilder CreateTypeCreateInstExpression() => new ();
         public TypeCreateInstExpression Build()
-          => new ();
+        
+        {
+            var result = new TypeCreateInstExpression();
+            CopyMetadataInto(result);
+            return result;
+        }
 
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class TypeInitialiserBuilder : INodeBuilder
+    public partial class TypeInitialiserBuilder : BaseNodeBuilder<TypeInitialiserBuilder, TypeInitialiser>
     {
         private TypeInitialiserBuilder()
         {
@@ -1018,7 +1197,12 @@ public interface INodeBuilder{}
 
         public static TypeInitialiserBuilder CreateTypeInitialiser() => new ();
         public TypeInitialiser Build()
-          => new (_TypeName, _PropertyInitialisers);
+        
+        {
+            var result = new TypeInitialiser(_TypeName, _PropertyInitialisers);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _TypeName;
         public TypeInitialiserBuilder WithTypeName(string value){
@@ -1039,7 +1223,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class TypePropertyInitBuilder : INodeBuilder
+    public partial class TypePropertyInitBuilder : BaseNodeBuilder<TypePropertyInitBuilder, TypePropertyInit>
     {
         private TypePropertyInitBuilder()
         {
@@ -1047,7 +1231,12 @@ public interface INodeBuilder{}
 
         public static TypePropertyInitBuilder CreateTypePropertyInit() => new ();
         public TypePropertyInit Build()
-          => new (_Name, _Value);
+        
+        {
+            var result = new TypePropertyInit(_Name, _Value);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Name;
         public TypePropertyInitBuilder WithName(string value){
@@ -1064,7 +1253,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class UnaryExpressionBuilder : INodeBuilder
+    public partial class UnaryExpressionBuilder : BaseNodeBuilder<UnaryExpressionBuilder, UnaryExpression>
     {
         private UnaryExpressionBuilder()
         {
@@ -1072,7 +1261,12 @@ public interface INodeBuilder{}
 
         public static UnaryExpressionBuilder CreateUnaryExpression() => new ();
         public UnaryExpression Build()
-          => new (_Operand, _Op);
+        
+        {
+            var result = new UnaryExpression(_Operand, _Op);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Operand;
         public UnaryExpressionBuilder WithOperand(Expression value){
@@ -1089,7 +1283,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class VariableDeclarationStatementBuilder : INodeBuilder
+    public partial class VariableDeclarationStatementBuilder : BaseNodeBuilder<VariableDeclarationStatementBuilder, VariableDeclarationStatement>
     {
         private VariableDeclarationStatementBuilder()
         {
@@ -1097,7 +1291,12 @@ public interface INodeBuilder{}
 
         public static VariableDeclarationStatementBuilder CreateVariableDeclarationStatement() => new ();
         public VariableDeclarationStatement Build()
-          => new (_Expression, _Name, _UnresolvedTypeName);
+        
+        {
+            var result = new VariableDeclarationStatement(_Expression, _Name, _UnresolvedTypeName);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Expression;
         public VariableDeclarationStatementBuilder WithExpression(Expression value){
@@ -1120,7 +1319,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class VariableReferenceBuilder : INodeBuilder
+    public partial class VariableReferenceBuilder : BaseNodeBuilder<VariableReferenceBuilder, VariableReference>
     {
         private VariableReferenceBuilder()
         {
@@ -1128,7 +1327,12 @@ public interface INodeBuilder{}
 
         public static VariableReferenceBuilder CreateVariableReference() => new ();
         public VariableReference Build()
-          => new (_Name);
+        
+        {
+            var result = new VariableReference(_Name);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private string _Name;
         public VariableReferenceBuilder WithName(string value){
@@ -1139,7 +1343,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class MemberAccessExpressionBuilder : INodeBuilder
+    public partial class MemberAccessExpressionBuilder : BaseNodeBuilder<MemberAccessExpressionBuilder, MemberAccessExpression>
     {
         private MemberAccessExpressionBuilder()
         {
@@ -1147,7 +1351,12 @@ public interface INodeBuilder{}
 
         public static MemberAccessExpressionBuilder CreateMemberAccessExpression() => new ();
         public MemberAccessExpression Build()
-          => new (_LHS, _RHS);
+        
+        {
+            var result = new MemberAccessExpression(_LHS, _RHS);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _LHS;
         public MemberAccessExpressionBuilder WithLHS(Expression value){
@@ -1164,7 +1373,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class WhileExpBuilder : INodeBuilder
+    public partial class WhileExpBuilder : BaseNodeBuilder<WhileExpBuilder, WhileExp>
     {
         private WhileExpBuilder()
         {
@@ -1172,7 +1381,12 @@ public interface INodeBuilder{}
 
         public static WhileExpBuilder CreateWhileExp() => new ();
         public WhileExp Build()
-          => new (_Condition, _LoopBlock);
+        
+        {
+            var result = new WhileExp(_Condition, _LoopBlock);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Condition;
         public WhileExpBuilder WithCondition(Expression value){
@@ -1189,7 +1403,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ExpressionStatementBuilder : INodeBuilder
+    public partial class ExpressionStatementBuilder : BaseNodeBuilder<ExpressionStatementBuilder, ExpressionStatement>
     {
         private ExpressionStatementBuilder()
         {
@@ -1197,7 +1411,12 @@ public interface INodeBuilder{}
 
         public static ExpressionStatementBuilder CreateExpressionStatement() => new ();
         public ExpressionStatement Build()
-          => new (_Expression);
+        
+        {
+            var result = new ExpressionStatement(_Expression);
+            CopyMetadataInto(result);
+            return result;
+        }
 
         private Expression _Expression;
         public ExpressionStatementBuilder WithExpression(Expression value){
@@ -1208,7 +1427,7 @@ public interface INodeBuilder{}
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class ExpressionBuilder : INodeBuilder
+    public partial class ExpressionBuilder : BaseNodeBuilder<ExpressionBuilder, Expression>
     {
         private ExpressionBuilder()
         {
@@ -1216,6 +1435,11 @@ public interface INodeBuilder{}
 
         public static ExpressionBuilder CreateExpression() => new ();
         public Expression Build()
-          => new ();
+        
+        {
+            var result = new Expression();
+            CopyMetadataInto(result);
+            return result;
+        }
 
     }

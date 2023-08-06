@@ -1,6 +1,7 @@
 namespace Fifth.TypeSystem
 {
     using AST;
+    using fifth.metamodel.metadata;
 
     public class UserDefinedType : IType
     {

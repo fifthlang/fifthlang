@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using AST;
 using AST.Visitors;
+using fifth.metamodel.metadata;
 using IL;
 using CILMM = fifth.metamodel.metadata.il;
 

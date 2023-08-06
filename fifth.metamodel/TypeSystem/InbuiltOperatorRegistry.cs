@@ -3,6 +3,7 @@ namespace Fifth.TypeSystem
     using System;
     using System.Collections.Concurrent;
     using System.Linq;
+    using fifth.metamodel.metadata;
     using Fifth.PrimitiveTypes;
 
     public sealed class InbuiltOperatorRegistry

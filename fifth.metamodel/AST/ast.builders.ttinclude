@@ -9,7 +9,6 @@ using TypeSystem.PrimitiveTypes;
 using System.Collections.Generic;
 using fifth.metamodel.metadata;
 
-public interface INodeBuilder{}
 
 <#
 foreach (var ast in asts)  {
@@ -18,7 +17,7 @@ foreach (var ast in asts)  {
 #>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Generated Code")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1225:Make class sealed.", Justification = "Generated Code")]
-    public partial class <#= ast.Name #>Builder : INodeBuilder
+    public partial class <#= ast.Name #>Builder : BaseNodeBuilder<<#= ast.Name #>Builder, <#= ast.Name #>>
     {
         private <#= ast.Name #>Builder()
         {
@@ -31,13 +30,17 @@ foreach (var ast in asts)  {
 
         public static <#= ast.Name #>Builder Create<#= ast.Name #>() => new ();
         public <#= ast.Name #> Build()
-          => new (<#
-
+        
+        {
+            var result = new <#= ast.Name #>(<#
 var sep = "";
 foreach (var prop in allProps)  {
 #><#= sep #>_<#=prop.Name#><#
 sep=", ";
 } #>);
+            CopyMetadataInto(result);
+            return result;
+        }
 
 <# foreach (var prop in allProps)  { #>
         private <#= GenerationHelpers.PluralType(prop) #> _<#= prop.Name #>;

@@ -91,15 +91,4 @@ namespace Fifth.LangProcessingPhases
             return result;
         }
     }
-    public class PropertyDesugaringVisitor : BaseAstVisitor
-    {
-        public override void EnterPropertyDefinition(PropertyDefinition ctx)
-        {
-            // 1. 
-        }
-
-        public override void LeavePropertyDefinition(PropertyDefinition ctx)
-        {
-        }
-    }
 }
