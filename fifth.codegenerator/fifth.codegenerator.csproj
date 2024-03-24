@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <RootNamespace>Fifth.CodeGeneration</RootNamespace>
@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\fifth.metamodel\fifth.metamodel.csproj" />
     <ProjectReference Include="..\fifthlang.system\Fifth.System.csproj" />
+    <ProjectReference Include="..\fifth.metamodel.metadata\fifth.metamodel.metadata.csproj" />
   </ItemGroup>
   <ItemGroup Label="ILAsm NuGet Package">
     <PackageReference Include="RazorLight" Version="2.3.1" />

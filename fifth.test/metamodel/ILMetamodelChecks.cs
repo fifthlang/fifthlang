@@ -1,5 +1,3 @@
-using NUnit.Framework;
-
 namespace Fifth.Test.metamodel;
 
 using System.Linq;

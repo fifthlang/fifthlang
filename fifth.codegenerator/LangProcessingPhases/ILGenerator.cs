@@ -328,7 +328,7 @@ public class ILGenerator : BaseAstVisitor
             sigbldr.WithCallingConvention(MethodCallingConvention.Default);
         }
 
-        sigbldr.WithReturnTypeSignature(GetTypeRef(ctx.ReturnType))
+        sigbldr.WithReturnTypeSignature(GetTypeRef(ctx.ReturnType.Value))
                .WithNumberOfParameters((ushort)ctx.ParameterDeclarations.ParameterDeclarations.Count);
         foreach (var pd in ctx.ParameterDeclarations.ParameterDeclarations)
         {

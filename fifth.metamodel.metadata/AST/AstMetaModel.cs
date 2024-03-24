@@ -1,5 +1,7 @@
 namespace fifth.metamodel.metadata.AST;
 
+using System.ComponentModel;
+
 #region
 
 //using Fifth;
@@ -18,8 +20,38 @@ public enum SymbolKind
     RetractionStmt, ReturnStmt, StructDef, Triple, TypeDef, TypeRef, UnaryExp, VarDeclStmt, VarRef, VarRefExp,
     WhileStmt, WithScopeStmt
 }
+/// <summary>
+///     Visibility of a member.
+/// </summary>
+public enum Visibility
+{
+    /// <summary>
+    ///     Not visible outside of this assembly.
+    /// </summary>
+    Internal,
 
-public record struct Symbol(string Name, SourceLocationMetadata Location, SymbolKind Kind);
+    /// <summary>
+    ///     Visible outside of this assembly.
+    /// </summary>
+    Public,
+
+    /// <summary>
+    ///     Visible only within this type.
+    /// </summary>
+    Private,
+
+    /// <summary>
+    ///     Visible only within this type and sub-types.
+    /// </summary>
+    Protected,
+
+    /// <summary>
+    ///     Visible only within the declaring type.
+    /// </summary>
+    ProtectedInternal,
+}
+
+public record struct Symbol(string Name, SourceLocationMetadata? Location, SymbolKind Kind);
 
 public record struct SourceLocationMetadata(
     int Column,
@@ -54,34 +86,51 @@ public class AssemblyDef : Definition
 
 public class MemberDef : Definition
 {
+    public Visibility Visibility { get; set; }
+    public bool IsReadOnly { get; set; }
 }
 
-public class FieldDef : Definition
+public class FieldDef : MemberDef
 {
 }
 
-public class PropertyDef : Definition
+public class PropertyDef : MemberDef
 {
+    public bool IsWriteOnly { get; set; }
+    public FieldDef? BackingField { get; set; }
+    public MethodDef? Getter { get; set; }
+    public MethodDef? Setter { get; set; }
+    public bool CtorOnlySetter { get; set; }
 }
 
-public class MethodDef : Definition
+public class MethodDef : MemberDef
 {
+    public List<ParamDef> Params { get; set; } = [];
+    public BlockStmt Body { get; set; }
 }
 
 public class InferenceRuleDef : Definition
 {
+    // antecedent
+    // consequent
 }
 
 public class ParamDef : Definition
 {
+    public Expression? ParameterConstraint { get; set; }
+    public ParamDestructureDef? DestructureDef { get; set; }
 }
 
 public class ParamDestructureDef : Definition
 {
+    public LinkedList<PropertyBindingDef> Bindings { get; set; }
 }
 
 public class PropertyBindingDef : Definition
 {
+    public VariableDecl IntroducedVariable { get; set; }
+    public PropertyDef ReferencedProperty { get; set; }
+    public ParamDestructureDef? DestructureDef { get; set; }
 }
 
 public class TypeDef : Definition
@@ -95,16 +144,17 @@ public class ClassDef : Definition
 
 public class StructDef : Definition
 {
+    public LinkedList<MemberDef> MemberDefs { get; set; }
 }
 
 public class LambdaDef : Definition
 {
 }
 
-public class InferenceRule : Definition
+public class VariableDecl : Definition
 {
-}
 
+}
 #endregion
 
 #region References
@@ -150,6 +200,7 @@ public class AssignmentStmt : Statement
 
 public class BlockStmt : Statement
 {
+    public List<Statement> Statements { get; set; } = [];
 }
 
 public class ExpStmt : Statement
@@ -178,6 +229,7 @@ public class ReturnStmt : Statement
 
 public class VarDeclStmt : Statement
 {
+    public VariableDecl VariableDecl { get; set; }
 }
 
 public class WhileStmt : Statement

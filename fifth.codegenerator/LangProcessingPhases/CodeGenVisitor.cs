@@ -323,7 +323,7 @@ public class CodeGenVisitor : DefaultRecursiveDescentVisitor
     {
         var args = ctx.ParameterDeclarations.ParameterDeclarations
                       .Join(pd => $"{MapType(pd.TypeId)} {pd.ParameterName.Value}");
-        w($".method public static {MapType(ctx.ReturnType)} {ctx.Name} ({args}) cil managed {{");
+        w($".method public static {MapType(ctx.ReturnType.Value)} {ctx.Name} ({args}) cil managed {{");
         if (ctx.IsEntryPoint)
         {
             w(".entrypoint");

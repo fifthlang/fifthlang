@@ -204,7 +204,7 @@ public partial class TypeCast : Expression
 
 public partial class ReturnStatement : Statement
 {
-    public ReturnStatement(Expression SubExpression , TypeId TargetTid )
+    public ReturnStatement(Expression SubExpression , TypeId? TargetTid )
 
 
 {
@@ -213,7 +213,7 @@ public partial class ReturnStatement : Statement
     }
 
     public Expression SubExpression{get;set;}
-    public TypeId TargetTid{get;set;}
+    public TypeId? TargetTid{get;set;}
 
     public override void Accept(IAstVisitor visitor)
     {
@@ -645,7 +645,7 @@ public partial class FuncCallExpression : Expression
 
 public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
 {
-    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , bool IsInstanceFunction , FunctionKind FunctionKind , TypeId ReturnType )
+    public FunctionDefinition(ParameterDeclarationList ParameterDeclarations , Block? Body , string Typename , string Name , bool IsEntryPoint , bool IsInstanceFunction , FunctionKind FunctionKind , TypeId? ReturnType )
 
 
 {
@@ -666,7 +666,7 @@ public partial class FunctionDefinition : ScopeAstNode, IFunctionDefinition
     public bool IsEntryPoint{get;set;}
     public bool IsInstanceFunction{get;set;}
     public FunctionKind FunctionKind{get;set;}
-    public TypeId ReturnType{get;set;}
+    public TypeId? ReturnType{get;set;}
 
     public override void Accept(IAstVisitor visitor)
     {

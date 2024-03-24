@@ -90,7 +90,7 @@ public static class ASTModel
             Props = new PropertySpec[]
             {
                 new(name: "SubExpression", type: "Expression"),
-                new(name: "TargetTid", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
+                new(name: "TargetTid", type: "TypeId?", isCollection: false, isNullable: true, ignoreDuringVisit: true)
             }
         },
         /*StatementList*/new()
@@ -287,7 +287,7 @@ public static class ASTModel
                 new(name: "IsEntryPoint", type: "bool", isCollection: false, ignoreDuringVisit: true),
                 new(name: "IsInstanceFunction", type: "bool", isCollection: false, ignoreDuringVisit: true),
                 new(name: "FunctionKind", type: "FunctionKind", isCollection: false, ignoreDuringVisit: true),
-                new(name: "ReturnType", type: "TypeId", isCollection: false, ignoreDuringVisit: true)
+                new(name: "ReturnType", type: "TypeId?", isCollection: false, ignoreDuringVisit: true, isNullable: true)
             }
         },
         /*OverloadedFunctionDefinition*/new()

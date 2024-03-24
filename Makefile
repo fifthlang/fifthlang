@@ -42,4 +42,5 @@ test: $(BIN_TEST)
 ast:
 	$(CC) $(CC_ARGS) build fifth.metamodel.metadata/fifth.metamodel.metadata.csproj
 	$(MAKE) CC=$(CC) -C fifth.metamodel/AST ast
+	$(MAKE) CC=$(CC) -C fifth.metamodel/AST2 ast2
 	$(MAKE) CC=$(CC) -C fifth.codegenerator/IL ast

@@ -300,8 +300,8 @@ using fifth.metamodel.metadata;
             return this;
         }
 
-        private TypeId _TargetTid;
-        public ReturnStatementBuilder WithTargetTid(TypeId value){
+        private TypeId? _TargetTid;
+        public ReturnStatementBuilder WithTargetTid(TypeId? value){
             _TargetTid = value;
             return this;
         }
@@ -870,8 +870,8 @@ using fifth.metamodel.metadata;
             return this;
         }
 
-        private TypeId _ReturnType;
-        public FunctionDefinitionBuilder WithReturnType(TypeId value){
+        private TypeId? _ReturnType;
+        public FunctionDefinitionBuilder WithReturnType(TypeId? value){
             _ReturnType = value;
             return this;
         }

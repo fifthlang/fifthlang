@@ -278,7 +278,7 @@ namespace Fifth.TypeSystem
                 return default;
             }
 
-            var result = returnType.Lookup();
+            var result = returnType?.Lookup();
             TypeInferred(node, result);
             return result;
         }

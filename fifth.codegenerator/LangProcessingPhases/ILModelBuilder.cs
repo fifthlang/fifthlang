@@ -34,20 +34,24 @@ public class ILModelBuilder : DefaultRecursiveDescentVisitor
     public List<AssemblyDeclaration> CompletedAssemblies { get; set; } = new();
     public Stack<fifth.metamodel.metadata.il.Expression> CompletedExpressions  { get; set; } = new();
 
-    private TypeReference GetTypeRef(TypeId t)
+    private TypeReference GetTypeRef(TypeId? t)
     {
-        if (typeLookups.TryGetValue(t, out var typeRef))
+        if (!t.HasValue)
+        {
+            return default;
+        }
+        if (typeLookups.TryGetValue(t.Value, out var typeRef))
         {
             return typeRef;
         }
 
-        var returnIType = t.Lookup();
+        var returnIType = t.Value.Lookup();
         var result = TypeReferenceBuilder.Create()
                                          .WithModuleName(moduleDeclarations.Current.Model.FileName)
                                          .WithNamespace(returnIType.Namespace)
                                          .WithName(returnIType.Name)
                                          .New();
-        typeLookups[t] = result;
+        typeLookups[t.Value] = result;
         return result;
     }
 

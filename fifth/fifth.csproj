@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Fifth</RootNamespace>
     <PackAsTool>true</PackAsTool>
@@ -29,5 +29,5 @@
     <Copy SourceFiles="$(Pkgruntime_linux-x64_Microsoft_NETCore_ILAsm)/runtimes/linux-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <Copy SourceFiles="$(Pkgruntime_osx-x64_Microsoft_NETCore_ILAsm)/runtimes/osx-x64/native/ilasm" DestinationFolder="$(OutDir)" Condition="$([MSBuild]::IsOSPlatform('Darwin'))" />
   </Target>
-  
+
 </Project>

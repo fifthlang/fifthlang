@@ -82,10 +82,24 @@ public static class GenerationHelpers
 
     public static string BuildTypeName(this Type type)
     {
-        //Console.WriteLine($"Building type name for {type}");
+        // Console.WriteLine($"Building type name for {type}");
         var sb = new StringBuilder();
         if (type.IsGenericType)
         {
+            var collectionTypeName = "List";
+            if (type.GetGenericTypeDefinition() == typeof(LinkedList<>))
+            {
+                sb.Append("LinkedList<");
+                var sep = "";
+                foreach (var typeArgument in type.GenericTypeArguments)
+                {
+                    sb.Append(sep);
+                    sb.Append(BuildTypeName(typeArgument));
+                    sep = ", ";
+                }
+
+                sb.Append(">");
+            }
             if (type.GetGenericTypeDefinition() == typeof(List<>))
             {
                 sb.Append("List<");
@@ -130,7 +144,18 @@ public static class GenerationHelpers
     {
         if (t.IsGenericType)
         {
-            return t.GetGenericTypeDefinition() == typeof(List<>);
+            return t.GetGenericTypeDefinition() == typeof(List<>)
+                || t.GetGenericTypeDefinition() == typeof(LinkedList<>);
+        }
+
+        return false;
+    }
+
+    public static bool IsLinkedListCollectionType(this Type t)
+    {
+        if (t.IsGenericType)
+        {
+            return t.GetGenericTypeDefinition() == typeof(LinkedList<>);
         }
 
         return false;
