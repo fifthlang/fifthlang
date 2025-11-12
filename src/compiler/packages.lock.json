@@ -162,11 +162,6 @@
           "dotNetRdf.Core": "3.4.0"
         }
       },
-      "Dunet": {
-        "type": "Transitive",
-        "resolved": "1.11.2",
-        "contentHash": "T6dfqSJ9+gSqnopeuBv6gtnpHlC0lru6XK3NtQQ9fTeDQQa1ynuI8AmDfEcpQu/rWFYJTbu8ZYR5ED8IScVK7A=="
-      },
       "FluentAssertions": {
         "type": "Transitive",
         "resolved": "6.0.0-alpha0002",
@@ -968,11 +963,6 @@
         "resolved": "3.0.0",
         "contentHash": "fFYBEVmVlyoeq2dhjM8OR3OCr+ZNCL8E7nEePCZyH2BVo3ky5lHZZiF0PcWwOJmRTyIA/6c0716DfHKNB5oKKg=="
       },
-      "Vogen": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "HDeCgFmyu9IgM40AWOvB0ieuoLVHSYE4EN6uQNv7bVkUnaZnn6GeGDMIb/zvfOJbtyIEn411eQ8g+iIrzCM4ng=="
-      },
       "ast_generated": {
         "type": "Project",
         "dependencies": {
@@ -980,11 +970,7 @@
         }
       },
       "ast_model": {
-        "type": "Project",
-        "dependencies": {
-          "Vogen": "[6.0.0, )",
-          "dunet": "[1.11.2, )"
-        }
+        "type": "Project"
       },
       "fifth.system": {
         "type": "Project",
