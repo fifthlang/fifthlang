@@ -962,10 +962,7 @@
         "contentHash": "fFYBEVmVlyoeq2dhjM8OR3OCr+ZNCL8E7nEePCZyH2BVo3ky5lHZZiF0PcWwOJmRTyIA/6c0716DfHKNB5oKKg=="
       },
       "ast_generated": {
-        "type": "Project",
-        "dependencies": {
-          "ast_model": "[1.0.0, )"
-        }
+        "type": "Project"
       },
       "ast_model": {
         "type": "Project"

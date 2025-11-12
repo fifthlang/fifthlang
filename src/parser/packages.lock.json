@@ -71,10 +71,7 @@
         }
       },
       "ast_generated": {
-        "type": "Project",
-        "dependencies": {
-          "ast_model": "[1.0.0, )"
-        }
+        "type": "Project"
       },
       "ast_model": {
         "type": "Project"
