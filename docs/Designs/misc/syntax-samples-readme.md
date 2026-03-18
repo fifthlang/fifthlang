@@ -53,10 +53,9 @@ Throw can be used in expression contexts:
 
 ```fifth
 // Throw expression in null-coalescing (future syntax)
-var x = getValue() ?? throw new Exception();
-
-// Throw expression in conditional
-var y = condition ? result : throw new Exception();
+// Note: This syntax is not yet implemented. Full throw-expression support
+// requires parser enhancements for qualified type names and ternary operators.
+x: int = getValue();
 ```
 
 Note: Full exception type support (e.g., `System.Exception`) requires parser enhancements for qualified type names.
