@@ -57,7 +57,8 @@ dotnet build MyProject.5thproj
 - **FifthCompilerCommand** (optional): Compiler command to invoke (e.g., `fifthc`) when the compiler is installed as a .NET tool.
 - **FifthSourceDirectory** (optional): Directory containing Fifth source files. Defaults to the project directory.
 - **FifthOutputPath** (optional): Full path to the output artifact. Defaults to `bin\<Configuration>\<TargetFramework>\<AssemblyName>.<ext>`.
-- **FifthSupportedTargetFrameworks** (optional): Semicolon-delimited allowlist of supported target frameworks.
+- **FifthSupportedTargetFrameworks** (optional): Semicolon-delimited allowlist of supported target frameworks. Defaults to `net8.0;net9.0`.
+- **TargetFramework**: Target-framework moniker for the output. Supported values: `net8.0` (default), `net9.0`. Passed to the compiler as `--target-framework` and controls the generated `runtimeconfig.json` framework version.
 
 ### Targets
 
@@ -139,7 +140,7 @@ dotnet sln add MyFifthProject.5thproj
 ## Limitations
 
 - Requires the Fifth compiler to be available via `FifthCompilerPath` or `FifthCompilerCommand`
-- .NET 8.0+ target framework required
+- `net8.0` and `net9.0` target frameworks are supported; earlier versions are not
 
 ## Future Enhancements
 

@@ -14,15 +14,17 @@ public class IncrementalBuildTests
         var projectDir = CreateTempProjectDirectory();
         var projectPath = Path.Combine(projectDir, "UnsupportedTfm.5thproj");
 
+        // net7.0 is not in the FifthSupportedTargetFrameworks allow-list, so validation should fail.
         File.WriteAllText(projectPath, """
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 </Project>
 """);
 
-        var result = BuildTarget(repoRoot, projectPath, "ValidateFifthTargetFrameworks");
+        // Use net7.0 as the global TargetFramework so it isn't overridden to a supported value.
+        var result = BuildTarget(repoRoot, projectPath, "ValidateFifthTargetFrameworks", targetFramework: "net7.0");
         result.OverallResult.Should().Be(BuildResultCode.Failure);
     }
 
@@ -57,14 +59,14 @@ public class IncrementalBuildTests
         contents.Should().Contain("Source=");
     }
 
-    private static BuildResult BuildTarget(string repoRoot, string projectPath, string target, bool designTimeBuild = false)
+    private static BuildResult BuildTarget(string repoRoot, string projectPath, string target, bool designTimeBuild = false, string targetFramework = "net8.0")
     {
         var sdkPath = Path.Combine(repoRoot, "src", "Fifth.Sdk", "Sdk");
         Environment.SetEnvironmentVariable("MSBuildSDKsPath", sdkPath);
 
         var globalProperties = new Dictionary<string, string>
         {
-            ["TargetFramework"] = "net8.0",
+            ["TargetFramework"] = targetFramework,
             ["DesignTimeBuild"] = designTimeBuild ? "true" : "false"
         };
 

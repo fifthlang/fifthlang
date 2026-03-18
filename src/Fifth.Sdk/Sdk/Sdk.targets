@@ -68,9 +68,9 @@
       
       <!-- Try to find in source tree (for development) -->
       <_FifthSrcDir>$(MSBuildThisFileDirectory)..\..\</_FifthSrcDir>
-      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin')">$(_FifthSrcDir)compiler\bin\$(Configuration)\net8.0</_FifthCompilerDir>
-      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin') AND !Exists('$(_FifthCompilerDir)')">$(_FifthSrcDir)compiler\bin\Release\net8.0</_FifthCompilerDir>
-      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin') AND !Exists('$(_FifthCompilerDir)')">$(_FifthSrcDir)compiler\bin\Debug\net8.0</_FifthCompilerDir>
+      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin')">$(_FifthSrcDir)compiler\bin\$(Configuration)\$(FifthDefaultTargetFramework)</_FifthCompilerDir>
+      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin') AND !Exists('$(_FifthCompilerDir)')">$(_FifthSrcDir)compiler\bin\Release\$(FifthDefaultTargetFramework)</_FifthCompilerDir>
+      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthSrcDir)compiler\bin') AND !Exists('$(_FifthCompilerDir)')">$(_FifthSrcDir)compiler\bin\Debug\$(FifthDefaultTargetFramework)</_FifthCompilerDir>
       
       <!-- Check if compiler.dll exists in the resolved directory -->
       <FifthCompilerPath Condition="'$(FifthCompilerPath)' == '' AND Exists('$(_FifthCompilerDir)\compiler.dll')">$(_FifthCompilerDir)\compiler.dll</FifthCompilerPath>

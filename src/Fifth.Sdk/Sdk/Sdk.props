@@ -5,7 +5,7 @@
   
   <PropertyGroup>
     <!-- Default properties for Fifth projects -->
-    <TargetFramework Condition="'$(TargetFramework)' == ''">net8.0</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">$(FifthDefaultTargetFramework)</TargetFramework>
     <OutputType Condition="'$(OutputType)' == ''">Exe</OutputType>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
