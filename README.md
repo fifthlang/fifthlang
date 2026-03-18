@@ -12,7 +12,7 @@ I invite you to get involved and play with it, and tell me what you do and don't
 
 ## Language Features
 
-Fifth uniquely combines imperative programming with first-class RDF and SPARQL support.  Mostly, it's a lot like C#, but it takes the syntax for Function overloading, Destructuring, and nested Guard Clauses from languages like Erlang.  For a tour of the language, take a look at the [Learn Fifth in Y Minutes Guide](docs/Getting-Started/learn5thInYMinutes.md).  
+Fifth uniquely combines imperative and functional programming with first-class RDF and SPARQL support.  Mostly, it's a lot like C#, but it takes the syntax for Function overloading, Destructuring, and nested Guard Clauses from languages like Erlang.  For a tour of the language, take a look at the [Learn Fifth in Y Minutes Guide](docs/Getting-Started/learn5thInYMinutes.md).  
 
 More docs [here](https://fifth-lang.org) including [installation](https://fifth-lang.org/Getting-Started/installation/) instructions.
 

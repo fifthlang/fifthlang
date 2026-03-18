@@ -86,7 +86,7 @@ MSBuild SDK for `.5thproj` project file support, enabling dotnet CLI integration
 | **Parsing** | ANTLR 4.8 (split lexer/parser grammar) |
 | **Code Generation** | Roslyn (Microsoft.CodeAnalysis) |
 | **RDF/SPARQL** | dotNetRDF |
-| **Testing** | TUnit, FluentAssertions |
+| **Testing** | xUnit, FluentAssertions |
 | **Code Gen Templates** | RazorLight |
 | **Discriminated Unions** | Dunet |
 | **Value Objects** | Vogen |
