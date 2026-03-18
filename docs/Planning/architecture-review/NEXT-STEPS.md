@@ -5,7 +5,7 @@ This document summarizes the architectural review deliverables and provides guid
 ## 📋 Deliverables
 
 ### 1. Comprehensive Review Report
-**File:** `docs/architectural-review-2025.md` (1,344 lines)
+**File:** `docs/Planning/architecture-review/architectural-review-2025.md` (1,344 lines)
 
 A detailed architectural analysis covering:
 - Executive summary
@@ -17,7 +17,7 @@ A detailed architectural analysis covering:
 - References and appendices
 
 ### 2. Issue Templates
-**Directory:** `docs/arch-review-issues/` (2,404 lines across 8 files)
+**Directory:** `docs/Planning/architecture-review/arch-review-issues/` (2,404 lines across 8 files)
 
 Seven comprehensive issue templates ready to convert to GitHub issues:
 
@@ -81,12 +81,12 @@ Performance and quality improvements:
 ### Immediate Actions
 
 1. **Review the findings** with the team
-   - Read `docs/architectural-review-2025.md`
+   - Read `docs/Planning/architecture-review/architectural-review-2025.md`
    - Discuss priorities and timeline
    - Get team buy-in
 
 2. **Create GitHub issues** from templates
-   - Use the script in `docs/arch-review-issues/README.md`
+   - Use the script in `docs/Planning/architecture-review/arch-review-issues/README.md`
    - Or create manually via GitHub web UI
    - Ensure all labels exist in the repository
 
@@ -180,9 +180,9 @@ By end of Q3 2026, the compiler should have:
 ## 📚 Resources
 
 ### Documentation
-- Full Review: `docs/architectural-review-2025.md`
-- Issue Templates: `docs/arch-review-issues/`
-- Issue Creation Guide: `docs/arch-review-issues/README.md`
+- Full Review: `docs/Planning/architecture-review/architectural-review-2025.md`
+- Issue Templates: `docs/Planning/architecture-review/arch-review-issues/`
+- Issue Creation Guide: `docs/Planning/architecture-review/arch-review-issues/README.md`
 
 ### References
 - LSP Specification: https://microsoft.github.io/language-server-protocol/

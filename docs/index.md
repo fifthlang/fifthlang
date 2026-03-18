@@ -182,11 +182,11 @@ See [Fifth.Sdk documentation](Designs/fifth-sdk-readme.md) for more details.
 ## Roadmap
 
 ### Recently Completed
-- TriG literal expressions (spec 009) - Multi-line graph blocks
-- SPARQL literal expressions (spec 010) - Embedded queries
-- System KG types (spec 008) - Runtime graph operations
-- Roslyn backend (spec 006) - IL compilation pipeline
-### Recently Completed
+- SPARQL comprehensions (spec 015) - Use SPARQL query results directly in list comprehensions
+- Multi-platform release pipeline (spec 014) - Pre-built binaries for Linux, macOS, Windows
+- Constructors (spec 013) - Constructor functions for classes
+- Generics (spec 012) - Generic classes and functions with type parameters
+- Query application (spec 011) - SPARQL query execution with result types
 - TriG literal expressions (spec 009) - Multi-line graph blocks with TriG syntax
 - SPARQL literal expressions (spec 010) - Embedded SPARQL queries
 - System KG types (spec 008) - Runtime graph operations via Fifth.System.KG
@@ -194,6 +194,8 @@ See [Fifth.Sdk documentation](Designs/fifth-sdk-readme.md) for more details.
 - Exception handling (spec 005) - Try/catch/finally control flow
 - Guard clauses (spec 002) - Parameter constraints for function overloading
 - Namespace imports (spec 004) - Import directives with aliasing
+
+### Upcoming
 1. Q1 2026: Error recovery + diagnostic improvements
 2. Q2 2026: Language Server Protocol (LSP) + incremental compilation
 3. Q3 2026: Symbol table enhancements + testing architecture
@@ -208,12 +210,17 @@ See [roadmap details](Planning/architecture-review/NEXT-STEPS.md) and [issue tem
 - [Installation Guide](Getting-Started/installation.md) - Download and install Fifth
 - [Learn Fifth in Y Minutes](Getting-Started/learn5thInYMinutes.md) - Quick language tour
 - [Knowledge Graphs Guide](Getting-Started/knowledge-graphs.md) - RDF/SPARQL features
-- [Example Programs](examples/) - Real Fifth code
+- [Example Programs](Getting-Started/examples/learnfifth.5th) - Annotated Fifth code sample
+
+### Developer Reference
+- [Development Overview](Development/REPOSITORY_SUMMARY.md) - Architecture and repo structure
+- [Release Process](Development/release-process.md) - How to build and publish releases
+- [LSP / VS Code Integration](Getting-Started/lsp-vscode-insiders.md) - Language Server setup
 
 ### Language Reference
 - [Architectural Review](Planning/architecture-review/architectural-review-2025.md) - Compiler design deep dive
-- [Language Specifications](specs/) - Detailed feature specs
-- [Completed Features](specs/) - See `completed-*` directories
+- [Namespace Implementation](Designs/namespace-implementation.md) - Namespace and import details
+- [Fifth.Sdk Reference](Designs/fifth-sdk-readme.md) - MSBuild SDK for `.5thproj` projects
 
 ### Community
 - [GitHub Discussions](https://github.com/aabs/fifthlang/discussions) - Ask questions, share ideas
