@@ -12,7 +12,7 @@ I invite you to get involved and play with it, and tell me what you do and don't
 
 ## Language Features
 
-Fifth uniquely combines imperative programming with first-class RDF and SPARQL support.  Mostly, it's a lot like C#, but it takes the syntax for Function overloading, Destructuring, and nested Guard Clauses from languages like Erlang.  For a tour of the language, take a look at the [Learn X=5th in Y Minutes Guide](https://raw.githubusercontent.com/aabs/fifthlang/refs/heads/master/docs/learn5thInYMinutes.md).  
+Fifth uniquely combines imperative programming with first-class RDF and SPARQL support.  Mostly, it's a lot like C#, but it takes the syntax for Function overloading, Destructuring, and nested Guard Clauses from languages like Erlang.  For a tour of the language, take a look at the [Learn Fifth in Y Minutes Guide](docs/Getting-Started/learn5thInYMinutes.md).  
 
 More docs [here](https://fifth-lang.org) including [installation](https://fifth-lang.org/Getting-Started/installation/) instructions.
 
@@ -54,7 +54,7 @@ More docs [here](https://fifth-lang.org) including [installation](https://fifth-
 - Comprehensive test suite (TUnit + FluentAssertions)
 
 ### Planned Improvements
-See our [architectural roadmap](docs/NEXT-STEPS.md) for detailed plans. Key priorities:
+See our [architectural roadmap](docs/Planning/architecture-review/NEXT-STEPS.md) for detailed plans. Key priorities:
 
 - Published MSBuild SDK and compiler support via Nuget
 - Direct Consumption of Query Results in List Comprehensions
@@ -62,7 +62,7 @@ See our [architectural roadmap](docs/NEXT-STEPS.md) for detailed plans. Key prio
 - Parser error recovery: Better handling of syntax errors for IDE support
 - Incremental compilation: Faster rebuild times for large projects
 
-Full analysis available in [architectural review](docs/architectural-review-2025.md).
+Full analysis available in [architectural review](docs/Planning/architecture-review/architectural-review-2025.md).
 
 ## Quick Start
 
@@ -153,7 +153,7 @@ dotnet build MyApp.5thproj
 dotnet run --project MyApp.5thproj
 ```
 
-See [Fifth.Sdk documentation](src/Fifth.Sdk/README.md) for more details.
+See [Fifth.Sdk documentation](docs/Designs/fifth-sdk-readme.md) for more details.
 
 ---
 
@@ -180,21 +180,21 @@ See [Fifth.Sdk documentation](src/Fifth.Sdk/README.md) for more details.
 2. Q2 2026: Language Server Protocol (LSP) + incremental compilation
 3. Q3 2026: Symbol table enhancements + testing architecture
 
-See [roadmap details](docs/NEXT-STEPS.md) and [issue templates](docs/arch-review-issues/).
+See [roadmap details](docs/Planning/architecture-review/NEXT-STEPS.md) and [issue templates](docs/Planning/architecture-review/arch-review-issues/).
 
 ---
 
 ## Documentation
 
 ### Getting Started
-- [Learn Fifth in Y Minutes](docs/learn5thInYMinutes.md) - Quick language tour
-- [Knowledge Graphs Guide](docs/knowledge-graphs.md) - RDF/SPARQL features
-- [Example Programs](docs/examples/) - Real Fifth code
+- [Installation Guide](docs/Getting-Started/installation.md) - Download and install Fifth
+- [Learn Fifth in Y Minutes](docs/Getting-Started/learn5thInYMinutes.md) - Quick language tour
+- [Knowledge Graphs Guide](docs/Getting-Started/knowledge-graphs.md) - RDF/SPARQL features
 
 ### Language Reference
-- [Architectural Review](docs/architectural-review-2025.md) - Compiler design deep dive
-- [Language Specifications](specs/) - Detailed feature specs
-- [Completed Features](specs/) - See `completed-*` directories
+- [Architectural Review](docs/Planning/architecture-review/architectural-review-2025.md) - Compiler design deep dive
+- [Fifth.Sdk Reference](docs/Designs/fifth-sdk-readme.md) - MSBuild SDK for `.5thproj` projects
+- [Namespace Implementation](docs/Designs/namespace-implementation.md) - Namespace and import details
 
 ### Community
 - [GitHub Discussions](https://github.com/aabs/fifthlang/discussions) - Ask questions, share ideas

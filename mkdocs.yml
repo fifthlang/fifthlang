@@ -6,3 +6,32 @@ theme:
   hljs_languages:
     - yaml
     - rust
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Overview: Getting-Started/index.md
+    - Installation: Getting-Started/installation.md
+    - Learn Fifth in Y Minutes: Getting-Started/learn5thInYMinutes.md
+    - Knowledge Graphs: Getting-Started/knowledge-graphs.md
+    - LSP / VS Code Integration: Getting-Started/lsp-vscode-insiders.md
+  - Development:
+    - Overview: Development/index.md
+    - Repository Overview: Development/REPOSITORY_SUMMARY.md
+    - Release Process: Development/release-process.md
+    - Publishing the SDK: Development/publish-compiler-sdk.md
+  - Design Documents:
+    - Overview: Designs/index.md
+    - Fifth.Sdk: Designs/fifth-sdk-readme.md
+    - Namespace Implementation: Designs/namespace-implementation.md
+    - MSBuild Project Type: Designs/5thproj-implementation-summary.md
+    - AST Rewriter Design: Designs/misc/AST_REWRITER_DESIGN.md
+    - Debugging Workflows: Designs/misc/debugging.md
+  - Planning:
+    - Roadmap & Next Steps: Planning/architecture-review/NEXT-STEPS.md
+    - Architectural Review (2025): Planning/architecture-review/architectural-review-2025.md
+    - Issue Templates: Planning/architecture-review/arch-review-issues/README.md
+  - Blog:
+    - Announcing Fifth: "Blog/2025-11-16 Announcing Fifth Lang.md"
+    - Release Packaging Pipeline: Blog/2025-11-28-release-packaging-pipeline.md
+    - The Story of Fifth: Blog/2025-12-05.TheStoryOfFifth.md

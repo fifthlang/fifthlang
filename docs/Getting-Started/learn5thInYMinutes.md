@@ -362,8 +362,8 @@ main(): int {
     
     xs = [1, 2, 3, 4, 5];
     
-    // List comprehension: [var in source # constraint]
-    ys = [x in xs # x > 2];  // [3, 4, 5]
+    // List comprehension: [projection from var in source where constraint]
+    ys = [x from x in xs where x > 2];  // [3, 4, 5]
     
     return 0;
 }
