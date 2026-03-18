@@ -54,6 +54,15 @@ public static class Program
             AllowMultipleArgumentsPerToken = true
         };
 
+        // Define target-framework option
+        var targetFrameworkOption = new Option<string>(
+            name: "--target-framework",
+            description: "Target-framework moniker (e.g. net8.0, net9.0). Drives runtime-config generation.")
+        {
+            IsRequired = false
+        };
+        targetFrameworkOption.SetDefaultValue(FrameworkReferenceSettings.DefaultTargetFramework);
+
         // Define args option
         var argsOption = new Option<string[]>(
             name: "--args",
@@ -87,6 +96,7 @@ public static class Program
             outputOption,
             outputTypeOption,
             referenceOption,
+            targetFrameworkOption,
             argsOption,
             keepTempOption,
             diagnosticsOption
@@ -102,6 +112,8 @@ public static class Program
             var output = context.ParseResult.GetValueForOption(outputOption);
             var outputType = context.ParseResult.GetValueForOption(outputTypeOption) ?? "Exe";
             var reference = context.ParseResult.GetValueForOption(referenceOption) ?? Array.Empty<string>();
+            var targetFramework = context.ParseResult.GetValueForOption(targetFrameworkOption)
+                ?? FrameworkReferenceSettings.DefaultTargetFramework;
             var args = context.ParseResult.GetValueForOption(argsOption) ?? Array.Empty<string>();
             var keepTemp = context.ParseResult.GetValueForOption(keepTempOption);
             var diagnostics = context.ParseResult.GetValueForOption(diagnosticsOption);
@@ -140,7 +152,8 @@ public static class Program
                 Diagnostics: diagnostics,
                 SourceFiles: resolvedSourceFiles,
                 SourceManifest: sourceManifest,
-                References: reference);
+                References: reference,
+                TargetFramework: targetFramework);
 
             var compiler = new Compiler();
             var result = await compiler.CompileAsync(options);

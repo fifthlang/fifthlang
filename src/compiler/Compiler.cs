@@ -211,17 +211,19 @@ Commands:
   help             Show this help message
 
 Options:
-  --source <path>      Source file or directory path (required for build/run/lint)
-  --output <path>      Output executable path (required for build/run)
-    --output-type <type> Output type: Exe or Library
-    --reference <path>   Assembly reference path (repeatable)
-  --args <args>        Arguments to pass to program when running
-  --keep-temp          Keep temporary files
-  --diagnostics        Enable diagnostic output
+  --source <path>           Source file or directory path (required for build/run/lint)
+  --output <path>           Output executable path (required for build/run)
+  --output-type <type>      Output type: Exe or Library
+  --reference <path>        Assembly reference path (repeatable)
+  --target-framework <tfm>  Target-framework moniker, e.g. net8.0 (default), net9.0
+  --args <args>             Arguments to pass to program when running
+  --keep-temp               Keep temporary files
+  --diagnostics             Enable diagnostic output
 
 Examples:
     fifthc --source hello.5th --output hello.exe
     fifthc --output-type Library --source hello.5th --output hello.dll
+    fifthc --target-framework net9.0 --source hello.5th --output hello.exe
     fifthc --command run --source hello.5th --output hello.exe --args ""arg1 arg2""
   fifthc --command lint --source src/
 ";
@@ -285,22 +287,24 @@ Examples:
 
 
 
-    private async Task GenerateRuntimeConfigAsync(string executablePath, List<Diagnostic> diagnostics)
+    private async Task GenerateRuntimeConfigAsync(string executablePath, CompilerOptions options, List<Diagnostic> diagnostics)
     {
         try
         {
             var executableName = Path.GetFileNameWithoutExtension(executablePath);
             var runtimeConfigPath = Path.Combine(Path.GetDirectoryName(executablePath) ?? "", $"{executableName}.runtimeconfig.json");
 
+            var tfm = options.TargetFramework;
+
             var runtimeConfig = new
             {
                 runtimeOptions = new
                 {
-                    tfm = "net8.0",
+                    tfm,
                     framework = new
                     {
-                        name = "Microsoft.NETCore.App",
-                        version = "8.0.0"
+                        name = FrameworkReferenceSettings.DefaultFrameworkName,
+                        version = FrameworkReferenceSettings.GetFrameworkVersion(tfm)
                     }
                 }
             };
@@ -577,7 +581,7 @@ Examples:
 
             try
             {
-                AddReferenceFromAssembly(Assembly.Load("netstandard"));
+                AddReferenceFromAssembly(Assembly.Load(FrameworkReferenceSettings.NetStandardFacadeAssembly));
             }
             catch
             {
@@ -594,10 +598,10 @@ Examples:
             }
 
             var baseDir = Path.GetDirectoryName(options.Output) ?? Directory.GetCurrentDirectory();
-            AddReferenceIfExists(Path.Combine(baseDir, "Fifth.System.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "dotNetRdf.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "dotNetRdf.Client.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "VDS.Common.dll"));
+            foreach (var depName in FrameworkReferenceSettings.DefaultRuntimeDependencyNames)
+            {
+                AddReferenceIfExists(Path.Combine(baseDir, depName));
+            }
 
             var outputKind = options.OutputType.Equals("Library", StringComparison.OrdinalIgnoreCase)
                 ? Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
@@ -655,7 +659,7 @@ Examples:
             if (outputKind == Microsoft.CodeAnalysis.OutputKind.ConsoleApplication)
             {
                 // Generate runtime configuration file for framework-dependent execution
-                await GenerateRuntimeConfigAsync(outputPath, diagnostics);
+                await GenerateRuntimeConfigAsync(outputPath, options, diagnostics);
 
                 // Copy runtime dependencies to output directory
                 await CopyRuntimeDependenciesAsync(outputPath, diagnostics);

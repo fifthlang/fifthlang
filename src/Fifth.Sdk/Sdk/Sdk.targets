@@ -54,7 +54,7 @@
     <Message Text="  OutputType: $(OutputType)" Importance="high" />
     
     <!-- Run the Fifth compiler -->
-    <Exec Command="$(_FifthCompilerCommand) --command build $(_FifthSourceArg) --output &quot;$(FifthOutputPath)&quot; --output-type &quot;$(OutputType)&quot; $(_FifthReferenceArgs)"
+    <Exec Command="$(_FifthCompilerCommand) --command build $(_FifthSourceArg) --output &quot;$(FifthOutputPath)&quot; --output-type &quot;$(OutputType)&quot; --target-framework &quot;$(TargetFramework)&quot; $(_FifthReferenceArgs)"
           WorkingDirectory="$(MSBuildProjectDirectory)" />
     
     <Message Text="Fifth compilation completed successfully" Importance="high" />
