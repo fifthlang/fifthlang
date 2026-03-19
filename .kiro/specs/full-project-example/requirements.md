@@ -124,7 +124,18 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 4. THE Getting_Started_Guide SHALL use concise, direct language and SHALL NOT include tangential explanations or advanced topics beyond the scope of setting up the sample.
 5. THE `.5th` source files SHALL contain the absolute minimum code needed to produce a valid build output.
 
-### Requirement 10: FifthCompilerPath Configuration
+### Requirement 10: Compiler and SDK Prerequisites in Documentation
+
+**User Story:** As a Fifth developer using Visual Studio 2026, I want the Getting Started guide to include the steps needed to build the Fifth compiler and pack the Fifth.Sdk NuGet package, so that I can get the sample solution working from a fresh clone of the repository.
+
+#### Acceptance Criteria
+
+1. THE Getting_Started_Guide SHALL describe how to build the Fifth compiler from source (e.g. `dotnet build src/compiler/compiler.csproj`).
+2. THE Getting_Started_Guide SHALL describe how to pack the Fifth.Sdk NuGet package locally (e.g. `dotnet pack src/Fifth.Sdk/Fifth.Sdk.csproj`).
+3. THE Getting_Started_Guide SHALL list these prerequisite steps before the solution build step, so the reader completes them in the correct order.
+4. THE Getting_Started_Guide SHALL note the minimum Visual Studio version required for SLNX support (Visual Studio 2026 / 17.10+).
+
+### Requirement 11: FifthCompilerPath Configuration
 
 **User Story:** As a Fifth developer, I want each project to specify the FifthCompilerPath, so that the sample builds correctly from the repository without relying on auto-resolution from the SDK package layout.
 
