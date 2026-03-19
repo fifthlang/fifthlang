@@ -1,0 +1,4 @@
+// CoreLib: provides the square function
+square(x: int): int {
+    return x * x;
+}

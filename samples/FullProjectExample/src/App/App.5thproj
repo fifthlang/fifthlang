@@ -1,0 +1,11 @@
+<Project Sdk="Fifth.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <FifthCompilerCommand>fifthc</FifthCompilerCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MathLib\MathLib.5thproj" />
+    <ProjectReference Include="..\CoreLib\CoreLib.5thproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src\App\App.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
+  <Project Path="src\MathLib\MathLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
+  <Project Path="src\CoreLib\CoreLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
+</Solution>
