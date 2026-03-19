@@ -211,17 +211,19 @@ Commands:
   help             Show this help message
 
 Options:
-  --source <path>      Source file or directory path (required for build/run/lint)
-  --output <path>      Output executable path (required for build/run)
-    --output-type <type> Output type: Exe or Library
-    --reference <path>   Assembly reference path (repeatable)
-  --args <args>        Arguments to pass to program when running
-  --keep-temp          Keep temporary files
-  --diagnostics        Enable diagnostic output
+  --source <path>           Source file or directory path (required for build/run/lint)
+  --output <path>           Output executable path (required for build/run)
+  --output-type <type>      Output type: Exe or Library
+  --reference <path>        Assembly reference path (repeatable)
+  --target-framework <tfm>  Target-framework moniker, e.g. net8.0 (default), net9.0
+  --args <args>             Arguments to pass to program when running
+  --keep-temp               Keep temporary files
+  --diagnostics             Enable diagnostic output
 
 Examples:
     fifthc --source hello.5th --output hello.exe
     fifthc --output-type Library --source hello.5th --output hello.dll
+    fifthc --target-framework net9.0 --source hello.5th --output hello.exe
     fifthc --command run --source hello.5th --output hello.exe --args ""arg1 arg2""
   fifthc --command lint --source src/
 ";
@@ -285,23 +287,27 @@ Examples:
 
 
 
-    private async Task GenerateRuntimeConfigAsync(string executablePath, List<Diagnostic> diagnostics)
+    private async Task GenerateRuntimeConfigAsync(string executablePath, CompilerOptions options, List<Diagnostic> diagnostics)
     {
         try
         {
             var executableName = Path.GetFileNameWithoutExtension(executablePath);
             var runtimeConfigPath = Path.Combine(Path.GetDirectoryName(executablePath) ?? "", $"{executableName}.runtimeconfig.json");
 
+            var tfm = options.TargetFramework;
+           var normalizedTfm = string.IsNullOrWhiteSpace(tfm)
+                ? FrameworkReferenceSettings.DefaultTargetFramework
+                : tfm.Trim().ToLowerInvariant();
+
             var runtimeConfig = new
             {
                 runtimeOptions = new
                 {
-                    tfm = "net8.0",
+                    tfm = normalizedTfm,
                     framework = new
                     {
-                        name = "Microsoft.NETCore.App",
-                        version = "8.0.0"
-                    }
+                        name = FrameworkReferenceSettings.DefaultFrameworkName,
+                        version = FrameworkReferenceSettings.GetFrameworkVersion(normalizedTfm)
                 }
             };
 
@@ -350,11 +356,19 @@ Examples:
                 return;
             }
 
-            // diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"Package lib directory not found at {packageLibDir}; falling back to assembly locations"));
+            // Fallback path for developer builds where lib directory may not exist yet.
+            // Use the directory of a known runtime assembly as the search base, then copy
+            // every file listed in DefaultRuntimeDependencyNames from that directory.
+            var fifthSystemAssemblyPath = typeof(Fifth.System.KG).Assembly.Location;
+            var searchDir = string.IsNullOrWhiteSpace(fifthSystemAssemblyPath)
+                ? AppContext.BaseDirectory
+                : Path.GetDirectoryName(fifthSystemAssemblyPath) ?? AppContext.BaseDirectory;
 
-            // Fallback path for developer builds where lib directory may not exist yet
-            await TryCopyAssemblyAsync(typeof(Fifth.System.KG).Assembly, outputDir, "Fifth.System.dll", diagnostics);
-            await TryCopyAssemblyAsync(typeof(VDS.RDF.IGraph).Assembly, outputDir, "dotNetRdf.dll", diagnostics);
+            foreach (var depName in FrameworkReferenceSettings.DefaultRuntimeDependencyNames)
+            {
+                var sourcePath = Path.Combine(searchDir, depName);
+                await TryCopyFileAsync(sourcePath, outputDir, depName, diagnostics);
+            }
         }
         catch (System.Exception ex)
         {
@@ -577,7 +591,7 @@ Examples:
 
             try
             {
-                AddReferenceFromAssembly(Assembly.Load("netstandard"));
+                AddReferenceFromAssembly(Assembly.Load(FrameworkReferenceSettings.NetStandardFacadeAssembly));
             }
             catch
             {
@@ -594,10 +608,10 @@ Examples:
             }
 
             var baseDir = Path.GetDirectoryName(options.Output) ?? Directory.GetCurrentDirectory();
-            AddReferenceIfExists(Path.Combine(baseDir, "Fifth.System.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "dotNetRdf.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "dotNetRdf.Client.dll"));
-            AddReferenceIfExists(Path.Combine(baseDir, "VDS.Common.dll"));
+            foreach (var depName in FrameworkReferenceSettings.DefaultRuntimeDependencyNames)
+            {
+                AddReferenceIfExists(Path.Combine(baseDir, depName));
+            }
 
             var outputKind = options.OutputType.Equals("Library", StringComparison.OrdinalIgnoreCase)
                 ? Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
@@ -655,7 +669,7 @@ Examples:
             if (outputKind == Microsoft.CodeAnalysis.OutputKind.ConsoleApplication)
             {
                 // Generate runtime configuration file for framework-dependent execution
-                await GenerateRuntimeConfigAsync(outputPath, diagnostics);
+                await GenerateRuntimeConfigAsync(outputPath, options, diagnostics);
 
                 // Copy runtime dependencies to output directory
                 await CopyRuntimeDependenciesAsync(outputPath, diagnostics);
@@ -721,6 +735,26 @@ Examples:
             else
             {
                 diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"{friendlyName} assembly not found at: {assemblyPath}"));
+            }
+        }
+        catch (System.Exception ex)
+        {
+            diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"Failed to copy {friendlyName}: {ex.Message}"));
+        }
+    }
+
+    private static async Task TryCopyFileAsync(string sourcePath, string outputDir, string friendlyName, List<Diagnostic> diagnostics)
+    {
+        try
+        {
+            if (File.Exists(sourcePath))
+            {
+                var destination = Path.Combine(outputDir, Path.GetFileName(sourcePath));
+                await Task.Run(() => File.Copy(sourcePath, destination, overwrite: true));
+            }
+            else
+            {
+                diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"{friendlyName} not found at: {sourcePath}"));
             }
         }
         catch (System.Exception ex)

@@ -28,7 +28,10 @@ fifthc --command help
 ## Options
 
 - `--source <path>`: Source file or directory path (required for build/run/lint)
-- `--output <path>`: Output executable path (required for build/run)  
+- `--output <path>`: Output executable path (required for build/run)
+- `--output-type <type>`: Output type: `Exe` (default) or `Library`
+- `--target-framework <tfm>`: Target-framework moniker, e.g. `net8.0` (default) or `net9.0`. Drives `runtimeconfig.json` generation and assembly reference resolution.
+- `--reference <path>`: Assembly reference path (repeatable). Can be a `.dll` path or a directory to scan.
 - `--args <args>`: Arguments to pass to program when running
 - `--keep-temp`: Keep temporary files for debugging
 - `--diagnostics`: Enable diagnostic output showing compilation phases and timing

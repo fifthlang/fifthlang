@@ -10,6 +10,8 @@ namespace compiler;
 /// <param name="Args">Arguments to pass to the program when running</param>
 /// <param name="KeepTemp">Whether to keep temporary files</param>
 /// <param name="Diagnostics">Whether to emit diagnostic information</param>
+/// <param name="TargetFramework">Target-framework moniker (e.g. "net8.0"). Drives runtime-config
+/// generation and can be used to select appropriate framework assemblies.</param>
 public record CompilerOptions(
     CompilerCommand Command = CompilerCommand.Build,
     string Source = "",
@@ -20,12 +22,13 @@ public record CompilerOptions(
     bool Diagnostics = false,
     IReadOnlyList<string>? SourceFiles = null,
     string? SourceManifest = null,
-    IReadOnlyList<string>? References = null)
+    IReadOnlyList<string>? References = null,
+    string TargetFramework = FrameworkReferenceSettings.DefaultTargetFramework)
 {
     /// <summary>
     /// Create default options
     /// </summary>
-    public CompilerOptions() : this(CompilerCommand.Build, "", "", "Exe", Array.Empty<string>(), false, false, Array.Empty<string>(), null, Array.Empty<string>())
+    public CompilerOptions() : this(CompilerCommand.Build, "", "", "Exe", Array.Empty<string>(), false, false, Array.Empty<string>(), null, Array.Empty<string>(), FrameworkReferenceSettings.DefaultTargetFramework)
     {
     }
 

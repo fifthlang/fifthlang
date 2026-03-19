@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <FifthSupportedTargetFrameworks>net8.0</FifthSupportedTargetFrameworks>
+    <FifthSupportedTargetFrameworks>net8.0;net9.0</FifthSupportedTargetFrameworks>
     <FifthDefaultTargetFramework>net8.0</FifthDefaultTargetFramework>
   </PropertyGroup>
 </Project>
