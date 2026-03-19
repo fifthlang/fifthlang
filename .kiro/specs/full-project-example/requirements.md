@@ -112,11 +112,23 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 8. THE Getting_Started_Guide SHALL describe how the sample maps to Visual Studio workflows (opening the `.slnx`, building from the IDE, setting the startup project).
 9. THE Getting_Started_Guide SHALL be added to the mkdocs navigation in `mkdocs.yml` under the Getting Started section.
 
-### Requirement 9: FifthCompilerPath Configuration
+### Requirement 9: Simplicity
+
+**User Story:** As a Fifth developer, I want the sample solution and documentation to be as simple as possible, so that I can understand the essential setup without being distracted by unnecessary complexity.
+
+#### Acceptance Criteria
+
+1. THE sample SHALL include only the minimum number of files, projects, and configuration needed to demonstrate multi-project MSBuild development with Fifth_Sdk.
+2. THE sample SHALL NOT introduce abstractions, patterns, or project structures that do not directly serve the goal of demonstrating multi-project builds.
+3. Each `.5thproj` file SHALL contain only the properties required for a working build; no optional or decorative properties SHALL be included.
+4. THE Getting_Started_Guide SHALL use concise, direct language and SHALL NOT include tangential explanations or advanced topics beyond the scope of setting up the sample.
+5. THE `.5th` source files SHALL contain the absolute minimum code needed to produce a valid build output.
+
+### Requirement 10: FifthCompilerPath Configuration
 
 **User Story:** As a Fifth developer, I want each project to specify the FifthCompilerPath, so that the sample builds correctly from the repository without relying on auto-resolution from the SDK package layout.
 
 #### Acceptance Criteria
 
-1. Each Fifth_Project SHALL set `<FifthCompilerPath>` to the relative path of the compiler DLL within the repository (`../../../../src/compiler/bin/Release/net8.0/compiler.dll` or equivalent relative path from each project directory).
+1. Each Fifth_Project SHALL set `<FifthCompilerPath>` to the relative path of the compiler DLL within the repository (e.g. `../../../../src/compiler/bin/Release/net8.0/compiler.dll` or equivalent relative path from each project directory).
 2. IF the compiler DLL is not found at the specified FifthCompilerPath, THEN THE Fifth_Sdk SHALL report a clear error message indicating the compiler must be built first.
