@@ -70,6 +70,7 @@ public class IncrementalBuildTests
         {
             ["TargetFramework"] = effectiveTargetFramework,
             ["DesignTimeBuild"] = designTimeBuild ? "true" : "false"
+        };
 
         using var projectCollection = new ProjectCollection(globalProperties);
         var buildParameters = new BuildParameters(projectCollection)
