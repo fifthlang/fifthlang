@@ -114,7 +114,9 @@ public static class Program
             var reference = context.ParseResult.GetValueForOption(referenceOption) ?? Array.Empty<string>();
             var targetFramework = context.ParseResult.GetValueForOption(targetFrameworkOption)
                 ?? FrameworkReferenceSettings.DefaultTargetFramework;
-            var args = context.ParseResult.GetValueForOption(argsOption) ?? Array.Empty<string>();
+            targetFramework = string.IsNullOrWhiteSpace(targetFramework)
+                ? FrameworkReferenceSettings.DefaultTargetFramework
+                : targetFramework.Trim();
             var keepTemp = context.ParseResult.GetValueForOption(keepTempOption);
             var diagnostics = context.ParseResult.GetValueForOption(diagnosticsOption);
 

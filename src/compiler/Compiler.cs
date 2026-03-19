@@ -295,17 +295,19 @@ Examples:
             var runtimeConfigPath = Path.Combine(Path.GetDirectoryName(executablePath) ?? "", $"{executableName}.runtimeconfig.json");
 
             var tfm = options.TargetFramework;
+           var normalizedTfm = string.IsNullOrWhiteSpace(tfm)
+                ? FrameworkReferenceSettings.DefaultTargetFramework
+                : tfm.Trim().ToLowerInvariant();
 
             var runtimeConfig = new
             {
                 runtimeOptions = new
                 {
-                    tfm,
+                    tfm = normalizedTfm,
                     framework = new
                     {
                         name = FrameworkReferenceSettings.DefaultFrameworkName,
-                        version = FrameworkReferenceSettings.GetFrameworkVersion(tfm)
-                    }
+                        version = FrameworkReferenceSettings.GetFrameworkVersion(normalizedTfm)
                 }
             };
 

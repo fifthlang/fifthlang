@@ -60,15 +60,16 @@ public class IncrementalBuildTests
     }
 
     private static BuildResult BuildTarget(string repoRoot, string projectPath, string target, bool designTimeBuild = false, string targetFramework = "net8.0")
-    {
+   {
         var sdkPath = Path.Combine(repoRoot, "src", "Fifth.Sdk", "Sdk");
         Environment.SetEnvironmentVariable("MSBuildSDKsPath", sdkPath);
 
+        var effectiveTargetFramework = targetFramework ?? FrameworkReferenceSettings.DefaultTargetFramework;
+
         var globalProperties = new Dictionary<string, string>
         {
-            ["TargetFramework"] = targetFramework,
+            ["TargetFramework"] = effectiveTargetFramework,
             ["DesignTimeBuild"] = designTimeBuild ? "true" : "false"
-        };
 
         using var projectCollection = new ProjectCollection(globalProperties);
         var buildParameters = new BuildParameters(projectCollection)
