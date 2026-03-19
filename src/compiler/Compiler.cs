@@ -356,11 +356,19 @@ Examples:
                 return;
             }
 
-            // diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"Package lib directory not found at {packageLibDir}; falling back to assembly locations"));
+            // Fallback path for developer builds where lib directory may not exist yet.
+            // Use the directory of a known runtime assembly as the search base, then copy
+            // every file listed in DefaultRuntimeDependencyNames from that directory.
+            var fifthSystemAssemblyPath = typeof(Fifth.System.KG).Assembly.Location;
+            var searchDir = string.IsNullOrWhiteSpace(fifthSystemAssemblyPath)
+                ? AppContext.BaseDirectory
+                : Path.GetDirectoryName(fifthSystemAssemblyPath) ?? AppContext.BaseDirectory;
 
-            // Fallback path for developer builds where lib directory may not exist yet
-            await TryCopyAssemblyAsync(typeof(Fifth.System.KG).Assembly, outputDir, "Fifth.System.dll", diagnostics);
-            await TryCopyAssemblyAsync(typeof(VDS.RDF.IGraph).Assembly, outputDir, "dotNetRdf.dll", diagnostics);
+            foreach (var depName in FrameworkReferenceSettings.DefaultRuntimeDependencyNames)
+            {
+                var sourcePath = Path.Combine(searchDir, depName);
+                await TryCopyFileAsync(sourcePath, outputDir, depName, diagnostics);
+            }
         }
         catch (System.Exception ex)
         {
@@ -727,6 +735,26 @@ Examples:
             else
             {
                 diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"{friendlyName} assembly not found at: {assemblyPath}"));
+            }
+        }
+        catch (System.Exception ex)
+        {
+            diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"Failed to copy {friendlyName}: {ex.Message}"));
+        }
+    }
+
+    private static async Task TryCopyFileAsync(string sourcePath, string outputDir, string friendlyName, List<Diagnostic> diagnostics)
+    {
+        try
+        {
+            if (File.Exists(sourcePath))
+            {
+                var destination = Path.Combine(outputDir, Path.GetFileName(sourcePath));
+                await Task.Run(() => File.Copy(sourcePath, destination, overwrite: true));
+            }
+            else
+            {
+                diagnostics.Add(new Diagnostic(DiagnosticLevel.Warning, $"{friendlyName} not found at: {sourcePath}"));
             }
         }
         catch (System.Exception ex)
