@@ -22,6 +22,14 @@
     <UpToDateCheckOutput Include="$(FifthOutputPath)" Condition="'$(FifthOutputPath)' != ''" />
   </ItemGroup>
 
+  <Target Name="GetTargetPath"
+          Outputs="$(_FifthAbsoluteOutputPath)">
+    <PropertyGroup>
+      <_FifthAbsoluteOutputPath Condition="!$([System.IO.Path]::IsPathRooted('$(FifthOutputPath)'))">$(MSBuildProjectDirectory)\$(FifthOutputPath)</_FifthAbsoluteOutputPath>
+      <_FifthAbsoluteOutputPath Condition="$([System.IO.Path]::IsPathRooted('$(FifthOutputPath)'))">$(FifthOutputPath)</_FifthAbsoluteOutputPath>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="FifthCompile" 
           DependsOnTargets="ResolveFifthCompilerPath;ResolveFifthProjectReferences;ValidatePackageReferences;ValidateFifthTargetFrameworks"
           Inputs="@(FifthSource);$(FifthSourceManifestPath);$(FifthCompilerPath);@(ReferencePath)"
@@ -107,6 +115,13 @@
              Targets="Build"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)"
              BuildInParallel="$(BuildInParallel)" />
+
+    <!-- Query each dependency for its output path -->
+    <MSBuild Projects="@(ProjectReference)"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="ReferencePath" />
+    </MSBuild>
   </Target>
 
   <Target Name="ValidatePackageReferences" Condition="'@(PackageReference)' != ''">

@@ -1,0 +1,7 @@
+<Project Sdk="Fifth.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <FifthCompilerCommand>fifthc</FifthCompilerCommand>
+  </PropertyGroup>
+</Project>

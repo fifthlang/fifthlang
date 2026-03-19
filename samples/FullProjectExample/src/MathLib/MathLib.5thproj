@@ -1,0 +1,10 @@
+<Project Sdk="Fifth.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <FifthCompilerCommand>fifthc</FifthCompilerCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoreLib\CoreLib.5thproj" />
+  </ItemGroup>
+</Project>

@@ -120,6 +120,14 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
     }
 
     /// <summary>
+    /// Translate AssemblyDef with translator options (e.g., additional references)
+    /// </summary>
+    public TranslationResult Translate(AssemblyDef assembly, TranslatorOptions? options)
+    {
+        return TranslateAssembly(assembly, options);
+    }
+
+    /// <summary>
     /// Translate LoweredAstModule (for backward compatibility with tests)
     /// </summary>
     public TranslationResult Translate(LoweredAstModule module, TranslatorOptions? options = null)
@@ -179,7 +187,7 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
 
                 var emitStubMain = !hasModuleMain && !hasAnyMain && isSingleModule;
 
-                var syntaxTree = BuildSyntaxTreeFromModule(module, mapping, emitStubMain);
+                var syntaxTree = BuildSyntaxTreeFromModule(module, mapping, emitStubMain, options);
                 var sourceText = syntaxTree.GetText().ToString();
                 sources.Add(sourceText);
             }
@@ -196,7 +204,7 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
         return new TranslationResult(sources, mapping, diagnostics);
     }
 
-    private SyntaxTree BuildSyntaxTreeFromModule(ModuleDef module, MappingTable mapping, bool emitStubMain)
+    private SyntaxTree BuildSyntaxTreeFromModule(ModuleDef module, MappingTable mapping, bool emitStubMain, TranslatorOptions? options = null)
     {
         _moduleLevelFunctionNames = module.Functions
             .OfType<FunctionDef>()
@@ -238,6 +246,24 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
                 usingDirectives.Add(
                     UsingDirective(ParseName($"{importNamespace}.Program"))
                         .WithStaticKeyword(Token(SyntaxKind.StaticKeyword)));
+            }
+        }
+
+        // Generate using static directives for public static types in referenced assemblies
+        if (options?.AdditionalReferences != null)
+        {
+            foreach (var refPath in options.AdditionalReferences)
+            {
+                var discoveredTypes = DiscoverPublicStaticTypes(refPath);
+                foreach (var fullTypeName in discoveredTypes)
+                {
+                    if (usingTracker.Add($"static:{fullTypeName}"))
+                    {
+                        usingDirectives.Add(
+                            UsingDirective(ParseName(fullTypeName))
+                                .WithStaticKeyword(Token(SyntaxKind.StaticKeyword)));
+                    }
+                }
             }
         }
 
@@ -2573,5 +2599,77 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
         return value
             .Replace("\\", "\\\\")
             .Replace("\"", "\\\"");
+    }
+
+    /// <summary>
+    /// Discovers public static types in a referenced assembly that contain at least one
+    /// public static method. Uses MetadataLoadContext for safe metadata-only inspection
+    /// without loading assemblies into the execution context.
+    /// </summary>
+    /// <param name="assemblyPath">Absolute path to the referenced assembly (.dll).</param>
+    /// <returns>Fully qualified type names (e.g., "CoreLib.Program") for each qualifying type.</returns>
+    internal static IReadOnlyList<string> DiscoverPublicStaticTypes(string assemblyPath)
+    {
+        if (string.IsNullOrWhiteSpace(assemblyPath) || !File.Exists(assemblyPath))
+        {
+            // REF001: Referenced assembly not found
+            System.Console.Error.WriteLine($"Warning REF001: Referenced assembly not found: {assemblyPath}");
+            return Array.Empty<string>();
+        }
+
+        try
+        {
+            // Build the set of assembly paths for the resolver: the target assembly
+            // plus the runtime assemblies so that core types (System.Object, etc.) resolve.
+            var runtimeDir = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+            var runtimeAssemblies = Directory.GetFiles(runtimeDir, "*.dll");
+
+            var resolverPaths = new List<string>(runtimeAssemblies) { assemblyPath };
+            var resolver = new PathAssemblyResolver(resolverPaths);
+
+            using var mlc = new System.Reflection.MetadataLoadContext(resolver);
+            var assembly = mlc.LoadFromAssemblyPath(assemblyPath);
+
+            var result = new List<string>();
+
+            foreach (var type in assembly.GetExportedTypes())
+            {
+                // Skip compiler-generated types (names containing '<' or with CompilerGenerated attribute)
+                if (type.Name.Contains('<'))
+                {
+                    continue;
+                }
+
+                var hasCompilerGenerated = type.CustomAttributes.Any(a =>
+                    a.AttributeType.Name == "CompilerGeneratedAttribute");
+                if (hasCompilerGenerated)
+                {
+                    continue;
+                }
+
+                // A public static class in IL is abstract + sealed
+                if (!type.IsAbstract || !type.IsSealed)
+                {
+                    continue;
+                }
+
+                // Must have at least one public static method
+                var hasPublicStaticMethod = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                    .Any();
+
+                if (hasPublicStaticMethod)
+                {
+                    result.Add(type.FullName ?? type.Name);
+                }
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // REF002: Could not load referenced assembly
+            System.Console.Error.WriteLine($"Warning REF002: Could not load referenced assembly: {assemblyPath}: {ex.Message}");
+            return Array.Empty<string>();
+        }
     }
 }

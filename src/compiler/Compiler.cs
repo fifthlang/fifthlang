@@ -308,6 +308,7 @@ Examples:
                     {
                         name = FrameworkReferenceSettings.DefaultFrameworkName,
                         version = FrameworkReferenceSettings.GetFrameworkVersion(normalizedTfm)
+                    }
                 }
             };
 
@@ -438,8 +439,16 @@ Examples:
             // Create the Roslyn translator
             var translator = new LoweredAstToRoslynTranslator();
 
+            // Pass reference paths to the translator via options
+            var translatorOptions = new TranslatorOptions
+            {
+                AdditionalReferences = options.References?
+                    .Where(r => !string.IsNullOrWhiteSpace(r) && File.Exists(r))
+                    .ToList()
+            };
+
             // Translate the AST to C# sources
-            var translationResult = translator.Translate(assemblyDef);
+            var translationResult = translator.Translate(assemblyDef, translatorOptions);
 
             // Check for translation diagnostics
             if (translationResult.Diagnostics != null && translationResult.Diagnostics.Any())
