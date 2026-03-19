@@ -10,8 +10,9 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 - **Fifth_Project**: A `.5thproj` MSBuild project file that uses `<Project Sdk="Fifth.Sdk">` to build Fifth language source files (`.5th`).
 - **Console_App**: A Fifth_Project with `<OutputType>Exe</OutputType>` that serves as the executable entry point of the solution.
 - **Class_Library**: A Fifth_Project with `<OutputType>Library</OutputType>` that produces a `.dll` and is consumed by other projects via ProjectReference.
-- **Fifth_Sdk**: The custom MSBuild SDK located at `src/Fifth.Sdk/` (version 0.1.0) that provides build targets for `.5thproj` files.
-- **NuGet_Config**: A `NuGet.Config` file that configures package sources, including the local Fifth_Sdk package source for SDK resolution.
+- **Fifth_Sdk**: The MSBuild SDK published on NuGet as `Fifth.Sdk` (version 0.7.1) that provides build targets for `.5thproj` files.
+- **Fifth_Compiler_Tool**: The Fifth compiler installed as a .NET tool from NuGet (version 0.7.1), invoked via `FifthCompilerCommand` in each project.
+- **NuGet_Config**: A `NuGet.Config` file that configures package sources for SDK and tool resolution.
 - **Global_Json**: A `global.json` file that pins the Fifth_Sdk version via the `msbuild-sdks` section.
 - **Getting_Started_Guide**: A Markdown document in `docs/Getting-Started/` that explains how to set up and build the sample solution.
 - **ProjectReference**: An MSBuild element that declares a dependency from one Fifth_Project to another, enabling the `ResolveFifthProjectReferences` target to build dependencies in order.
@@ -63,17 +64,16 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 2. WHEN the Console_App is built, THE Fifth_Sdk `ResolveFifthProjectReferences` target SHALL build all referenced Class_Library projects before compiling the Console_App.
 3. One Class_Library MAY declare a ProjectReference to another Class_Library to demonstrate transitive dependency chains.
 
-### Requirement 5: SDK Resolution Configuration
+### Requirement 5: SDK and Tool Resolution Configuration
 
-**User Story:** As a Fifth developer, I want the sample to include local SDK resolution configuration, so that I can build the sample without publishing Fifth_Sdk to a remote NuGet feed.
+**User Story:** As a Fifth developer, I want the sample to include SDK and tool resolution configuration, so that I can build the sample using the published Fifth.Sdk and compiler tool from NuGet.
 
 #### Acceptance Criteria
 
-1. THE sample SHALL include a `NuGet.Config` file at `samples/FullProjectExample/NuGet.Config`.
-2. THE NuGet_Config SHALL define a `local-sdk` package source pointing to the relative path of the Fifth_Sdk build output (`../../src/Fifth.Sdk/bin/Debug`).
-3. THE NuGet_Config SHALL use `packageSourceMapping` to route the `Fifth.Sdk` package pattern to the `local-sdk` source.
-4. THE sample SHALL include a `global.json` file at `samples/FullProjectExample/global.json`.
-5. THE Global_Json SHALL specify `"Fifth.Sdk": "0.1.0"` in the `msbuild-sdks` section.
+1. THE sample SHALL include a `global.json` file at `samples/FullProjectExample/global.json`.
+2. THE Global_Json SHALL specify `"Fifth.Sdk": "0.7.1"` in the `msbuild-sdks` section.
+3. THE sample SHALL include a `.config/dotnet-tools.json` tool manifest at `samples/FullProjectExample/.config/dotnet-tools.json` that pins the Fifth compiler .NET tool to version 0.7.1.
+4. Each Fifth_Project SHALL set `<FifthCompilerCommand>` to the .NET tool command name (e.g. `fifthc`) so the SDK invokes the installed tool rather than requiring a local compiler DLL path.
 
 ### Requirement 6: Fifth Source Files
 
@@ -107,7 +107,7 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 3. THE Getting_Started_Guide SHALL describe step-by-step how to create the solution directory structure.
 4. THE Getting_Started_Guide SHALL describe how to create each `.5thproj` file (Console_App and Class_Library) with the correct properties.
 5. THE Getting_Started_Guide SHALL describe how to configure ProjectReference elements between projects.
-6. THE Getting_Started_Guide SHALL describe how to set up `NuGet.Config` and `global.json` for local Fifth_Sdk resolution.
+6. THE Getting_Started_Guide SHALL describe how to set up `global.json` for Fifth_Sdk resolution and the `.config/dotnet-tools.json` manifest for the compiler tool.
 7. THE Getting_Started_Guide SHALL describe how to build and run the solution using `dotnet build` and `dotnet run`.
 8. THE Getting_Started_Guide SHALL describe how the sample maps to Visual Studio workflows (opening the `.slnx`, building from the IDE, setting the startup project).
 9. THE Getting_Started_Guide SHALL be added to the mkdocs navigation in `mkdocs.yml` under the Getting Started section.
@@ -126,20 +126,12 @@ This feature adds a fully working sample solution at `samples/FullProjectExample
 
 ### Requirement 10: Compiler and SDK Prerequisites in Documentation
 
-**User Story:** As a Fifth developer using Visual Studio 2026, I want the Getting Started guide to include the steps needed to build the Fifth compiler and pack the Fifth.Sdk NuGet package, so that I can get the sample solution working from a fresh clone of the repository.
+**User Story:** As a Fifth developer using Visual Studio 2026, I want the Getting Started guide to include the steps needed to install the Fifth compiler tool and resolve the Fifth.Sdk from NuGet, so that I can get the sample solution working from a fresh clone of the repository.
 
 #### Acceptance Criteria
 
-1. THE Getting_Started_Guide SHALL describe how to build the Fifth compiler from source (e.g. `dotnet build src/compiler/compiler.csproj`).
-2. THE Getting_Started_Guide SHALL describe how to pack the Fifth.Sdk NuGet package locally (e.g. `dotnet pack src/Fifth.Sdk/Fifth.Sdk.csproj`).
-3. THE Getting_Started_Guide SHALL list these prerequisite steps before the solution build step, so the reader completes them in the correct order.
+1. THE Getting_Started_Guide SHALL describe how to restore the .NET tool manifest to install the Fifth compiler tool (e.g. `dotnet tool restore`).
+2. THE Getting_Started_Guide SHALL explain that the Fifth.Sdk is resolved automatically from NuGet via the `global.json` `msbuild-sdks` section.
+3. THE Getting_Started_Guide SHALL list the tool restore step before the solution build step, so the reader completes them in the correct order.
 4. THE Getting_Started_Guide SHALL note the minimum Visual Studio version required for SLNX support (Visual Studio 2026 / 17.10+).
-
-### Requirement 11: FifthCompilerPath Configuration
-
-**User Story:** As a Fifth developer, I want each project to specify the FifthCompilerPath, so that the sample builds correctly from the repository without relying on auto-resolution from the SDK package layout.
-
-#### Acceptance Criteria
-
-1. Each Fifth_Project SHALL set `<FifthCompilerPath>` to the relative path of the compiler DLL within the repository (e.g. `../../../../src/compiler/bin/Release/net8.0/compiler.dll` or equivalent relative path from each project directory).
-2. IF the compiler DLL is not found at the specified FifthCompilerPath, THEN THE Fifth_Sdk SHALL report a clear error message indicating the compiler must be built first.
+5. THE Getting_Started_Guide SHALL note that the Fifth compiler tool and Fifth.Sdk versions must match (both 0.7.1).

@@ -15,6 +15,7 @@ nav:
     - Learn Fifth in Y Minutes: Getting-Started/learn5thInYMinutes.md
     - Knowledge Graphs: Getting-Started/knowledge-graphs.md
     - LSP / VS Code Integration: Getting-Started/lsp-vscode-insiders.md
+    - Full Project Setup: Getting-Started/full-project-setup.md
   - Development:
     - Overview: Development/index.md
     - Repository Overview: Development/REPOSITORY_SUMMARY.md
