@@ -5,7 +5,7 @@ main(): int {
     sq = square(7);
     result: int;
     result = add(sq, 3);
-    std.print($"square(7) = {sq}");
-    std.print($"add(49, 3) = {result}");
+    std.print(string.Format("square(7) = {0}", sq));
+    std.print(string.Format("add(49, 3) = {0}", result));
     return 0;
 }
