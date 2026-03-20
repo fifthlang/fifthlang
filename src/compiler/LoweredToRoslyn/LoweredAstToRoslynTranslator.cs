@@ -61,6 +61,31 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
         return namespaceName;
     }
 
+    /// <summary>
+    /// Checks whether the given namespace was resolved by the intra-assembly import resolver
+    /// (i.e. it exists in the ResolvedImports annotation).
+    /// </summary>
+    private static bool IsIntraAssemblyNamespace(ModuleDef module, string namespaceName)
+    {
+        if (module.Annotations == null)
+        {
+            return false;
+        }
+
+        if (!module.Annotations.TryGetValue(ModuleAnnotationKeys.ResolvedImports, out var resolvedObj))
+        {
+            return false;
+        }
+
+        if (resolvedObj is IReadOnlyList<string> resolvedList)
+        {
+            return resolvedList.Contains(namespaceName, StringComparer.Ordinal);
+        }
+
+        return false;
+    }
+
+
     private static IReadOnlyList<string> GetImportedNamespaces(ModuleDef module)
     {
         if (module.Annotations == null)
@@ -68,47 +93,47 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
             return Array.Empty<string>();
         }
 
+        var result = new HashSet<string>(StringComparer.Ordinal);
+
+        // Collect namespaces resolved by the intra-assembly import resolver
         if (module.Annotations.TryGetValue(ModuleAnnotationKeys.ResolvedImports, out var resolvedObj))
         {
             if (resolvedObj is IReadOnlyList<string> resolvedList)
             {
-                return resolvedList
-                    .Where(ns => !string.IsNullOrWhiteSpace(ns))
-                    .Distinct(StringComparer.Ordinal)
-                    .ToList();
+                foreach (var ns in resolvedList.Where(ns => !string.IsNullOrWhiteSpace(ns)))
+                {
+                    result.Add(ns);
+                }
             }
-
-            if (resolvedObj is List<string> resolvedList2)
+            else if (resolvedObj is List<string> resolvedList2)
             {
-                return resolvedList2
-                    .Where(ns => !string.IsNullOrWhiteSpace(ns))
-                    .Distinct(StringComparer.Ordinal)
-                    .ToList();
+                foreach (var ns in resolvedList2.Where(ns => !string.IsNullOrWhiteSpace(ns)))
+                {
+                    result.Add(ns);
+                }
             }
         }
 
+        // Also include raw import directives — these cover cross-assembly imports
+        // that the intra-assembly resolver couldn't resolve (referenced via --reference DLLs)
         if (module.Annotations.TryGetValue(ModuleAnnotationKeys.ImportDirectives, out var importsObj))
         {
-            if (importsObj is IReadOnlyList<NamespaceImportDirective> importsList)
+            IEnumerable<NamespaceImportDirective>? imports = importsObj switch
             {
-                return importsList
-                    .Select(i => i.Namespace)
-                    .Where(ns => !string.IsNullOrWhiteSpace(ns))
-                    .Distinct(StringComparer.Ordinal)
-                    .ToList();
-            }
+                IReadOnlyList<NamespaceImportDirective> list => list,
+                _ => null
+            };
 
-            if (importsObj is List<NamespaceImportDirective> importsList2)
+            if (imports != null)
             {
-                return importsList2
-                    .Select(i => i.Namespace)
-                    .Where(ns => !string.IsNullOrWhiteSpace(ns))
-                    .Distinct(StringComparer.Ordinal)
-                    .ToList();
+                foreach (var ns in imports.Select(i => i.Namespace).Where(ns => !string.IsNullOrWhiteSpace(ns)))
+                {
+                    result.Add(ns);
+                }
             }
         }
 
-        return Array.Empty<string>();
+        return result.ToList();
     }
 
     /// <summary>
@@ -229,9 +254,39 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
 
         var importNamespaces = GetImportedNamespaces(module);
         var usingTracker = new HashSet<string>(StringComparer.Ordinal);
+
+        // Build a set of namespaces available in referenced assemblies so we only emit
+        // using static directives for imports that can actually be resolved at compile time.
+        var availableReferenceNamespaces = new HashSet<string>(StringComparer.Ordinal);
+        if (options?.AdditionalReferences != null)
+        {
+            foreach (var refPath in options.AdditionalReferences)
+            {
+                var discoveredTypes = DiscoverPublicStaticTypes(refPath);
+                foreach (var fullTypeName in discoveredTypes)
+                {
+                    var lastDot = fullTypeName.LastIndexOf('.');
+                    if (lastDot > 0)
+                    {
+                        availableReferenceNamespaces.Add(fullTypeName.Substring(0, lastDot));
+                    }
+                }
+            }
+        }
+
         foreach (var importNamespace in importNamespaces)
         {
             if (string.IsNullOrWhiteSpace(importNamespace))
+            {
+                continue;
+            }
+
+            // Only emit using directives for namespaces that are actually resolvable:
+            // either resolved intra-assembly or available in a referenced assembly.
+            var isResolvable = availableReferenceNamespaces.Contains(importNamespace) ||
+                               IsIntraAssemblyNamespace(module, importNamespace);
+
+            if (!isResolvable)
             {
                 continue;
             }
@@ -246,24 +301,6 @@ public class LoweredAstToRoslynTranslator : IBackendTranslator
                 usingDirectives.Add(
                     UsingDirective(ParseName($"{importNamespace}.Program"))
                         .WithStaticKeyword(Token(SyntaxKind.StaticKeyword)));
-            }
-        }
-
-        // Generate using static directives for public static types in referenced assemblies
-        if (options?.AdditionalReferences != null)
-        {
-            foreach (var refPath in options.AdditionalReferences)
-            {
-                var discoveredTypes = DiscoverPublicStaticTypes(refPath);
-                foreach (var fullTypeName in discoveredTypes)
-                {
-                    if (usingTracker.Add($"static:{fullTypeName}"))
-                    {
-                        usingDirectives.Add(
-                            UsingDirective(ParseName(fullTypeName))
-                                .WithStaticKeyword(Token(SyntaxKind.StaticKeyword)));
-                    }
-                }
             }
         }
 

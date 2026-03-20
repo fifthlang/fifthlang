@@ -572,13 +572,13 @@ public class UsingStaticGenerationPropertyTests : IDisposable
     }
 
     [Property(MaxTest = 100)]
-    public Property GeneratedCSharp_ContainsUsingStaticForEachDiscoveredType()
+    public Property GeneratedCSharp_DoesNotAutoImportFromReferencedAssemblies()
     {
         return Prop.ForAll(AssemblyClassDefsGen().ToArbitrary(), assemblyClassDefs =>
         {
             // Build and compile each assembly
             var dllPaths = new List<string>();
-            var allExpectedTypes = new HashSet<string>(StringComparer.Ordinal);
+            var allReferencedTypes = new HashSet<string>(StringComparer.Ordinal);
 
             foreach (var classDefs in assemblyClassDefs)
             {
@@ -588,11 +588,11 @@ public class UsingStaticGenerationPropertyTests : IDisposable
 
                 foreach (var cls in classDefs.Where(c => c.IsStatic && c.PublicStaticMethodCount > 0))
                 {
-                    allExpectedTypes.Add($"{cls.Namespace}.{cls.Name}");
+                    allReferencedTypes.Add($"{cls.Namespace}.{cls.Name}");
                 }
             }
 
-            // Translate a minimal module with those assemblies as references
+            // Translate a minimal module with those assemblies as references but NO import declarations
             var assemblyDef = CreateMinimalAssemblyDef();
             var translator = new LoweredAstToRoslynTranslator();
             var options = new TranslatorOptions
@@ -606,56 +606,46 @@ public class UsingStaticGenerationPropertyTests : IDisposable
             var generatedSource = result.Sources.FirstOrDefault() ?? "";
             var usingStatics = ExtractUsingStaticDirectives(generatedSource);
 
-            // Verify: every expected type has a corresponding using static directive
-            var missing = allExpectedTypes.Where(t => !usingStatics.Contains(t)).ToList();
+            // Verify: NO referenced types appear as using static (no auto-import)
+            var leaked = allReferencedTypes.Where(t => usingStatics.Contains(t)).ToList();
 
-            return (missing.Count == 0)
+            return (leaked.Count == 0)
                 .ToProperty()
-                .Label($"Missing using static directives: [{string.Join(", ", missing)}]");
+                .Label($"Auto-imported types that should not appear: [{string.Join(", ", leaked)}]");
         });
     }
 
     [Property(MaxTest = 100)]
-    public Property GeneratedUsingStatics_UseFullyQualifiedTypeNames()
+    public Property ExplicitImports_GenerateUsingStaticWithFullyQualifiedNames()
     {
-        return Prop.ForAll(AssemblyClassDefsGen().ToArbitrary(), assemblyClassDefs =>
+        // Generate namespace names and verify that explicit imports produce correct using static directives
+        var gen = from nsCount in Gen.Choose(1, 4)
+                  from indices in Gen.ListOf(nsCount, Gen.Choose(0, 99))
+                  let namespaces = indices.Select(i => $"Ns{i}").Distinct().ToList()
+                  where namespaces.Count > 0
+                  select (IReadOnlyList<string>)namespaces;
+
+        return Prop.ForAll(gen.ToArbitrary(), namespaces =>
         {
-            // Build and compile each assembly
-            var dllPaths = new List<string>();
-            var allExpectedTypes = new HashSet<string>(StringComparer.Ordinal);
-
-            foreach (var classDefs in assemblyClassDefs)
-            {
-                var source = BuildSource(classDefs);
-                var dllPath = CompileToDll(source);
-                dllPaths.Add(dllPath);
-
-                foreach (var cls in classDefs.Where(c => c.IsStatic && c.PublicStaticMethodCount > 0))
-                {
-                    allExpectedTypes.Add($"{cls.Namespace}.{cls.Name}");
-                }
-            }
-
-            // Translate
             var assemblyDef = CreateMinimalAssemblyDef();
-            var translator = new LoweredAstToRoslynTranslator();
-            var options = new TranslatorOptions
-            {
-                AdditionalReferences = dllPaths
-            };
+            var module = assemblyDef.Modules.First();
 
-            var result = translator.Translate(assemblyDef, options);
+            // Set explicit imports via ResolvedImports annotation
+            module.Annotations[ast.ModuleAnnotationKeys.ResolvedImports] = namespaces.ToList();
+
+            var translator = new LoweredAstToRoslynTranslator();
+            var result = translator.Translate(assemblyDef, null);
             var generatedSource = result.Sources.FirstOrDefault() ?? "";
             var usingStatics = ExtractUsingStaticDirectives(generatedSource);
 
-            // Verify: each using static directive for our types uses fully qualified name
-            // (contains a dot, meaning namespace.class format)
-            var ourDirectives = usingStatics.Where(u => allExpectedTypes.Contains(u)).ToList();
-            var allFullyQualified = ourDirectives.All(d => d.Contains('.'));
+            // Verify: each imported namespace produces a using static Namespace.Program directive
+            var expectedDirectives = namespaces.Select(ns => $"{ns}.Program").ToList();
+            var missing = expectedDirectives.Where(d => !usingStatics.Contains(d)).ToList();
+            var allFullyQualified = expectedDirectives.All(d => d.Contains('.'));
 
-            return allFullyQualified
+            return (missing.Count == 0 && allFullyQualified)
                 .ToProperty()
-                .Label($"Non-fully-qualified directives: [{string.Join(", ", ourDirectives.Where(d => !d.Contains('.')))}]");
+                .Label($"Missing: [{string.Join(", ", missing)}], AllFQ: {allFullyQualified}");
         });
     }
 }
@@ -821,15 +811,14 @@ public class NoDuplicateUsingStaticPropertyTests : IDisposable
     }
 
     [Property(MaxTest = 100)]
-    public Property UsingStaticCount_EqualsDistinctTypeCount_WhenDuplicatesAcrossAssemblies()
+    public Property ReferencesWithoutImports_ProduceNoUsingStaticForReferencedTypes()
     {
-        // **Validates: Requirements 4.3**
+        // **Validates: Language scoping rules — references alone must not produce using static directives**
         return Prop.ForAll(OverlappingTypeNamesGen().ToArbitrary(), input =>
         {
             var (typeNames, assemblyCount) = input;
 
             // Create multiple assemblies, each containing ALL the shared type names.
-            // This means every type name appears in every assembly — maximum overlap.
             var dllPaths = new List<string>();
             var classDefs = typeNames.Select(fqn =>
             {
@@ -846,7 +835,7 @@ public class NoDuplicateUsingStaticPropertyTests : IDisposable
                 dllPaths.Add(dllPath);
             }
 
-            // Translate with all assemblies as references
+            // Translate with all assemblies as references but NO import declarations
             var assemblyDef = CreateMinimalAssemblyDef();
             var translator = new LoweredAstToRoslynTranslator();
             var options = new TranslatorOptions
@@ -857,18 +846,17 @@ public class NoDuplicateUsingStaticPropertyTests : IDisposable
             var result = translator.Translate(assemblyDef, options);
             var generatedSource = result.Sources.FirstOrDefault() ?? "";
 
-            // Extract ALL using static directives (as a list, preserving duplicates)
+            // Extract ALL using static directives
             var allDirectives = ExtractAllUsingStaticDirectives(generatedSource);
 
             // Filter to only our shared type names
             var ourTypeSet = new HashSet<string>(typeNames, StringComparer.Ordinal);
             var ourDirectives = allDirectives.Where(d => ourTypeSet.Contains(d)).ToList();
 
-            // Property: count of using static directives for our types == count of distinct type names
-            var distinctCount = typeNames.Count; // already distinct from generator
-            return (ourDirectives.Count == distinctCount)
+            // Property: without imports, zero using static directives for referenced types
+            return (ourDirectives.Count == 0)
                 .ToProperty()
-                .Label($"Expected {distinctCount} using static directives, got {ourDirectives.Count}. " +
+                .Label($"Expected 0 using static directives for referenced types, got {ourDirectives.Count}. " +
                        $"Types: [{string.Join(", ", typeNames)}], " +
                        $"Directives: [{string.Join(", ", ourDirectives)}]");
         });

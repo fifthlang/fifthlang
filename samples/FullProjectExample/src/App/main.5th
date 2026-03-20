@@ -1,5 +1,8 @@
 // App: demonstrates cross-project function calls
 // square is defined in CoreLib, add is defined in MathLib
+import CoreLib;
+import MathLib;
+
 main(): int {
     sq: int;
     sq = square(7);
