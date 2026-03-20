@@ -626,13 +626,9 @@ Examples:
                 ? Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
                 : Microsoft.CodeAnalysis.OutputKind.ConsoleApplication;
 
-            // Create the compilation - emit based on output type unless caller already specified an extension
+            // Create the compilation
             var assemblyName = Path.GetFileNameWithoutExtension(options.Output);
-            var requestedExtension = Path.GetExtension(options.Output);
-            var outputExtension = string.IsNullOrWhiteSpace(requestedExtension)
-                ? (outputKind == Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary ? ".dll" : ".exe")
-                : requestedExtension;
-            var outputPath = Path.ChangeExtension(options.Output, outputExtension);
+            var outputPath = options.Output;
             var compilation = Microsoft.CodeAnalysis.CSharp.CSharpCompilation.Create(
                 assemblyName,
                 syntaxTrees: syntaxTrees,

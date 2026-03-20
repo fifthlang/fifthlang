@@ -1,5 +1,5 @@
 {
   "msbuild-sdks": {
-    "Fifth.Sdk": "0.7.2"
+    "Fifth.Sdk": "0.7.3-preview1"
   }
 }
