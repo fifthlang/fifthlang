@@ -1,4 +1,4 @@
-<Project>
+<Project DefaultTargets="Build">
   <!-- This file is imported at the beginning of the project file -->
 
   <Import Project="SupportedTargetFrameworks.props" Condition="Exists('SupportedTargetFrameworks.props')" />

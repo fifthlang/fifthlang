@@ -1,4 +1,5 @@
-// CoreLib: provides the square function
+namespace CoreLib;
+
 square(x: int): int {
     return x * x;
 }

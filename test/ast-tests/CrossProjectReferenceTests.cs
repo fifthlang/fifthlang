@@ -328,9 +328,10 @@ public class TranslatorUsingDirectiveTests : IDisposable
     }
 
     [Fact]
-    public void OneReferenceWithOnePublicStaticType_AddsOneUsingStatic()
+    public void ReferencesWithoutImport_DoNotAutoAddUsingStatic()
     {
-        // Validates: Requirements 4.1, 4.2
+        // Validates: Language scoping rules — references alone must not produce using static directives.
+        // Only explicit import declarations in Fifth source should generate using static.
         var refSource = @"
 namespace CoreLib
 {
@@ -352,18 +353,16 @@ namespace CoreLib
         var source = result.Sources.First();
         var usingStatics = ExtractUsingStaticDirectives(source);
 
-        usingStatics.Should().Contain("CoreLib.Program");
-        // Should still have all defaults
-        foreach (var defaultUsing in DefaultUsingStatics)
-        {
-            usingStatics.Should().Contain(defaultUsing);
-        }
+        // Without an import declaration, referenced types should NOT appear
+        usingStatics.Should().NotContain("CoreLib.Program");
+        // Default runtime usings should still be present
+        usingStatics.Should().BeEquivalentTo(DefaultUsingStatics);
     }
 
     [Fact]
-    public void MultipleReferences_AddsUsingStaticForEach()
+    public void MultipleReferencesWithoutImport_NoAutoUsingStatic()
     {
-        // Validates: Requirements 4.1, 4.2
+        // Validates: Language scoping rules — multiple references without imports produce no extra using static
         var refSource1 = @"
 namespace LibA
 {
@@ -394,41 +393,66 @@ namespace LibB
         var source = result.Sources.First();
         var usingStatics = ExtractUsingStaticDirectives(source);
 
-        usingStatics.Should().Contain("LibA.HelperA");
-        usingStatics.Should().Contain("LibB.HelperB");
+        usingStatics.Should().NotContain("LibA.HelperA");
+        usingStatics.Should().NotContain("LibB.HelperB");
+        usingStatics.Should().BeEquivalentTo(DefaultUsingStatics);
     }
 
     [Fact]
-    public void DuplicateTypeAcrossReferences_OnlyOneEmitted()
+    public void ExplicitImport_AddsUsingStaticForImportedNamespace()
     {
-        // Validates: Requirement 4.3
-        var sharedSource = @"
-namespace SharedNs
+        // Validates: Only explicitly imported namespaces produce using static directives
+        var assemblyDef = CreateMinimalAssemblyDef();
+        var module = assemblyDef.Modules.First();
+
+        // Simulate an import declaration: import CoreLib;
+        module.Annotations[ast.ModuleAnnotationKeys.ResolvedImports] = new List<string> { "CoreLib" };
+
+        var translator = new LoweredAstToRoslynTranslator();
+        var result = translator.Translate(assemblyDef, null);
+        var source = result.Sources.First();
+        var usingStatics = ExtractUsingStaticDirectives(source);
+
+        usingStatics.Should().Contain("CoreLib.Program",
+            "an explicit import should generate using static for Namespace.Program");
+        foreach (var defaultUsing in DefaultUsingStatics)
+        {
+            usingStatics.Should().Contain(defaultUsing);
+        }
+    }
+
+    [Fact]
+    public void ExplicitImport_OnlyImportedNamespacesAppear()
+    {
+        // Validates: Non-imported referenced namespaces must not leak into using directives
+        var refSource = @"
+namespace UnimportedLib
 {
-    public static class SharedHelper
+    public static class Program
     {
         public static int DoWork() => 1;
     }
 }";
-        // Compile the same source into two separate assemblies
-        var dll1 = CompileToDll(sharedSource, "SharedAsm1");
-        var dll2 = CompileToDll(sharedSource, "SharedAsm2");
+        var dllPath = CompileToDll(refSource);
 
         var assemblyDef = CreateMinimalAssemblyDef();
+        var module = assemblyDef.Modules.First();
+
+        // Import only CoreLib, not UnimportedLib
+        module.Annotations[ast.ModuleAnnotationKeys.ResolvedImports] = new List<string> { "CoreLib" };
+
         var translator = new LoweredAstToRoslynTranslator();
         var options = new TranslatorOptions
         {
-            AdditionalReferences = new List<string> { dll1, dll2 }
+            AdditionalReferences = new List<string> { dllPath }
         };
 
         var result = translator.Translate(assemblyDef, options);
         var source = result.Sources.First();
+        var usingStatics = ExtractUsingStaticDirectives(source);
 
-        // Use the list-based extractor to detect duplicates
-        var allDirectives = ExtractAllUsingStaticDirectives(source);
-        var sharedDirectives = allDirectives.Where(d => d == "SharedNs.SharedHelper").ToList();
-
-        sharedDirectives.Should().HaveCount(1,
-            "duplicate type across assemblies should produce only one using static directive");
+        usingStatics.Should().Contain("CoreLib.Program");
+        usingStatics.Should().NotContain("UnimportedLib.Program",
+            "non-imported namespaces must not produce using static directives");
     }
 }

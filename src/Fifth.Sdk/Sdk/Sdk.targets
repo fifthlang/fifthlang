@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Recompute TargetExt based on the final OutputType (which is set in the project file,
+         after Sdk.props but before Sdk.targets) -->
+    <TargetExt Condition="'$(OutputType)' == 'Library'">.dll</TargetExt>
+    <TargetExt Condition="'$(OutputType)' != 'Library'">.exe</TargetExt>
     <TargetName Condition="'$(TargetName)' == ''">$(AssemblyName)</TargetName>
     <TargetName Condition="'$(TargetName)' == ''">$(MSBuildProjectName)</TargetName>
-    <TargetFileName Condition="'$(TargetFileName)' == '' OR '$(TargetFileName)' == '$(TargetExt)'">$(TargetName)$(TargetExt)</TargetFileName>
-    <TargetPath Condition="'$(TargetPath)' == '' OR '$(TargetPath)' == '$(OutputPath)$(TargetExt)'">$(OutputPath)$(TargetFileName)</TargetPath>
-    <FifthOutputPath Condition="'$(FifthOutputPath)' == '' OR '$(FifthOutputPath)' == '$(OutputPath)$(TargetExt)'">$(TargetPath)</FifthOutputPath>
+    <TargetFileName>$(TargetName)$(TargetExt)</TargetFileName>
+    <TargetPath>$(OutputPath)$(TargetFileName)</TargetPath>
+    <FifthOutputPath>$(TargetPath)</FifthOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -68,6 +72,14 @@
     <Message Text="Fifth compilation completed successfully" Importance="high" />
   </Target>
 
+  <!-- Copy referenced project outputs to the consuming project's output directory -->
+  <Target Name="CopyFifthProjectReferences" AfterTargets="FifthCompile">
+    <Copy SourceFiles="@(ReferencePath)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="'@(ReferencePath)' != ''" />
+  </Target>
+
   <!-- Resolve the path to the Fifth compiler -->
   <Target Name="ResolveFifthCompilerPath">
     <PropertyGroup>
@@ -111,10 +123,14 @@
     <Error Condition="'@(_FifthMissingProjectReference)' != ''"
            Text="Missing project references: @(_FifthMissingProjectReference, ', ')" />
 
+    <!-- When building standalone (not from a solution), explicitly build dependencies first.
+         When building from a solution, the solution scheduler handles build ordering so we
+         skip this to avoid file-lock races from concurrent builds of the same project. -->
     <MSBuild Projects="@(ProjectReference)"
              Targets="Build"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)"
-             BuildInParallel="$(BuildInParallel)" />
+             BuildInParallel="false"
+             Condition="'$(SolutionPath)' == '' OR '$(SolutionPath)' == '*Undefined*'" />
 
     <!-- Query each dependency for its output path -->
     <MSBuild Projects="@(ProjectReference)"
