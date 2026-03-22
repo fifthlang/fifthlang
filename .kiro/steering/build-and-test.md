@@ -19,9 +19,6 @@ dotnet restore fifthlang.sln
 # Build (takes ~60s — NEVER CANCEL, set timeout to 120+ seconds)
 dotnet build fifthlang.sln
 
-# Alternative: just build-all (~25s, includes restore + generator + build)
-just build-all
-
 # Run all tests (default regression gate — NEVER CANCEL, set timeout to 5+ minutes)
 dotnet test fifthlang.sln
 
@@ -29,8 +26,7 @@ dotnet test fifthlang.sln
 dotnet test test/ast-tests/ast_tests.csproj
 
 # Regenerate AST code after metamodel changes
-just run-generator
-# OR: dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated
+dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated
 ```
 
 ## Build Order Dependencies
