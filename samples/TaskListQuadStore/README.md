@@ -27,18 +27,8 @@ dotnet build src/fifthlang.system/Fifth.System.csproj -c Debug -p:EnableNet10=tr
 # 3. Pack the local SDK (needed because the published SDK doesn't support net10.0 yet)
 dotnet pack src/Fifth.Sdk/Fifth.Sdk.csproj -c Debug --no-build -o dist/packages
 
-# 4. Build the sample
-dotnet build samples/TaskListQuadStore/src/TaskApp/TaskApp.5thproj
-
-# 5. Copy QuadStore runtime dependencies (not yet automated by the SDK)
-cp src/compiler/bin/Debug/net10.0/QuadStore.Core.dll samples/TaskListQuadStore/src/TaskApp/bin/Debug/net8.0/
-cp src/compiler/bin/Debug/net10.0/Roaring.Net.dll samples/TaskListQuadStore/src/TaskApp/bin/Debug/net8.0/
-cp src/fifthlang.system/bin/Debug/net10.0/Fifth.System.dll samples/TaskListQuadStore/src/TaskApp/bin/Debug/net8.0/
-# Native roaring bitmap library (adjust path for your OS/arch):
-cp ~/.nuget/packages/roaring.net/1.0.0/runtimes/win-x64/native/roaring.dll samples/TaskListQuadStore/src/TaskApp/bin/Debug/net8.0/
-
-# 6. Run
-dotnet samples/TaskListQuadStore/src/TaskApp/bin/Debug/net8.0/TaskApp.exe
+# 4. Build and run the sample (all dependencies are copied automatically by the SDK)
+dotnet run --project samples/TaskListQuadStore/src/TaskApp/TaskApp.5thproj
 ```
 
 ## Expected Output
@@ -59,7 +49,6 @@ All tasks persisted to ./quadstore_data
 
 ## Known Limitations
 
-- QuadStore runtime dependencies must be manually copied (step 5 above)
 - Store declarations must be function-local (module-level store variables
   are not yet resolved by the compiler's symbol table)
 - Variable interpolation in triple subjects/predicates is not yet supported

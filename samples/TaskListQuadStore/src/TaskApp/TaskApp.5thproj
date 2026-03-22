@@ -4,9 +4,4 @@
     <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerPath>$(MSBuildThisFileDirectory)..\..\..\..\src\compiler\bin\Debug\net8.0\compiler.dll</FifthCompilerPath>
   </PropertyGroup>
-  <!-- Remove SDK-injected QuadStore PackageReferences (compiler resolves these directly) -->
-  <ItemGroup>
-    <PackageReference Remove="QuadStore.Core" />
-    <PackageReference Remove="QuadStore.SparqlServer" />
-  </ItemGroup>
 </Project>
