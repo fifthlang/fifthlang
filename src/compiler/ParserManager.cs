@@ -504,10 +504,31 @@ public static class FifthParserManager
 
     public static AstThing ParseFile(string sourceFile)
     {
+        return ParseFile(sourceFile, null);
+    }
+
+    public static AstThing ParseFile(string sourceFile, List<Diagnostic>? diagnostics)
+    {
         var parser = GetParserForFile(sourceFile);
         var tree = parser.fifth();
         var v = new AstBuilderVisitor();
         var ast = v.Visit(tree);
+        if (diagnostics != null)
+        {
+            foreach (var d in v.Diagnostics)
+            {
+                diagnostics.Add(new Diagnostic(
+                    d.Level switch
+                    {
+                        AstDiagnosticLevel.Warning => DiagnosticLevel.Warning,
+                        AstDiagnosticLevel.Error => DiagnosticLevel.Error,
+                        _ => DiagnosticLevel.Info
+                    },
+                    d.Message,
+                    sourceFile,
+                    d.Code));
+            }
+        }
         return ast as AssemblyDef ?? throw new System.Exception("ParseFile did not produce an AssemblyDef AST");
     }
 

@@ -93,6 +93,18 @@ public static class ParseHarness
         var ast = visitor.Visit(tree) as AssemblyDef;
         swAst.Stop();
 
+        // Collect AST-level diagnostics (e.g. deprecation warnings) from the visitor
+        foreach (var d in visitor.Diagnostics)
+        {
+            var severity = d.Level switch
+            {
+                AstDiagnosticLevel.Warning => DiagnosticSeverity.Warning,
+                AstDiagnosticLevel.Error => DiagnosticSeverity.Error,
+                _ => DiagnosticSeverity.Info
+            };
+            diagnostics.Add(new TestDiagnostic(d.Code ?? string.Empty, severity, d.Message, 0, 0, string.Empty));
+        }
+
         AssemblyDef? processed = ast;
         TimeSpan? phasesTime = null;
         if (ast != null && options.Phase != FifthParserManager.AnalysisPhase.None)

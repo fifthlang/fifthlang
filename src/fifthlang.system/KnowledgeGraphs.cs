@@ -7,16 +7,20 @@ namespace Fifth.System;
 public static class KG
 {
     /// <summary>
-    /// Creates and returns a new instance of <see cref="IUpdateableStorage"/> using an in-memory storage manager.
+    /// Creates and returns a new default Store instance.
+    /// On net10.0+, returns a QuadStore-backed store using a temp directory.
+    /// On net8.0, falls back to an in-memory store.
     /// </summary>
-    /// <returns>
-    /// An <see cref="IUpdateableStorage"/> implementation backed by an in-memory manager.
-    /// </returns>
+    /// <returns>A Store instance.</returns>
     [BuiltinFunction]
-    public static IUpdateableStorage CreateStore()
+    public static Store CreateStore()
     {
-        InMemoryManager mem = new InMemoryManager();
-        return mem;
+#if NET10_0_OR_GREATER
+        var tempPath = Path.Combine(Path.GetTempPath(), "fifth-quadstore-" + Guid.NewGuid().ToString("N"));
+        return Store.CreateFileStore(tempPath);
+#else
+        return Store.CreateInMemory();
+#endif
     }
 
     [BuiltinFunction]
@@ -33,9 +37,10 @@ public static class KG
     /// <param name="endpointUri">the SPARQL endpoint URI.</param>
     /// <returns>a Store wrapper connected to the given endpoint.</returns>
     [BuiltinFunction]
+    [Obsolete("Use remote_store, local_store, or mem_store instead")]
     public static Store sparql_store(string endpointUri)
     {
-        return Store.CreateSparqlStore(endpointUri);
+        return remote_store(endpointUri);
     }
 
     /// <summary>
@@ -49,6 +54,40 @@ public static class KG
     public static IStorageProvider sparql_store_legacy(string endpointUri)
     {
         return ConnectToRemoteStore(endpointUri);
+    }
+
+    /// <summary>
+    /// Creates a Store connected to a remote SPARQL endpoint.
+    /// </summary>
+    /// <param name="endpointUri">the SPARQL endpoint URI.</param>
+    /// <returns>a Store wrapper connected to the given endpoint.</returns>
+    [BuiltinFunction]
+    public static Store remote_store(string endpointUri)
+    {
+        return Store.CreateSparqlStore(endpointUri);
+    }
+
+#if NET10_0_OR_GREATER
+    /// <summary>
+    /// Creates a persistent Store backed by a local QuadStore at the given file system path.
+    /// </summary>
+    /// <param name="path">the file system path for the QuadStore data directory.</param>
+    /// <returns>a Store wrapper backed by a persistent local QuadStore.</returns>
+    [BuiltinFunction]
+    public static Store local_store(string path)
+    {
+        return Store.CreateFileStore(path);
+    }
+#endif
+
+    /// <summary>
+    /// Creates a transient in-memory Store using dotNetRDF's InMemoryManager.
+    /// </summary>
+    /// <returns>a Store wrapper backed by an in-memory store.</returns>
+    [BuiltinFunction]
+    public static Store mem_store()
+    {
+        return Store.CreateInMemory();
     }
 
     /// <summary>

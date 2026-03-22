@@ -33,4 +33,11 @@
     <FifthSource Include="**\*.5th" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
   </ItemGroup>
 
+  <!-- QuadStore packages (net10.0 only) — propagated as transitive dependencies so compiled
+       Fifth programs resolve QuadStore assemblies at runtime without manual package references. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="QuadStore.Core" Version="*" />
+    <PackageReference Include="QuadStore.SparqlServer" Version="*" />
+  </ItemGroup>
+
 </Project>
