@@ -1,0 +1,13 @@
+// Probe: test function-local store declaration with local_store
+alias ex as <http://example.org/>;
+
+main(): int {
+    db : store = local_store("./test_quadstore_data");
+    g: graph = KG.CreateGraph();
+    g += <ex:task1, ex:title, "Buy milk">;
+    db += g;
+    q: Query = ?<SELECT * WHERE { ?s ?p ?o }>;
+    result: Result = q <- db;
+    std.print(result);
+    return 0;
+}

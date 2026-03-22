@@ -592,6 +592,20 @@ public static class KG
         return store;
     }
 
+    /// <summary>
+    /// Saves the given graph to the specified Store wrapper.
+    /// Bridges the Fifth Store type with IGraph for the store += graph lowering.
+    /// </summary>
+    /// <param name="store">the Store wrapper to save into.</param>
+    /// <param name="g">the graph to save.</param>
+    /// <returns>the Store wrapper (for chaining).</returns>
+    [BuiltinFunction]
+    public static Store SaveGraph(Store store, IGraph g)
+    {
+        store.SaveGraph(Graph.FromVds(g));
+        return store;
+    }
+
     // ============================================================================
     // Overloads for Fifth.System.Graph wrapper
     // ============================================================================

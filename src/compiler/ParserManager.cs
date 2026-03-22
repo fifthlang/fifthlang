@@ -97,7 +97,7 @@ public static class FifthParserManager
         }
     }
 
-    public static AstThing ApplyLanguageAnalysisPhases(AstThing ast, List<compiler.Diagnostic>? diagnostics = null, AnalysisPhase upTo = AnalysisPhase.All)
+    public static AstThing ApplyLanguageAnalysisPhases(AstThing ast, List<compiler.Diagnostic>? diagnostics = null, AnalysisPhase upTo = AnalysisPhase.All, string? targetFramework = null)
     {
         // Apply language analysis phases (no debug console output)
 
@@ -366,7 +366,7 @@ public static class FifthParserManager
         // Validate external qualified calls now that types have been annotated
         if (diagnostics != null)
         {
-            ast = new compiler.LanguageTransformations.ExternalCallValidationVisitor(diagnostics).Visit(ast);
+            ast = new compiler.LanguageTransformations.ExternalCallValidationVisitor(diagnostics, targetFramework).Visit(ast);
             if (diagnostics.Any(d => d.Level == compiler.DiagnosticLevel.Error))
             {
                 // Early exit - return null to indicate transform failure

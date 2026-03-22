@@ -88,7 +88,7 @@ public class Compiler
                 diagnostics.Add(new Diagnostic(DiagnosticLevel.Info, "Starting transform phase"));
             }
 
-            var transformedAst = TransformPhase(parseResult.ast, diagnostics, options.Diagnostics);
+            var transformedAst = TransformPhase(parseResult.ast, diagnostics, options.Diagnostics, options.TargetFramework);
             if (transformedAst == null)
             {
                 return CompilationResult.Failed(3, diagnostics);
@@ -181,7 +181,7 @@ public class Compiler
             }
 
             // Transform phase (semantic analysis)
-            var transformedAst = TransformPhase(parseResult.ast, diagnostics, options.Diagnostics);
+            var transformedAst = TransformPhase(parseResult.ast, diagnostics, options.Diagnostics, options.TargetFramework);
             if (transformedAst == null)
             {
                 return CompilationResult.Failed(3, diagnostics);
@@ -253,11 +253,11 @@ Examples:
         }
     }
 
-    private AstThing? TransformPhase(AstThing ast, List<Diagnostic> diagnostics, bool emitNamespaceTiming = false)
+    private AstThing? TransformPhase(AstThing ast, List<Diagnostic> diagnostics, bool emitNamespaceTiming = false, string? targetFramework = null)
     {
         try
         {
-            var transformed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics);
+            var transformed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics, targetFramework: targetFramework);
 
             if (emitNamespaceTiming)
             {
@@ -330,7 +330,7 @@ Examples:
         }
     }
 
-    private async Task CopyRuntimeDependenciesAsync(string outputPath, List<Diagnostic> diagnostics)
+    private async Task CopyRuntimeDependenciesAsync(string outputPath, List<Diagnostic> diagnostics, string? targetFramework = null)
     {
         try
         {
@@ -354,21 +354,52 @@ Examples:
                         return lower == "compiler" || lower == "compiler.exe" || lower == "compiler.dll";
                     }, ref filesCopied);
                 });
+                // If cross-compiling, overlay target-framework-specific assemblies
+                var crossDir = targetFramework != null ? GetTargetFrameworkFifthSystemDir(targetFramework) : null;
+                if (crossDir != null)
+                {
+                    await Task.Run(() =>
+                    {
+                        CopyDirectory(crossDir, outputDir, fileName => false, ref filesCopied);
+                    });
+                }
                 return;
             }
 
             // Fallback path for developer builds where lib directory may not exist yet.
-            // Use the directory of a known runtime assembly as the search base, then copy
-            // every file listed in DefaultRuntimeDependencyNames from that directory.
-            var fifthSystemAssemblyPath = typeof(Fifth.System.KG).Assembly.Location;
-            var searchDir = string.IsNullOrWhiteSpace(fifthSystemAssemblyPath)
-                ? AppContext.BaseDirectory
-                : Path.GetDirectoryName(fifthSystemAssemblyPath) ?? AppContext.BaseDirectory;
+            // When cross-compiling, prefer the target-framework-specific build directory.
+            var crossFrameworkDir = targetFramework != null ? GetTargetFrameworkFifthSystemDir(targetFramework) : null;
+            string searchDir;
+            if (crossFrameworkDir != null)
+            {
+                searchDir = crossFrameworkDir;
+            }
+            else
+            {
+                var fifthSystemAssemblyPath = typeof(Fifth.System.KG).Assembly.Location;
+                searchDir = string.IsNullOrWhiteSpace(fifthSystemAssemblyPath)
+                    ? AppContext.BaseDirectory
+                    : Path.GetDirectoryName(fifthSystemAssemblyPath) ?? AppContext.BaseDirectory;
+            }
 
             foreach (var depName in FrameworkReferenceSettings.DefaultRuntimeDependencyNames)
             {
                 var sourcePath = Path.Combine(searchDir, depName);
                 await TryCopyFileAsync(sourcePath, outputDir, depName, diagnostics);
+            }
+
+            // For cross-framework builds, also copy any additional DLLs from the target dir
+            // (e.g., QuadStore.Core.dll) that aren't in the default dependency list
+            if (crossFrameworkDir != null)
+            {
+                foreach (var dllPath in Directory.EnumerateFiles(crossFrameworkDir, "*.dll", SearchOption.TopDirectoryOnly))
+                {
+                    var fileName = Path.GetFileName(dllPath);
+                    if (!FrameworkReferenceSettings.DefaultRuntimeDependencyNames.Contains(fileName))
+                    {
+                        await TryCopyFileAsync(dllPath, outputDir, fileName, diagnostics);
+                    }
+                }
             }
         }
         catch (System.Exception ex)
@@ -622,6 +653,35 @@ Examples:
                 AddReferenceIfExists(Path.Combine(baseDir, depName));
             }
 
+            // When cross-compiling (e.g., targeting net10.0 from a net8.0 compiler), prefer
+            // the target-framework-specific Fifth.System.dll so that TFM-conditional APIs
+            // (like local_store) are available to Roslyn.
+            var crossFrameworkDir = GetTargetFrameworkFifthSystemDir(options.TargetFramework);
+            if (crossFrameworkDir != null)
+            {
+                foreach (var dllPath in Directory.EnumerateFiles(crossFrameworkDir, "*.dll", SearchOption.TopDirectoryOnly))
+                {
+                    var simpleName = Path.GetFileNameWithoutExtension(dllPath);
+                    // Remove any previously-added net8.0 version of the same assembly
+                    // so the net10.0 version takes precedence
+                    if (referenceAssemblyNames.Contains(simpleName))
+                    {
+                        var existing = references.FirstOrDefault(r =>
+                            r is Microsoft.CodeAnalysis.PortableExecutableReference pe &&
+                            Path.GetFileNameWithoutExtension(pe.FilePath ?? "") == simpleName);
+                        if (existing != null)
+                        {
+                            references.Remove(existing);
+                            referenceAssemblyNames.Remove(simpleName);
+                            // Also remove from referencePaths if it was a file reference
+                            var oldPath = (existing as Microsoft.CodeAnalysis.PortableExecutableReference)?.FilePath;
+                            if (oldPath != null) referencePaths.Remove(Path.GetFullPath(oldPath));
+                        }
+                    }
+                    AddReferenceIfExists(dllPath);
+                }
+            }
+
             var outputKind = options.OutputType.Equals("Library", StringComparison.OrdinalIgnoreCase)
                 ? Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
                 : Microsoft.CodeAnalysis.OutputKind.ConsoleApplication;
@@ -677,7 +737,7 @@ Examples:
                 await GenerateRuntimeConfigAsync(outputPath, options, diagnostics);
 
                 // Copy runtime dependencies to output directory
-                await CopyRuntimeDependenciesAsync(outputPath, diagnostics);
+                await CopyRuntimeDependenciesAsync(outputPath, diagnostics, options.TargetFramework);
             }
 
             // No need to set execute permission on DLLs - they're executed via dotnet runtime
@@ -700,6 +760,40 @@ Examples:
         }
 
         return Path.GetFullPath(Path.Combine(baseDir, "..", "lib"));
+    }
+
+    /// <summary>
+    /// When cross-compiling (target TFM differs from the compiler's own runtime), attempts to
+    /// locate the target-framework-specific build of Fifth.System.dll in the source tree.
+    /// Returns null if not found or not cross-compiling.
+    /// </summary>
+    private static string? GetTargetFrameworkFifthSystemDir(string targetFramework)
+    {
+        var compilerTfm = FrameworkReferenceSettings.DefaultTargetFramework;
+        if (string.Equals(targetFramework, compilerTfm, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        // The compiler lives at src/compiler/bin/<config>/<tfm>/compiler.dll
+        // Fifth.System lives at src/fifthlang.system/bin/<config>/<targetTfm>/Fifth.System.dll
+        var compilerDir = AppContext.BaseDirectory;
+        if (string.IsNullOrWhiteSpace(compilerDir)) return null;
+
+        // Navigate up from compiler bin dir to src/
+        // compiler is at: src/compiler/bin/Debug/net8.0/
+        var srcDir = Path.GetFullPath(Path.Combine(compilerDir, "..", "..", "..", ".."));
+        var fifthSystemDir = Path.Combine(srcDir, "fifthlang.system", "bin");
+        if (!Directory.Exists(fifthSystemDir)) return null;
+
+        // Try Debug and Release configurations
+        foreach (var config in new[] { "Debug", "Release" })
+        {
+            var candidateDir = Path.Combine(fifthSystemDir, config, targetFramework);
+            var candidateDll = Path.Combine(candidateDir, "Fifth.System.dll");
+            if (File.Exists(candidateDll))
+                return candidateDir;
+        }
+
+        return null;
     }
 
     private static void CopyDirectory(string sourceDir, string destinationDir, Func<string, bool>? skipFilePredicate, ref int filesCopied)
