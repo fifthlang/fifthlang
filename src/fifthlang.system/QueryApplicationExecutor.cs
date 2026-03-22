@@ -27,37 +27,30 @@ public static class QueryApplicationExecutor
             
             // Get the TripleStore for in-memory querying
             var tripleStore = store.GetTripleStore();
-            if (tripleStore == null)
-            {
-                throw new NotSupportedException("Query execution is currently only supported for in-memory stores. SPARQL endpoint support coming soon.");
-            }
+            object results;
 
-            var processor = new LeviathanQueryProcessor(tripleStore);
-            var results = processor.ProcessQuery(sparqlQuery);
+            if (tripleStore != null)
+            {
+                // In-memory path: use Leviathan query processor directly
+                var processor = new LeviathanQueryProcessor(tripleStore);
+                results = processor.ProcessQuery(sparqlQuery);
+            }
+            else if (store.ToVds() is IQueryableStorage queryableStorage)
+            {
+                // IQueryableStorage path: QuadStore and other providers that support direct querying
+                results = queryableStorage.Query(sparqlQuery.ToString());
+            }
+            else
+            {
+                throw new NotSupportedException(
+                    "Query execution requires either an in-memory store or a storage provider that implements IQueryableStorage.");
+            }
 
             // Check for cancellation
             cancellationToken?.ThrowIfCancellationRequested();
 
-            // Determine result type based on query form
-            if (results is SparqlResultSet rs)
-            {
-                if (rs.ResultsType == SparqlResultsType.Boolean)
-                {
-                    return new Result.BooleanResult(rs.Result);
-                }
-                else // VariableBindings
-                {
-                    return new Result.TabularResult(rs);
-                }
-            }
-            else if (results is IGraph graph)
-            {
-                return new Result.GraphResult(StoreFromGraph(graph));
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unexpected query result type: {results?.GetType().Name ?? "null"}");
-            }
+            // Map results to the appropriate Result discriminated union variant
+            return MapQueryResults(results);
         }
         catch (RdfParseException ex)
         {
@@ -90,11 +83,37 @@ public static class QueryApplicationExecutor
     }
 
     /// <summary>
+    /// Maps raw query results (from Leviathan or IQueryableStorage) to the Result discriminated union.
+    /// </summary>
+    private static Result MapQueryResults(object results)
+    {
+        if (results is SparqlResultSet rs)
+        {
+            if (rs.ResultsType == SparqlResultsType.Boolean)
+            {
+                return new Result.BooleanResult(rs.Result);
+            }
+            else // VariableBindings
+            {
+                return new Result.TabularResult(rs);
+            }
+        }
+        else if (results is IGraph graph)
+        {
+            return new Result.GraphResult(StoreFromGraph(graph));
+        }
+        else
+        {
+            throw new InvalidOperationException($"Unexpected query result type: {results?.GetType().Name ?? "null"}");
+        }
+    }
+
+    /// <summary>
     /// Helper to create a Store from an IGraph result (for CONSTRUCT/DESCRIBE queries).
     /// </summary>
     private static Store StoreFromGraph(IGraph graph)
     {
-        var tripleStore = new TripleStore();
+        var tripleStore = new VDS.RDF.TripleStore();
         tripleStore.Add(graph);
         var storage = new InMemoryManager(tripleStore);
         return Store.FromVds(storage);

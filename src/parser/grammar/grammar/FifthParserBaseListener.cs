@@ -1405,6 +1405,58 @@ public partial class FifthParserBaseListener : IFifthParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitColon_store_decl([NotNull] FifthParser.Colon_store_declContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>store_sparql</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStore_sparql([NotNull] FifthParser.Store_sparqlContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>store_sparql</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStore_sparql([NotNull] FifthParser.Store_sparqlContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>store_func_call</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStore_func_call([NotNull] FifthParser.Store_func_callContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>store_func_call</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStore_func_call([NotNull] FifthParser.Store_func_callContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.store_arg_list"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStore_arg_list([NotNull] FifthParser.Store_arg_listContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.store_arg_list"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStore_arg_list([NotNull] FifthParser.Store_arg_listContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="FifthParser.store_arg"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStore_arg([NotNull] FifthParser.Store_argContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="FifthParser.store_arg"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStore_arg([NotNull] FifthParser.Store_argContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

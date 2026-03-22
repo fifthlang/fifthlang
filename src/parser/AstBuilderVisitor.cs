@@ -15,9 +15,22 @@ using static Fifth.DebugHelpers;
 
 namespace compiler.LangProcessingPhases;
 
+/// <summary>
+/// Lightweight diagnostic emitted during AST construction (parser project has no dependency on compiler.Diagnostic).
+/// Consumers map these to compiler.Diagnostic after the visitor completes.
+/// </summary>
+public enum AstDiagnosticLevel { Info, Warning, Error }
+
+public record AstDiagnostic(AstDiagnosticLevel Level, string Message, string? Source = null, string? Code = null);
+
 public class AstBuilderVisitor : FifthParserBaseVisitor<IAstThing>
 {
     public static readonly FifthType Void = new FifthType.TVoidType() { Name = TypeName.From("void") };
+
+    /// <summary>
+    /// Diagnostics collected during AST construction (e.g. deprecation warnings).
+    /// </summary>
+    public List<AstDiagnostic> Diagnostics { get; } = new();
 
     #region Helper Functions
 
@@ -782,11 +795,28 @@ public class AstBuilderVisitor : FifthParserBaseVisitor<IAstThing>
             var stores = new Dictionary<string, string>(StringComparer.Ordinal);
             string defaultStore = null;
 
-            // Colon form: IDENTIFIER ':' STORE '=' SPARQL '(' iri ')' ';'
+            // Colon form: IDENTIFIER ':' STORE '=' store_creation_expr ';'
             foreach (var s in context.colon_store_decl())
             {
                 var name = s.store_name?.Text ?? string.Empty;
-                var uri = s.iri()?.GetText() ?? string.Empty;
+                var storeExpr = s.store_creation_expr();
+                var uri = string.Empty;
+
+                if (storeExpr is FifthParser.Store_sparqlContext sparqlCtx)
+                {
+                    uri = sparqlCtx.iri()?.GetText() ?? string.Empty;
+                    Diagnostics.Add(new AstDiagnostic(
+                        AstDiagnosticLevel.Warning,
+                        "sparql_store is deprecated. Use remote_store, local_store, or mem_store instead.",
+                        Code: "STORE_DEPRECATED_001"));
+                }
+                else if (storeExpr is FifthParser.Store_func_callContext funcCtx)
+                {
+                    // For func_call form, store the function call text as the URI/descriptor
+                    // e.g., "remote_store(<http://example.com/>)" or "mem_store()" or "local_store(\"/path\")"
+                    uri = funcCtx.GetText();
+                }
+
                 if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(uri))
                 {
                     stores[name] = uri;
@@ -1689,39 +1719,106 @@ public class AstBuilderVisitor : FifthParserBaseVisitor<IAstThing>
     public override IAstThing VisitColon_store_decl(FifthParser.Colon_store_declContext context)
     {
         var name = context.store_name?.Text ?? string.Empty;
-        // Build call: KG.sparql_store("<uri>") to honor declared endpoint
-        // sparql_store returns Store wrapper (not raw IStorageProvider)
-        var uriText = context.iri()?.GetText() ?? string.Empty; // e.g., "<http://host>"
-        if (uriText.StartsWith("<") && uriText.EndsWith(">"))
+        var storeExpr = context.store_creation_expr();
+
+        Expression callExpr;
+
+        if (storeExpr is FifthParser.Store_sparqlContext sparqlCtx)
         {
-            uriText = uriText.Substring(1, uriText.Length - 2);
+            // Legacy sparql_store(<iri>) form — emit KG.sparql_store(uri)
+            Diagnostics.Add(new AstDiagnostic(
+                AstDiagnosticLevel.Warning,
+                "sparql_store is deprecated. Use remote_store, local_store, or mem_store instead.",
+                Code: "STORE_DEPRECATED_001"));
+
+            var uriText = sparqlCtx.iri()?.GetText() ?? string.Empty;
+            if (uriText.StartsWith("<") && uriText.EndsWith(">"))
+            {
+                uriText = uriText.Substring(1, uriText.Length - 2);
+            }
+            var uriLiteral = new StringLiteralExp
+            {
+                Annotations = [],
+                Location = GetLocationDetails(context),
+                Parent = null,
+                Type = new FifthType.TDotnetType(typeof(string)) { Name = TypeName.From(typeof(string).FullName) },
+                Value = uriText
+            };
+            var kgVar = new VarRefExp { VarName = "KG", Annotations = [], Location = GetLocationDetails(context), Type = Void };
+            var func = new FuncCallExp
+            {
+                FunctionDef = null,
+                InvocationArguments = [uriLiteral],
+                Annotations = new Dictionary<string, object> { ["FunctionName"] = "sparql_store" },
+                Location = GetLocationDetails(context),
+                Parent = null,
+                Type = null
+            };
+            callExpr = new MemberAccessExp
+            {
+                Annotations = [],
+                LHS = kgVar,
+                RHS = func,
+                Location = GetLocationDetails(context),
+                Type = Void
+            };
         }
-        var uriLiteral = new StringLiteralExp
+        else if (storeExpr is FifthParser.Store_func_callContext funcCtx)
         {
-            Annotations = [],
-            Location = GetLocationDetails(context),
-            Parent = null,
-            Type = new FifthType.TDotnetType(typeof(string)) { Name = TypeName.From(typeof(string).FullName) },
-            Value = uriText
-        };
-        var kgVar = new VarRefExp { VarName = "KG", Annotations = [], Location = GetLocationDetails(context), Type = Void };
-        var func = new FuncCallExp
+            // Generalized store_func_call form — emit KG.<func_name>(args)
+            var funcName = funcCtx.func_name?.Text ?? string.Empty;
+            var arguments = new List<Expression>();
+            if (funcCtx.store_arg_list() != null)
+            {
+                foreach (var arg in funcCtx.store_arg_list().store_arg())
+                {
+                    if (arg.iri() != null)
+                    {
+                        // IRI argument — convert to string literal
+                        var iriText = arg.iri().GetText() ?? string.Empty;
+                        if (iriText.StartsWith("<") && iriText.EndsWith(">"))
+                        {
+                            iriText = iriText.Substring(1, iriText.Length - 2);
+                        }
+                        arguments.Add(new StringLiteralExp
+                        {
+                            Annotations = [],
+                            Location = GetLocationDetails(context),
+                            Parent = null,
+                            Type = new FifthType.TDotnetType(typeof(string)) { Name = TypeName.From(typeof(string).FullName) },
+                            Value = iriText
+                        });
+                    }
+                    else if (arg.expression() != null)
+                    {
+                        arguments.Add((Expression)Visit(arg.expression()));
+                    }
+                }
+            }
+            var kgVar = new VarRefExp { VarName = "KG", Annotations = [], Location = GetLocationDetails(context), Type = Void };
+            var func = new FuncCallExp
+            {
+                FunctionDef = null,
+                InvocationArguments = arguments,
+                Annotations = new Dictionary<string, object> { ["FunctionName"] = funcName },
+                Location = GetLocationDetails(context),
+                Parent = null,
+                Type = null
+            };
+            callExpr = new MemberAccessExp
+            {
+                Annotations = [],
+                LHS = kgVar,
+                RHS = func,
+                Location = GetLocationDetails(context),
+                Type = Void
+            };
+        }
+        else
         {
-            FunctionDef = null,
-            InvocationArguments = [uriLiteral],
-            Annotations = new Dictionary<string, object> { ["FunctionName"] = "sparql_store" },
-            Location = GetLocationDetails(context),
-            Parent = null,
-            Type = null
-        };
-        var call = new MemberAccessExp
-        {
-            Annotations = [],
-            LHS = kgVar,
-            RHS = func,
-            Location = GetLocationDetails(context),
-            Type = Void
-        };
+            // Fallback — should not happen with current grammar
+            callExpr = new VarRefExp { VarName = "KG", Annotations = [], Location = GetLocationDetails(context), Type = Void };
+        }
 
         var varDecl = new VariableDecl
         {
@@ -1736,7 +1833,7 @@ public class AstBuilderVisitor : FifthParserBaseVisitor<IAstThing>
         {
             Annotations = new Dictionary<string, object> { ["Kind"] = "StoreDecl" },
             VariableDecl = varDecl,
-            InitialValue = call,
+            InitialValue = callExpr,
             Location = GetLocationDetails(context),
             Type = Void
         };

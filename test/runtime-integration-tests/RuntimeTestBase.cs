@@ -222,16 +222,32 @@ public abstract class RuntimeTestBase : IDisposable
             }
         }
 
-        // Copy dotNetRdf dependencies from NuGet cache
+        // Copy dotNetRdf dependencies from NuGet cache.
+        // Resolve the latest installed version dynamically to avoid hardcoded version mismatches.
         var nugetPackages = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
-        var dotNetRdfDll = Path.Combine(nugetPackages, "dotnetrdf.core", "3.4.0", "lib", "netstandard2.0", "dotNetRdf.dll");
-        var vdsCommonDll = Path.Combine(nugetPackages, "vds.common", "3.0.0", "lib", "netstandard2.0", "VDS.Common.dll");
 
-        if (File.Exists(dotNetRdfDll))
+        static string? FindLatestPackageDll(string packagesRoot, string packageId, string relativeDllPath)
+        {
+            var packageDir = Path.Combine(packagesRoot, packageId);
+            if (!Directory.Exists(packageDir)) return null;
+            // Pick the highest version directory (lexicographic sort works for semver with same digit counts)
+            var latest = Directory.GetDirectories(packageDir)
+                .Select(d => Path.GetFileName(d))
+                .OrderByDescending(v => v, StringComparer.OrdinalIgnoreCase)
+                .FirstOrDefault();
+            if (latest == null) return null;
+            var dll = Path.Combine(packageDir, latest, relativeDllPath);
+            return File.Exists(dll) ? dll : null;
+        }
+
+        var dotNetRdfDll = FindLatestPackageDll(nugetPackages, "dotnetrdf.core", Path.Combine("lib", "netstandard2.0", "dotNetRdf.dll"));
+        var vdsCommonDll = FindLatestPackageDll(nugetPackages, "vds.common", Path.Combine("lib", "netstandard2.0", "VDS.Common.dll"));
+
+        if (dotNetRdfDll != null)
         {
             try { File.Copy(dotNetRdfDll, Path.Combine(exeDir, "dotNetRdf.dll"), overwrite: true); } catch { /* ignore */ }
         }
-        if (File.Exists(vdsCommonDll))
+        if (vdsCommonDll != null)
         {
             try { File.Copy(vdsCommonDll, Path.Combine(exeDir, "VDS.Common.dll"), overwrite: true); } catch { /* ignore */ }
         }

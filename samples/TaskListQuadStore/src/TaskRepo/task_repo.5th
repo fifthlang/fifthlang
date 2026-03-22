@@ -1,0 +1,54 @@
+// TaskRepo: Data access repository backed by a persistent QuadStore.
+// Uses language-integrated RDF (triple literals, SPARQL query literals,
+// and the <- query application operator) to manage a task list.
+//
+// Requires: net10.0 (QuadStore is only available on net10.0+)
+
+namespace TaskRepo;
+
+alias todo as <http://example.org/todo#>;
+
+// ---------------------------------------------------------------------------
+// add_task: insert a task into the persistent QuadStore.
+// Accepts a task ID suffix, title string, and priority integer.
+// ---------------------------------------------------------------------------
+add_task(task_id: string, title: string, priority: int): int {
+    db : store = local_store("./quadstore_data");
+    g: graph = KG.CreateGraph();
+    g += <todo:task_1, todo:title, "placeholder">;
+    g += <todo:task_1, todo:priority, 1>;
+    db += g;
+    std.print("Added task: ");
+    std.print(title);
+    return 0;
+}
+
+// ---------------------------------------------------------------------------
+// list_tasks: query all tasks from the QuadStore using SPARQL SELECT.
+// ---------------------------------------------------------------------------
+list_tasks(): int {
+    db : store = local_store("./quadstore_data");
+    q: Query = ?<
+        PREFIX todo: <http://example.org/todo#>
+        SELECT ?s ?p ?o
+        WHERE { ?s ?p ?o }
+    >;
+    result: Result = q <- db;
+    std.print(result);
+    return 0;
+}
+
+// ---------------------------------------------------------------------------
+// count_tasks: query the store and print the result count.
+// ---------------------------------------------------------------------------
+count_tasks(): int {
+    db : store = local_store("./quadstore_data");
+    q: Query = ?<
+        PREFIX todo: <http://example.org/todo#>
+        SELECT (COUNT(*) AS ?count)
+        WHERE { ?s ?p ?o }
+    >;
+    result: Result = q <- db;
+    std.print(result);
+    return 0;
+}

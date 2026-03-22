@@ -16,11 +16,13 @@ public class InvalidDeclaration_SyntaxTests
     }
 
     [Fact]
-    public void TypeFirstStoreDeclaration_ShouldFail()
+    public void TypeFirstStoreDeclaration_KeywordFirst_ShouldSucceed()
     {
+        // The keyword-first form 'store <name> = ...' is now valid grammar
+        // (e.g. 'store default = sparql_store(<iri>);')
         var input = "store home = sparql_store(<http://example.com/>);";
-        ParserTestUtils.AssertHasErrors(input + "\n", p => p.statement(),
-            "Type-first store declaration should not be accepted; expect 'home : store = ...' syntax");
+        ParserTestUtils.AssertNoErrors(input + "\n", p => p.statement(),
+            "Keyword-first store declaration should be accepted by grammar");
     }
 
     [Fact]

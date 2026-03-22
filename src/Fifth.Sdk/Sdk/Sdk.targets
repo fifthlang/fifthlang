@@ -1,6 +1,12 @@
 <Project>
   <!-- This file is imported at the end of the project file -->
 
+  <!-- Compute OutputPath here (not in Sdk.props) so the project file's
+       TargetFramework override is visible. Sdk.props only sets BaseOutputPath. -->
+  <PropertyGroup>
+    <OutputPath Condition="'$(OutputPath)' == ''">$(BaseOutputPath)$(Configuration)\$(TargetFramework)\</OutputPath>
+  </PropertyGroup>
+
   <!-- Define the core build target for Fifth projects -->
   <PropertyGroup>
     <FifthDesignTimeManifestPath Condition="'$(FifthDesignTimeManifestPath)' == ''">$(IntermediateOutputPath)fifth_designtime.manifest</FifthDesignTimeManifestPath>
@@ -79,6 +85,188 @@
           SkipUnchangedFiles="true"
           Condition="'@(ReferencePath)' != ''" />
   </Target>
+
+  <!-- ================================================================== -->
+  <!-- Copy Fifth runtime dependencies (Fifth.System + transitive NuGet   -->
+  <!-- packages) to the output directory so compiled programs can run      -->
+  <!-- without manual file copying.                                        -->
+  <!-- ================================================================== -->
+  <Target Name="CopyFifthRuntimeDependencies" AfterTargets="FifthCompile">
+
+    <!-- Locate the Fifth.System build directory for the target framework.
+         The compiler lives at src/compiler/bin/<config>/<tfm>/compiler.dll.
+         Fifth.System lives at src/fifthlang.system/bin/<config>/<targetTfm>/. -->
+    <PropertyGroup>
+      <_FifthCompilerDir>$([System.IO.Path]::GetDirectoryName('$(FifthCompilerPath)'))</_FifthCompilerDir>
+      <!-- Navigate from compiler bin dir up to src/ -->
+      <_FifthSrcRoot>$([System.IO.Path]::GetFullPath('$(_FifthCompilerDir)\..\..\..\..'))</_FifthSrcRoot>
+      <_FifthSystemDir>$(_FifthSrcRoot)\fifthlang.system\bin\$(Configuration)\$(TargetFramework)</_FifthSystemDir>
+      <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
+      <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
+      <!-- NuGet package cache (standard location) -->
+      <_NuGetPackageRoot Condition="'$(NuGetPackageRoot)' != ''">$(NuGetPackageRoot)</_NuGetPackageRoot>
+      <_NuGetPackageRoot Condition="'$(_NuGetPackageRoot)' == ''">$(NUGET_PACKAGES)</_NuGetPackageRoot>
+      <_NuGetPackageRoot Condition="'$(_NuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages</_NuGetPackageRoot>
+      <_NuGetPackageRoot Condition="'$(_NuGetPackageRoot)' == '' AND '$(HOME)' != ''">$(HOME)/.nuget/packages</_NuGetPackageRoot>
+    </PropertyGroup>
+
+    <!-- Fallback: try Release config if Debug doesn't exist -->
+    <PropertyGroup Condition="!Exists('$(_FifthSystemDll)')">
+      <_FifthSystemDir>$(_FifthSrcRoot)\fifthlang.system\bin\Release\$(TargetFramework)</_FifthSystemDir>
+      <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
+      <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
+    </PropertyGroup>
+
+    <!-- Also try the compiler's own directory as a last resort (packaged SDK scenario) -->
+    <PropertyGroup Condition="!Exists('$(_FifthSystemDll)')">
+      <_FifthSystemDir>$(_FifthCompilerDir)</_FifthSystemDir>
+      <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
+      <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
+    </PropertyGroup>
+
+    <!-- Step 1: Copy all DLLs from the Fifth.System build directory -->
+    <ItemGroup Condition="Exists('$(_FifthSystemDir)')">
+      <_FifthSystemDlls Include="$(_FifthSystemDir)\*.dll" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_FifthSystemDlls)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="'@(_FifthSystemDlls)' != ''" />
+
+    <Message Text="Copied %(Filename)%(Extension) from Fifth.System build dir"
+             Importance="low"
+             Condition="'@(_FifthSystemDlls)' != ''" />
+
+    <!-- Step 2: Copy transitive NuGet package DLLs from the NuGet cache.
+         Uses a pure C# inline task (no PowerShell / no System.Text.Json) that
+         regex-parses deps.json to extract package paths, then copies managed
+         DLLs from lib/<tfm>/ and native libs from runtimes/<rid>/native/. -->
+    <_CopyFifthNuGetDeps
+        DepsJsonPath="$(_FifthSystemDepsJson)"
+        NuGetPackageRoot="$(_NuGetPackageRoot)"
+        TargetFramework="$(TargetFramework)"
+        OutputDirectory="$(OutputPath)"
+        Condition="Exists('$(_FifthSystemDepsJson)')" />
+
+  </Target>
+
+  <!-- Inline C# task — uses only System.Text.RegularExpressions + System.IO
+       (both always available in RoslynCodeTaskFactory). -->
+  <UsingTask TaskName="_CopyFifthNuGetDeps"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <DepsJsonPath   ParameterType="System.String" Required="true" />
+      <NuGetPackageRoot ParameterType="System.String" Required="true" />
+      <TargetFramework  ParameterType="System.String" Required="true" />
+      <OutputDirectory  ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Runtime.InteropServices" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+try
+{
+    if (!File.Exists(DepsJsonPath)) return true;
+    if (!Directory.Exists(NuGetPackageRoot)) return true;
+    Directory.CreateDirectory(OutputDirectory);
+
+    // Determine RID for native libs
+    string rid;
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        rid = RuntimeInformation.OSArchitecture == Architecture.X64 ? "win-x64" :
+              RuntimeInformation.OSArchitecture == Architecture.Arm64 ? "win-arm64" : "win-x86";
+    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        rid = RuntimeInformation.OSArchitecture == Architecture.Arm64 ? "osx-arm64" : "osx-x64";
+    else
+        rid = RuntimeInformation.OSArchitecture == Architecture.Arm64 ? "linux-arm64" :
+              RuntimeInformation.OSArchitecture == Architecture.X64  ? "linux-x64" : "linux-arm32";
+
+    // TFM preference order
+    var tfms = new[] { "net10.0","net9.0","net8.0","net7.0","net6.0","netstandard2.1","netstandard2.0" };
+
+    // Regex-extract every "type":"package" entry's "path" value from the
+    // "libraries" section.  The deps.json format is stable and machine-generated,
+    // so a simple regex is reliable here.
+    var text = File.ReadAllText(DepsJsonPath);
+
+    // Match blocks like:  "SomePackage/1.0.0": { ... "type": "package", ... "path": "somepkg/1.0.0" ... }
+    // We look for "path" values that follow a "type": "package" within the same object block.
+    var libPattern = new Regex(
+        @"""[^""]+"":\s*\{[^}]*""type"":\s*""package""[^}]*""path"":\s*""([^""]+)""[^}]*\}",
+        RegexOptions.Singleline);
+
+    // Also handle the case where "path" appears before "type"
+    var libPattern2 = new Regex(
+        @"""[^""]+"":\s*\{[^}]*""path"":\s*""([^""]+)""[^}]*""type"":\s*""package""[^}]*\}",
+        RegexOptions.Singleline);
+
+    var paths = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    foreach (Match m in libPattern.Matches(text))
+        paths.Add(m.Groups[1].Value);
+    foreach (Match m in libPattern2.Matches(text))
+        paths.Add(m.Groups[1].Value);
+
+    int copied = 0;
+    foreach (var pkgPath in paths)
+    {
+        var pkgDir = Path.Combine(NuGetPackageRoot, pkgPath.Replace('/', Path.DirectorySeparatorChar));
+        if (!Directory.Exists(pkgDir)) continue;
+
+        // Copy managed DLLs from lib/<best-tfm>/
+        var libDir = Path.Combine(pkgDir, "lib");
+        if (Directory.Exists(libDir))
+        {
+            string bestDir = null;
+            foreach (var t in tfms)
+            {
+                var c = Path.Combine(libDir, t);
+                if (Directory.Exists(c)) { bestDir = c; break; }
+            }
+            if (bestDir != null)
+            {
+                foreach (var dll in Directory.GetFiles(bestDir, "*.dll"))
+                {
+                    var dest = Path.Combine(OutputDirectory, Path.GetFileName(dll));
+                    if (!File.Exists(dest) || File.GetLastWriteTimeUtc(dll) > File.GetLastWriteTimeUtc(dest))
+                    {
+                        File.Copy(dll, dest, true);
+                        copied++;
+                    }
+                }
+            }
+        }
+
+        // Copy native libs from runtimes/<rid>/native/
+        var nativeDir = Path.Combine(pkgDir, "runtimes", rid, "native");
+        if (Directory.Exists(nativeDir))
+        {
+            foreach (var f in Directory.GetFiles(nativeDir))
+            {
+                var dest = Path.Combine(OutputDirectory, Path.GetFileName(f));
+                if (!File.Exists(dest) || File.GetLastWriteTimeUtc(f) > File.GetLastWriteTimeUtc(dest))
+                {
+                    File.Copy(f, dest, true);
+                    Log.LogMessage(MessageImportance.Normal, "Copied native dep: " + Path.GetFileName(f));
+                    copied++;
+                }
+            }
+        }
+    }
+
+    Log.LogMessage(MessageImportance.High,
+        "Fifth NuGet dependencies resolved (" + copied + " files copied to " + OutputDirectory + ")");
+}
+catch (Exception ex)
+{
+    Log.LogWarning("Failed to copy Fifth NuGet dependencies: " + ex.Message);
+}
+      ]]></Code>
+    </Task>
+  </UsingTask>
 
   <!-- Resolve the path to the Fifth compiler -->
   <Target Name="ResolveFifthCompilerPath">

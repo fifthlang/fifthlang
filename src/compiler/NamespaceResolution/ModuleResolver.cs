@@ -22,7 +22,7 @@ public sealed class ModuleResolver
         {
             try
             {
-                var parsed = FifthParserManager.ParseFile(source) as AssemblyDef;
+                var parsed = FifthParserManager.ParseFile(source, diagnostics) as AssemblyDef;
                 if (parsed == null)
                 {
                     diagnostics.Add(new Diagnostic(DiagnosticLevel.Error, $"Parse did not produce an AssemblyDef for: {source}", source));

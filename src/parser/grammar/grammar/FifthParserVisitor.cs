@@ -716,4 +716,30 @@ public interface IFifthParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitColon_store_decl([NotNull] FifthParser.Colon_store_declContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>store_sparql</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStore_sparql([NotNull] FifthParser.Store_sparqlContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>store_func_call</c>
+	/// labeled alternative in <see cref="FifthParser.store_creation_expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStore_func_call([NotNull] FifthParser.Store_func_callContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.store_arg_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStore_arg_list([NotNull] FifthParser.Store_arg_listContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="FifthParser.store_arg"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStore_arg([NotNull] FifthParser.Store_argContext context);
 }

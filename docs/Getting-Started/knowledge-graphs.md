@@ -2,12 +2,44 @@
 
 This doc summarizes the canonical store declaration syntax and graph operations, and how they use the built-in `Fifth.System.KG` helpers.
 
-## Canonical Store Declarations
-- Use the colon form exclusively:
-  - `name : store = sparql_store(<http://example.org/store>);`
-  - `store default = sparql_store(<http://example.org/store>);` (sets the default store)
+## Store Creation Functions
 
-The `sparql_store` function is a built-in alias for connecting to a remote SPARQL endpoint. It returns a `VDS.RDF.Storage.IStorageProvider`.
+Fifth provides three built-in functions for creating stores, each covering a different combination of locality and persistence:
+
+| Function | Description | Persistence | Locality |
+|----------|-------------|-------------|----------|
+| `remote_store(uri)` | Connect to a remote SPARQL endpoint | Remote-managed | Remote |
+| `local_store(path)` | Create a persistent local QuadStore at a file path | Persistent (disk) | Local |
+| `mem_store()` | Create a transient in-memory store | Transient (RAM) | Local |
+
+### Store Declaration Syntax
+
+Use the colon form for named stores and the `store default` form for the default store. The right-hand side accepts any store creation function call:
+
+```
+name : store = <function_call>;
+store default = <function_call>;
+```
+
+Examples:
+
+- `db : store = remote_store(<http://example.org/sparql>);`
+- `db : store = local_store("/data/my-store");`
+- `db : store = mem_store();`
+- `store default = local_store("/data/store");`
+- `store default = remote_store(<http://example.org/sparql>);`
+- `store default = mem_store();`
+
+### Deprecation Notice: `sparql_store`
+
+!!! warning "Deprecated"
+    `sparql_store` is deprecated. Use `remote_store`, `local_store`, or `mem_store` instead.
+    The compiler emits warning `STORE_DEPRECATED_001` when `sparql_store` is used.
+    During the transition period, `sparql_store` continues to work — it delegates to `remote_store` internally.
+
+Legacy form (still accepted, but deprecated):
+
+- `name : store = sparql_store(<http://example.org/store>);`
 
 ## Graph Operations
 
@@ -27,7 +59,7 @@ main(): int {
 
 ### Saving to Stores
 ```fifth
-store default = sparql_store(<http://example.org/store>);
+store default = local_store("/data/store");
 
 main(): int {
     g: graph = KG.CreateGraph();
@@ -135,6 +167,14 @@ Literals are lowered to typed RDF literals using the appropriate XSD datatype (e
 
 ## Built-in Functions
 Graph operations use `Fifth.System.KG` functions:
+
+### Store Creation
+- `remote_store(endpointUri)`: Connect to a remote SPARQL endpoint
+- `local_store(path)`: Create a persistent local QuadStore at a file path
+- `mem_store()`: Create a transient in-memory store
+- `sparql_store(endpointUri)`: *(Deprecated)* Delegates to `remote_store`
+
+### Graph Operations
 - `CreateGraph()`: Create an empty graph
 - `CreateUri(string)`: Create an IRI node
 - `CreateLiteral(value)`: Create a literal node
@@ -147,7 +187,7 @@ You can also use the raw API directly:
 ```fifth
 main(): int {
     KG.SaveGraph(
-        KG.sparql_store("http://example.org/store"),
+        KG.remote_store("http://example.org/store"),
         KG.Assert(
             KG.CreateGraph(),
             KG.CreateTriple(
@@ -180,3 +220,9 @@ The compiler emits specific diagnostic codes for triple literal errors:
 | TRPL006 | Error | Nested lists are not allowed in triple literal object position (only single-level lists) | `<ex:s, ex:p, [[ex:o1], ex:o2]>` |
 
 **Note**: IRI-related errors (such as unresolved prefixes) continue to use existing diagnostic codes and are not specific to triple literals.
+
+### Store Deprecation Diagnostics
+
+| Code | Severity | Description | Example |
+|------|----------|-------------|---------|
+| STORE_DEPRECATED_001 | Warning | `sparql_store` is deprecated; use `remote_store`, `local_store`, or `mem_store` | `name : store = sparql_store(<http://example.org/>);` |

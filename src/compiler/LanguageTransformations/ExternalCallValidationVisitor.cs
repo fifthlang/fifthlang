@@ -10,10 +10,28 @@ namespace compiler.LanguageTransformations;
 public class ExternalCallValidationVisitor : DefaultRecursiveDescentVisitor
 {
     private readonly List<Diagnostic>? _diagnostics;
+    private readonly string _targetFramework;
 
-    public ExternalCallValidationVisitor(List<Diagnostic>? diagnostics)
+    public ExternalCallValidationVisitor(List<Diagnostic>? diagnostics, string? targetFramework = null)
     {
         _diagnostics = diagnostics;
+        _targetFramework = targetFramework ?? FrameworkReferenceSettings.DefaultTargetFramework;
+    }
+
+    /// <summary>
+    /// Returns true when the compiler is cross-compiling (target TFM differs from the
+    /// compiler's own runtime) and the unresolved type lives in Fifth.System.
+    /// In that scenario the method may exist in the target-framework build of the assembly
+    /// but not in the one loaded into the compiler process, so we downgrade to a warning.
+    /// </summary>
+    private bool IsCrossFrameworkBuiltinCall(Type externalType)
+    {
+        var compilerTfm = FrameworkReferenceSettings.DefaultTargetFramework;
+        if (string.Equals(_targetFramework, compilerTfm, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var assemblyName = externalType.Assembly.GetName().Name ?? string.Empty;
+        return assemblyName.Equals("Fifth.System", StringComparison.OrdinalIgnoreCase);
     }
 
     private static int CompatibilityScore(Type? argType, Type paramType)
@@ -116,7 +134,8 @@ public class ExternalCallValidationVisitor : DefaultRecursiveDescentVisitor
             // If no arity-compatible candidates found, report diagnostic
             if (candidates.Count == 0)
             {
-                _diagnostics?.Add(new Diagnostic(DiagnosticLevel.Error, $"Unresolved external call: {extType.FullName}.{methodName} with {argCount} argument(s)"));
+                var level = IsCrossFrameworkBuiltinCall(extType) ? DiagnosticLevel.Warning : DiagnosticLevel.Error;
+                _diagnostics?.Add(new Diagnostic(level, $"Unresolved external call: {extType.FullName}.{methodName} with {argCount} argument(s)"));
                 return result;
             }
 

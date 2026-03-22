@@ -14,7 +14,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="dotNetRdf" Version="3.4.0" />
+      <PackageReference Include="dotNetRdf" Version="3.4.1" />
       <PackageReference Include="Dunet" Version="1.11.3" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+      <PackageReference Include="QuadStore.Core" Version="*" />
+      <PackageReference Include="QuadStore.SparqlServer" Version="*" />
   </ItemGroup>
 </Project>

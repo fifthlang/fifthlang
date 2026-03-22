@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using VDS.RDF;
 using VDS.RDF.Storage;
+#if NET10_0_OR_GREATER
+using QuadStoreNs = TripleStore.Core;
+#endif
 
 namespace Fifth.System;
 
@@ -12,9 +15,9 @@ namespace Fifth.System;
 public sealed class Store
 {
     private readonly IStorageProvider _inner;
-    private readonly TripleStore? _tripleStore; // For in-memory stores, track the TripleStore for querying
+    private readonly VDS.RDF.TripleStore? _tripleStore; // For in-memory stores, track the TripleStore for querying
 
-    private Store(IStorageProvider storage, TripleStore? tripleStore = null)
+    private Store(IStorageProvider storage, VDS.RDF.TripleStore? tripleStore = null)
     {
         _inner = storage ?? throw new ArgumentNullException(nameof(storage));
         _tripleStore = tripleStore;
@@ -53,7 +56,7 @@ public sealed class Store
     /// </summary>
     public static Store CreateInMemory()
     {
-        var tripleStore = new TripleStore();
+        var tripleStore = new VDS.RDF.TripleStore();
         return new Store(new InMemoryManager(tripleStore), tripleStore);
     }
 
@@ -78,6 +81,21 @@ public sealed class Store
 
         return new Store(new SparqlHttpProtocolConnector(endpointUri));
     }
+
+#if NET10_0_OR_GREATER
+    /// <summary>
+    /// Creates a persistent store backed by QuadStore at the given file system path.
+    /// </summary>
+    public static Store CreateFileStore(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+            throw new ArgumentException("Store path cannot be null or empty", nameof(path));
+
+        var quadStore = new QuadStoreNs.QuadStore(path);
+        var provider = new QuadStoreNs.QuadStoreStorageProvider(quadStore);
+        return new Store(provider);
+    }
+#endif
 
     /// <summary>
     /// Creates a new empty graph in the store.
@@ -150,7 +168,7 @@ public sealed class Store
     /// Gets the underlying TripleStore for in-memory querying.
     /// Returns null for non-in-memory stores (e.g., SPARQL endpoints).
     /// </summary>
-    public TripleStore? GetTripleStore() => _tripleStore;
+    public VDS.RDF.TripleStore? GetTripleStore() => _tripleStore;
 
     /// <summary>
     /// Creates a wrapper from a dotNetRDF storage provider for interop.

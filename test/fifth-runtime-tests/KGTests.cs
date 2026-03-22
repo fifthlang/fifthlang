@@ -32,40 +32,39 @@ public class KGTests
     }
 
     [Fact]
-    public async Task CreateStore_ReturnsInMemoryAndRoundTripsGraph()
+    public async Task CreateStore_ReturnsStoreAndRoundTripsGraph()
     {
         var store = KG.CreateStore();
-        var g = KG.CreateGraph();
-        var ex = new Uri("http://example.org/");
-        var s = g.CreateUriNode(ex);
-        var p = g.CreateUriNode(new Uri("http://example.org/p"));
-        var o = g.CreateLiteralNode("v");
-        g.Assert(new VDS.RDF.Triple(s, p, o));
+        var graph = store.CreateGraph(new Uri("http://example.org/"));
+        var vds = graph.ToVds();
+        var s = vds.CreateUriNode(new Uri("http://example.org/"));
+        var p = vds.CreateUriNode(new Uri("http://example.org/p"));
+        var o = vds.CreateLiteralNode("v");
+        vds.Assert(new VDS.RDF.Triple(s, p, o));
+        graph = Fifth.System.Graph.FromVds(vds);
 
-        store.SaveGraph(g);
-        var g2 = new VDS.RDF.Graph();
-        store.LoadGraph(g2, g.BaseUri);
-        g2.Triples.Count.Should().BeGreaterThan(0);
+        store.SaveGraph(graph);
+        var loaded = store.LoadGraph(new Uri("http://example.org/"));
+        loaded.Count.Should().BeGreaterThan(0);
     }
 
     [Fact]
     public async Task CreateStore_NamedGraph_SaveAndLoadByUri()
     {
         var store = KG.CreateStore();
-        var g = KG.CreateGraph();
-        g.BaseUri = new Uri("http://ex/graph");
+        var graph = store.CreateGraph(new Uri("http://ex/graph"));
+        var vds = graph.ToVds();
 
-        var s = g.CreateUriNode(new Uri("http://ex/s"));
-        var p = g.CreateUriNode(new Uri("http://ex/p"));
-        var o = g.CreateLiteralNode("v");
-        g.Assert(new VDS.RDF.Triple(s, p, o));
+        var s = vds.CreateUriNode(new Uri("http://ex/s"));
+        var p = vds.CreateUriNode(new Uri("http://ex/p"));
+        var o = vds.CreateLiteralNode("v");
+        vds.Assert(new VDS.RDF.Triple(s, p, o));
+        graph = Fifth.System.Graph.FromVds(vds);
 
-        store.SaveGraph(g);
+        store.SaveGraph(graph);
 
-        var loaded = new VDS.RDF.Graph();
-        // Some storage providers treat SaveGraph without explicit graph parameter as default graph
-        store.LoadGraph(loaded, (string)null!);
-        loaded.Triples.Count.Should().BeGreaterThan(0);
+        var loaded = store.LoadGraph(new Uri("http://ex/graph"));
+        loaded.Count.Should().BeGreaterThan(0);
     }
 
     [Fact]

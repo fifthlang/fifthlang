@@ -446,3 +446,11 @@ site/webfonts/fa-solid-900.ttf
 site/webfonts/fa-solid-900.woff2
 site/webfonts/fa-v4compatibility.ttf
 site/webfonts/fa-v4compatibility.woff2
+quadstore_data/column_g.bin
+quadstore_data/column_o.bin
+quadstore_data/column_p.bin
+quadstore_data/column_s.bin
+samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_g.bin
+samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_o.bin
+samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_p.bin
+samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_s.bin

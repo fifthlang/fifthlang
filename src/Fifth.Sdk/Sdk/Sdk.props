@@ -10,9 +10,9 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     
-    <!-- Set up standard output paths -->
+    <!-- Set up standard output paths (OutputPath is computed in Sdk.targets
+         so that the project file's TargetFramework override takes effect) -->
     <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">bin\</BaseOutputPath>
-    <OutputPath Condition="'$(OutputPath)' == ''">$(BaseOutputPath)$(Configuration)\$(TargetFramework)\</OutputPath>
 
     <TargetExt Condition="'$(TargetExt)' == '' and '$(OutputType)' == 'Library'">.dll</TargetExt>
     <TargetExt Condition="'$(TargetExt)' == '' and '$(OutputType)' == 'Exe'">.exe</TargetExt>
@@ -32,5 +32,9 @@
   <ItemGroup>
     <FifthSource Include="**\*.5th" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
   </ItemGroup>
+
+  <!-- QuadStore packages are resolved transitively through Fifth.System's deps.json
+       and copied by the CopyFifthRuntimeDependencies target in Sdk.targets.
+       No explicit PackageReferences needed here (NuGet restore doesn't work for .5thproj). -->
 
 </Project>

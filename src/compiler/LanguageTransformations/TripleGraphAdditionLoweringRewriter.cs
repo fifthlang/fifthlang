@@ -76,9 +76,43 @@ public class TripleGraphAdditionLoweringRewriter : DefaultAstRewriter
     /// <summary>
     /// Check if expression is graph-like (Graph literal or typed as graph)
     /// </summary>
+    private static bool IsStore(Expression? expr)
+    {
+        if (expr is null) return false;
+
+        if (expr is VarRefExp varRef)
+        {
+            // Check FifthType annotation
+            if (varRef.Type is FifthType.TType ttype &&
+                ttype.Name.Value != null &&
+                ttype.Name.Value.Equals("Store", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            // Check VariableDecl TypeName
+            if (varRef.VariableDecl != null)
+            {
+                var tn = varRef.VariableDecl.TypeName.Value;
+                if (!string.IsNullOrEmpty(tn) && tn.Equals("Store", StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            // Check annotations for StoreDecl kind
+            if (varRef.VariableDecl?.Annotations != null &&
+                varRef.VariableDecl.Annotations.TryGetValue("Kind", out var kind) &&
+                kind is string kindStr && kindStr == "StoreDecl")
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool IsGraph(Expression? expr)
     {
         if (expr is null)
+            return false;
+
+        // Store is NOT a graph — check Store first to avoid false positives
+        if (IsStore(expr))
             return false;
 
         // Graph literals are always graph-like
@@ -514,6 +548,37 @@ public class TripleGraphAdditionLoweringRewriter : DefaultAstRewriter
     }
 
     /// <summary>
+    /// Create statement: KG.SaveGraph(storeExpr, graphExpr)
+    /// Used when lowering store += graph to persist a graph into a Store.
+    /// </summary>
+    private ExpStatement MakeSaveGraphStatement(Expression storeExpr, Expression graphExpr, SourceLocationMetadata loc)
+    {
+        var kgVar = new VarRefExp { VarName = "KG", Location = loc, Annotations = new Dictionary<string, object>() };
+        var saveCall = new FuncCallExp
+        {
+            InvocationArguments = new List<Expression> { storeExpr, graphExpr },
+            Annotations = new Dictionary<string, object>
+            {
+                ["FunctionName"] = "SaveGraph",
+                ["ExternalType"] = typeof(Fifth.System.KG),
+                ["ExternalMethodName"] = "SaveGraph"
+            },
+            Location = loc,
+            Parent = null
+        };
+
+        var saveExpr = new MemberAccessExp
+        {
+            Annotations = new Dictionary<string, object>(),
+            LHS = kgVar,
+            RHS = saveCall,
+            Location = loc
+        };
+
+        return new ExpStatement { RHS = saveExpr, Location = loc, Annotations = new Dictionary<string, object>() };
+    }
+
+    /// <summary>
     /// Emit multiple Assert statements for each triple in a graph literal
     /// </summary>
     private List<Statement> EmitAssertTriples(Expression graphExpr, Graph graphLiteral, SourceLocationMetadata loc)
@@ -636,6 +701,20 @@ public class TripleGraphAdditionLoweringRewriter : DefaultAstRewriter
         // Lower addition/subtraction for graph/triple composition if any operand indicates triple/graph intent
         if (ctx.Operator == Operator.ArithmeticAdd || ctx.Operator == Operator.ArithmeticSubtract)
         {
+            // Handle store += graph: emit store.SaveGraph(graph) instead of graph merge
+            bool leftIsStore = IsStore(lhs);
+            if (leftIsStore && ctx.Operator == Operator.ArithmeticAdd)
+            {
+                prologue.Add(MakeSaveGraphStatement(lhs, rhs, loc));
+                return new RewriteResult(lhs, prologue);
+            }
+            if (leftIsStore && ctx.Operator == Operator.ArithmeticSubtract)
+            {
+                // store - graph => store.RemoveGraphInPlace(graph); result is store
+                // For now, just return as-is since store -= graph isn't commonly used yet
+                return new RewriteResult(ctx with { LHS = lhs, RHS = rhs }, prologue);
+            }
+
             bool leftIsTriple = IsTriple(lhs);
             bool rightIsTriple = IsTriple(rhs);
             bool leftIsGraph = IsGraph(lhs);

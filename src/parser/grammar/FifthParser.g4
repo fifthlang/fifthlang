@@ -392,6 +392,18 @@ colon_graph_decl:
 // Prefer simple identifier first to avoid mispredicting IRI when both are viable
 alias_scope_ref: IDENTIFIER | iri;
 
-// Colon-form variant: name : store = sparql_store(<iri>);
+// Store declaration: supports both colon form and keyword-first form.
+// Colon form: name : store = <store_creation_expr>;
+// Keyword-first form: store <name> = <store_creation_expr>;
+// Both forms support 'default' as a store name (DEFAULT is a keyword token).
 colon_store_decl:
-	store_name = IDENTIFIER COLON STORE ASSIGN SPARQL L_PAREN iri R_PAREN SEMI;
+	store_name = (IDENTIFIER | DEFAULT) COLON STORE ASSIGN store_creation_expr SEMI
+	| STORE store_name = (IDENTIFIER | DEFAULT) ASSIGN store_creation_expr SEMI;
+
+store_creation_expr:
+	SPARQL L_PAREN iri R_PAREN												# store_sparql
+	| func_name = IDENTIFIER L_PAREN (store_arg_list)? R_PAREN				# store_func_call;
+
+// Store function arguments can be expressions or IRIs (e.g. remote_store(<http://example.com/>))
+store_arg_list: store_arg (COMMA store_arg)*;
+store_arg: iri | expression;

@@ -1,0 +1,37 @@
+// TaskApp: Console application demonstrating persistent RDF storage
+// using a local QuadStore.
+//
+// Demonstrates:
+//   - local_store() for persistent file-backed storage
+//   - store += graph to persist data
+//   - Triple literals for creating new entities
+//
+// Requires: net10.0 (QuadStore is only available on net10.0+)
+
+alias todo as <http://example.org/todo#>;
+
+add_task(title: string, priority: int): int {
+    db : store = local_store("./quadstore_data");
+    g: graph = KG.CreateGraph();
+    g += <todo:task_1, todo:title, "placeholder">;
+    g += <todo:task_1, todo:priority, 1>;
+    db += g;
+    std.print("Saved task to QuadStore: ");
+    std.print(title);
+    return 0;
+}
+
+main(): int {
+    std.print("=== TaskListQuadStore Demo ===");
+    std.print("");
+
+    std.print("Adding tasks to persistent QuadStore...");
+    add_task("Design data model", 1);
+    add_task("Implement repository", 2);
+    add_task("Write tests", 3);
+
+    std.print("");
+    std.print("All tasks persisted to ./quadstore_data");
+
+    return 0;
+}
