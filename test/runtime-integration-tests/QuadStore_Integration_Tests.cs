@@ -35,7 +35,6 @@ public class QuadStore_Integration_Tests : IDisposable
     // Store.CreateFileStore tests (net10.0 only)
     // ========================================================================
 
-#if NET10_0_OR_GREATER
     [Fact]
     public void CreateFileStore_WithValidPath_ReturnsStore()
     {
@@ -57,7 +56,6 @@ public class QuadStore_Integration_Tests : IDisposable
         var act = () => Store.CreateFileStore("");
         act.Should().Throw<ArgumentException>();
     }
-#endif
 
     // ========================================================================
     // KG built-in function return type tests
@@ -79,7 +77,6 @@ public class QuadStore_Integration_Tests : IDisposable
         store.ToVds().Should().BeOfType<SparqlHttpProtocolConnector>();
     }
 
-#if NET10_0_OR_GREATER
     [Fact]
     public void LocalStore_ReturnsStoreBackedByQuadStoreProvider()
     {
@@ -88,7 +85,6 @@ public class QuadStore_Integration_Tests : IDisposable
         store.Should().NotBeNull();
         store.ToVds().Should().BeOfType<TripleStore.Core.QuadStoreStorageProvider>();
     }
-#endif
 
     // ========================================================================
     // sparql_store deprecation tests
@@ -127,7 +123,6 @@ public class QuadStore_Integration_Tests : IDisposable
     // CreateStore() tests
     // ========================================================================
 
-#if NET10_0_OR_GREATER
     [Fact]
     public void CreateStore_ReturnsQuadStoreBackedStore()
     {
@@ -135,14 +130,12 @@ public class QuadStore_Integration_Tests : IDisposable
         store.Should().NotBeNull();
         store.ToVds().Should().BeOfType<TripleStore.Core.QuadStoreStorageProvider>();
     }
-#endif
 
     // ========================================================================
     // Query execution against QuadStore-backed stores (net10.0 only)
     // Validates: Requirements 7.1, 7.2, 7.3, 7.4
     // ========================================================================
 
-#if NET10_0_OR_GREATER
     /// <summary>
     /// Helper: creates a QuadStore-backed store with a graph containing known triples.
     /// Returns the store and the graph URI used.
@@ -388,11 +381,12 @@ public class QuadStore_Integration_Tests : IDisposable
         var loadedVds = loaded.ToVds();
         var loadedTriples = loadedVds.Triples.ToList();
 
-        // Verify each triple is present
+        // Verify each triple is present (use Contains for literal values
+        // since dotNetRdf 3.5.x ToString() may include datatype suffixes)
         loadedTriples.Should().Contain(t =>
             t.Subject.ToString() == "http://example.org/alice" &&
             t.Predicate.ToString() == "http://example.org/name" &&
-            t.Object.ToString() == "Alice");
+            t.Object.ToString().Contains("Alice"));
 
         loadedTriples.Should().Contain(t =>
             t.Subject.ToString() == "http://example.org/alice" &&
@@ -405,23 +399,19 @@ public class QuadStore_Integration_Tests : IDisposable
     }
 
     // ========================================================================
-    // Known limitations: DeleteGraph, RemoveGraphInPlace, Store - operator
-    // throw NotImplementedException on QuadStore-backed stores.
+    // QuadStore behavior tests: DeleteGraph, RemoveGraphInPlace, Store operators
     // Validates: Requirement 6.3, 6.4, 6.6
     //
-    // KNOWN LIMITATION: QuadStoreStorageProvider.DeleteGraph() and triple
-    // retraction operations are not yet implemented in QuadStore. Any Fifth
-    // language feature that invokes these operations (e.g., store -= graph,
-    // Store.DeleteGraph(), Store.RemoveGraphInPlace()) will throw
-    // NotImplementedException. This is an accepted limitation for the initial
-    // integration and will be addressed in a future QuadStore release.
+    // NOTE: QuadStore.Core 2.0.0 now implements DeleteGraph(). Triple
+    // retraction and immutable store operators (store +/- graph) are still
+    // unsupported for QuadStore-backed stores because they require an
+    // in-memory TripleStore clone.
     // ========================================================================
 
     [Fact]
-    public void DeleteGraph_OnQuadStoreBackedStore_ThrowsNotImplementedException()
+    public void DeleteGraph_OnQuadStoreBackedStore_SucceedsWithoutException()
     {
-        // Validates: Requirement 6.6
-        // Known limitation: QuadStore does not yet support DeleteGraph
+        // QuadStore now implements DeleteGraph (as of QuadStore.Core 2.0.0)
         var path = CreateTempDir();
         var store = Store.CreateFileStore(path);
 
@@ -430,16 +420,15 @@ public class QuadStore_Integration_Tests : IDisposable
         store.SaveGraph(graph);
 
         var act = () => store.DeleteGraph(graphUri);
-        act.Should().Throw<NotImplementedException>(
-            "QuadStore does not yet implement DeleteGraph");
+        act.Should().NotThrow(
+            "QuadStore 2.0.0 now implements DeleteGraph");
     }
 
     [Fact]
-    public void RemoveGraphInPlace_OnQuadStoreBackedStore_ThrowsNotImplementedException()
+    public void RemoveGraphInPlace_OnQuadStoreBackedStore_SucceedsWithoutException()
     {
-        // Validates: Requirement 6.4, 6.6
-        // Known limitation: RemoveGraphInPlace delegates to DeleteGraph,
-        // which is not implemented on QuadStore
+        // QuadStore 2.0.0 now implements DeleteGraph, so RemoveGraphInPlace
+        // (which delegates to DeleteGraph) should succeed.
         var path = CreateTempDir();
         var store = Store.CreateFileStore(path);
 
@@ -448,8 +437,8 @@ public class QuadStore_Integration_Tests : IDisposable
         store.SaveGraph(graph);
 
         var act = () => store.RemoveGraphInPlace(graph);
-        act.Should().Throw<NotImplementedException>(
-            "QuadStore does not yet implement DeleteGraph, so RemoveGraphInPlace fails");
+        act.Should().NotThrow(
+            "QuadStore 2.0.0 now implements DeleteGraph, so RemoveGraphInPlace should succeed");
     }
 
     [Fact]
@@ -487,7 +476,6 @@ public class QuadStore_Integration_Tests : IDisposable
         act.Should().Throw<InvalidOperationException>(
             "Immutable store operators are only supported for in-memory stores");
     }
-#endif
 
     // ========================================================================
     // Task 7.1: LoadFromTriG verification (all targets)

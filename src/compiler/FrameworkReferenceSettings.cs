@@ -11,13 +11,13 @@ namespace compiler;
 public static class FrameworkReferenceSettings
 {
     /// <summary>Default target-framework moniker used when none is specified.</summary>
-    public const string DefaultTargetFramework = "net8.0";
+    public const string DefaultTargetFramework = "net10.0";
 
     /// <summary>Name of the .NET Core shared framework written into runtimeconfig.json.</summary>
     public const string DefaultFrameworkName = "Microsoft.NETCore.App";
 
     /// <summary>Framework version string written into runtimeconfig.json when the TFM is <see cref="DefaultTargetFramework"/>.</summary>
-    public const string DefaultFrameworkVersion = "8.0.0";
+    public const string DefaultFrameworkVersion = "10.0.0";
 
     /// <summary>
     /// The netstandard façade assembly that is loaded to provide broad BCL API surface.

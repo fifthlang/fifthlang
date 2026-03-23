@@ -2,6 +2,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using QuadStoreNs = TripleStore.Core;
 
 namespace Fifth.System;
 
@@ -35,9 +36,30 @@ public static class QueryApplicationExecutor
                 var processor = new LeviathanQueryProcessor(tripleStore);
                 results = processor.ProcessQuery(sparqlQuery);
             }
+            else if (store.ToVds() is QuadStoreNs.QuadStoreStorageProvider quadStoreProvider)
+            {
+                // QuadStore path: load graphs into an in-memory TripleStore and query
+                // via Leviathan. QuadStore.Core 2.0.0's IQueryableStorage.Query() uses
+                // the InMemoryDataset(IInMemoryQueryableStore, Boolean) constructor that
+                // was removed in dotNetRdf 3.5.x, so we work around it here.
+                //
+                // Materialize the graph URI list first to avoid recursive read locks
+                // (ListGraphs holds a read lock; LoadGraph also needs one).
+                var graphUris = quadStoreProvider.ListGraphs().ToList();
+                var tempStore = new VDS.RDF.TripleStore();
+                foreach (var graphUri in graphUris)
+                {
+                    var g = new VDS.RDF.Graph();
+                    quadStoreProvider.LoadGraph(g, graphUri);
+                    g.BaseUri = graphUri;
+                    tempStore.Add(g, true);
+                }
+                var processor = new LeviathanQueryProcessor(tempStore);
+                results = processor.ProcessQuery(sparqlQuery);
+            }
             else if (store.ToVds() is IQueryableStorage queryableStorage)
             {
-                // IQueryableStorage path: QuadStore and other providers that support direct querying
+                // IQueryableStorage path: other providers that support direct querying
                 results = queryableStorage.Query(sparqlQuery.ToString());
             }
             else

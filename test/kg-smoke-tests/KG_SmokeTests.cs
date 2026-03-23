@@ -42,10 +42,10 @@ public class KG_SmokeTests
         var runtimeConfigJson = """
                 {
                     "runtimeOptions": {
-                        "tfm": "net8.0",
+                        "tfm": "net10.0",
                         "framework": {
                             "name": "Microsoft.NETCore.App",
-                            "version": "8.0.0"
+                            "version": "10.0.0"
                         }
                     }
                 }

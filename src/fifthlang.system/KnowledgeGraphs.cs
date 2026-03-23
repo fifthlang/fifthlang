@@ -7,20 +7,14 @@ namespace Fifth.System;
 public static class KG
 {
     /// <summary>
-    /// Creates and returns a new default Store instance.
-    /// On net10.0+, returns a QuadStore-backed store using a temp directory.
-    /// On net8.0, falls back to an in-memory store.
+    /// Creates and returns a new default Store instance backed by QuadStore using a temp directory.
     /// </summary>
     /// <returns>A Store instance.</returns>
     [BuiltinFunction]
     public static Store CreateStore()
     {
-#if NET10_0_OR_GREATER
         var tempPath = Path.Combine(Path.GetTempPath(), "fifth-quadstore-" + Guid.NewGuid().ToString("N"));
         return Store.CreateFileStore(tempPath);
-#else
-        return Store.CreateInMemory();
-#endif
     }
 
     [BuiltinFunction]
@@ -67,7 +61,6 @@ public static class KG
         return Store.CreateSparqlStore(endpointUri);
     }
 
-#if NET10_0_OR_GREATER
     /// <summary>
     /// Creates a persistent Store backed by a local QuadStore at the given file system path.
     /// </summary>
@@ -78,7 +71,6 @@ public static class KG
     {
         return Store.CreateFileStore(path);
     }
-#endif
 
     /// <summary>
     /// Creates a transient in-memory Store using dotNetRDF's InMemoryManager.
