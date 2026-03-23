@@ -8,7 +8,7 @@ Fifth.Sdk enables Fifth language projects to be seamlessly integrated into .NET 
 
 ## Requirements
 
-- .NET 8.0 SDK or higher
+- .NET 10.0 SDK or higher
 - Fifth compiler built in the repository
 
 ## Usage
@@ -21,7 +21,7 @@ Create a new file with the `.5thproj` extension:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>MyFifthApp</AssemblyName>
     
     <!-- Optional: Specify compiler path if not in default location -->
@@ -113,7 +113,7 @@ dotnet sln add MyFifthProject.5thproj
 
 - Currently only supports executable projects (`OutputType=Exe`)
 - Requires the Fifth compiler to be pre-built
-- .NET 8.0+ target framework required
+- .NET 10.0+ target framework required
 
 ## Future Enhancements
 

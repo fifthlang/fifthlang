@@ -149,7 +149,7 @@ Expected build warnings
 ## Try It Locally
 
 Prereqs
-- .NET 8.0 SDK (global.json pins 8.0.118)
+- .NET 10.0 SDK (global.json pins 10.0.100)
 - Java 17+ (for ANTLR)
 
 Build + test (fish shell)

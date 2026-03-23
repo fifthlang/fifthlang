@@ -8,7 +8,7 @@ Fifth.Sdk enables Fifth language projects to be seamlessly integrated into .NET 
 
 ## Requirements
 
-- .NET 8.0 SDK or higher
+- .NET 10.0 SDK or higher
 - Fifth compiler available either from the repo build or as a .NET tool
 
 ## Usage
@@ -21,7 +21,7 @@ Create a new file with the `.5thproj` extension:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>MyFifthApp</AssemblyName>
     
     <!-- Optional: Specify compiler path if not in default location -->
@@ -57,8 +57,8 @@ dotnet build MyProject.5thproj
 - **FifthCompilerCommand** (optional): Compiler command to invoke (e.g., `fifthc`) when the compiler is installed as a .NET tool.
 - **FifthSourceDirectory** (optional): Directory containing Fifth source files. Defaults to the project directory.
 - **FifthOutputPath** (optional): Full path to the output artifact. Defaults to `bin\<Configuration>\<TargetFramework>\<AssemblyName>.<ext>`.
-- **FifthSupportedTargetFrameworks** (optional): Semicolon-delimited allowlist of supported target frameworks. Defaults to `net8.0;net9.0`.
-- **TargetFramework**: Target-framework moniker for the output. Supported values: `net8.0` (default), `net9.0`. Passed to the compiler as `--target-framework` and controls the generated `runtimeconfig.json` framework version.
+- **FifthSupportedTargetFrameworks** (optional): Semicolon-delimited allowlist of supported target frameworks. Defaults to `net10.0;net9.0`.
+- **TargetFramework**: Target-framework moniker for the output. Supported values: `net10.0` (default), `net9.0`. Passed to the compiler as `--target-framework` and controls the generated `runtimeconfig.json` framework version.
 
 ### Targets
 
@@ -140,7 +140,7 @@ dotnet sln add MyFifthProject.5thproj
 ## Limitations
 
 - Requires the Fifth compiler to be available via `FifthCompilerPath` or `FifthCompilerCommand`
-- `net8.0` and `net9.0` target frameworks are supported; earlier versions are not
+- `net10.0` and `net9.0` target frameworks are supported; earlier versions are not
 
 ## Future Enhancements
 

@@ -4,7 +4,7 @@ inclusion: auto
 
 # Fifth Language Project Overview
 
-Fifth Language is a C# .NET 8.0 compiler for the Fifth programming language. It uses an ANTLR-based split lexer/parser, AST code generation for builders and visitors, and a multi-pass compiler with language transformations that perform AST lowering through intermediate representations.
+Fifth Language is a C# .NET 10.0 compiler for the Fifth programming language. It uses an ANTLR-based split lexer/parser, AST code generation for builders and visitors, and a multi-pass compiler with language transformations that perform AST lowering through intermediate representations.
 
 ## Compiler Pipeline
 
@@ -25,7 +25,7 @@ Fifth Language is a C# .NET 8.0 compiler for the Fifth programming language. It 
 - `src/compiler/ParserManager.cs` — Transformation pipeline coordinator
 - `src/code_generator/` — Legacy IL emission pipeline (being replaced by Roslyn)
 - `src/fifthlang.system/` — Built-in system functions and knowledge graph support
-- `test/ast-tests/` — xUnit AST and generator tests
+- `test/ast-tests/` — TUnit AST and generator tests
 - `test/syntax-parser-tests/` — Grammar parsing tests
 - `test/runtime-integration-tests/` — End-to-end verification tests
 

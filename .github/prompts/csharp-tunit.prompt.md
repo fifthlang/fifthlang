@@ -14,7 +14,7 @@ Your goal is to help me write effective unit tests with TUnit, covering both sta
 - Reference TUnit package and TUnit.Assertions for fluent assertions
 - Create test classes that match the classes being tested (e.g., `CalculatorTests` for `Calculator`)
 - Use .NET SDK test commands: `dotnet test` for running tests
-- TUnit requires .NET 8.0 or higher
+- TUnit requires .NET 10.0 or higher
 
 ## Test Structure
 

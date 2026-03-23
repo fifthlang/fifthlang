@@ -30,7 +30,7 @@ fifthc --command help
 - `--source <path>`: Source file or directory path (required for build/run/lint)
 - `--output <path>`: Output executable path (required for build/run)
 - `--output-type <type>`: Output type: `Exe` (default) or `Library`
-- `--target-framework <tfm>`: Target-framework moniker, e.g. `net8.0` (default) or `net9.0`. Drives `runtimeconfig.json` generation and assembly reference resolution.
+- `--target-framework <tfm>`: Target-framework moniker, e.g. `net10.0` (default) or `net9.0`. Drives `runtimeconfig.json` generation and assembly reference resolution.
 - `--reference <path>`: Assembly reference path (repeatable). Can be a `.dll` path or a directory to scan.
 - `--args <args>`: Arguments to pass to program when running
 - `--keep-temp`: Keep temporary files for debugging
@@ -56,7 +56,7 @@ The compiler orchestrates several phases:
 
 ## Requirements
 
-- .NET 8.0 or later
+- .NET 10.0 or later
 ## Testing
 
 The compiler includes comprehensive unit and integration tests covering:

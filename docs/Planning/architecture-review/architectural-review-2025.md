@@ -28,7 +28,7 @@ The review analyzed:
 - **Codebase Structure:** 51 compiler source files, 23 visitor implementations, 1,421 lines of AST definitions
 - **Key Components:** Parser (ANTLR-based), 18 transformation phases, IL/PE code generators
 - **Test Coverage:** 161 .5th test files, multiple test projects (runtime, syntax, integration)
-- **Build System:** .NET 8.0, ANTLR 4.8, MSBuild integration via Fifth.Sdk
+- **Build System:** .NET 10.0, ANTLR 4.8, MSBuild integration via Fifth.Sdk
 
 Review focused on architectural patterns standard in modern compiler design and IDE integration requirements.
 

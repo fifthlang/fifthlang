@@ -7,7 +7,7 @@ fileMatchPattern: "test/**"
 
 ## Framework and Tools
 
-- xUnit for test framework
+- TUnit for test framework
 - FluentAssertions for assertions
 - Test projects: `test/ast-tests/`, `test/syntax-parser-tests/`, `test/runtime-integration-tests/`
 

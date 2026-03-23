@@ -4,7 +4,7 @@ This extension connects VS Code to the Fifth Language Server over stdio.
 
 ## Prerequisites
 
-- .NET SDK 8.0 (per the repo `global.json`)
+- .NET SDK 10.0 (per the repo `global.json`)
 - The Fifth Language Server build output
 
 ## Setup
@@ -37,7 +37,7 @@ Configure the server path in VS Code settings:
 
 Default server DLL path:
 
-- `../language-server/bin/Debug/net8.0/Fifth.LanguageServer.dll`
+- `../language-server/bin/Debug/net10.0/Fifth.LanguageServer.dll`
 
 The path is resolved relative to the current workspace first, then the extension folder.
 

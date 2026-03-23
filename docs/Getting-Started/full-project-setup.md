@@ -115,7 +115,7 @@ Create `.config/dotnet-tools.json` to pin the Fifth compiler:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
 </Project>
@@ -137,7 +137,7 @@ square(x: int): int {
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
   <ItemGroup>
@@ -164,7 +164,7 @@ add(a: int, b: int): int {
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
   <ItemGroup>

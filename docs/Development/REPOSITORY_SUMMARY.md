@@ -4,7 +4,7 @@
 
 Fifth is an experimental .NET programming language that uniquely bridges imperative systems programming with native knowledge graph and semantic web capabilities. The language provides first-class support for RDF triples, SPARQL queries, and graph operations while maintaining familiar C#-like syntax enhanced with Erlang-inspired function overloading and pattern matching.
 
-The compiler is written in C# targeting .NET 8.0, using ANTLR 4.8 for parsing, and Roslyn for IL code generation. The project is in active pre-release development, with a comprehensive test suite and multi-platform release pipeline.
+The compiler is written in C# targeting .NET 10.0, using ANTLR 4.8 for parsing, and Roslyn for IL code generation. The project is in active pre-release development, with a comprehensive test suite and multi-platform release pipeline.
 
 ## Architecture
 
@@ -82,11 +82,11 @@ MSBuild SDK for `.5thproj` project file support, enabling dotnet CLI integration
 
 | Category | Technologies |
 |----------|--------------|
-| **Language** | C# 14, .NET 8.0 |
+| **Language** | C# 14, .NET 10.0 |
 | **Parsing** | ANTLR 4.8 (split lexer/parser grammar) |
 | **Code Generation** | Roslyn (Microsoft.CodeAnalysis) |
 | **RDF/SPARQL** | dotNetRDF |
-| **Testing** | xUnit, FluentAssertions |
+| **Testing** | TUnit, FluentAssertions |
 | **Code Gen Templates** | RazorLight |
 | **Discriminated Unions** | Dunet |
 | **Value Objects** | Vogen |
@@ -135,7 +135,7 @@ The project demonstrates a novel human-AI collaboration model, with GitHub Copil
 - **Language Transformations**: 32 visitors/rewriters
 - **Test Projects**: 8
 - **Supported Platforms**: Linux, macOS, Windows (x64, arm64)
-- **Target Runtimes**: .NET 8.0, .NET 10.0 (preview)
+- **Target Runtimes**: .NET 10.0
 
 ## Project Status
 

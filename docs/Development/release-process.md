@@ -4,7 +4,7 @@ This document explains how we create official Fifth Compiler releases, what trig
 
 ## Overview
 
-All release artifacts (platform-specific archives, metadata bundles, and checksum manifests) are produced by the **Release Packaging** GitHub Actions workflow. The workflow builds across Linux, macOS, and Windows with both .NET 8.0 and .NET 10.0 targets, validates the bundles via smoke tests, assembles metadata, and finally publishes a GitHub release with the generated archives and `SHA256SUMS` file.
+All release artifacts (platform-specific archives, metadata bundles, and checksum manifests) are produced by the **Release Packaging** GitHub Actions workflow. The workflow builds across Linux, macOS, and Windows with both .NET 10.0 and .NET 9.0 targets, validates the bundles via smoke tests, assembles metadata, and finally publishes a GitHub release with the generated archives and `SHA256SUMS` file.
 
 ## Triggers
 

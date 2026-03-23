@@ -1,7 +1,7 @@
 # Fifth Language Engine
 
 ### I. Library-First, Contracts-First
-Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with xUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
+Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
 - AST metamodels in `src/ast-model/AstMetamodel.cs`
 - IL metamodels in `src/ast-model/ILMetamodel.cs`
 - Generated builders/visitors in `src/ast-generated/`
@@ -14,7 +14,7 @@ This document is self-contained and has no external dependencies. All operationa
 
 ## Project Overview
 
-Fifth Language is a C# .NET 8.0 solution that provides Abstract Syntax Tree (AST) construction capabilities for the Fifth programming language. It includes an ANTLR-based split lexer/parser, code generation for AST builders and visitors, and a multi-pass compiler with various language transformations that perform AST lowering through intermediate representations.
+Fifth Language is a C# .NET 10.0 solution that provides Abstract Syntax Tree (AST) construction capabilities for the Fifth programming language. It includes an ANTLR-based split lexer/parser, code generation for AST builders and visitors, and a multi-pass compiler with various language transformations that perform AST lowering through intermediate representations.
 
 ### Architecture Overview
 
@@ -29,7 +29,7 @@ The Fifth language compiler follows a multi-pass pipeline architecture that tran
 ## Core Principles
 
 ### I. Library-First, Contracts-First
-Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with xUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
+Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
 - AST metamodels in `src/ast-model/`
 - Generated builders/visitors in `src/ast-generated/`
 - ANTLR grammar in `src/parser/grammar/FifthParser.g4` and `src/parser/grammar/FifthLexer.g4` 
@@ -49,7 +49,7 @@ The AST generator is authoritative for builders, visitors, IL builders, and type
 4. Build the full solution to validate
 
 ### IV. Test-First (Non-Negotiable)
-Practice TDD: write/approve tests, see them fail, then implement. Use xUnit + FluentAssertions across:
+Practice TDD: write/approve tests, see them fail, then implement. Use TUnit + FluentAssertions across:
 - `test/ast-tests/` for AST and generator correctness
 - `test/syntax-parser-tests/` for grammar parsing
 - `test/runtime-integration-tests/` for end-to-end verification
@@ -72,7 +72,7 @@ Any feature with only compilation tests or failing runtime tests is considered I
 
 ### V. Reproducible Builds & Toolchain Discipline
 Tooling is pinned and enforced for reproducibility:
-- .NET SDK 8.0.x per `global.json` (currently 8.0.118)
+- .NET SDK 10.0.x per `global.json` (currently 10.0.100)
 - Java 17+ for ANTLR; ANTLR 4.8 runtime with the jar at `src/parser/tools/antlr-4.8-complete.jar`
 - Build order: ast-model → ast_generator → ast-generated → parser → code_generator → compiler → tests
 - Critical rule: NEVER CANCEL restore/build/test/generation tasks. Allow up to 1–2 minutes for completion as documented.
@@ -254,7 +254,7 @@ src/
     └── KnowledgeGraphs.cs
 
 test/
-├── ast-tests/          # xUnit tests with .5th code samples
+├── ast-tests/          # TUnit tests with .5th code samples
 ├── syntax-parser-tests/  # Grammar and parsing tests
 └── runtime-integration-tests/  # End-to-end verification tests
 ```
@@ -262,14 +262,14 @@ test/
 ## Build System & Commands
 
 ### Prerequisites
-- **.NET 8.0 SDK** (global.json pins 8.0.118)
+- **.NET 10.0 SDK** (global.json pins 10.0.100)
 - **Java 17+** (for ANTLR grammar compilation)
 - **ANTLR 4.8** (jar file included at `src/parser/tools/antlr-4.8-complete.jar`)
 
 ### Verification Commands
 ```bash
 # Verify prerequisites
-dotnet --version  # Should show 8.0.x
+dotnet --version  # Should show 10.0.x
 java -version     # Should show Java 17+
 ```
 
@@ -321,7 +321,7 @@ Always build the full solution rather than individual projects to ensure proper 
 - `Antlr4.Runtime.Standard` - ANTLR runtime for C#
 - `RazorLight` - Template engine for code generation
 - `System.CommandLine` - CLI parsing for AST generator
-- `xUnit` - Test framework
+- `TUnit` - Test framework
 - `FluentAssertions` - Test assertions
 - `dunet` - Discriminated unions for AST model
 - `Vogen` - Value object generation
@@ -353,8 +353,8 @@ myprint(int x) => std.print(x);
 ## Engineering Constraints & Standards
 
 ### Toolchain & Environment
-- C# 12 Language Version (or the latest supported by .NET 8 SDK).
-- .NET 8.0 SDK required; Java 17+ required for ANTLR operations
+- C# 14 Language Version (or the latest supported by .NET 10 SDK).
+- .NET 10.0 SDK required; Java 17+ required for ANTLR operations
 - For build timing, set timeouts per documented guidance; do not prematurely interrupt tasks
 
 ### Code Generation
@@ -372,7 +372,7 @@ myprint(int x) => std.print(x);
 - See `src/ast_generator/README.md` for guidance on choosing the right visitor/rewriter pattern
 
 ### Testing Requirements
-- Unit tests: xUnit with FluentAssertions
+- Unit tests: TUnit with FluentAssertions
 - Parser tests: grammar samples in `src/parser/grammar/test_samples/*.5th`
 - Integration tests: `test/runtime-integration-tests/`
 - Add tests first; ensure failing state is visible before implementing fixes
@@ -513,6 +513,6 @@ SpecKit is considered a first-class consumer. Specifications and tasks must be k
 - Added comprehensive description of multi-pass compiler pipeline
 - Detailed language transformations and their roles in AST lowering
 - Clarified two-level AST design (main AST vs IL AST)
-- Updated testing framework references (xUnit instead of TUnit)
+- Updated testing framework references (TUnit instead of xUnit)
 - Enhanced project structure documentation
 - Added transformation strategy guidelines

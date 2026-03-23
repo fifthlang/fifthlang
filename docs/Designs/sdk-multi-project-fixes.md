@@ -118,7 +118,7 @@ A library project becomes:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
 </Project>
@@ -130,7 +130,7 @@ A referencing project becomes:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
   <ItemGroup>
@@ -235,7 +235,7 @@ Roslyn compilation succeeds.
 
 ### Current behavior
 
-`FifthOutputPath` defaults to `$(OutputPath)$(TargetFileName)` which evaluates to a relative path like `bin\Debug\net8.0\CoreLib.dll`. When a referencing project queries `GetTargetPath`, this relative path is interpreted relative to the *referencing* project's directory, not the *referenced* project's directory. The path doesn't resolve.
+`FifthOutputPath` defaults to `$(OutputPath)$(TargetFileName)` which evaluates to a relative path like `bin\Debug\net10.0\CoreLib.dll`. When a referencing project queries `GetTargetPath`, this relative path is interpreted relative to the *referencing* project's directory, not the *referenced* project's directory. The path doesn't resolve.
 
 ### Required fix
 

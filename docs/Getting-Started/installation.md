@@ -6,11 +6,11 @@ Fifth provides pre-built, self-contained binaries for Linux, macOS, and Windows.
 
 | Platform | Architectures | Runtimes |
 | --- | --- | --- |
-| Linux | x64, arm64 | net8.0, net10.0 |
-| macOS | x64, arm64 | net8.0, net10.0 |
-| Windows | x64, arm64 | net8.0, net10.0 |
+| Linux | x64, arm64 | net10.0, net9.0 |
+| macOS | x64, arm64 | net10.0, net9.0 |
+| Windows | x64, arm64 | net10.0, net9.0 |
 
-The `net8.0` packages are the supported baseline. The `net10.0` builds rely on preview SDKs and are provided for early adopters to validate future runtime behavior.
+The `net10.0` packages are the recommended baseline.
 
 ---
 
@@ -23,7 +23,7 @@ Archives follow the naming pattern:
 fifth-<version>-<runtime>-<framework>.<tar.gz|zip>
 ```
 
-For example: `fifth-0.9.0-linux-x64-net8.0.tar.gz`
+For example: `fifth-0.9.0-linux-x64-net10.0.tar.gz`
 
 ---
 
@@ -36,7 +36,7 @@ Each release includes a `SHA256SUMS` file for checksum verification.
 ```bash
 VERSION=0.9.0
 RUNTIME=linux-x64
-FRAMEWORK=net8.0
+FRAMEWORK=net10.0
 
 curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz"
 curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/SHA256SUMS"
@@ -49,7 +49,7 @@ sha256sum --ignore-missing -c SHA256SUMS
 ```bash
 VERSION=0.9.0
 RUNTIME=osx-x64
-FRAMEWORK=net8.0
+FRAMEWORK=net10.0
 
 curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz"
 curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/SHA256SUMS"
@@ -62,7 +62,7 @@ grep "fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz" SHA256SUMS | shasum -a 25
 ```powershell
 $version = "0.9.0"
 $runtime = "win-x64"
-$framework = "net8.0"
+$framework = "net10.0"
 
 Invoke-WebRequest -Uri "https://github.com/aabs/fifthlang/releases/download/v$version/fifth-$version-$runtime-$framework.zip" -OutFile "fifth-$version-$runtime-$framework.zip"
 Invoke-WebRequest -Uri "https://github.com/aabs/fifthlang/releases/download/v$version/SHA256SUMS" -OutFile "SHA256SUMS"
@@ -83,7 +83,7 @@ Only proceed when the computed hash matches the line from `SHA256SUMS`.
 ```bash
 VERSION=0.9.0
 RUNTIME=linux-x64  # or osx-x64, osx-arm64, linux-arm64
-FRAMEWORK=net8.0
+FRAMEWORK=net10.0
 
 # Create installation directory
 mkdir -p ~/opt/fifth/${VERSION}
@@ -100,7 +100,7 @@ export PATH=~/opt/fifth/${VERSION}/fifth-${VERSION}/bin:$PATH
 ```powershell
 $version = "0.9.0"
 $runtime = "win-x64"  # or win-arm64
-$framework = "net8.0"
+$framework = "net10.0"
 
 # Create installation directory
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\fifth\$version" | Out-Null
@@ -154,7 +154,7 @@ If you prefer to build from source or need to work on the compiler itself:
 
 ### Prerequisites
 
-- [.NET SDK 8.0+](https://dotnet.microsoft.com/download)
+- [.NET SDK 10.0+](https://dotnet.microsoft.com/download)
 - Java 17+ (for ANTLR grammar compilation)
 
 ### Build Steps

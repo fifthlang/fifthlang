@@ -28,7 +28,7 @@ This repo includes a dedicated VS Code client extension at [src/vscode-client](s
 
 4) Confirm settings (optional):
 
-- `fifthLanguageServer.serverDllPath` (default: `src/language-server/bin/Debug/net8.0/Fifth.LanguageServer.dll`)
+- `fifthLanguageServer.serverDllPath` (default: `src/language-server/bin/Debug/net10.0/Fifth.LanguageServer.dll`)
 - `fifthLanguageServer.dotnetPath` (default: `dotnet`)
 - `fifthLanguageServer.args` (default: empty)
 
@@ -42,7 +42,7 @@ From the repo root:
 
 2) Locate the server:
 
-- Built DLL: `src/language-server/bin/Debug/net8.0/Fifth.LanguageServer.dll`
+- Built DLL: `src/language-server/bin/Debug/net10.0/Fifth.LanguageServer.dll`
 
 You can also run directly without prebuilding:
 
@@ -71,7 +71,7 @@ Example (adjust keys to match your LSP client extension):
   "fifth": {
     "command": "dotnet",
     "args": [
-      "src/language-server/bin/Debug/net8.0/Fifth.LanguageServer.dll"
+      "src/language-server/bin/Debug/net10.0/Fifth.LanguageServer.dll"
     ],
     "languages": ["fifth"]
   }

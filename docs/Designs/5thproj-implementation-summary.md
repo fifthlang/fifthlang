@@ -13,7 +13,7 @@ Located in `src/Fifth.Sdk/`, this package provides:
 - **Sdk.props**: Defines project properties, default configurations, and source file patterns
   - Automatically includes all `*.5th` files in the project directory
   - Sets up standard .NET output paths (`bin/<Configuration>/<TargetFramework>/`)
-  - Configures default target framework (net8.0) and output type (Exe)
+  - Configures default target framework (net10.0) and output type (Exe)
 
 - **Sdk.targets**: Implements MSBuild targets for the Fifth build process
   - `FifthCompile`: Main compilation target that invokes the Fifth compiler
@@ -61,7 +61,7 @@ Located in `test/fifth-sdk-tests/`:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>MyApp</AssemblyName>
     <!-- Optional: specify compiler location -->
     <FifthCompilerPath>../path/to/compiler.dll</FifthCompilerPath>
@@ -89,7 +89,7 @@ Example build output:
 ```
 bin/
 └── Debug/
-    └── net8.0/
+    └── net10.0/
         ├── HelloFifth.exe
         └── HelloFifth.runtimeconfig.json
 ```
@@ -98,14 +98,14 @@ bin/
 
 | Property | Default | Description |
 |----------|---------|-------------|
-| `TargetFramework` | net8.0 | Target .NET framework |
+| `TargetFramework` | net10.0 | Target .NET framework |
 | `OutputType` | Exe | Output type (Exe or Library) |
 | `Configuration` | Debug | Build configuration |
 | `OutputPath` | bin\\<Config>\\<TFM>\\ | Output directory |
 | `FifthSourceDirectory` | Project directory | Directory containing source files |
 | `FifthCompilerPath` | Auto-detected | Path to compiler.dll |
 | `FifthOutputPath` | <OutputPath>\\<Name>.<ext> | Full output artifact path |
-| `FifthSupportedTargetFrameworks` | net8.0 | Allowlisted target frameworks |
+| `FifthSupportedTargetFrameworks` | net10.0 | Allowlisted target frameworks |
 | `FifthDesignTimeManifestPath` | <IntermediateOutputPath>\\fifth_designtime.manifest | Design-time manifest path |
 
 ## Namespace Imports & Multi-File Compilation
@@ -115,7 +115,7 @@ Namespace imports are resolved across all modules provided to the compiler. The 
 ### CLI Enumeration
 
 ```bash
-fifthc --command build --source math.5th consumer.5th --output bin/Debug/net8.0/App.exe
+fifthc --command build --source math.5th consumer.5th --output bin/Debug/net10.0/App.exe
 ```
 
 ### MSBuild Manifest

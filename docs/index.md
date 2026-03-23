@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/aabs/fifthlang/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/aabs/fifthlang/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
 
 A .NET systems programming language with native support for knowledge graphs and semantic web technologies.  
 Fifth is still under active development, and is not yet ready for mission-critical use.  
@@ -66,7 +66,7 @@ Fifth uniquely combines imperative programming with first-class RDF and SPARQL s
 - Function overloading with parameter guards
 - List comprehensions
 - Knowledge graph operations (TriG literals, SPARQL literals, graph operations)
-- Comprehensive test suite (xUnit + FluentAssertions)
+- Comprehensive test suite (TUnit + FluentAssertions)
 
 ### Planned Improvements
 See our [architectural roadmap](Planning/architecture-review/NEXT-STEPS.md) for detailed plans. Key priorities:
@@ -163,7 +163,7 @@ Fifth integrates with .NET's build system using `.5thproj` files:
 <Project Sdk="Fifth.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 </Project>
 ```
@@ -270,6 +270,6 @@ test/
 └── kg-smoke-tests/      Knowledge graph feature tests
 ```
 
-Built with: C# 14, .NET 8.0, ANTLR 4.8, dotNetRDF, Roslyn, xUnit
+Built with: C# 14, .NET 10.0, ANTLR 4.8, dotNetRDF, Roslyn, TUnit
 
 Status: Active development | Experimental | Pre-release

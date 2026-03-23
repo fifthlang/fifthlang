@@ -6,7 +6,7 @@ inclusion: auto
 
 ## Prerequisites
 
-- .NET 8.0 SDK (pinned via `global.json` to 8.0.118)
+- .NET 10.0 SDK (pinned via `global.json` to 10.0.100)
 - Java 17+ (for ANTLR grammar compilation)
 - ANTLR 4.8 jar included at `src/parser/tools/antlr-4.8-complete.jar`
 
@@ -27,6 +27,13 @@ dotnet test test/ast-tests/ast_tests.csproj
 
 # Regenerate AST code after metamodel changes
 dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated
+```
+
+## Verification
+
+```bash
+dotnet --version  # Should show 10.0.x
+java -version     # Should show Java 17+
 ```
 
 ## Build Order Dependencies

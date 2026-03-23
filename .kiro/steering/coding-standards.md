@@ -13,8 +13,8 @@ inclusion: auto
 
 ## C# Conventions
 
-- C# 12 language version (or latest supported by .NET 8 SDK)
-- .NET 8.0 target framework
+- C# 14 language version (or latest supported by .NET 10 SDK)
+- .NET 10.0 target framework
 - Semantic Versioning (MAJOR.MINOR.PATCH) for all packages
 
 ## CLI and Text I/O Discipline
@@ -49,6 +49,6 @@ inclusion: auto
 - `Antlr4.Runtime.Standard` — ANTLR runtime
 - `RazorLight` — Template engine for code generation
 - `System.CommandLine` — CLI parsing
-- `xUnit` + `FluentAssertions` — Testing
+- `TUnit` + `FluentAssertions` — Testing
 - `dunet` — Discriminated unions
 - `Vogen` — Value object generation
