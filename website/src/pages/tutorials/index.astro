@@ -1,0 +1,124 @@
+---
+/**
+ * tutorials/index.astro — Tutorial listing page.
+ *
+ * Lists all tutorials with title, reading time, and description.
+ *
+ * Validates: Requirements 5.1, 5.2
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const tutorials = await getCollection('tutorials');
+
+const sorted = tutorials.sort(
+  (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999)
+);
+---
+
+<BaseLayout title="Tutorials — Fifth Language">
+  <div class="tutorials-index">
+    <h1>Tutorials</h1>
+    <p class="tutorials-intro">
+      Guided, task-oriented tutorials to help you learn Fifth from the ground up.
+    </p>
+
+    {sorted.length === 0 && <p>Tutorials coming soon. Check back later!</p>}
+
+    <ul class="tutorial-list" role="list">
+      {sorted.map((tutorial) => (
+        <li class="tutorial-item">
+          <article>
+            <h2 class="tutorial-title">
+              <a href={`/tutorials/${tutorial.slug}`}>{tutorial.data.title}</a>
+            </h2>
+            <div class="tutorial-meta">
+              <span class="reading-time">{tutorial.data.readingTime}</span>
+              {tutorial.data.prerequisites.length > 0 && (
+                <>
+                  <span class="meta-separator" aria-hidden="true">·</span>
+                  <span class="prereq-count">
+                    {tutorial.data.prerequisites.length} prerequisite{tutorial.data.prerequisites.length !== 1 ? 's' : ''}
+                  </span>
+                </>
+              )}
+            </div>
+            {tutorial.data.description && (
+              <p class="tutorial-description">{tutorial.data.description}</p>
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .tutorials-index {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  .tutorials-intro {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-8);
+  }
+
+  .tutorial-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tutorial-item {
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .tutorial-item:first-child {
+    padding-top: 0;
+  }
+
+  .tutorial-title {
+    margin: 0 0 var(--space-2) 0;
+    font-size: var(--font-size-lg, 1.25rem);
+  }
+
+  .tutorial-title a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .tutorial-title a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .tutorial-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .meta-separator {
+    color: var(--color-text-muted);
+  }
+
+  .tutorial-description {
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: var(--line-height-relaxed);
+  }
+
+  @media (max-width: 768px) {
+    .tutorials-index {
+      padding: var(--space-4);
+    }
+  }
+</style>

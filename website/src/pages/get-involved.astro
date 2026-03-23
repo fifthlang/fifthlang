@@ -1,0 +1,256 @@
+---
+/**
+ * get-involved.astro — Community and contribution page.
+ *
+ * Framed as a call to action for newcomers to join and shape the project.
+ * Includes links to GitHub repo, Discussions, Issues, contribution guidelines.
+ * Presents specific contribution areas as actionable items.
+ * Communicates single-developer status and outsized contributor opportunity.
+ *
+ * Validates: Requirements 7.1, 7.2, 7.3, 7.4
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Get Involved — Fifth Language" description="Join the Fifth language project. Shape a new programming language with native knowledge graph support.">
+  <div class="get-involved">
+    <section class="hero-section">
+      <h1>Get Involved</h1>
+      <p class="lead">
+        Fifth is in its early days — built by a single developer with a vision for
+        systems programming with native knowledge graphs. That means every contribution
+        right now has an outsized impact on the language's future.
+      </p>
+      <p class="lead">
+        This is your chance to shape a programming language from the ground up.
+      </p>
+    </section>
+
+    <section class="links-section">
+      <h2>Connect with the Project</h2>
+      <ul class="link-cards" role="list">
+        <li class="link-card">
+          <a href="https://github.com/aabs/fifthlang" target="_blank" rel="noopener noreferrer">
+            <strong>GitHub Repository</strong>
+            <span>Browse the source code, star the project, and follow development.</span>
+          </a>
+        </li>
+        <li class="link-card">
+          <a href="https://github.com/aabs/fifthlang/discussions" target="_blank" rel="noopener noreferrer">
+            <strong>Discussions</strong>
+            <span>Ask questions, share ideas, and discuss language design decisions.</span>
+          </a>
+        </li>
+        <li class="link-card">
+          <a href="https://github.com/aabs/fifthlang/issues" target="_blank" rel="noopener noreferrer">
+            <strong>Issues</strong>
+            <span>Report bugs, request features, or pick up an existing issue to work on.</span>
+          </a>
+        </li>
+        <li class="link-card">
+          <a href="https://github.com/aabs/fifthlang/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">
+            <strong>Contribution Guidelines</strong>
+            <span>Read the guide before submitting your first pull request.</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="contribute-section">
+      <h2>Ways to Contribute</h2>
+      <p>No matter your experience level, there's a way to make a meaningful impact:</p>
+      <ul class="contribute-list" role="list">
+        <li>
+          <strong>Language Design Feedback</strong>
+          <p>Try Fifth, explore the syntax, and share your thoughts on what works and what could be better. Early feedback shapes the language.</p>
+        </li>
+        <li>
+          <strong>Documentation</strong>
+          <p>Help improve guides, tutorials, and API references. Clear docs make the language accessible to everyone.</p>
+        </li>
+        <li>
+          <strong>Bug Reports</strong>
+          <p>Found something unexpected? File an issue with reproduction steps. Every bug report makes Fifth more reliable.</p>
+        </li>
+        <li>
+          <strong>Feature Proposals</strong>
+          <p>Have an idea for a language feature or tooling improvement? Open a discussion and let's explore it together.</p>
+        </li>
+        <li>
+          <strong>Code Contributions</strong>
+          <p>Dive into the compiler, runtime, or tooling. Check the issues labeled "good first issue" for a starting point.</p>
+        </li>
+        <li>
+          <strong>Spread the Word</strong>
+          <p>Star the repo, share Fifth with your network, or write about your experience. Visibility helps the project grow.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to Start?</h2>
+      <p>The best way to begin is to try Fifth yourself. Install the compiler, run through a tutorial, and see what you think.</p>
+      <div class="cta-buttons">
+        <a href="/docs/getting-started/installation" class="cta-primary">Install Fifth</a>
+        <a href="https://github.com/aabs/fifthlang" class="cta-secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .get-involved {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  .hero-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .lead {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-4);
+  }
+
+  /* Link cards */
+  .links-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .link-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0 0 0;
+  }
+
+  .link-card a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .link-card a:hover {
+    border-color: var(--color-accent-magenta);
+  }
+
+  .link-card strong {
+    color: var(--color-text-primary);
+  }
+
+  .link-card span {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* Contribute list */
+  .contribute-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .contribute-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0 0 0;
+  }
+
+  .contribute-list li {
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .contribute-list li:first-child {
+    padding-top: 0;
+  }
+
+  .contribute-list strong {
+    color: var(--color-text-primary);
+    display: block;
+    margin-bottom: var(--space-1);
+  }
+
+  .contribute-list p {
+    color: var(--color-text-secondary);
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* CTA section */
+  .cta-section {
+    text-align: center;
+    padding: var(--space-8);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+
+  .cta-section h2 {
+    margin-top: 0;
+  }
+
+  .cta-section p {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .cta-primary {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    background-color: var(--color-cta-primary-bg);
+    color: var(--color-cta-primary-text);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.15s ease;
+  }
+
+  .cta-primary:hover {
+    opacity: 0.9;
+  }
+
+  .cta-secondary {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    border: 1px solid var(--color-cta-secondary-border);
+    color: var(--color-cta-secondary-text);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.15s ease;
+  }
+
+  .cta-secondary:hover {
+    background-color: var(--color-bg-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .get-involved {
+      padding: var(--space-4);
+    }
+
+    .link-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

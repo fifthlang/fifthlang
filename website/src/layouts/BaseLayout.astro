@@ -1,0 +1,84 @@
+---
+/**
+ * BaseLayout.astro — Root layout wrapping every page.
+ *
+ * Responsibilities:
+ *  - HTML <head> with meta, Open Graph, Twitter Card tags (Req 13.2)
+ *  - Semantic HTML structure: <header>, <nav>, <main>, <footer> (Req 13.3)
+ *  - Global CSS import with design tokens
+ *  - Inline dark mode initialisation script (prevents FOUC)
+ *  - Pagefind search script placeholder (async)
+ *  - Content readable without JavaScript (Req 16.2)
+ */
+
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Fifth - A systems programming language with native knowledge graphs',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Dark mode initialisation — runs before paint to prevent FOUC -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || stored === 'light') {
+          document.documentElement.setAttribute('data-theme', stored);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+
+    <!--
+      Pagefind search script — loaded async after build.
+      Pagefind generates its assets into dist/pagefind/ during the post-build step.
+      Uncomment the line below once Pagefind is installed and the build produces the index.
+      <script src="/pagefind/pagefind-ui.js" type="text/javascript" async></script>
+    -->
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

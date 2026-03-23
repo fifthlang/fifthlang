@@ -1,0 +1,83 @@
+---
+/**
+ * FeatureCard.astro — Landing page feature highlight card.
+ *
+ * Accepts icon, title, description, and an optional code snippet.
+ * Renders as a card with a styled code block.
+ *
+ * Validates: Requirements 1.2
+ */
+
+import CodeBlock from './CodeBlock.astro';
+
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+  code?: string;
+  lang?: string;
+}
+
+const { icon, title, description, code, lang = 'fifth' } = Astro.props;
+---
+
+<div class="feature-card">
+  <div class="feature-card-header">
+    <span class="feature-card-icon" aria-hidden="true">{icon}</span>
+    <h3 class="feature-card-title">{title}</h3>
+  </div>
+  <p class="feature-card-description">{description}</p>
+  {code && (
+    <div class="feature-card-code">
+      <CodeBlock code={code} lang={lang} />
+    </div>
+  )}
+</div>
+
+<style>
+  .feature-card {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: var(--space-6);
+    background-color: var(--color-bg-primary);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .feature-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .feature-card-icon {
+    font-size: var(--font-size-2xl);
+    line-height: 1;
+  }
+
+  .feature-card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    line-height: var(--line-height-tight);
+  }
+
+  .feature-card-description {
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .feature-card-code {
+    margin-top: var(--space-3);
+  }
+
+  /* Remove bottom margin from the last code block inside a card */
+  .feature-card-code :global(.code-block-wrapper) {
+    margin-bottom: 0;
+  }
+</style>

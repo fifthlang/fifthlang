@@ -1,0 +1,109 @@
+---
+/**
+ * Footer.astro — Site footer with copyright, GitHub link, and key site sections.
+ *
+ * Uses semantic <footer> element.
+ * Validates: Requirements 13.3
+ */
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-sections">
+      <div class="footer-col">
+        <h3 class="footer-heading">Getting Started</h3>
+        <ul class="footer-links">
+          <li><a href="/docs/getting-started/installation">Installation</a></li>
+          <li><a href="/tutorials">Tutorials</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Resources</h3>
+        <ul class="footer-links">
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/blog">Blog</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Community</h3>
+        <ul class="footer-links">
+          <li><a href="/get-involved">Get Involved</a></li>
+          <li><a href="https://github.com/fifth-lang/fifth" rel="noopener noreferrer">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} Fifth Language. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-secondary);
+    margin-top: var(--space-16);
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+
+  .footer-heading {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-links li + li {
+    margin-top: var(--space-2);
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: color 0.15s ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-link);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  @media (max-width: 767px) {
+    .footer-sections {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+  }
+</style>

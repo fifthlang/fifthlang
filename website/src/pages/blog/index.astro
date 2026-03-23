@@ -1,0 +1,125 @@
+---
+/**
+ * blog/index.astro — Blog listing page.
+ *
+ * Lists all blog posts in reverse chronological order
+ * with title, date, author, and summary.
+ * Filters out draft posts in production builds.
+ *
+ * Validates: Requirements 6.1
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+const posts = allPosts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title="Blog — Fifth Language">
+  <div class="blog-index">
+    <h1>Blog</h1>
+    <p class="blog-intro">Updates, design decisions, and release announcements from the Fifth language project.</p>
+
+    {posts.length === 0 && <p>No posts yet. Check back soon!</p>}
+
+    <ul class="post-list" role="list">
+      {posts.map((post) => {
+        const formattedDate = post.data.date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        return (
+          <li class="post-item">
+            <article>
+              <h2 class="post-title">
+                <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              </h2>
+              <div class="post-meta">
+                <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
+                <span class="meta-separator" aria-hidden="true">·</span>
+                <span class="post-author">{post.data.author}</span>
+              </div>
+              <p class="post-summary">{post.data.summary}</p>
+            </article>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  .blog-intro {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-8);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-item {
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-item:first-child {
+    padding-top: 0;
+  }
+
+  .post-title {
+    margin: 0 0 var(--space-2) 0;
+    font-size: var(--font-size-lg, 1.25rem);
+  }
+
+  .post-title a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .post-title a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .meta-separator {
+    color: var(--color-text-muted);
+  }
+
+  .post-summary {
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: var(--line-height-relaxed);
+  }
+
+  @media (max-width: 768px) {
+    .blog-index {
+      padding: var(--space-4);
+    }
+  }
+</style>

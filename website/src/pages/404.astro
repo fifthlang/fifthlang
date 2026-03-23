@@ -1,0 +1,108 @@
+---
+/**
+ * 404.astro — Custom 404 error page.
+ *
+ * Provides navigation back to home and a search option.
+ *
+ * Validates: Requirements 16.4
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found — Fifth Language">
+  <div class="not-found">
+    <h1>404</h1>
+    <p class="message">The page you're looking for doesn't exist or has been moved.</p>
+
+    <div class="actions">
+      <a href="/" class="home-link">← Back to Home</a>
+    </div>
+
+    <div class="search-hint">
+      <p>Try searching for what you need:</p>
+      <p class="keyboard-hint">
+        Press <kbd>Ctrl</kbd>+<kbd>K</kbd> (or <kbd>⌘</kbd>+<kbd>K</kbd> on Mac) to open search.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 4rem;
+    color: var(--color-accent-magenta);
+    margin: 0 0 var(--space-4) 0;
+    line-height: 1;
+  }
+
+  .message {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-8);
+  }
+
+  .actions {
+    margin-bottom: var(--space-8);
+  }
+
+  .home-link {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    background-color: var(--color-cta-primary-bg);
+    color: var(--color-cta-primary-text);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.15s ease;
+  }
+
+  .home-link:hover {
+    opacity: 0.9;
+  }
+
+  .search-hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  .search-hint p {
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .keyboard-hint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--color-border);
+  }
+
+  @media (max-width: 768px) {
+    .not-found {
+      padding: var(--space-8) var(--space-4);
+    }
+
+    h1 {
+      font-size: 3rem;
+    }
+  }
+</style>

@@ -1,0 +1,226 @@
+---
+/**
+ * DocSidebar.astro — Documentation sidebar navigation.
+ *
+ * Imports docCategories from config/nav.ts, queries the docs collection,
+ * groups by category, sorts by order, and renders collapsible <details>/<summary>
+ * sections. Highlights the current page and preserves scroll/expansion state
+ * via sessionStorage (client-side script).
+ *
+ * Validates: Requirements 4.2, 4.3
+ */
+
+import { getCollection } from 'astro:content';
+import { docCategories } from '../config/nav.ts';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const allDocs = await getCollection('docs');
+
+// Group docs by category, then sort by order within each group
+type DocEntry = (typeof allDocs)[number];
+const grouped = new Map<string, DocEntry[]>();
+
+for (const cat of docCategories) {
+  const entries = allDocs
+    .filter((doc) => doc.data.category === cat.slug)
+    .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+  if (entries.length > 0) {
+    grouped.set(cat.slug, entries);
+  }
+}
+---
+
+<aside class="doc-sidebar" aria-label="Documentation navigation">
+  <nav class="sidebar-nav" id="doc-sidebar-nav">
+    {docCategories.map((cat) => {
+      const entries = grouped.get(cat.slug);
+      if (!entries || entries.length === 0) return null;
+
+      const hasActivePage = entries.some(
+        (e) => currentPath === `/docs/${e.slug}` || currentPath === `/docs/${e.slug}/`
+      );
+
+      return (
+        <details
+          class="sidebar-category"
+          data-category={cat.slug}
+          open={hasActivePage}
+        >
+          <summary class="sidebar-category-label">{cat.label}</summary>
+          <ul class="sidebar-links">
+            {entries.map((entry) => {
+              const href = `/docs/${entry.slug}`;
+              const isActive =
+                currentPath === href || currentPath === `${href}/`;
+              return (
+                <li>
+                  <a
+                    href={href}
+                    class:list={['sidebar-link', { active: isActive }]}
+                    aria-current={isActive ? 'page' : undefined}
+                  >
+                    {entry.data.title}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </details>
+      );
+    })}
+  </nav>
+</aside>
+
+<script>
+  // Preserve sidebar expansion and scroll state via sessionStorage (Req 4.3)
+  const STORAGE_KEY = 'doc-sidebar-state';
+
+  function saveSidebarState() {
+    const nav = document.getElementById('doc-sidebar-nav');
+    if (!nav) return;
+
+    const details = nav.querySelectorAll<HTMLDetailsElement>('details[data-category]');
+    const state: Record<string, boolean> = {};
+    details.forEach((d) => {
+      const cat = d.getAttribute('data-category');
+      if (cat) state[cat] = d.open;
+    });
+
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ expanded: state, scrollTop: nav.scrollTop })
+    );
+  }
+
+  function restoreSidebarState() {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+
+    try {
+      const { expanded, scrollTop } = JSON.parse(raw);
+      const nav = document.getElementById('doc-sidebar-nav');
+      if (!nav) return;
+
+      if (expanded) {
+        const details = nav.querySelectorAll<HTMLDetailsElement>('details[data-category]');
+        details.forEach((d) => {
+          const cat = d.getAttribute('data-category');
+          if (cat && cat in expanded) {
+            // Only restore closed state; keep open if current page is inside
+            if (!d.open) d.open = expanded[cat];
+          }
+        });
+      }
+
+      if (typeof scrollTop === 'number') {
+        nav.scrollTop = scrollTop;
+      }
+    } catch {
+      // Ignore corrupt storage
+    }
+  }
+
+  // Restore on load
+  restoreSidebarState();
+
+  // Save on any toggle or before navigating away
+  document.getElementById('doc-sidebar-nav')?.addEventListener('toggle', saveSidebarState, true);
+  window.addEventListener('beforeunload', saveSidebarState);
+</script>
+
+<style>
+  .doc-sidebar {
+    position: sticky;
+    top: var(--space-6);
+    align-self: start;
+    max-height: calc(100vh - var(--space-12));
+    overflow-y: auto;
+    padding-right: var(--space-4);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .sidebar-category {
+    border-radius: 4px;
+  }
+
+  .sidebar-category-label {
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    padding: var(--space-2) var(--space-2);
+    list-style: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .sidebar-category-label::before {
+    content: '▸';
+    font-size: 0.7em;
+    transition: transform 0.15s ease;
+  }
+
+  .sidebar-category[open] > .sidebar-category-label::before {
+    transform: rotate(90deg);
+  }
+
+  /* Hide default marker */
+  .sidebar-category-label::-webkit-details-marker {
+    display: none;
+  }
+
+  .sidebar-links {
+    list-style: none;
+    padding: 0 0 var(--space-2) var(--space-4);
+    margin: 0;
+  }
+
+  .sidebar-links li + li {
+    margin-top: var(--space-1);
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .sidebar-link:hover {
+    color: var(--color-link);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .sidebar-link.active {
+    color: var(--color-accent-magenta);
+    background-color: var(--color-bg-secondary);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .doc-sidebar {
+      position: static;
+      max-height: none;
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+      padding-right: 0;
+      padding-bottom: var(--space-4);
+    }
+  }
+</style>

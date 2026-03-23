@@ -1,0 +1,150 @@
+---
+/**
+ * DocLayout.astro — Documentation page layout.
+ *
+ * Extends BaseLayout with a two-column grid (sidebar + content area),
+ * breadcrumb navigation above the article, and previous/next page links.
+ *
+ * Validates: Requirements 4.2, 4.3, 2.2
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import DocSidebar from '../components/DocSidebar.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  prevPage?: { title: string; href: string };
+  nextPage?: { title: string; href: string };
+}
+
+const { title, description, prevPage, nextPage } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="doc-layout">
+    <DocSidebar currentPath={currentPath} />
+
+    <div class="doc-content">
+      <Breadcrumbs currentPath={currentPath} />
+
+      <article class="doc-article">
+        <slot />
+      </article>
+
+      {(prevPage || nextPage) && (
+        <nav class="doc-page-nav" aria-label="Page navigation">
+          <div class="doc-page-nav-prev">
+            {prevPage && (
+              <a href={prevPage.href} class="doc-page-link">
+                <span class="doc-page-link-label">Previous</span>
+                <span class="doc-page-link-title">{prevPage.title}</span>
+              </a>
+            )}
+          </div>
+          <div class="doc-page-nav-next">
+            {nextPage && (
+              <a href={nextPage.href} class="doc-page-link">
+                <span class="doc-page-link-label">Next</span>
+                <span class="doc-page-link-title">{nextPage.title}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Two-column doc layout: sidebar + content */
+  .doc-layout {
+    display: grid;
+    grid-template-columns: 16rem 1fr;
+    gap: var(--space-8);
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  /* Content area */
+  .doc-content {
+    min-width: 0; /* prevent grid blowout */
+    max-width: 52rem;
+  }
+
+  /* Article */
+  .doc-article {
+    line-height: var(--line-height-relaxed);
+  }
+
+  .doc-article :global(h1) { margin-top: 0; margin-bottom: var(--space-4); }
+  .doc-article :global(h2) { margin-top: var(--space-8); margin-bottom: var(--space-3); }
+  .doc-article :global(h3) { margin-top: var(--space-6); margin-bottom: var(--space-2); }
+  .doc-article :global(h4),
+  .doc-article :global(h5),
+  .doc-article :global(h6) { margin-top: var(--space-4); margin-bottom: var(--space-2); }
+  .doc-article :global(p)  { margin-bottom: var(--space-4); }
+  .doc-article :global(ul),
+  .doc-article :global(ol) { margin-bottom: var(--space-4); }
+  .doc-article :global(pre) { margin-bottom: var(--space-4); }
+
+  /* Previous / Next page navigation */
+  .doc-page-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .doc-page-nav-prev {
+    text-align: left;
+  }
+
+  .doc-page-nav-next {
+    text-align: right;
+  }
+
+  .doc-page-link {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    transition: border-color 0.15s ease;
+  }
+
+  .doc-page-link:hover {
+    border-color: var(--color-accent-magenta);
+  }
+
+  .doc-page-link-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .doc-page-link-title {
+    color: var(--color-link);
+    font-weight: 500;
+  }
+
+  /* Responsive: collapse to single column on narrow viewports */
+  @media (max-width: 768px) {
+    .doc-layout {
+      grid-template-columns: 1fr;
+      padding: var(--space-4);
+    }
+
+    .doc-page-nav {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
