@@ -97,12 +97,12 @@
          The compiler lives at src/compiler/bin/<config>/<tfm>/compiler.dll.
          Fifth.System lives at src/fifthlang.system/bin/<config>/<targetTfm>/. -->
     <PropertyGroup>
-      <_FifthCompilerDir>$([System.IO.Path]::GetDirectoryName('$(FifthCompilerPath)'))</_FifthCompilerDir>
+      <_FifthCompilerDir Condition="'$(FifthCompilerPath)' != ''">$([System.IO.Path]::GetDirectoryName('$(FifthCompilerPath)'))</_FifthCompilerDir>
       <!-- Navigate from compiler bin dir up to src/ -->
-      <_FifthSrcRoot>$([System.IO.Path]::GetFullPath('$(_FifthCompilerDir)\..\..\..\..'))</_FifthSrcRoot>
-      <_FifthSystemDir>$(_FifthSrcRoot)\fifthlang.system\bin\$(Configuration)\$(TargetFramework)</_FifthSystemDir>
-      <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
-      <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
+      <_FifthSrcRoot Condition="'$(_FifthCompilerDir)' != ''">$([System.IO.Path]::GetFullPath('$(_FifthCompilerDir)\..\..\..\..'))</_FifthSrcRoot>
+      <_FifthSystemDir Condition="'$(_FifthSrcRoot)' != ''">$(_FifthSrcRoot)\fifthlang.system\bin\$(Configuration)\$(TargetFramework)</_FifthSystemDir>
+      <_FifthSystemDll Condition="'$(_FifthSystemDir)' != ''">$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
+      <_FifthSystemDepsJson Condition="'$(_FifthSystemDir)' != ''">$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
       <!-- NuGet package cache (standard location) -->
       <_NuGetPackageRoot Condition="'$(NuGetPackageRoot)' != ''">$(NuGetPackageRoot)</_NuGetPackageRoot>
       <_NuGetPackageRoot Condition="'$(_NuGetPackageRoot)' == ''">$(NUGET_PACKAGES)</_NuGetPackageRoot>
@@ -111,14 +111,32 @@
     </PropertyGroup>
 
     <!-- Fallback: try Release config if Debug doesn't exist -->
-    <PropertyGroup Condition="!Exists('$(_FifthSystemDll)')">
+    <PropertyGroup Condition="'$(_FifthSystemDll)' != '' AND !Exists('$(_FifthSystemDll)')">
       <_FifthSystemDir>$(_FifthSrcRoot)\fifthlang.system\bin\Release\$(TargetFramework)</_FifthSystemDir>
       <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
       <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
     </PropertyGroup>
 
-    <!-- Also try the compiler's own directory as a last resort (packaged SDK scenario) -->
-    <PropertyGroup Condition="!Exists('$(_FifthSystemDll)')">
+    <!-- Fallback: try the compiler's own directory (packaged SDK scenario with FifthCompilerPath) -->
+    <PropertyGroup Condition="'$(_FifthCompilerDir)' != '' AND !Exists('$(_FifthSystemDll)')">
+      <_FifthSystemDir>$(_FifthCompilerDir)</_FifthSystemDir>
+      <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
+      <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
+    </PropertyGroup>
+
+    <!-- Fallback for FifthCompilerCommand (global tool) scenario: locate the tool
+         in the dotnet tool store. The tool DLLs live at:
+         ~/.dotnet/tools/.store/<toolid>/<version>/<toolid>/<version>/tools/<tfm>/any/ -->
+    <PropertyGroup Condition="'$(_FifthCompilerDir)' == '' AND '$(FifthCompilerCommand)' != ''">
+      <_DotnetToolsStore Condition="'$(UserProfile)' != ''">$(UserProfile)\.dotnet\tools\.store\fifth.compiler.tool</_DotnetToolsStore>
+      <_DotnetToolsStore Condition="'$(_DotnetToolsStore)' == '' AND '$(HOME)' != ''">$(HOME)/.dotnet/tools/.store/fifth.compiler.tool</_DotnetToolsStore>
+    </PropertyGroup>
+    <!-- Resolve the latest installed tool version directory -->
+    <_ResolveFifthToolDir ToolStoreDir="$(_DotnetToolsStore)"
+                          Condition="'$(_DotnetToolsStore)' != '' AND Exists('$(_DotnetToolsStore)') AND '$(_FifthCompilerDir)' == ''" >
+      <Output TaskParameter="ToolDir" PropertyName="_FifthCompilerDir" />
+    </_ResolveFifthToolDir>
+    <PropertyGroup Condition="'$(_FifthCompilerDir)' != '' AND !Exists('$(_FifthSystemDll)')">
       <_FifthSystemDir>$(_FifthCompilerDir)</_FifthSystemDir>
       <_FifthSystemDll>$(_FifthSystemDir)\Fifth.System.dll</_FifthSystemDll>
       <_FifthSystemDepsJson>$(_FifthSystemDir)\Fifth.System.deps.json</_FifthSystemDepsJson>
@@ -137,6 +155,12 @@
     <Message Text="Copied %(Filename)%(Extension) from Fifth.System build dir"
              Importance="low"
              Condition="'@(_FifthSystemDlls)' != ''" />
+
+    <!-- Fallback: use compiler.deps.json when Fifth.System.deps.json is absent
+         (common in global-tool installs where the tool is compiler.dll). -->
+    <PropertyGroup Condition="!Exists('$(_FifthSystemDepsJson)') AND '$(_FifthSystemDir)' != ''">
+      <_FifthSystemDepsJson Condition="Exists('$(_FifthSystemDir)\compiler.deps.json')">$(_FifthSystemDir)\compiler.deps.json</_FifthSystemDepsJson>
+    </PropertyGroup>
 
     <!-- Step 2: Copy transitive NuGet package DLLs from the NuGet cache.
          Uses a pure C# inline task (no PowerShell / no System.Text.Json) that
@@ -263,6 +287,63 @@ try
 catch (Exception ex)
 {
     Log.LogWarning("Failed to copy Fifth NuGet dependencies: " + ex.Message);
+}
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <!-- Inline task to resolve the Fifth compiler tool directory from the dotnet tool store.
+       Finds the latest version directory containing compiler.dll under the tool store path. -->
+  <UsingTask TaskName="_ResolveFifthToolDir"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ToolStoreDir ParameterType="System.String" Required="true" />
+      <ToolDir      ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+try
+{
+    ToolDir = "";
+    if (!Directory.Exists(ToolStoreDir)) return true;
+
+    // Tool store layout: <store>/<version>/<toolid>/<version>/tools/<tfm>/any/
+    // Walk version directories (sorted descending) and find the first one with compiler.dll
+    var versionDirs = Directory.GetDirectories(ToolStoreDir)
+        .OrderByDescending(d => d)
+        .ToArray();
+
+    foreach (var vDir in versionDirs)
+    {
+        // Look for tools/<tfm>/any/compiler.dll under the nested structure
+        var toolsRoot = Path.Combine(vDir, "fifth.compiler.tool");
+        if (!Directory.Exists(toolsRoot)) continue;
+
+        foreach (var innerVer in Directory.GetDirectories(toolsRoot).OrderByDescending(d => d))
+        {
+            var toolsDir = Path.Combine(innerVer, "tools");
+            if (!Directory.Exists(toolsDir)) continue;
+
+            foreach (var tfmDir in Directory.GetDirectories(toolsDir))
+            {
+                var anyDir = Path.Combine(tfmDir, "any");
+                if (Directory.Exists(anyDir) && File.Exists(Path.Combine(anyDir, "compiler.dll")))
+                {
+                    ToolDir = anyDir;
+                    Log.LogMessage(MessageImportance.Normal, "Resolved Fifth tool directory: " + anyDir);
+                    return true;
+                }
+            }
+        }
+    }
+}
+catch (Exception ex)
+{
+    Log.LogWarning("Failed to resolve Fifth tool directory: " + ex.Message);
 }
       ]]></Code>
     </Task>
