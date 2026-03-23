@@ -13,9 +13,9 @@ public class FrameworkReferenceSettingsTests
     // ── Constants ──────────────────────────────────────────────────────────
 
     [Fact]
-    public void DefaultTargetFramework_IsNet8()
+    public void DefaultTargetFramework_IsNet10()
     {
-        FrameworkReferenceSettings.DefaultTargetFramework.Should().Be("net8.0");
+        FrameworkReferenceSettings.DefaultTargetFramework.Should().Be("net10.0");
     }
 
     [Fact]
@@ -25,9 +25,9 @@ public class FrameworkReferenceSettingsTests
     }
 
     [Fact]
-    public void DefaultFrameworkVersion_Is800()
+    public void DefaultFrameworkVersion_Is1000()
     {
-        FrameworkReferenceSettings.DefaultFrameworkVersion.Should().Be("8.0.0");
+        FrameworkReferenceSettings.DefaultFrameworkVersion.Should().Be("10.0.0");
     }
 
     [Fact]

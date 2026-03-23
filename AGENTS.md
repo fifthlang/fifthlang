@@ -11,7 +11,7 @@ This file contains focused operational commands and agent-specific workflow inst
 ### Prerequisites Verification
 ```bash
 # Verify prerequisites (as detailed in constitution)
-dotnet --version  # Should show 8.0.x (global.json uses 8.0.118)
+dotnet --version  # Should show 10.0.x (global.json uses 10.0.100)
 java -version     # Should show Java 17+ for ANTLR
 ```
 

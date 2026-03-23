@@ -1,6 +1,6 @@
 # AST Builder for Fifth Language
 
-AST Builder is a C# .NET 8.0 solution that provides Abstract Syntax Tree (AST) construction capabilities for the Fifth programming language. It includes an ANTLR-based parser, code generation for AST builders and visitors, and a compiler with various language transformations.
+AST Builder is a C# .NET 10.0 solution that provides Abstract Syntax Tree (AST) construction capabilities for the Fifth programming language. It includes an ANTLR-based parser, code generation for AST builders and visitors, and a compiler with various language transformations.
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -8,9 +8,9 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Bootstrap, Build, and Test
 ```bash
-# Prerequisites: .NET 8.0 SDK and Java 17+ are required and available
+# Prerequisites: .NET 10.0 SDK and Java 17+ are required and available
 # Verify prerequisites
-dotnet --version  # Should show 8.0.x (global.json uses 8.0.118)
+dotnet --version  # Should show 10.0.x (global.json uses 10.0.100)
 java -version     # Should show Java 17+ for ANTLR
 
 # Initial setup and build (run these commands in sequence)
@@ -199,7 +199,7 @@ main(): int {
 ## Dependencies and Requirements
 
 ### System Requirements
-- **.NET 8.0 SDK** (global.json pins 8.0.118)
+- **.NET 10.0 SDK** (global.json pins 10.0.100)
 - **Java 17+** (for ANTLR grammar compilation)
 - **ANTLR 4.8** (jar file included at `src/parser/tools/antlr-4.8-complete.jar`)
 
@@ -243,23 +243,23 @@ main(): int {
 Always build the full solution rather than individual projects to ensure proper dependency resolution.
 
 ## Active Technologies
-- C# (compiler implementation), Fifth language surface; .NET SDK 8.0.x (global.json pins 8.0.118) + Antlr4.Runtime.Standard, RazorLight, System.CommandLine, TUnit, FluentAssertions, dunet, Vogen; Roslyn (for IL or backend equivalence tests) (005-implementation-of-try)
+- C# (compiler implementation), Fifth language surface; .NET SDK 10.0.x (global.json pins 10.0.100) + Antlr4.Runtime.Standard, RazorLight, System.CommandLine, TUnit, FluentAssertions, dunet, Vogen; Roslyn (for IL or backend equivalence tests) (005-implementation-of-try)
 - C# 14 (per constitution) + ANTLR 4.8 runtime; internal AST generator; TUnit + FluentAssertions (001-gab-removal)
-- C# 14, .NET SDK 8.0.118 (per global.json) + dotNetRDF (`VDS.RDF.*`), Fifth.System library (001-system-kg-types)
+- C# 14, .NET SDK 10.0.100 (per global.json) + dotNetRDF (`VDS.RDF.*`), Fifth.System library (001-system-kg-types)
 - N/A (in-memory objects and SPARQL stores via library) (001-system-kg-types)
-- C# 14 on .NET 8.0 SDK (global.json pins 8.0.118) + Antlr4 runtime; existing compiler/AST generator; dotNetRDF types for runtime store parsing (via Fifth.System integration) (001-trig-literal-expression)
+- C# 14 on .NET 10.0 SDK (global.json pins 10.0.100) + Antlr4 runtime; existing compiler/AST generator; dotNetRDF types for runtime store parsing (via Fifth.System integration) (001-trig-literal-expression)
 - In-memory RDF dataset (`Store`) (001-trig-literal-expression)
-- C# 14, .NET 8.0 SDK (global.json pins 8.0.118) + ANTLR 4.8 runtime (`Antlr4.Runtime.Standard`), dotNetRDF (`VDS.RDF.*`), RazorLight (code generation), TUnit + FluentAssertions (testing) (001-sparql-literal-expression)
+- C# 14, .NET 10.0 SDK (global.json pins 10.0.100) + ANTLR 4.8 runtime (`Antlr4.Runtime.Standard`), dotNetRDF (`VDS.RDF.*`), RazorLight (code generation), TUnit + FluentAssertions (testing) (001-sparql-literal-expression)
 - N/A (in-memory AST and query objects) (001-sparql-literal-expression)
-- C# 14, .NET SDK 8.0.118 (per global.json) + ANTLR 4.8 runtime (`Antlr4.Runtime.Standard`), dotNetRDF (`VDS.RDF.*`), RazorLight (code generation), TUnit + FluentAssertions (testing) (011-query-application-result-type)
+- C# 14, .NET SDK 10.0.100 (per global.json) + ANTLR 4.8 runtime (`Antlr4.Runtime.Standard`), dotNetRDF (`VDS.RDF.*`), RazorLight (code generation), TUnit + FluentAssertions (testing) (011-query-application-result-type)
 - In-memory RDF triple stores via dotNetRDF (`ITripleStore`, `TripleStore`) (011-query-application-result-type)
-- C# 14 / .NET 8.0 (host), Fifth language surface (compiler target) + Antlr4.Runtime.Standard, RazorLight (for AST gen templates), TUnit + FluentAssertions, dunet, Vogen (001-constructor-functions)
+- C# 14 / .NET 10.0 (host), Fifth language surface (compiler target) + Antlr4.Runtime.Standard, RazorLight (for AST gen templates), TUnit + FluentAssertions, dunet, Vogen (001-constructor-functions)
 - N/A (in-memory AST + type tables) (001-constructor-functions)
-- C# 14, .NET 8.0 + ANTLR 4.8, Microsoft.CodeAnalysis (Roslyn), TUnit, FluentAssertions, Dunet, Vogen (016-lambda-functions)
-- C# .NET 8.0 + OmniSharp.Extensions.LanguageServer (LSP), existing parser/compiler libraries (001-lsp-server)
+- C# 14, .NET 10.0 + ANTLR 4.8, Microsoft.CodeAnalysis (Roslyn), TUnit, FluentAssertions, Dunet, Vogen (016-lambda-functions)
+- C# .NET 10.0 + OmniSharp.Extensions.LanguageServer (LSP), existing parser/compiler libraries (001-lsp-server)
 - In-memory document/AST cache (no persistent store) (001-lsp-server)
-- C# 14 on .NET 8.0 (SDK pinned by global.json) + MSBuild SDK infrastructure, Roslyn compilation, NuGet restore pipeline (001-full-msbuild-support)
+- C# 14 on .NET 10.0 (SDK pinned by global.json) + MSBuild SDK infrastructure, Roslyn compilation, NuGet restore pipeline (001-full-msbuild-support)
 - File system outputs (bin/obj, manifests) (001-full-msbuild-support)
 
 ## Recent Changes
-- 005-implementation-of-try: Added C# (compiler implementation), Fifth language surface; .NET SDK 8.0.x (global.json pins 8.0.118) + Antlr4.Runtime.Standard, RazorLight, System.CommandLine, TUnit, FluentAssertions, dunet, Vogen; Roslyn (for IL or backend equivalence tests)
+- 005-implementation-of-try: Added C# (compiler implementation), Fifth language surface; .NET SDK 10.0.x (global.json pins 10.0.100) + Antlr4.Runtime.Standard, RazorLight, System.CommandLine, TUnit, FluentAssertions, dunet, Vogen; Roslyn (for IL or backend equivalence tests)

@@ -2,9 +2,7 @@ using System;
 using System.IO;
 using VDS.RDF;
 using VDS.RDF.Storage;
-#if NET10_0_OR_GREATER
 using QuadStoreNs = TripleStore.Core;
-#endif
 
 namespace Fifth.System;
 
@@ -82,7 +80,6 @@ public sealed class Store
         return new Store(new SparqlHttpProtocolConnector(endpointUri));
     }
 
-#if NET10_0_OR_GREATER
     /// <summary>
     /// Creates a persistent store backed by QuadStore at the given file system path.
     /// </summary>
@@ -95,7 +92,6 @@ public sealed class Store
         var provider = new QuadStoreNs.QuadStoreStorageProvider(quadStore);
         return new Store(provider);
     }
-#endif
 
     /// <summary>
     /// Creates a new empty graph in the store.
@@ -112,6 +108,10 @@ public sealed class Store
     public Graph CreateGraph(Uri graphUri)
     {
         var graph = new VDS.RDF.Graph(graphUri);
+        // dotNetRdf 3.5.x sets Name but not BaseUri from the constructor.
+        // Explicitly set BaseUri so downstream code (RemoveGraphInPlace,
+        // SaveGraph round-trips, etc.) can rely on it.
+        graph.BaseUri = graphUri;
         return Graph.FromVds(graph);
     }
 

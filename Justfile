@@ -133,7 +133,7 @@ install-cli: build-compiler
 	printf "Creating symlink to compiler in ~/bin as 'fifth'...\n"
 	mkdir -p ~/bin
 	rm -f ~/bin/fifth || true
-	ln -s "$(pwd)/src/compiler/bin/Release/net8.0/compiler" ~/bin/fifth
+	ln -s "$(pwd)/src/compiler/bin/Release/net10.0/compiler" ~/bin/fifth
 	printf "Fifth language compiler is now available as 'fifth' in your PATH\n"
 	printf "Usage: fifth [options] <source-file>\n"
 
@@ -141,7 +141,7 @@ install-cli-quick:
 	printf "Creating symlink to compiler in ~/bin as 'fifth'...\n"
 	mkdir -p ~/bin
 	rm -f ~/bin/fifth || true
-	ln -s "$(pwd)/src/compiler/bin/Debug/net8.0/compiler" ~/bin/fifth
+	ln -s "$(pwd)/src/compiler/bin/Debug/net10.0/compiler" ~/bin/fifth
 	printf "Fifth language compiler is now available as 'fifth' in your PATH\n"
 	printf "Usage: fifth [options] <source-file>\n"
 

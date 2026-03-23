@@ -18,16 +18,13 @@ A Fifth sample demonstrating persistent RDF storage using a local QuadStore.
 From the repository root:
 
 ```bash
-# 1. Build the compiler and solution
+# 1. Build the compiler and solution (QuadStore is unconditionally available on net10.0)
 dotnet build fifthlang.sln
 
-# 2. Build Fifth.System for net10.0 (enables local_store / QuadStore)
-dotnet build src/fifthlang.system/Fifth.System.csproj -c Debug -p:EnableNet10=true
-
-# 3. Pack the local SDK (needed because the published SDK doesn't support net10.0 yet)
+# 2. Pack the local SDK
 dotnet pack src/Fifth.Sdk/Fifth.Sdk.csproj -c Debug --no-build -o dist/packages
 
-# 4. Build and run the sample (all dependencies are copied automatically by the SDK)
+# 3. Build and run the sample (all dependencies are copied automatically by the SDK)
 dotnet run --project samples/TaskListQuadStore/src/TaskApp/TaskApp.5thproj
 ```
 
