@@ -1,49 +1,35 @@
 ---
 title: "Project Setup"
-description: "Set up a multi-project Fifth solution using the SDK and SLNX format"
+description: "Set up a multi-project Fifth solution using the SDK and .NET tooling"
 category: "getting-started"
 order: 3
 ---
 
-This guide walks through setting up a multi-project Fifth solution using the SLNX solution format, `ProjectReference` wiring, and the Fifth.Sdk from NuGet.
+This guide walks through setting up a multi-project Fifth solution with `ProjectReference` wiring and the Fifth.Sdk from NuGet.
 
 The completed sample lives at [`samples/FullProjectExample/`](https://github.com/aabs/fifthlang/tree/master/samples/FullProjectExample) in the repository.
 
-## SLNX Solution Format
-
-SLNX (`.slnx`) is the XML-based solution format introduced in .NET 9 and Visual Studio 17.10+. It replaces the legacy `.sln` text format with clean, human-readable XML:
-
-```xml
-<Solution>
-  <Project Path="src/App/App.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-  <Project Path="src/MathLib/MathLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-  <Project Path="src/CoreLib/CoreLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-</Solution>
-```
-
-SLNX files are diff-friendly and easier to edit by hand than the older format. Because `.5thproj` is not a standard project extension, each `<Project>` element needs an explicit `Type` attribute with the C# project type GUID.
-
 ## Prerequisites
 
-Before building, you need two things: the Fifth.Sdk and the Fifth compiler tool. Both are version **0.7.1** — the SDK and compiler versions must match.
+You need the Fifth.Sdk and the Fifth compiler tool. Keep their versions in sync.
 
-**Fifth.Sdk** resolves automatically from NuGet when you build. The `global.json` file in the project root pins the version:
+**Fifth.Sdk** resolves automatically from NuGet when you build. Pin the version in `global.json`:
 
 ```json
 {
   "msbuild-sdks": {
-    "Fifth.Sdk": "0.7.1"
+    "Fifth.Sdk": "0.9.0"
   }
 }
 ```
 
-**Fifth compiler tool** is installed as a global .NET tool:
+**Fifth compiler tool** — install globally or via a local tool manifest:
 
 ```bash
-dotnet tool install --global Fifth.Compiler.Tool --version 0.7.1
+dotnet tool install --global Fifth.Compiler.Tool --version 0.9.0
 ```
 
-Or via a local tool manifest. Create `.config/dotnet-tools.json` and run `dotnet tool restore`:
+Or create `.config/dotnet-tools.json` and run `dotnet tool restore`:
 
 ```json
 {
@@ -51,16 +37,14 @@ Or via a local tool manifest. Create `.config/dotnet-tools.json` and run `dotnet
   "isRoot": true,
   "tools": {
     "fifth.compiler.tool": {
-      "version": "0.7.1",
+      "version": "0.9.0",
       "commands": ["fifthc"]
     }
   }
 }
 ```
 
-## Step-by-Step Setup
-
-### 1. Create the Directory Structure
+## Directory Structure
 
 ```
 FullProjectExample/
@@ -76,24 +60,27 @@ FullProjectExample/
 │   └── CoreLib/
 │       ├── CoreLib.5thproj
 │       └── core.5th
-├── FullProjectExample.slnx
+├── FullProjectExample.sln
 ├── global.json
+├── nuget.config
 └── .gitignore
 ```
 
-### 2. Create `global.json`
+## Step-by-Step Setup
+
+### 1. Create `global.json`
 
 Pin the Fifth.Sdk version so MSBuild resolves it from NuGet:
 
 ```json
 {
   "msbuild-sdks": {
-    "Fifth.Sdk": "0.7.1"
+    "Fifth.Sdk": "0.9.0"
   }
 }
 ```
 
-### 3. Create the Tool Manifest
+### 2. Create the Tool Manifest
 
 Create `.config/dotnet-tools.json` to pin the Fifth compiler:
 
@@ -103,14 +90,14 @@ Create `.config/dotnet-tools.json` to pin the Fifth compiler:
   "isRoot": true,
   "tools": {
     "fifth.compiler.tool": {
-      "version": "0.7.1",
+      "version": "0.9.0",
       "commands": ["fifthc"]
     }
   }
 }
 ```
 
-### 4. Create the CoreLib Class Library
+### 3. Create the CoreLib Class Library
 
 `src/CoreLib/CoreLib.5thproj` — a leaf library with no dependencies:
 
@@ -127,12 +114,14 @@ Create `.config/dotnet-tools.json` to pin the Fifth compiler:
 `src/CoreLib/core.5th`:
 
 ```fifth
+namespace CoreLib;
+
 square(x: int): int {
     return x * x;
 }
 ```
 
-### 5. Create the MathLib Class Library
+### 4. Create the MathLib Class Library
 
 `src/MathLib/MathLib.5thproj` — depends on CoreLib via `ProjectReference`:
 
@@ -154,12 +143,14 @@ The `ProjectReference` tells MSBuild to build CoreLib first and makes its types 
 `src/MathLib/math.5th`:
 
 ```fifth
+namespace MathLib;
+
 add(a: int, b: int): int {
     return a + b;
 }
 ```
 
-### 6. Create the App Console Application
+### 5. Create the App Console Application
 
 `src/App/App.5thproj` — the executable entry point, referencing both libraries:
 
@@ -180,27 +171,69 @@ add(a: int, b: int): int {
 `src/App/main.5th` — calls functions from both libraries:
 
 ```fifth
-main(): void {
-    sq: int = square(7);
-    sum: int = add(sq, 3);
+import CoreLib;
+import MathLib;
+
+main(): int {
+    sq: int;
+    sq = square(7);
+    result: int;
+    result = add(sq, 3);
+    std.print(string.Format("square(7) = {0}", sq));
+    std.print(string.Format("add(49, 3) = {0}", result));
+    return 0;
 }
 ```
 
-### 7. Create the SLNX Solution File
+### 6. Create the Solution File
 
-`FullProjectExample.slnx` — lists all three projects:
+Fifth projects use the standard `.sln` format. The `.slnx` format is not compatible with custom MSBuild SDKs.
 
-```xml
-<Solution>
-  <Project Path="src/App/App.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-  <Project Path="src/MathLib/MathLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-  <Project Path="src/CoreLib/CoreLib.5thproj" Type="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
-</Solution>
+`FullProjectExample.sln`:
+
+```
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLib", "src\CoreLib\CoreLib.5thproj", "{A1111111-1111-1111-1111-111111111111}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathLib", "src\MathLib\MathLib.5thproj", "{B2222222-2222-2222-2222-222222222222}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1111111-1111-1111-1111-111111111111} = {A1111111-1111-1111-1111-111111111111}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App", "src\App\App.5thproj", "{C3333333-3333-3333-3333-333333333333}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A1111111-1111-1111-1111-111111111111} = {A1111111-1111-1111-1111-111111111111}
+		{B2222222-2222-2222-2222-222222222222} = {B2222222-2222-2222-2222-222222222222}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1111111-1111-1111-1111-111111111111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2222222-2222-2222-2222-222222222222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2222222-2222-2222-2222-222222222222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2222222-2222-2222-2222-222222222222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2222222-2222-2222-2222-222222222222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3333333-3333-3333-3333-333333333333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3333333-3333-3333-3333-333333333333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3333333-3333-3333-3333-333333333333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3333333-3333-3333-3333-333333333333}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
 ```
 
-### 8. Create `.gitignore`
+The `ProjectSection(ProjectDependencies)` blocks ensure MSBuild builds projects in the correct order. The GUIDs are arbitrary — generate your own or use the ones above as a starting point.
 
-Exclude build outputs and IDE artifacts:
+### 7. Create `.gitignore`
 
 ```
 bin/
@@ -218,10 +251,10 @@ dotnet tool restore
 dotnet build src/App/App.5thproj
 ```
 
-You can also build the entire solution. Use `/m:1` to ensure correct build ordering for Fifth projects:
+Build the entire solution:
 
 ```bash
-dotnet build FullProjectExample.slnx /m:1
+dotnet build FullProjectExample.sln
 ```
 
 Run the console application:
@@ -230,27 +263,15 @@ Run the console application:
 dotnet run --project src/App/App.5thproj
 ```
 
-## Known Limitations
-
-The Fifth compiler v0.7.1 has a known limitation: it does not yet resolve symbols from referenced assemblies. The `--reference` arguments are passed correctly by the SDK, but the generated C# emits bare function names without qualifying them with the referenced assembly's namespace or type.
-
-This means:
-- Building individual library projects (CoreLib, MathLib) works correctly
-- The MSBuild dependency chain resolves and builds projects in the right order
-- The `--reference` DLL paths are passed to the compiler
-- But App cannot call functions defined in MathLib or CoreLib until the compiler adds cross-assembly symbol resolution
-
-To verify the build pipeline works, build the libraries individually or build App with self-contained code only.
-
 ## Visual Studio Workflow
 
-1. Open `FullProjectExample.slnx` in Visual Studio 2026 (17.10+).
+1. Open `FullProjectExample.sln` in Visual Studio.
 2. Solution Explorer shows all three projects with their dependency relationships.
 3. Right-click the `App` project and select **Set as Startup Project**.
-4. Build the solution with **Build → Build Solution** (or `Ctrl+Shift+B`).
-5. Press **F5** to run the App project.
+4. Build with **Build → Build Solution** (or `Ctrl+Shift+B`).
+5. Press **F5** to run.
 
 ## Next Steps
 
 - [Learn Fifth in Y Minutes](/tutorials/learn-fifth-in-y-minutes) — A rapid tour of Fifth syntax and features
-- [Installation Guide](/docs/getting-started/installation) — Download and install the Fifth compiler
+- [Installation Guide](/docs/getting-started/installation) — Install the Fifth compiler and SDK
