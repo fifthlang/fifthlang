@@ -1,0 +1,194 @@
+---
+/**
+ * index.astro — Landing page for fifthlang.org.
+ *
+ * Composes HeroSection, three FeatureCards (Imperative Programming,
+ * Knowledge Graphs, .NET Integration), and additional landing content.
+ * Uses BaseLayout (not DocLayout). All content renders in static HTML
+ * without JavaScript.
+ *
+ * Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+
+const features = [
+  {
+    icon: '⚡',
+    title: 'Imperative Programming',
+    description:
+      'Fifth uses a familiar imperative syntax with strong typing, making it easy to pick up if you know C#, TypeScript, or Java.',
+    code: `greet: string(name: string) {\n  return "Hello, " + name;\n}`,
+  },
+  {
+    icon: '🔗',
+    title: 'Native Knowledge Graphs',
+    description:
+      'Build and query RDF knowledge graphs as first-class language constructs — no external libraries needed.',
+    code: `g: graph = KG.CreateGraph();\ng += <schema:Person, schema:name, "Alice">;\ng += <schema:Person, schema:knows, schema:Bob>;`,
+  },
+  {
+    icon: '🔧',
+    title: '.NET Integration',
+    description:
+      'Fifth compiles to .NET IL, giving you full access to the .NET ecosystem, NuGet packages, and cross-platform deployment.',
+    code: `use System.Console;\nmain() {\n  WriteLine("Hello from .NET!");\n}`,
+  },
+];
+---
+
+<BaseLayout title="Fifth Language — Systems Programming with Native Knowledge Graphs">
+  <HeroSection />
+
+  <section class="features" aria-label="Key features of Fifth">
+    <div class="features-inner">
+      <h2 class="features-heading">Why Fifth?</h2>
+      <p class="features-subheading">
+        A language designed from the ground up to make knowledge representation a natural part of programming.
+      </p>
+      <div class="features-grid">
+        {features.map((f) => (
+          <FeatureCard
+            icon={f.icon}
+            title={f.title}
+            description={f.description}
+            code={f.code}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-banner" aria-label="Get started with Fifth">
+    <div class="cta-banner-inner">
+      <h2 class="cta-banner-heading">Ready to try Fifth?</h2>
+      <p class="cta-banner-text">
+        Get up and running in minutes. Install the compiler, write your first program, and explore knowledge graphs.
+      </p>
+      <div class="cta-banner-actions">
+        <a href="/docs/getting-started/installation" class="cta cta-primary">Install Fifth</a>
+        <a href="/tutorials/learn-fifth-in-y-minutes" class="cta cta-secondary">Learn in Y Minutes</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Features section */
+  .features {
+    padding: var(--space-16) var(--space-4);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .features-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .features-heading {
+    font-size: clamp(1.5rem, 3vw, var(--font-size-3xl));
+    margin-bottom: var(--space-3);
+  }
+
+  .features-subheading {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+    max-width: 600px;
+    margin: 0 auto var(--space-12);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+    text-align: left;
+  }
+
+  /* CTA banner section */
+  .cta-banner {
+    padding: var(--space-16) var(--space-4);
+    background-color: var(--color-bg-primary);
+    text-align: center;
+  }
+
+  .cta-banner-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .cta-banner-heading {
+    font-size: clamp(1.5rem, 3vw, var(--font-size-3xl));
+    margin-bottom: var(--space-4);
+  }
+
+  .cta-banner-text {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-8);
+  }
+
+  .cta-banner-actions {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-6);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .cta:focus-visible {
+    outline: 2px solid var(--color-accent-magenta);
+    outline-offset: 2px;
+  }
+
+  .cta-primary {
+    background-color: var(--color-cta-primary-bg);
+    color: var(--color-cta-primary-text);
+  }
+
+  .cta-secondary {
+    background-color: var(--color-cta-secondary-bg);
+    color: var(--color-cta-secondary-text);
+    border: 2px solid var(--color-cta-secondary-border);
+  }
+
+  /* Responsive: stack feature cards on smaller screens */
+  @media (max-width: 767px) {
+    .features {
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-banner {
+      padding: var(--space-8) var(--space-4);
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

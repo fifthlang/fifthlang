@@ -1,0 +1,39 @@
+---
+/**
+ * blog/[...slug].astro — Dynamic blog post page route.
+ *
+ * Queries the blog content collection and renders each entry
+ * using BlogLayout with getStaticPaths.
+ *
+ * Validates: Requirements 6.1, 6.4
+ */
+
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// Estimate reading time from raw body (~200 words per minute)
+const wordCount = entry.body ? entry.body.split(/\s+/).length : 0;
+const minutes = Math.max(1, Math.ceil(wordCount / 200));
+const readingTime = `${minutes} min read`;
+---
+
+<BlogLayout
+  title={entry.data.title}
+  date={entry.data.date}
+  author={entry.data.author}
+  summary={entry.data.summary}
+  readingTime={readingTime}
+>
+  <Content />
+</BlogLayout>

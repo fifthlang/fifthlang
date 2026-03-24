@@ -1,0 +1,122 @@
+---
+/**
+ * Header.astro — Site header with logo, navigation, and utility buttons.
+ *
+ * Imports Nav component for the main navigation.
+ * Uses ThemeToggle for dark/light mode switching and SearchWidget for site search.
+ *
+ * Validates: Requirements 2.1, 2.3, 2.4, 9.2
+ */
+
+import Nav from './Nav.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import SearchWidget from './SearchWidget.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo" aria-label="Fifth — Home">
+      <img src="/fifth-logo.svg" alt="Fifth logo" width="32" height="32" />
+      <span class="site-logo-text">Fifth</span>
+    </a>
+
+    <Nav currentPath={currentPath} />
+
+    <div class="header-actions">
+      <ThemeToggle />
+      <SearchWidget />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-4);
+  }
+
+  /* ---- Logo ---- */
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+  }
+
+  .site-logo:hover {
+    color: var(--color-accent-magenta);
+  }
+
+  .site-logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .site-logo-text {
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    letter-spacing: -0.02em;
+  }
+
+  /* ---- Action buttons ---- */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-shrink: 0;
+  }
+
+  .header-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .header-action-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .header-action-btn:focus-visible {
+    outline: 2px solid var(--color-accent-magenta);
+    outline-offset: 2px;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 767px) {
+    .header-inner {
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .site-logo-text {
+      display: none;
+    }
+  }
+</style>

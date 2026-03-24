@@ -1,0 +1,196 @@
+---
+/**
+ * Nav.astro — Persistent top-level navigation.
+ *
+ * Renders all nav items from config/nav.ts as links.
+ * Highlights the active section based on the current URL path.
+ * Includes a CSS-only hamburger toggle for viewports below 768px.
+ *
+ * Validates: Requirements 2.1, 2.3, 2.4
+ */
+
+import { navItems } from '../config/nav';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+/**
+ * Determine whether a nav item is "active" by matching the current URL path.
+ * Home ("/") is only active on exact match; other items match by prefix.
+ */
+function isActive(href: string, current: string): boolean {
+  const normalized = current.replace(/\/+$/, '') || '/';
+  if (href === '/') return normalized === '/';
+  return normalized === href || normalized.startsWith(href + '/');
+}
+---
+
+<nav class="site-nav" aria-label="Main navigation">
+  {/* CSS-only hamburger toggle using checkbox hack */}
+  <input
+    type="checkbox"
+    id="nav-toggle"
+    class="nav-toggle-checkbox"
+    aria-hidden="true"
+  />
+  <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation menu">
+    <span class="hamburger-icon" aria-hidden="true"></span>
+  </label>
+
+  <ul class="nav-links" role="menubar">
+    {navItems.map((item) => (
+      <li role="none">
+        <a
+          href={item.href}
+          role="menuitem"
+          class:list={[{ active: isActive(item.href, currentPath) }]}
+          aria-current={isActive(item.href, currentPath) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  /* ---- Toggle checkbox (hidden) ---- */
+  .nav-toggle-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  /* ---- Hamburger button (mobile only) ---- */
+  .nav-toggle-label {
+    display: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    z-index: 20;
+  }
+
+  .hamburger-icon,
+  .hamburger-icon::before,
+  .hamburger-icon::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+    position: relative;
+  }
+
+  .hamburger-icon::before,
+  .hamburger-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 24px;
+  }
+
+  .hamburger-icon::before {
+    top: -7px;
+  }
+
+  .hamburger-icon::after {
+    top: 7px;
+  }
+
+  /* Animate hamburger → X when checked */
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label .hamburger-icon {
+    background-color: transparent;
+  }
+
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label .hamburger-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label .hamburger-icon::after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+
+  /* ---- Nav links list ---- */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: 6px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .nav-links a:focus-visible {
+    outline: 2px solid var(--color-accent-magenta);
+    outline-offset: 2px;
+  }
+
+  .nav-links a.active {
+    color: var(--color-accent-magenta);
+    font-weight: 600;
+  }
+
+  /* ---- Responsive: below 768px ---- */
+  @media (max-width: 767px) {
+    .nav-toggle-label {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(280px, 80vw);
+      height: 100dvh;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: var(--space-16) var(--space-4) var(--space-4);
+      background-color: var(--color-bg-primary);
+      border-left: 1px solid var(--color-border);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 10;
+      overflow-y: auto;
+    }
+
+    .nav-toggle-checkbox:checked ~ .nav-links {
+      transform: translateX(0);
+    }
+
+    .nav-links a {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-base);
+      border-radius: 0;
+    }
+
+    .nav-links a:hover {
+      background-color: var(--color-bg-secondary);
+    }
+  }
+</style>

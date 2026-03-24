@@ -1,0 +1,179 @@
+---
+/**
+ * BlogLayout.astro — Blog post page layout.
+ *
+ * Extends BaseLayout for blog post pages.
+ * Displays publication date, author, estimated reading time,
+ * and a back-to-blog-list link.
+ *
+ * Validates: Requirements 6.4
+ */
+
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  author: string;
+  summary: string;
+  readingTime?: string;
+}
+
+const { title, date, author, summary, readingTime } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={summary}>
+  <div class="blog-layout">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <article class="blog-article">
+      <header class="blog-header">
+        <h1 class="blog-title">{title}</h1>
+        <div class="blog-meta">
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          <span class="meta-separator" aria-hidden="true">·</span>
+          <span class="blog-author">{author}</span>
+          {readingTime && (
+            <>
+              <span class="meta-separator" aria-hidden="true">·</span>
+              <span class="blog-reading-time">{readingTime}</span>
+            </>
+          )}
+        </div>
+      </header>
+
+      <div class="blog-content">
+        <slot />
+      </div>
+    </article>
+
+    <nav class="blog-back" aria-label="Back to blog">
+      <a href="/blog" class="back-link">← Back to Blog</a>
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-layout {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  /* Breadcrumbs */
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    margin: 0 var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs [aria-current="page"] {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  /* Blog header */
+  .blog-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .blog-title {
+    margin-bottom: var(--space-3);
+  }
+
+  .blog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .meta-separator {
+    color: var(--color-text-muted);
+  }
+
+  .blog-reading-time {
+    color: var(--color-text-muted);
+  }
+
+  /* Blog content */
+  .blog-content {
+    line-height: var(--line-height-relaxed);
+  }
+
+  .blog-content :global(h2) { margin-top: var(--space-8); margin-bottom: var(--space-3); }
+  .blog-content :global(h3) { margin-top: var(--space-6); margin-bottom: var(--space-2); }
+  .blog-content :global(h4),
+  .blog-content :global(h5),
+  .blog-content :global(h6) { margin-top: var(--space-4); margin-bottom: var(--space-2); }
+  .blog-content :global(p)  { margin-bottom: var(--space-4); }
+  .blog-content :global(ul),
+  .blog-content :global(ol) { margin-bottom: var(--space-4); }
+  .blog-content :global(pre) { margin-bottom: var(--space-4); }
+
+  /* Back link */
+  .blog-back {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-link);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--space-2) var(--space-3);
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-link-hover);
+    background-color: var(--color-bg-secondary);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .blog-layout {
+      padding: var(--space-4);
+    }
+  }
+</style>

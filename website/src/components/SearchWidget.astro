@@ -1,0 +1,307 @@
+---
+/**
+ * SearchWidget.astro — Pagefind search integration.
+ *
+ * Provides a search trigger button and modal overlay.
+ * Dynamically loads Pagefind from /_pagefind/pagefind.js on first modal open.
+ * Supports Cmd/Ctrl+K keyboard shortcut.
+ * Degrades gracefully when JS is disabled (hidden via noscript-aware CSS)
+ * and in dev mode (shows friendly message when Pagefind index is unavailable).
+ *
+ * Validates: Requirements 2.5
+ */
+---
+
+<div class="search-widget" data-search-widget>
+  <button
+    type="button"
+    class="search-trigger header-action-btn"
+    aria-label="Search"
+    title="Search (Ctrl+K)"
+    data-search-open
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  </button>
+
+  <div class="search-modal" role="dialog" aria-label="Site search" aria-modal="true" data-search-modal hidden>
+    <div class="search-modal-backdrop" data-search-close></div>
+    <div class="search-modal-content">
+      <div class="search-modal-header">
+        <div class="search-input-wrapper">
+          <svg class="search-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="search"
+            class="search-input"
+            placeholder="Search documentation..."
+            aria-label="Search documentation"
+            data-search-input
+          />
+          <kbd class="search-kbd">Esc</kbd>
+        </div>
+      </div>
+      <div class="search-modal-body" data-search-results>
+        <p class="search-placeholder">Start typing to search...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <style>
+    .search-widget { display: none !important; }
+  </style>
+</noscript>
+
+<script>
+  function initSearchWidget() {
+    const widget = document.querySelector('[data-search-widget]');
+    if (!widget) return;
+
+    const openBtn = widget.querySelector('[data-search-open]') as HTMLButtonElement | null;
+    const modal = widget.querySelector('[data-search-modal]') as HTMLElement | null;
+    const backdrop = widget.querySelector('[data-search-close]') as HTMLElement | null;
+    const input = widget.querySelector('[data-search-input]') as HTMLInputElement | null;
+    const resultsContainer = widget.querySelector('[data-search-results]') as HTMLElement | null;
+
+    if (!openBtn || !modal || !input || !resultsContainer) return;
+
+    // Pagefind instance — lazily loaded on first search modal open
+    let pagefind: any = null;
+    let pagefindLoaded = false;
+    let pagefindFailed = false;
+
+    async function loadPagefind() {
+      if (pagefindLoaded || pagefindFailed) return;
+      try {
+        // Use string concatenation to prevent Vite from resolving this at build time.
+        // Pagefind generates its index into dist/_pagefind/ during the post-build step.
+        const pagefindPath = '/_pagefind/pagefind.js';
+        pagefind = await import(/* @vite-ignore */ pagefindPath);
+        await pagefind.init();
+        pagefindLoaded = true;
+      } catch {
+        pagefindFailed = true;
+        resultsContainer!.innerHTML =
+          '<p class="search-placeholder">Search is not available in dev mode. Run a production build first.</p>';
+      }
+    }
+
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    async function performSearch(query: string) {
+      if (!pagefindLoaded || !pagefind) return;
+
+      if (!query.trim()) {
+        resultsContainer!.innerHTML = '<p class="search-placeholder">Start typing to search...</p>';
+        return;
+      }
+
+      const search = await pagefind.search(query);
+
+      if (search.results.length === 0) {
+        resultsContainer!.innerHTML = '<p class="search-placeholder">No results found.</p>';
+        return;
+      }
+
+      // Load the first 8 results (pagefind returns lightweight stubs; .data() fetches content)
+      const results = await Promise.all(
+        search.results.slice(0, 8).map((r: any) => r.data())
+      );
+
+      resultsContainer!.innerHTML = results
+        .map(
+          (r: any) =>
+            `<a class="search-result" href="${r.url}">
+              <span class="search-result-title">${r.meta?.title ?? r.url}</span>
+              <span class="search-result-excerpt">${r.excerpt}</span>
+            </a>`
+        )
+        .join('');
+    }
+
+    function openSearch() {
+      modal!.hidden = false;
+      requestAnimationFrame(() => {
+        modal!.classList.add('search-modal-open');
+        input!.focus();
+      });
+      // Lazily load Pagefind when the modal opens
+      loadPagefind();
+    }
+
+    function closeSearch() {
+      modal!.classList.remove('search-modal-open');
+      modal!.hidden = true;
+      input!.value = '';
+      resultsContainer!.innerHTML = '<p class="search-placeholder">Start typing to search...</p>';
+    }
+
+    openBtn.addEventListener('click', openSearch);
+
+    backdrop?.addEventListener('click', closeSearch);
+
+    // Search on input with debounce
+    input.addEventListener('input', () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        performSearch(input!.value);
+      }, 200);
+    });
+
+    modal.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeSearch();
+      }
+    });
+
+    // Cmd/Ctrl+K keyboard shortcut
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (modal!.hidden) {
+          openSearch();
+        } else {
+          closeSearch();
+        }
+      }
+    });
+  }
+
+  initSearchWidget();
+</script>
+
+<style>
+  .search-widget {
+    display: contents;
+  }
+
+  /* Modal overlay — hidden by default via [hidden] attribute */
+  .search-modal[hidden] {
+    display: none !important;
+  }
+
+  .search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+  }
+
+  .search-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .search-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 560px;
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  .search-modal-header {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .search-input-icon {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .search-kbd {
+    flex-shrink: 0;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    line-height: 1;
+  }
+
+  .search-modal-body {
+    padding: var(--space-4);
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .search-placeholder {
+    color: var(--color-text-muted);
+    text-align: center;
+    font-size: var(--font-size-sm);
+  }
+
+  .search-result {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: background-color 0.15s;
+  }
+
+  .search-result:hover,
+  .search-result:focus {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .search-result + .search-result {
+    margin-top: var(--space-1);
+  }
+
+  .search-result-title {
+    display: block;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-1);
+  }
+
+  .search-result-excerpt {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+
+  .search-result-excerpt mark {
+    background-color: var(--color-accent-magenta);
+    color: #fff;
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+</style>

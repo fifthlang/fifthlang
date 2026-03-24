@@ -1,0 +1,90 @@
+---
+/**
+ * Breadcrumbs.astro — Breadcrumb navigation from URL segments.
+ *
+ * Accepts the current page path, generates a breadcrumb trail.
+ * Renders as <nav aria-label="Breadcrumb"> with an ordered list.
+ * Does not render on the landing page (index).
+ *
+ * Validates: Requirements 2.2
+ */
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+// Don't render on the landing page
+const isIndex = currentPath === '/' || currentPath === '';
+
+// Build breadcrumb segments from URL path
+function buildCrumbs(path: string) {
+  const clean = path.replace(/\/$/, '').replace(/^\//, '');
+  if (!clean) return [];
+
+  const parts = clean.split('/');
+  const crumbs: { label: string; href: string }[] = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    const href = '/' + parts.slice(0, i + 1).join('/');
+    const label = parts[i]
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    crumbs.push({ label, href });
+  }
+
+  return crumbs;
+}
+
+const crumbs = buildCrumbs(currentPath);
+---
+
+{!isIndex && crumbs.length > 0 && (
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      {crumbs.map((crumb, i) =>
+        i === crumbs.length - 1 ? (
+          <li aria-current="page">{crumb.label}</li>
+        ) : (
+          <li><a href={crumb.href}>{crumb.label}</a></li>
+        )
+      )}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    margin: 0 var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs [aria-current="page"] {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+/**
+ * TutorialLayout.astro — Tutorial page layout.
+ *
+ * Extends BaseLayout for tutorial pages.
+ * Displays reading time, prerequisites list,
+ * and a next tutorial link when available.
+ *
+ * Validates: Requirements 5.3, 5.4
+ */
+
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  readingTime: string;
+  prerequisites: string[];
+  nextTutorial?: string;
+  nextTutorialTitle?: string;
+}
+
+const { title, readingTime, prerequisites, nextTutorial, nextTutorialTitle } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <div class="tutorial-layout">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/tutorials">Tutorials</a></li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <article class="tutorial-article">
+      <header class="tutorial-header">
+        <h1 class="tutorial-title">{title}</h1>
+        <span class="reading-time-badge">{readingTime}</span>
+      </header>
+
+      {prerequisites.length > 0 && (
+        <aside class="prerequisites" aria-label="Prerequisites">
+          <h2 class="prerequisites-heading">Prerequisites</h2>
+          <ul class="prerequisites-list">
+            {prerequisites.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </aside>
+      )}
+
+      <div class="tutorial-content">
+        <slot />
+      </div>
+    </article>
+
+    {nextTutorial && (
+      <nav class="tutorial-next" aria-label="Next tutorial">
+        <a href={`/tutorials/${nextTutorial}`} class="next-link">
+          <span class="next-label">Next Tutorial</span>
+          <span class="next-title">{nextTutorialTitle || nextTutorial} →</span>
+        </a>
+      </nav>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .tutorial-layout {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  /* Breadcrumbs */
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    margin: 0 var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumbs a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs [aria-current="page"] {
+    color: var(--color-text-primary);
+    font-weight: 500;
+  }
+
+  /* Tutorial header */
+  .tutorial-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .tutorial-title {
+    margin: 0;
+  }
+
+  .reading-time-badge {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: var(--space-1) var(--space-3);
+    white-space: nowrap;
+  }
+
+  /* Prerequisites */
+  .prerequisites {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .prerequisites-heading {
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .prerequisites-list {
+    list-style: disc;
+    padding-left: var(--space-6);
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .prerequisites-list li + li {
+    margin-top: var(--space-1);
+  }
+
+  /* Tutorial content */
+  .tutorial-content {
+    line-height: var(--line-height-relaxed);
+  }
+
+  .tutorial-content :global(h2) { margin-top: var(--space-8); margin-bottom: var(--space-3); }
+  .tutorial-content :global(h3) { margin-top: var(--space-6); margin-bottom: var(--space-2); }
+  .tutorial-content :global(h4),
+  .tutorial-content :global(h5),
+  .tutorial-content :global(h6) { margin-top: var(--space-4); margin-bottom: var(--space-2); }
+  .tutorial-content :global(p)  { margin-bottom: var(--space-4); }
+  .tutorial-content :global(ul),
+  .tutorial-content :global(ol) { margin-bottom: var(--space-4); }
+  .tutorial-content :global(pre) { margin-bottom: var(--space-4); }
+
+  /* Next tutorial link */
+  .tutorial-next {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    text-align: right;
+  }
+
+  .next-link {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    transition: border-color 0.15s ease;
+  }
+
+  .next-link:hover {
+    border-color: var(--color-accent-magenta);
+  }
+
+  .next-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .next-title {
+    color: var(--color-link);
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .tutorial-layout {
+      padding: var(--space-4);
+    }
+
+    .tutorial-header {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+</style>
