@@ -1,9 +1,12 @@
 ---
 /**
- * CodeBlock.astro — Enhanced code block wrapper.
+ * CodeBlock.astro — Enhanced code block wrapper with Shiki syntax highlighting.
  *
  * Wraps code blocks with a copy-to-clipboard button.
  * For blocks exceeding 20 lines: adds visible line numbers and a scrollable container.
+ *
+ * Uses Astro's built-in <Code /> component (powered by Shiki) for highlighting.
+ * Custom Fifth grammar is loaded from fifth.tmLanguage.json when lang="fifth".
  *
  * Usage:
  *   <CodeBlock code="const x = 1;" lang="typescript" />
@@ -11,12 +14,26 @@
  * Validates: Requirements 3.4, 8.2, 8.3
  */
 
+import { Code } from 'astro:components';
+import fs from 'node:fs';
+
 interface Props {
   code: string;
   lang?: string;
 }
 
 const { code, lang = '' } = Astro.props;
+
+// Load custom Fifth TextMate grammar if needed
+let resolvedLang: any = lang || 'text';
+if (lang === 'fifth') {
+  try {
+    const grammar = JSON.parse(fs.readFileSync(new URL('../../fifth.tmLanguage.json', import.meta.url), 'utf-8'));
+    resolvedLang = grammar;
+  } catch {
+    resolvedLang = 'text';
+  }
+}
 
 const lines = code.split('\n');
 // Remove trailing empty line that often appears from template literals
@@ -50,7 +67,9 @@ const isLong = lineCount > 20;
         ))}
       </div>
     )}
-    <pre class="code-block-pre"><code class={lang ? `language-${lang}` : ''}>{code}</code></pre>
+    <div class="code-block-highlighted">
+      <Code code={code} lang={resolvedLang} themes={{ light: 'github-light', dark: 'github-dark' }} />
+    </div>
   </div>
 </div>
 
@@ -164,18 +183,21 @@ const isLong = lineCount > 20;
     color: var(--color-text-muted);
   }
 
-  .code-block-pre {
+  .code-block-highlighted {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .code-block-highlighted :global(pre) {
     margin: 0;
     padding: var(--space-4);
     border: none;
     border-radius: 0;
-    background: none;
     overflow-x: auto;
-    flex: 1;
-    min-width: 0;
   }
 
-  .code-block-pre code {
+  .code-block-highlighted :global(code) {
     background: none;
     padding: 0;
     font-size: var(--font-size-sm);

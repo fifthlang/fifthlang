@@ -86,7 +86,7 @@ Create a `.5thproj` file:
 
 Add a source file, e.g. `main.5th`:
 
-```
+```fifth
 main(): void {
     std.print("Hello from Fifth!");
 }

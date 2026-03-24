@@ -15,7 +15,7 @@ try {
 }
 
 export default defineConfig({
-  site: 'https://fifthlang.org',
+  site: 'https://fifth-lang.org',
   outDir: './dist',
   integrations: [mdx(), sitemap()],
   markdown: {
