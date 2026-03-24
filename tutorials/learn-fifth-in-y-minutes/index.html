@@ -1,0 +1,699 @@
+<!DOCTYPE html><html lang="en" data-theme="light"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><!-- Primary meta --><title>Learn Fifth in Y Minutes</title><meta name="description" content="Fifth - A systems programming language with native knowledge graphs"><link rel="canonical" href="https://fifthlang.org/tutorials/learn-fifth-in-y-minutes/"><!-- Open Graph --><meta property="og:title" content="Learn Fifth in Y Minutes"><meta property="og:description" content="Fifth - A systems programming language with native knowledge graphs"><meta property="og:type" content="website"><meta property="og:url" content="https://fifthlang.org/tutorials/learn-fifth-in-y-minutes/"><!-- Twitter Card --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Learn Fifth in Y Minutes"><meta name="twitter:description" content="Fifth - A systems programming language with native knowledge graphs"><!-- Favicon --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><!-- Dark mode initialisation — runs before paint to prevent FOUC --><script>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || stored === 'light') {
+          document.documentElement.setAttribute('data-theme', stored);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script><!--
+      Pagefind search script — loaded async after build.
+      Pagefind generates its assets into dist/pagefind/ during the post-build step.
+      Uncomment the line below once Pagefind is installed and the build produces the index.
+      <script src="/pagefind/pagefind-ui.js" type="text/javascript" async></script>
+    --><link rel="stylesheet" href="/_astro/_slug_.BTpqocB4.css">
+<style>.tutorial-layout[data-astro-cid-ds6ctzq3]{max-width:48rem;margin:0 auto;padding:var(--space-6)}.breadcrumbs[data-astro-cid-ds6ctzq3] ol[data-astro-cid-ds6ctzq3]{display:flex;flex-wrap:wrap;align-items:center;list-style:none;padding:0;margin:0 0 var(--space-6) 0;font-size:var(--font-size-sm);color:var(--color-text-muted)}.breadcrumbs[data-astro-cid-ds6ctzq3] li[data-astro-cid-ds6ctzq3]+li[data-astro-cid-ds6ctzq3]:before{content:"/";margin:0 var(--space-2);color:var(--color-text-muted)}.breadcrumbs[data-astro-cid-ds6ctzq3] a[data-astro-cid-ds6ctzq3]{color:var(--color-text-secondary);text-decoration:none}.breadcrumbs[data-astro-cid-ds6ctzq3] a[data-astro-cid-ds6ctzq3]:hover{color:var(--color-link);text-decoration:underline}.breadcrumbs[data-astro-cid-ds6ctzq3] [data-astro-cid-ds6ctzq3][aria-current=page]{color:var(--color-text-primary);font-weight:500}.tutorial-header[data-astro-cid-ds6ctzq3]{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-6)}.tutorial-title[data-astro-cid-ds6ctzq3]{margin:0}.reading-time-badge[data-astro-cid-ds6ctzq3]{display:inline-block;font-size:var(--font-size-sm);color:var(--color-text-muted);background-color:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:999px;padding:var(--space-1) var(--space-3);white-space:nowrap}.prerequisites[data-astro-cid-ds6ctzq3]{background-color:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:6px;padding:var(--space-4);margin-bottom:var(--space-8)}.prerequisites-heading[data-astro-cid-ds6ctzq3]{font-size:var(--font-size-sm);text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-muted);margin-bottom:var(--space-2)}.prerequisites-list[data-astro-cid-ds6ctzq3]{list-style:disc;padding-left:var(--space-6);margin:0;font-size:var(--font-size-sm);color:var(--color-text-secondary)}.prerequisites-list[data-astro-cid-ds6ctzq3] li[data-astro-cid-ds6ctzq3]+li[data-astro-cid-ds6ctzq3]{margin-top:var(--space-1)}.tutorial-content[data-astro-cid-ds6ctzq3]{line-height:var(--line-height-relaxed)}.tutorial-content[data-astro-cid-ds6ctzq3] h2{margin-top:var(--space-8);margin-bottom:var(--space-3)}.tutorial-content[data-astro-cid-ds6ctzq3] h3{margin-top:var(--space-6);margin-bottom:var(--space-2)}.tutorial-content[data-astro-cid-ds6ctzq3] h4,.tutorial-content[data-astro-cid-ds6ctzq3] h5,.tutorial-content[data-astro-cid-ds6ctzq3] h6{margin-top:var(--space-4);margin-bottom:var(--space-2)}.tutorial-content[data-astro-cid-ds6ctzq3] p,.tutorial-content[data-astro-cid-ds6ctzq3] ul,.tutorial-content[data-astro-cid-ds6ctzq3] ol,.tutorial-content[data-astro-cid-ds6ctzq3] pre{margin-bottom:var(--space-4)}.tutorial-next[data-astro-cid-ds6ctzq3]{margin-top:var(--space-12);padding-top:var(--space-6);border-top:1px solid var(--color-border);text-align:right}.next-link[data-astro-cid-ds6ctzq3]{display:inline-flex;flex-direction:column;gap:var(--space-1);text-decoration:none;padding:var(--space-3) var(--space-4);border:1px solid var(--color-border);border-radius:6px;transition:border-color .15s ease}.next-link[data-astro-cid-ds6ctzq3]:hover{border-color:var(--color-accent-magenta)}.next-label[data-astro-cid-ds6ctzq3]{font-size:var(--font-size-sm);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.05em}.next-title[data-astro-cid-ds6ctzq3]{color:var(--color-link);font-weight:500}@media(max-width:768px){.tutorial-layout[data-astro-cid-ds6ctzq3]{padding:var(--space-4)}.tutorial-header[data-astro-cid-ds6ctzq3]{flex-direction:column;gap:var(--space-2)}}
+</style></head> <body> <header class="site-header" data-astro-cid-3ef6ksr2> <div class="header-inner" data-astro-cid-3ef6ksr2> <a href="/" class="site-logo" aria-label="Fifth — Home" data-astro-cid-3ef6ksr2> <img src="/fifth-logo.svg" alt="Fifth logo" width="32" height="32" data-astro-cid-3ef6ksr2> <span class="site-logo-text" data-astro-cid-3ef6ksr2>Fifth</span> </a> <nav class="site-nav" aria-label="Main navigation" data-astro-cid-dmqpwcec>  <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox" aria-hidden="true" data-astro-cid-dmqpwcec> <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation menu" data-astro-cid-dmqpwcec> <span class="hamburger-icon" aria-hidden="true" data-astro-cid-dmqpwcec></span> </label> <ul class="nav-links" role="menubar" data-astro-cid-dmqpwcec> <li role="none" data-astro-cid-dmqpwcec> <a href="/" role="menuitem" data-astro-cid-dmqpwcec> Home </a> </li><li role="none" data-astro-cid-dmqpwcec> <a href="/docs/getting-started/installation" role="menuitem" data-astro-cid-dmqpwcec> Getting Started </a> </li><li role="none" data-astro-cid-dmqpwcec> <a href="/docs" role="menuitem" data-astro-cid-dmqpwcec> Documentation </a> </li><li role="none" data-astro-cid-dmqpwcec> <a href="/tutorials" role="menuitem" class="active" aria-current="page" data-astro-cid-dmqpwcec> Tutorials </a> </li><li role="none" data-astro-cid-dmqpwcec> <a href="/blog" role="menuitem" data-astro-cid-dmqpwcec> Blog </a> </li><li role="none" data-astro-cid-dmqpwcec> <a href="/get-involved" role="menuitem" data-astro-cid-dmqpwcec> Get Involved </a> </li> </ul> </nav>  <div class="header-actions" data-astro-cid-3ef6ksr2> <button type="button" class="theme-toggle header-action-btn" aria-label="Toggle dark mode" title="Toggle dark mode" data-astro-cid-x3pjskd3> <svg class="theme-icon theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-x3pjskd3> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3></line> </svg> <svg class="theme-icon theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-x3pjskd3> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3></path> </svg> </button> <script type="module">function o(){const r=document.querySelector(".theme-toggle");if(!r)return;function n(){const e=localStorage.getItem("theme");return e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function t(e){document.documentElement.setAttribute("data-theme",e)}t(n()),r.addEventListener("click",()=>{const c=(document.documentElement.getAttribute("data-theme")||n())==="dark"?"light":"dark";t(c),localStorage.setItem("theme",c)}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{localStorage.getItem("theme")||t(e.matches?"dark":"light")})}o();</script>  <div class="search-widget" data-search-widget data-astro-cid-2hkkvdbw> <button type="button" class="search-trigger header-action-btn" aria-label="Search" title="Search (Ctrl+K)" data-search-open data-astro-cid-2hkkvdbw> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-2hkkvdbw> <circle cx="11" cy="11" r="8" data-astro-cid-2hkkvdbw></circle> <line x1="21" y1="21" x2="16.65" y2="16.65" data-astro-cid-2hkkvdbw></line> </svg> </button> <div class="search-modal" role="dialog" aria-label="Site search" aria-modal="true" data-search-modal hidden data-astro-cid-2hkkvdbw> <div class="search-modal-backdrop" data-search-close data-astro-cid-2hkkvdbw></div> <div class="search-modal-content" data-astro-cid-2hkkvdbw> <div class="search-modal-header" data-astro-cid-2hkkvdbw> <div class="search-input-wrapper" data-astro-cid-2hkkvdbw> <svg class="search-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-2hkkvdbw> <circle cx="11" cy="11" r="8" data-astro-cid-2hkkvdbw></circle> <line x1="21" y1="21" x2="16.65" y2="16.65" data-astro-cid-2hkkvdbw></line> </svg> <input type="search" class="search-input" placeholder="Search documentation..." aria-label="Search documentation" data-search-input data-astro-cid-2hkkvdbw> <kbd class="search-kbd" data-astro-cid-2hkkvdbw>Esc</kbd> </div> </div> <div class="search-modal-body" data-search-results data-astro-cid-2hkkvdbw> <p class="search-placeholder" data-astro-cid-2hkkvdbw>Start typing to search...</p> </div> </div> </div> </div> <noscript> <style>
+    .search-widget { display: none !important; }
+  </style> </noscript> <script type="module">function L(){const t=document.querySelector("[data-search-widget]");if(!t)return;const d=t.querySelector("[data-search-open]"),a=t.querySelector("[data-search-modal]"),f=t.querySelector("[data-search-close]"),s=t.querySelector("[data-search-input]"),n=t.querySelector("[data-search-results]");if(!d||!a||!s||!n)return;let c=null,i=!1,u=!1;async function m(){if(!(i||u))try{c=await import("/_pagefind/pagefind.js"),await c.init(),i=!0}catch{u=!0,n.innerHTML='<p class="search-placeholder">Search is not available in dev mode. Run a production build first.</p>'}}let l=null;async function y(e){if(!i||!c)return;if(!e.trim()){n.innerHTML='<p class="search-placeholder">Start typing to search...</p>';return}const h=await c.search(e);if(h.results.length===0){n.innerHTML='<p class="search-placeholder">No results found.</p>';return}const g=await Promise.all(h.results.slice(0,8).map(r=>r.data()));n.innerHTML=g.map(r=>`<a class="search-result" href="${r.url}">
+              <span class="search-result-title">${r.meta?.title??r.url}</span>
+              <span class="search-result-excerpt">${r.excerpt}</span>
+            </a>`).join("")}function p(){a.hidden=!1,requestAnimationFrame(()=>{a.classList.add("search-modal-open"),s.focus()}),m()}function o(){a.classList.remove("search-modal-open"),a.hidden=!0,s.value="",n.innerHTML='<p class="search-placeholder">Start typing to search...</p>'}d.addEventListener("click",p),f?.addEventListener("click",o),s.addEventListener("input",()=>{l&&clearTimeout(l),l=setTimeout(()=>{y(s.value)},200)}),a.addEventListener("keydown",e=>{e.key==="Escape"&&o()}),document.addEventListener("keydown",e=>{(e.metaKey||e.ctrlKey)&&e.key==="k"&&(e.preventDefault(),a.hidden?p():o())})}L();</script>  </div> </div> </header>  <main>  <div class="tutorial-layout" data-astro-cid-ds6ctzq3> <nav class="breadcrumbs" aria-label="Breadcrumb" data-astro-cid-ds6ctzq3> <ol data-astro-cid-ds6ctzq3> <li data-astro-cid-ds6ctzq3><a href="/" data-astro-cid-ds6ctzq3>Home</a></li> <li data-astro-cid-ds6ctzq3><a href="/tutorials" data-astro-cid-ds6ctzq3>Tutorials</a></li> <li aria-current="page" data-astro-cid-ds6ctzq3>Learn Fifth in Y Minutes</li> </ol> </nav> <article class="tutorial-article" data-astro-cid-ds6ctzq3> <header class="tutorial-header" data-astro-cid-ds6ctzq3> <h1 class="tutorial-title" data-astro-cid-ds6ctzq3>Learn Fifth in Y Minutes</h1> <span class="reading-time-badge" data-astro-cid-ds6ctzq3>20 min</span> </header>  <div class="tutorial-content" data-astro-cid-ds6ctzq3>  <p>Fifth is a systems programming language with first-class support for knowledge graphs and semantic web technologies. It combines imperative programming with RDF triple management.</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="fifth"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// This is a single-line comment</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">/*</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">   Multi-line comments</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">   work like this</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">*/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 1. Basic Syntax and Literals</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Every Fifth program needs a main function with an int return type</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Integer literals support multiple bases</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 42;           // Decimal</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 0b101010;     // Binary (prefix 0b)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 0o52;         // Octal (prefix 0o)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 0x2A;         // Hexadecimal (prefix 0x)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 42i;          // Imaginary numbers</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Floating-point literals</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pi: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pi = 3.14159;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pi = 3.14e0;      // Scientific notation</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pi = 0x1.921fb54442d18p+1;  // Hex float</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Boolean literals</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    t: bool;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    f: bool;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    t = true;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    f = false;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// String literals</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    plain: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    raw: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    interpolated: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    plain = "Hello, World!";          // Interpreted strings</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    raw = `Raw\nstring\twith\escapes`; // Raw strings (backticks)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    interpolated = $"Value is {x}";   // Interpolated strings ($ prefix)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Rune literals (single characters)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c: rune;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c = 'A';</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c = '\n';         // Escape sequences</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c = '\u0041';     // Unicode escape</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Null literal</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    ptr: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    ptr = null;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 2. Variables and Type Declarations</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Variable declarations use colon syntax: name : type</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    y: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    s: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Declaration with initialization</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    z: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    z = 100;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Type specifications for arrays and lists</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    arr: int[10];          // Fixed-size array</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    dynamicArr: int[];     // Dynamic array</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    matrix: int[5][5];     // Multi-dimensional array</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // List type with brackets</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    numbers: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Generic types</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    optional: Maybe&#x3C;int>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 3. Operators</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Arithmetic operators</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10 + 5;       // Addition</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10 - 5;       // Subtraction</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10 * 5;       // Multiplication</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10 / 5;       // Division</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10 % 3;       // Modulo</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 2 ** 8;       // Power (exponentiation with **)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 2 ^ 8;        // Bitwise XOR (use ** for power)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Comparison operators</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result: bool;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 5 == 5;  // Equality</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 5 != 3;  // Inequality</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 5 &#x3C; 10;  // Less than</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 5 &#x3C;= 5;  // Less than or equal</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 10 > 5;  // Greater than</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 10 >= 5; // Greater than or equal</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Logical operators</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result: bool;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = true &#x26;&#x26; false;   // Logical AND</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = true || false;   // Logical OR</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = !true;           // Logical NOT</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = true !&#x26; false;   // Logical NAND</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = true !| false;   // Logical NOR</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = true ~ false;    // Logical XOR</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Bitwise operators</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 5 | 3;        // Bitwise OR</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 5 &#x26; 3;        // Bitwise AND</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 5 &#x3C;&#x3C; 2;       // Left shift</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 20 >> 2;      // Right shift</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Increment and decrement</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 5;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x++;              // Post-increment</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x--;              // Post-decrement</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    ++x;              // Pre-increment</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    --x;              // Pre-decrement</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Compound assignment</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x += 5;           // x = x + 5</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x -= 3;           // x = x - 3</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 4. Functions</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Function declaration syntax: name(params): returnType { body }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">add(x: int, y: int): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return x + y;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Multiple parameters</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">greet(firstName: string, lastName: string): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return firstName;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Functions are called before main is defined</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    sum: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    sum = add(5, 3);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Function with parameter constraints</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Use pipe | to specify constraints on parameters</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// IMPORTANT: When using constraints, you must provide a base case</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// The base case is an unconstrained version that handles all other inputs</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">positive(x: int | x > 0): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return x * 2;  // Handles positive numbers</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">positive(x: int): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;  // Base case: handles zero and negative numbers</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Multiple constrained overloads with a base case</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">classify(x: int | x &#x3C; 0): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return "negative";</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">classify(x: int | x == 0): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return "zero";</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">classify(x: int | x > 0): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return "positive";</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">classify(x: int): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return "unknown";  // Base case (fallback)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">callClassify(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Parameter destructuring</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Person {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    FirstName: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    LastName: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">greetPerson(p: Person { first: FirstName, last: LastName }): string {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return first;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">testGreet(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 5. Control Flow</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// If statements</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    x = 10;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    if (x > 5) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        x = 1;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // If-else</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    if (x &#x3C; 5) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        x = 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    } else {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        x = 1;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// While loops</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    i: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    i = 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    while (i &#x3C; 10) {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        i++;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// With statement (scoped resource management)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    with resource {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        ;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Try/catch/finally for exception handling</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Try with finally - finally always executes</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    try {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = 10;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    } finally {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        std.print("cleanup");</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Try/catch - handles exceptions</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    try {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = 42;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    } catch {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = 1;  // Catch-all handler</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Try/catch/finally combined</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    try {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = 10;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    } catch {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = 1;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    } finally {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        result = result + 5;  // Always executes</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return result;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 6. Lists and Comprehensions</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// List literals</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    empty: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    numbers: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    empty = [];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    numbers = [1, 2, 3, 4, 5];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// List comprehensions with filtering</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    xs: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    ys: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    xs = [1, 2, 3, 4, 5];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // List comprehension: [projection from var in source where constraint]</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    ys = [x from x in xs where x > 2];  // [3, 4, 5]</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Accessing list elements</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    numbers: [int];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    first: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    numbers = [10, 20, 30];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    first = numbers[0];      // Index access</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 7. Classes and Objects</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Class definition</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Rectangle {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Width: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Height: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Class with methods</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Calculator {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Value: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Add(x: int): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        return Value + x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Multiply(x: int): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        return Value * x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Class instantiation</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect: Rectangle;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    calc: Calculator;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create new object (can be empty)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect = new Rectangle();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create with property initialization</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect = new Rectangle() {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        Width = 10.0,</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        Height = 5.0</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    calc = new Calculator() { Value = 100 };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Class inheritance</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Shape {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Color: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Circle extends Shape {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Radius: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c: Circle;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    c = new Circle();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Member access</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect: Rectangle;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    w: float;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect = new Rectangle() { Width = 10.0, Height = 5.0 };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    w = rect.Width;          // Access member</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    rect.Width = 15.0;       // Modify member</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 8. Generic Types</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Generic classes allow type parameters for reusable data structures</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Stack&#x3C;T> {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    items: [T];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    push(item: T): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pop(): T {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        return items;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    intStack: Stack&#x3C;int>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    stringStack: Stack&#x3C;string>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Each instantiation creates a distinct type</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    intStack = new Stack&#x3C;int>();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    stringStack = new Stack&#x3C;string>();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Multiple type parameters</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Pair&#x3C;T1, T2> {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    first: T1;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    second: T2;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Dictionary&#x3C;TKey, TValue> {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    keys: [TKey];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    values: [TValue];</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pair: Pair&#x3C;int, string>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    dict: Dictionary&#x3C;string, int>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    pair = new Pair&#x3C;int, string>() {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        first = 42,</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        second = "answer"</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Generic functions with type inference</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">identity&#x3C;T>(x: T): T {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return x;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    text: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Explicit type arguments</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = identity&#x3C;int>(42);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    text = identity&#x3C;string>("hello");</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Type inference (types inferred from arguments)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    result = identity(42);        // Infers T = int</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    text = identity("world");     // Infers T = string</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Type constraints ensure type parameters meet requirements</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">sort&#x3C;T>(items: int): int where T: IComparable {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">extend&#x3C;T>(base: T): int where T: BaseClass {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">process&#x3C;T>(item: T): int where T: IComparable, IDisposable {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 9. Module System</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Import modules</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">use Math, IO, Net;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Multiple imports</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">use System, Collections;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 10. Knowledge Graphs &#x26; Semantic Web</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Alias declarations for IRI namespaces</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">alias ex as &#x3C;http://example.org/>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">alias foaf as &#x3C;http://xmlns.com/foaf/0.1/>;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Store declaration (SPARQL endpoint)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">myStore : store = sparql_store(&#x3C;http://localhost:8080/graphdb>);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Triple literals: &#x3C;subject, predicate, object></span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Triples use prefixed IRIs</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    &#x3C;ex:john, foaf:name, "John Doe">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    &#x3C;ex:john, foaf:age, 30>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    &#x3C;ex:john, ex:knows, ex:jane>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Graph declaration</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    g : graph in &#x3C;ex:> = KG.CreateGraph();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Add triples to the graph</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    g += &#x3C;ex:subject1, ex:predicate1, ex:object1>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    g += &#x3C;ex:subject2, ex:predicate2, 42>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Working with graphs and objects</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Person {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Name: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Age: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create an object</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    alice: Person;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    alice = new Person();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create graph and add triples</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    peopleGraph : graph in &#x3C;ex:> = KG.CreateGraph();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    peopleGraph += &#x3C;ex:alice, ex:name, "Alice">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    peopleGraph += &#x3C;ex:alice, ex:age, 30>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    peopleGraph += &#x3C;ex:alice, ex:knows, ex:bob>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Assigning graphs to stores</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">alias ex as &#x3C;http://example.org/>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">myStore : store = sparql_store(&#x3C;http://localhost:8080/graphdb>);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    myGraph : graph in &#x3C;ex:> = KG.CreateGraph();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    myGraph += &#x3C;ex:entity, ex:property, "value">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Add graph to store</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    myStore += myGraph;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Remove graph from store</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    myStore -= myGraph;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Classes in semantic context</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Entity in &#x3C;http://example.org/ontology#> {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Name: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Value: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    e: Entity;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    e = new Entity() { Name = "Test", Value = 42 };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// 11. Full Example: Semantic Application</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">//////////////////////////////////////</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Define namespace aliases</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">alias foaf as &#x3C;http://xmlns.com/foaf/0.1/>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">alias ex as &#x3C;http://example.org/people/>;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Connect to a SPARQL store</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">peopleDB : store = sparql_store(&#x3C;http://localhost:8080/graphdb>);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Define a class for people</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">class Person {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    FirstName: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    LastName: string;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    Age: int;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Function to calculate if someone is an adult</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">isAdult(age: int): bool {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return age >= 18;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">// Main program</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">main(): int {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create a person</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    john: Person;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    john = new Person() {</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        FirstName = "John",</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        LastName = "Doe",</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        Age = 30</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    };</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Check if adult</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    adult: bool;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    adult = isAdult(john.Age);</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Create knowledge graph and add triples</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    johnGraph : graph in &#x3C;ex:> = KG.CreateGraph();</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    johnGraph += &#x3C;ex:john, foaf:firstName, "John">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    johnGraph += &#x3C;ex:john, foaf:lastName, "Doe">;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    johnGraph += &#x3C;ex:john, foaf:age, 30>;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    // Save to the store</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    peopleDB += johnGraph;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    return 0;</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<h2 id="further-reading"><a aria-hidden="true" tabindex="-1" href="#further-reading"><span class="icon icon-link"></span></a>Further Reading</h2>
+<ul>
+<li><a href="https://github.com/aabs/fifthlang">Fifth Language Repository</a></li>
+<li><a href="https://github.com/aabs/fifthlang/tree/master/src/parser/grammar">ANTLR Grammar Files</a></li>
+<li><a href="https://github.com/aabs/fifthlang/tree/master/test/runtime-integration-tests/TestPrograms">Example Programs</a></li>
+<li><a href="https://www.w3.org/TR/rdf11-primer/">RDF Primer</a></li>
+<li><a href="https://www.w3.org/TR/sparql11-query/">SPARQL Query Language</a></li>
+</ul>  </div> </article> <nav class="tutorial-next" aria-label="Next tutorial" data-astro-cid-ds6ctzq3> <a href="/tutorials/working-with-knowledge-graphs" class="next-link" data-astro-cid-ds6ctzq3> <span class="next-label" data-astro-cid-ds6ctzq3>Next Tutorial</span> <span class="next-title" data-astro-cid-ds6ctzq3>Working with Knowledge Graphs →</span> </a> </nav> </div>  </main> <footer class="site-footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <div class="footer-sections" data-astro-cid-sz7xmlte> <div class="footer-col" data-astro-cid-sz7xmlte> <h3 class="footer-heading" data-astro-cid-sz7xmlte>Getting Started</h3> <ul class="footer-links" data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/docs/getting-started/installation" data-astro-cid-sz7xmlte>Installation</a></li> <li data-astro-cid-sz7xmlte><a href="/tutorials" data-astro-cid-sz7xmlte>Tutorials</a></li> </ul> </div> <div class="footer-col" data-astro-cid-sz7xmlte> <h3 class="footer-heading" data-astro-cid-sz7xmlte>Resources</h3> <ul class="footer-links" data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/docs" data-astro-cid-sz7xmlte>Documentation</a></li> <li data-astro-cid-sz7xmlte><a href="/blog" data-astro-cid-sz7xmlte>Blog</a></li> </ul> </div> <div class="footer-col" data-astro-cid-sz7xmlte> <h3 class="footer-heading" data-astro-cid-sz7xmlte>Community</h3> <ul class="footer-links" data-astro-cid-sz7xmlte> <li data-astro-cid-sz7xmlte><a href="/get-involved" data-astro-cid-sz7xmlte>Get Involved</a></li> <li data-astro-cid-sz7xmlte><a href="https://github.com/fifth-lang/fifth" rel="noopener noreferrer" data-astro-cid-sz7xmlte>GitHub</a></li> </ul> </div> </div> <div class="footer-bottom" data-astro-cid-sz7xmlte> <p data-astro-cid-sz7xmlte>&copy; 2026 Fifth Language. All rights reserved.</p> </div> </div> </footer>  </body></html> 
