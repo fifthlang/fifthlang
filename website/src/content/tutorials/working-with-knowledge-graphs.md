@@ -45,12 +45,15 @@ Examples:
 
 ```fifth
 main(): int {
-    // Create an empty graph
-    g: graph = KG.CreateGraph();
-    
-    // Add triples to the graph
-    g += <http://ex/s, http://ex/p, "o">;
-    g += <http://ex/s2, http://ex/p2, 42>;
+    // Create a graph using a TriG literal
+    g: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:data {
+            ex:s ex:p "o" .
+            ex:s2 ex:p2 42 .
+        }
+    >;
     
     return g.CountTriples();
 }
@@ -62,8 +65,13 @@ main(): int {
 store default = local_store("/data/store");
 
 main(): int {
-    g: graph = KG.CreateGraph();
-    g += <http://ex/s, http://ex/p, "o">;
+    g: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:data {
+            ex:s ex:p "o" .
+        }
+    >;
     
     // Save graph to default store
     default += g;

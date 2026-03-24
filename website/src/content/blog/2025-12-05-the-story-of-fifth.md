@@ -16,8 +16,10 @@ The vision was clear from the start: create a systems programming language where
 
 ```fifth
 // The dream: knowledge graphs as naturally as arithmetic
-g: graph = @< >;
-g += <x:Alice, x:age, 42>;
+g: graph = @<
+    @prefix x: <http://example.org/> .
+    x:people { x:Alice x:age 42 . }
+>;
 myStore += g;
 ```
 

@@ -443,7 +443,7 @@ describe('Property 10: Sitemap completeness', () => {
         const urlPath = rel === 'index.html'
           ? '/'
           : '/' + rel.replace(/\/index\.html$/, '/').replace(/\.html$/, '/');
-        const expectedUrl = `https://fifthlang.org${urlPath}`;
+        const expectedUrl = `https://fifth-lang.org${urlPath}`;
 
         expect(
           sitemapUrls,
@@ -682,7 +682,7 @@ describe('Property 14: Internal link integrity', () => {
       const pageDir = pageUrlPath.endsWith('/')
         ? pageUrlPath
         : pageUrlPath.substring(0, pageUrlPath.lastIndexOf('/') + 1);
-      resolved = new URL(pathPart, `https://fifthlang.org${pageDir}`).pathname;
+      resolved = new URL(pathPart, `https://fifth-lang.org${pageDir}`).pathname;
     }
 
     return { path: resolved, fragment };

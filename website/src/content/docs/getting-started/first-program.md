@@ -119,16 +119,22 @@ alias ex as <http://example.org/>;
 alias foaf as <http://xmlns.com/foaf/0.1/>;
 
 main(): int {
-    g : graph in <ex:> = KG.CreateGraph();
-    g += <ex:alice, foaf:name, "Alice">;
-    g += <ex:alice, foaf:age, 30>;
-    g += <ex:alice, ex:knows, ex:bob>;
+    g: graph = @<
+        @prefix ex: <http://example.org/> .
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+        ex:people {
+            ex:alice foaf:name "Alice" ;
+                     foaf:age 30 ;
+                     ex:knows ex:bob .
+        }
+    >;
 
     return 0;
 }
 ```
 
-This creates an RDF knowledge graph with triples describing a person named Alice. Knowledge graphs are a first-class feature in Fifth — no external libraries needed.
+This creates an RDF knowledge graph using a TriG literal — an inline block of RDF data embedded directly in Fifth code. The `@< ... >` syntax lets you write standard TriG/Turtle notation to describe triples. Knowledge graphs are a first-class feature in Fifth — no external libraries needed.
 
 ## Next Steps
 

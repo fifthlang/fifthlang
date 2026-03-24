@@ -558,8 +558,8 @@ main(): int {
 alias ex as <http://example.org/>;
 alias foaf as <http://xmlns.com/foaf/0.1/>;
 
-// Store declaration (SPARQL endpoint)
-myStore : store = sparql_store(<http://localhost:8080/graphdb>);
+// Store declaration
+myStore : store = remote_store(<http://localhost:8080/graphdb>);
 
 // Triple literals: <subject, predicate, object>
 main(): int {
@@ -571,12 +571,17 @@ main(): int {
     return 0;
 }
 
-// Graph declaration
+// Graph creation using TriG literals
 main(): int {
-    g : graph in <ex:> = KG.CreateGraph();
-    // Add triples to the graph
-    g += <ex:subject1, ex:predicate1, ex:object1>;
-    g += <ex:subject2, ex:predicate2, 42>;
+    // TriG literals embed RDF data directly in Fifth code
+    g: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:data {
+            ex:subject1 ex:predicate1 ex:object1 .
+            ex:subject2 ex:predicate2 42 .
+        }
+    >;
     
     return 0;
 }
@@ -592,22 +597,49 @@ main(): int {
     alice: Person;
     alice = new Person();
     
-    // Create graph and add triples
-    peopleGraph : graph in <ex:> = KG.CreateGraph();
-    peopleGraph += <ex:alice, ex:name, "Alice">;
-    peopleGraph += <ex:alice, ex:age, 30>;
-    peopleGraph += <ex:alice, ex:knows, ex:bob>;
+    // Create graph using a TriG literal
+    peopleGraph: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:people {
+            ex:alice ex:name "Alice" ;
+                     ex:age 30 ;
+                     ex:knows ex:bob .
+        }
+    >;
+    
+    return 0;
+}
+
+// TriG literals support interpolation with {{ }}
+main(): int {
+    name: string = "Alice";
+    age: int = 30;
+    
+    g: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:people {
+            ex:alice ex:name {{ name }} ;
+                     ex:age {{ age }} .
+        }
+    >;
     
     return 0;
 }
 
 // Assigning graphs to stores
 alias ex as <http://example.org/>;
-myStore : store = sparql_store(<http://localhost:8080/graphdb>);
+myStore : store = remote_store(<http://localhost:8080/graphdb>);
 
 main(): int {
-    myGraph : graph in <ex:> = KG.CreateGraph();
-    myGraph += <ex:entity, ex:property, "value">;
+    myGraph: graph = @<
+        @prefix ex: <http://example.org/> .
+
+        ex:data {
+            ex:entity ex:property "value" .
+        }
+    >;
     
     // Add graph to store
     myStore += myGraph;
@@ -639,8 +671,8 @@ main(): int {
 alias foaf as <http://xmlns.com/foaf/0.1/>;
 alias ex as <http://example.org/people/>;
 
-// Connect to a SPARQL store
-peopleDB : store = sparql_store(<http://localhost:8080/graphdb>);
+// Connect to a store
+peopleDB : store = remote_store(<http://localhost:8080/graphdb>);
 
 // Define a class for people
 class Person {
@@ -668,11 +700,17 @@ main(): int {
     adult: bool;
     adult = isAdult(john.Age);
     
-    // Create knowledge graph and add triples
-    johnGraph : graph in <ex:> = KG.CreateGraph();
-    johnGraph += <ex:john, foaf:firstName, "John">;
-    johnGraph += <ex:john, foaf:lastName, "Doe">;
-    johnGraph += <ex:john, foaf:age, 30>;
+    // Create knowledge graph using a TriG literal with interpolation
+    johnGraph: graph = @<
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+        @prefix ex: <http://example.org/people/> .
+
+        ex:people {
+            ex:john foaf:firstName {{ john.FirstName }} ;
+                    foaf:lastName {{ john.LastName }} ;
+                    foaf:age {{ john.Age }} .
+        }
+    >;
     
     // Save to the store
     peopleDB += johnGraph;
