@@ -1,157 +1,131 @@
 ---
 title: "Installation Guide"
-description: "Download and install the Fifth compiler on Linux, macOS, and Windows"
+description: "Install the Fifth compiler and SDK using the .NET toolchain"
 category: "getting-started"
 order: 1
 ---
 
-Fifth provides pre-built, self-contained binaries for Linux, macOS, and Windows. No additional .NET runtime is required to run the compiler.
+Fifth integrates with the .NET toolchain. You install the compiler as a .NET tool and the SDK resolves automatically from NuGet when you build. No platform-specific downloads needed.
 
-## Supported Platforms
+## Prerequisites
 
-| Platform | Architectures | Runtimes |
-| --- | --- | --- |
-| Linux | x64, arm64 | net10.0, net9.0 |
-| macOS | x64, arm64 | net10.0, net9.0 |
-| Windows | x64, arm64 | net10.0, net9.0 |
+- [.NET SDK 10.0+](https://dotnet.microsoft.com/download)
 
-The `net10.0` packages are the recommended baseline.
-
-## Download
-
-Download the latest release from the [GitHub Releases page](https://github.com/aabs/fifthlang/releases).
-
-Archives follow the naming pattern:
-
-```
-fifth-<version>-<runtime>-<framework>.<tar.gz|zip>
-```
-
-For example: `fifth-0.9.0-linux-x64-net10.0.tar.gz`
-
-## Verify Your Download
-
-Each release includes a `SHA256SUMS` file for checksum verification.
-
-### Linux (GNU coreutils)
+Verify with:
 
 ```bash
-VERSION=0.9.0
-RUNTIME=linux-x64
-FRAMEWORK=net10.0
-
-curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz"
-curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/SHA256SUMS"
-
-sha256sum --ignore-missing -c SHA256SUMS
+dotnet --version  # Should show 10.0.x
 ```
 
-### macOS (BSD shasum)
+## Install the Compiler
+
+Install the Fifth compiler as a global .NET tool:
 
 ```bash
-VERSION=0.9.0
-RUNTIME=osx-x64
-FRAMEWORK=net10.0
-
-curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz"
-curl -LO "https://github.com/aabs/fifthlang/releases/download/v${VERSION}/SHA256SUMS"
-
-grep "fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz" SHA256SUMS | shasum -a 256 -c -
+dotnet tool install --global Fifth.Compiler.Tool --version 0.9.0
 ```
 
-### Windows (PowerShell)
-
-```powershell
-$version = "0.9.0"
-$runtime = "win-x64"
-$framework = "net10.0"
-
-Invoke-WebRequest -Uri "https://github.com/aabs/fifthlang/releases/download/v$version/fifth-$version-$runtime-$framework.zip" -OutFile "fifth-$version-$runtime-$framework.zip"
-Invoke-WebRequest -Uri "https://github.com/aabs/fifthlang/releases/download/v$version/SHA256SUMS" -OutFile "SHA256SUMS"
-
-# Compare the hashes
-Get-FileHash ".\fifth-$version-$runtime-$framework.zip" -Algorithm SHA256
-Get-Content .\SHA256SUMS | Select-String "fifth-$version-$runtime-$framework.zip"
-```
-
-Only proceed when the computed hash matches the line from `SHA256SUMS`.
-
-## Install
-
-### Linux / macOS
+Verify it works:
 
 ```bash
-VERSION=0.9.0
-RUNTIME=linux-x64  # or osx-x64, osx-arm64, linux-arm64
-FRAMEWORK=net10.0
-
-# Create installation directory
-mkdir -p ~/opt/fifth/${VERSION}
-
-# Extract
-tar -xzf fifth-${VERSION}-${RUNTIME}-${FRAMEWORK}.tar.gz -C ~/opt/fifth/${VERSION}
-
-# Add to PATH (add this to your ~/.bashrc, ~/.zshrc, or ~/.config/fish/config.fish)
-export PATH=~/opt/fifth/${VERSION}/fifth-${VERSION}/bin:$PATH
+fifthc --version
 ```
 
-### Windows
+### Using a Local Tool Manifest (recommended for teams)
 
-```powershell
-$version = "0.9.0"
-$runtime = "win-x64"  # or win-arm64
-$framework = "net10.0"
+A local tool manifest pins the compiler version per-project so everyone on the team uses the same version.
 
-# Create installation directory
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\fifth\$version" | Out-Null
+Create `.config/dotnet-tools.json` in your project root:
 
-# Extract
-Expand-Archive -Force -Path ".\fifth-$version-$runtime-$framework.zip" -DestinationPath "$env:USERPROFILE\fifth\$version"
+```json
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "fifth.compiler.tool": {
+      "version": "0.9.0",
+      "commands": ["fifthc"]
+    }
+  }
+}
 ```
 
-Add `%USERPROFILE%\fifth\<version>\fifth-<version>\bin` to your user PATH via **System Properties > Environment Variables**, or use:
-
-```powershell
-$newPath = "$env:USERPROFILE\fifth\$version\fifth-$version\bin"
-[Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$newPath", "User")
-```
-
-## Archive Contents
-
-Each archive contains:
-
-```
-fifth-<version>/
-  bin/
-    fifth (or fifth.exe on Windows)
-  lib/
-    *.dll support libraries for IDE tooling and the SDK
-  LICENSE
-  README.md
-  VERSION.txt
-```
-
-The `bin/fifth` binary is the Fifth compiler. The `lib/` folder contains support libraries for IDE tooling and SDK integration.
-
-## Verify Installation
-
-After installation, verify the compiler is working:
+Then restore:
 
 ```bash
-fifth --version
-fifth --help
+dotnet tool restore
 ```
+
+## Set Up the SDK
+
+The Fifth.Sdk is an MSBuild SDK that lets you build `.5thproj` files with `dotnet build`. Pin the version in a `global.json` at your project or solution root:
+
+```json
+{
+  "msbuild-sdks": {
+    "Fifth.Sdk": "0.9.0"
+  }
+}
+```
+
+MSBuild pulls the SDK package from NuGet automatically on first build. No manual download required.
+
+## Create a Project
+
+Create a `.5thproj` file:
+
+```xml
+<Project Sdk="Fifth.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <FifthCompilerCommand>fifthc</FifthCompilerCommand>
+  </PropertyGroup>
+</Project>
+```
+
+Add a source file, e.g. `main.5th`:
+
+```
+main(): void {
+    std.print("Hello from Fifth!");
+}
+```
+
+Build and run:
+
+```bash
+dotnet build
+dotnet run
+```
+
+## Updating
+
+To update the compiler tool:
+
+```bash
+# Global install
+dotnet tool update --global Fifth.Compiler.Tool
+
+# Or local manifest
+dotnet tool update fifth.compiler.tool
+```
+
+To update the SDK, bump the version in `global.json`:
+
+```json
+{
+  "msbuild-sdks": {
+    "Fifth.Sdk": "0.10.0"
+  }
+}
+```
+
+Keep the compiler tool and SDK versions in sync. The next `dotnet build` will pull the new SDK automatically.
 
 ## Build from Source
 
-If you prefer to build from source or need to work on the compiler itself:
-
-### Prerequisites
-
-- [.NET SDK 10.0+](https://dotnet.microsoft.com/download)
-- Java 17+ (for ANTLR grammar compilation)
-
-### Build Steps
+If you prefer to build the compiler from source:
 
 ```bash
 git clone https://github.com/aabs/fifthlang.git
@@ -160,27 +134,8 @@ dotnet restore fifthlang.sln
 dotnet build fifthlang.sln
 ```
 
-The build may take 1-2 minutes on first run. See the [GitHub repository](https://github.com/aabs/fifthlang) for detailed development instructions.
-
-## Troubleshooting
-
-### "command not found" after installation
-
-Ensure the `bin` directory is in your PATH and restart your terminal session.
-
-### Permission denied (Linux/macOS)
-
-Make the binary executable:
-
-```bash
-chmod +x ~/opt/fifth/${VERSION}/fifth-${VERSION}/bin/fifth
-```
-
-### Windows Defender SmartScreen warning
-
-The binaries are not code-signed. Click "More info" then "Run anyway" if you trust the download (verify the checksum first).
+Requires Java 17+ (for ANTLR grammar compilation). The build takes 1-2 minutes on first run.
 
 ## Next Steps
 
-- [Your First Program](/docs/getting-started/first-program) — Write and run your first Fifth program
-- [Project Setup](/docs/getting-started/project-setup) — Set up a multi-project Fifth solution
+- [Full Project Setup](/docs/getting-started/full-project-setup) — Multi-project solutions with ProjectReference and SLNX
