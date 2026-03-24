@@ -20,14 +20,14 @@ const features = [
     title: 'Imperative Programming',
     description:
       'Fifth uses a familiar imperative syntax with strong typing, making it easy to pick up if you know C#, TypeScript, or Java.',
-    code: `greet: string(name: string) {\n  return "Hello, " + name;\n}`,
+    code: `greet(name: string): string {\n  return "Hello, " + name;\n}`,
   },
   {
     icon: '🔗',
     title: 'Native Knowledge Graphs',
     description:
       'Build and query RDF knowledge graphs as first-class language constructs — no external libraries needed.',
-    code: `g: graph = KG.CreateGraph();\ng += <schema:Person, schema:name, "Alice">;\ng += <schema:Person, schema:knows, schema:Bob>;`,
+    code: `db : store = local_store("./quadstore_data");\n q: Query = ?<\n   PREFIX todo: <http://example.org/todo#>\n   SELECT (COUNT(*) AS ?count)\n   WHERE { ?s ?p ?o }\n >;\n result: Result = q <- db;`,
   },
   {
     icon: '🔧',
