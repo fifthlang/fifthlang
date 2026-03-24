@@ -10,10 +10,23 @@
 
 import CodeBlock from './CodeBlock.astro';
 
-const heroCode = `g: graph = KG.CreateGraph();
-g += <schema:Person, schema:name, "Alice">;
-g += <schema:Person, schema:age, 30>;
-results: query = ?< SELECT ?name WHERE { schema:Person schema:name ?name } >;`;
+const heroCode = `
+main(): int {
+    name: string = "Test";
+    age: int = 30;
+    active: bool = true;
+    s: Store = @<
+        @prefix ex: <http://example.org/> .
+        
+        ex:graph1 {
+            ex:Person ex:name {{ name }};
+                     ex:age {{ age }};
+                     ex:active {{ active }} .
+        }
+    >;
+    return 0;
+}
+`;
 ---
 
 <section class="hero" aria-label="Introduction to Fifth">
