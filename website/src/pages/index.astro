@@ -27,7 +27,7 @@ const features = [
     title: 'Native Knowledge Graphs',
     description:
       'Build and query RDF knowledge graphs as first-class language constructs — no external libraries needed.',
-    code: `db : store = local_store("./quadstore_data");\n q: Query = ?<\n   PREFIX todo: <http://example.org/todo#>\n   SELECT (COUNT(*) AS ?count)\n   WHERE { ?s ?p ?o }\n >;\n result: Result = q <- db;`,
+    code: `db : Store = local_store("./quadstore_data");\nq: Query = ?<\n   PREFIX todo: <http://example.org/todo#>\n   SELECT (COUNT(*) AS ?count)\n   WHERE { ?s ?p ?o }\n >;\nresult: Result = q <- db;`,
   },
   {
     icon: '🔧',
