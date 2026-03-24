@@ -21,13 +21,39 @@
             </a>`).join("")}function p(){a.hidden=!1,requestAnimationFrame(()=>{a.classList.add("search-modal-open"),s.focus()}),m()}function o(){a.classList.remove("search-modal-open"),a.hidden=!0,s.value="",n.innerHTML='<p class="search-placeholder">Start typing to search...</p>'}d.addEventListener("click",p),f?.addEventListener("click",o),s.addEventListener("input",()=>{l&&clearTimeout(l),l=setTimeout(()=>{y(s.value)},200)}),a.addEventListener("keydown",e=>{e.key==="Escape"&&o()}),document.addEventListener("keydown",e=>{(e.metaKey||e.ctrlKey)&&e.key==="k"&&(e.preventDefault(),a.hidden?p():o())})}L();</script>  </div> </div> </header>  <main>  <section class="hero" aria-label="Introduction to Fifth" data-astro-cid-nlow4r3u> <div class="hero-inner" data-astro-cid-nlow4r3u> <div class="hero-content" data-astro-cid-nlow4r3u> <h1 class="hero-tagline" data-astro-cid-nlow4r3u>
 A systems programming language with <span class="hero-highlight" data-astro-cid-nlow4r3u>native knowledge graphs</span> </h1> <p class="hero-subtitle" data-astro-cid-nlow4r3u>
 Fifth combines imperative programming with built-in RDF knowledge graphs and SPARQL queries, all compiled to .NET.
-</p> <div class="hero-ctas" data-astro-cid-nlow4r3u> <a href="/docs/getting-started/installation" class="cta cta-primary" data-astro-cid-nlow4r3u>Install Fifth</a> <a href="/tutorials/learn-fifth-in-y-minutes" class="cta cta-secondary" data-astro-cid-nlow4r3u>Learn in Y Minutes</a> </div> </div> <div class="hero-code" data-astro-cid-nlow4r3u> <div class="code-block-wrapper" data-astro-cid-jgrc2lfe> <div class="code-block-header" data-astro-cid-jgrc2lfe> <span class="code-block-lang" data-astro-cid-jgrc2lfe>fifth</span> <button type="button" class="code-block-copy" aria-label="Copy code to clipboard" data-code="g: graph = KG.CreateGraph();
-g += <schema:Person, schema:name, &#34;Alice&#34;>;
-g += <schema:Person, schema:age, 30>;
-results: query = ?< SELECT ?name WHERE { schema:Person schema:name ?name } >;" data-astro-cid-jgrc2lfe> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-jgrc2lfe> <rect x="9" y="9" width="13" height="13" rx="2" ry="2" data-astro-cid-jgrc2lfe></rect> <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" data-astro-cid-jgrc2lfe></path> </svg> <span class="code-block-copy-label" data-astro-cid-jgrc2lfe>Copy</span> </button> </div> <div class="code-block-body" data-astro-cid-jgrc2lfe>  <pre class="code-block-pre" data-astro-cid-jgrc2lfe><code class="language-fifth" data-astro-cid-jgrc2lfe>g: graph = KG.CreateGraph();
-g += &lt;schema:Person, schema:name, &quot;Alice&quot;&gt;;
-g += &lt;schema:Person, schema:age, 30&gt;;
-results: query = ?&lt; SELECT ?name WHERE { schema:Person schema:name ?name } &gt;;</code></pre> </div> </div> <script type="module">document.addEventListener("click",c=>{const e=c.target.closest(".code-block-copy");if(!e)return;const o=e.getAttribute("data-code");if(!o)return;const t=e.querySelector(".code-block-copy-label");navigator.clipboard.writeText(o).then(()=>{t&&(t.textContent="Copied!",setTimeout(()=>{t.textContent="Copy"},2e3))}).catch(()=>{t&&(t.textContent="Failed",setTimeout(()=>{t.textContent="Copy"},2e3))})});</script>  </div> </div> </section>  <section class="features" aria-label="Key features of Fifth" data-astro-cid-j7pv25f6> <div class="features-inner" data-astro-cid-j7pv25f6> <h2 class="features-heading" data-astro-cid-j7pv25f6>Why Fifth?</h2> <p class="features-subheading" data-astro-cid-j7pv25f6>
+</p> <div class="hero-ctas" data-astro-cid-nlow4r3u> <a href="/docs/getting-started/installation" class="cta cta-primary" data-astro-cid-nlow4r3u>Install Fifth</a> <a href="/tutorials/learn-fifth-in-y-minutes" class="cta cta-secondary" data-astro-cid-nlow4r3u>Learn in Y Minutes</a> </div> </div> <div class="hero-code" data-astro-cid-nlow4r3u> <div class="code-block-wrapper" data-astro-cid-jgrc2lfe> <div class="code-block-header" data-astro-cid-jgrc2lfe> <span class="code-block-lang" data-astro-cid-jgrc2lfe>fifth</span> <button type="button" class="code-block-copy" aria-label="Copy code to clipboard" data-code="
+main(): int {
+    name: string = &#34;Test&#34;;
+    age: int = 30;
+    active: bool = true;
+    s: Store = @<
+        @prefix ex: <http://example.org/> .
+        
+        ex:graph1 {
+            ex:Person ex:name {{ name }};
+                     ex:age {{ age }};
+                     ex:active {{ active }} .
+        }
+    >;
+    return 0;
+}
+" data-astro-cid-jgrc2lfe> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-astro-cid-jgrc2lfe> <rect x="9" y="9" width="13" height="13" rx="2" ry="2" data-astro-cid-jgrc2lfe></rect> <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" data-astro-cid-jgrc2lfe></path> </svg> <span class="code-block-copy-label" data-astro-cid-jgrc2lfe>Copy</span> </button> </div> <div class="code-block-body" data-astro-cid-jgrc2lfe>  <pre class="code-block-pre" data-astro-cid-jgrc2lfe><code class="language-fifth" data-astro-cid-jgrc2lfe>
+main(): int {
+    name: string = &quot;Test&quot;;
+    age: int = 30;
+    active: bool = true;
+    s: Store = @&lt;
+        @prefix ex: &lt;http://example.org/&gt; .
+        
+        ex:graph1 {
+            ex:Person ex:name {{ name }};
+                     ex:age {{ age }};
+                     ex:active {{ active }} .
+        }
+    &gt;;
+    return 0;
+}
+</code></pre> </div> </div> <script type="module">document.addEventListener("click",c=>{const e=c.target.closest(".code-block-copy");if(!e)return;const o=e.getAttribute("data-code");if(!o)return;const t=e.querySelector(".code-block-copy-label");navigator.clipboard.writeText(o).then(()=>{t&&(t.textContent="Copied!",setTimeout(()=>{t.textContent="Copy"},2e3))}).catch(()=>{t&&(t.textContent="Failed",setTimeout(()=>{t.textContent="Copy"},2e3))})});</script>  </div> </div> </section>  <section class="features" aria-label="Key features of Fifth" data-astro-cid-j7pv25f6> <div class="features-inner" data-astro-cid-j7pv25f6> <h2 class="features-heading" data-astro-cid-j7pv25f6>Why Fifth?</h2> <p class="features-subheading" data-astro-cid-j7pv25f6>
 A language designed from the ground up to make knowledge representation a natural part of programming.
 </p> <div class="features-grid" data-astro-cid-j7pv25f6> <div class="feature-card" data-astro-cid-lxmfzltz> <div class="feature-card-header" data-astro-cid-lxmfzltz> <span class="feature-card-icon" aria-hidden="true" data-astro-cid-lxmfzltz>⚡</span> <h3 class="feature-card-title" data-astro-cid-lxmfzltz>Imperative Programming</h3> </div> <p class="feature-card-description" data-astro-cid-lxmfzltz>Fifth uses a familiar imperative syntax with strong typing, making it easy to pick up if you know C#, TypeScript, or Java.</p> <div class="feature-card-code" data-astro-cid-lxmfzltz> <div class="code-block-wrapper" data-astro-cid-jgrc2lfe> <div class="code-block-header" data-astro-cid-jgrc2lfe> <span class="code-block-lang" data-astro-cid-jgrc2lfe>fifth</span> <button type="button" class="code-block-copy" aria-label="Copy code to clipboard" data-code="greet(name: string): string {
   return &#34;Hello, &#34; + name;
