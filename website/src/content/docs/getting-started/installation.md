@@ -138,4 +138,4 @@ Requires Java 17+ (for ANTLR grammar compilation). The build takes 1-2 minutes o
 
 ## Next Steps
 
-- [Full Project Setup](/docs/getting-started/full-project-setup) — Multi-project solutions with ProjectReference and SLN
+- [Full Project Setup](/docs/getting-started/project-setup) — Multi-project solutions with ProjectReference and SLNX
