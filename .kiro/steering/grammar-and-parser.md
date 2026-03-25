@@ -24,7 +24,7 @@ fileMatchPattern: "src/parser/**,docs/**/*.5th,test/**/*.5th,src/parser/grammar/
 
 All `.5th` files in `docs/`, `specs/`, `test/`, and `src/parser/grammar/test_samples/` MUST parse with the current grammar. CI enforces this via the "Validate .5th samples (parser-check)" step.
 
-Run locally before committing: `scripts/validate-examples.fish`
+Run locally before committing: `just validate-examples`
 
 ## Common Non-Fifth Patterns to Avoid
 
@@ -49,7 +49,7 @@ Intentionally-invalid files are excluded from validation via:
 - Filename heuristic: files with `invalid` in the name
 - Content marker: explicit negative-test comment in the file
 
-Force-validate negatives for debugging: `scripts/validate-examples.fish --include-negatives`
+Force-validate negatives for debugging: `dotnet run --project src/tools/validate-examples/validate-examples.csproj -- --include-negatives`
 
 ## Knowledge Graph Syntax
 

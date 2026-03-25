@@ -121,12 +121,12 @@ Checklist for agents (must run every time examples/docs are modified):
 
 2. Run the project's example validator and parser-check tools
 
-   ```fish
+   ```bash
    # Validate all examples that should parse. This quick-check uses the project's tooling
-   scripts/validate-examples.fish
+   just validate-examples
 
    # If you need to force-include intentionally-invalid examples for debugging
-   scripts/validate-examples.fish --include-negatives
+   dotnet run --project src/tools/validate-examples/validate-examples.csproj -- --include-negatives
    ```
 
    Fix any parsing errors reported by the validator. If a snippet is intended to be invalid for a test, ensure the validator-skip markers are present.
@@ -246,6 +246,6 @@ Following this checklist prevents parser-time flakiness and keeps integration te
 
 CI notes:
 
-- This repository includes a CI step `Validate .5th samples (parser-check)` that runs the `src/tools/validate-examples` tool to ensure all `.5th` examples across `docs/`, `specs/`, `src/parser/grammar/test_samples/`, and `test/` parse with the current grammar. Agents should run `scripts/validate-examples.fish` locally before committing to catch parser-time regressions early.
+- This repository includes a CI step `Validate .5th samples (parser-check)` that runs the `src/tools/validate-examples` tool to ensure all `.5th` examples across `docs/`, `specs/`, `src/parser/grammar/test_samples/`, and `test/` parse with the current grammar. Agents should run `just validate-examples` locally before committing to catch parser-time regressions early.
 
 - The `validate-examples` tool now skips intentionally-invalid (negative) tests when validating samples. It uses directory- and content-based heuristics to exclude files under `*/Invalid/*`, files with `invalid` in the filename, or files that include an explicit negative-test comment marker. To force validation of negative tests (for debugging), run the tool with `--include-negatives`.

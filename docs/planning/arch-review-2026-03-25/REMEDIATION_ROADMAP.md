@@ -41,8 +41,8 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Replace references to `scripts/validate-examples.fish` with the actual C# tool at `src/tools/validate-examples/`.
 - **Rationale:** The fish script does not exist; the actual tool is `src/tools/validate-examples/validate-examples.csproj`.
 - **Acceptance Criteria:**
-  - [ ] `.specify/memory/constitution.md` §IX updated to document the C# tool.
-  - [ ] `Justfile` gains a `validate-examples` recipe: `dotnet run --project src/tools/validate-examples/validate-examples.csproj`.
+  - [x] `.specify/memory/constitution.md` §IX updated to document the C# tool.
+  - [x] `Justfile` gains a `validate-examples` recipe: `dotnet run --project src/tools/validate-examples/validate-examples.csproj`.
 - **Impacted Files:** `.specify/memory/constitution.md`, `Justfile`
 - **Required Tests:** Run `just validate-examples` and confirm exit 0.
 - **Risk:** None.
