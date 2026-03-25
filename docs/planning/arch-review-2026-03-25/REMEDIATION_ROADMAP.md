@@ -53,9 +53,9 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Remove `compiler.DiagnosticRecord` which is structurally identical to `compiler.Diagnostic`.
 - **Rationale:** Two identical record types in the same file create confusion. The comment says they are intentionally identical, which defeats the purpose of having two types.
 - **Acceptance Criteria:**
-  - [ ] `DiagnosticRecord` removed from `CompilationResult.cs`.
-  - [ ] All usages of `DiagnosticRecord` replaced with `compiler.Diagnostic`.
-  - [ ] Solution builds and all tests pass.
+  - [x] `DiagnosticRecord` removed from `CompilationResult.cs`.
+  - [x] All usages of `DiagnosticRecord` replaced with `compiler.Diagnostic`.
+  - [x] Solution builds and all tests pass.
 - **Impacted Files:** `src/compiler/CompilationResult.cs`; search for `DiagnosticRecord` usages.
 - **Required Tests:** Existing compilation result tests should pass unchanged.
 - **Risk:** Low (rename only).
