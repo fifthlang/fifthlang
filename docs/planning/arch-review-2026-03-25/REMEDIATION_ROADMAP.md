@@ -80,12 +80,12 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Remove the `TranslatorRegistry` static mutable state by injecting `IBackendTranslator` through the `Compiler` constructor.
 - **Rationale:** Static mutable state prevents parallel testing, violates constitution §VI, and creates invisible coupling (AS-003, R3).
 - **Acceptance Criteria:**
-  - [ ] `Compiler` constructor gains an optional `IBackendTranslator? translator = null` parameter.
-  - [ ] Default is `new LoweredAstToRoslynTranslator()`.
-  - [ ] `TranslatorRegistry` class deleted.
-  - [ ] All call sites updated (search for `TranslatorRegistry.Current`).
-  - [ ] Parallel test execution does not corrupt translator state.
-  - [ ] Solution builds and all tests pass.
+  - [x] `Compiler` constructor gains an optional `IBackendTranslator? translator = null` parameter.
+  - [x] Default is `new LoweredAstToRoslynTranslator()`.
+  - [x] `TranslatorRegistry` class deleted.
+  - [x] All call sites updated (search for `TranslatorRegistry.Current`).
+  - [x] Parallel test execution does not corrupt translator state.
+  - [x] Solution builds and all tests pass.
 - **Impacted Files:** `src/compiler/TranslatorRegistry.cs` (delete), `src/compiler/Compiler.cs`, any test that sets `TranslatorRegistry.Current`.
 - **Required Tests:** Existing tests; optionally add a test that constructs two `Compiler` instances with different translators and verifies isolation.
 - **Risk:** Low (interface already exists; default behaviour unchanged).

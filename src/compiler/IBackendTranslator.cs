@@ -12,4 +12,9 @@ public interface IBackendTranslator
     /// Translate the provided assembly IR into generated sources.
     /// </summary>
     TranslationResult Translate(AssemblyDef assembly);
+
+    /// <summary>
+    /// Translate the provided assembly IR into generated sources with additional options.
+    /// </summary>
+    TranslationResult Translate(AssemblyDef assembly, TranslatorOptions? options) => Translate(assembly);
 }
