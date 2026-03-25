@@ -49,6 +49,6 @@ inclusion: auto
 - `Antlr4.Runtime.Standard` — ANTLR runtime
 - `RazorLight` — Template engine for code generation
 - `System.CommandLine` — CLI parsing
-- `TUnit` + `FluentAssertions` — Testing
+- `xUnit` + `FluentAssertions` — Testing
 - `dunet` — Discriminated unions
 - `Vogen` — Value object generation

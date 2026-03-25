@@ -23,7 +23,7 @@ Fifth Language is a C# .NET 10.0 compiler for the Fifth programming language. It
 - `src/compiler/LanguageTransformations/` — AST transformation passes
 - `src/compiler/ParserManager.cs` — Transformation pipeline coordinator
 - `src/fifthlang.system/` — Built-in system functions and knowledge graph support
-- `test/ast-tests/` — TUnit AST and generator tests
+- `test/ast-tests/` — xUnit AST and generator tests
 - `test/syntax-parser-tests/` — Grammar parsing tests
 - `test/runtime-integration-tests/` — End-to-end verification tests
 
