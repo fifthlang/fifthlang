@@ -13,21 +13,18 @@ Generated files:
 - `builders.generated.cs` — Builder pattern classes
 - `visitors.generated.cs` — Visitor pattern classes
 - `rewriter.generated.cs` — Rewriter pattern for lowering
-- `il.builders.generated.cs` — IL-specific builders
-- `il.rewriter.generated.cs` — IL rewriter pattern
 - `typeinference.generated.cs` — Type inference support
 
 ## How to Change Generated Code
 
-1. Edit `src/ast-model/AstMetamodel.cs` (main AST types) or `src/ast-model/ILMetamodel.cs` (IL AST types)
+1. Edit `src/ast-model/AstMetamodel.cs`
 2. Optionally update templates under `src/ast_generator/Templates/`
 3. Regenerate: `just run-generator`
 4. Build the full solution: `dotnet build fifthlang.sln`
 
-## Two-Level AST Design
+## AST Design
 
-- Main AST (`AstMetamodel.cs`): Rich, high-level constructs mirroring source language features
-- IL AST (`ILMetamodel.cs`): Simple, low-level constructs mapping to IL instructions
+- AST (`AstMetamodel.cs`): Rich, high-level constructs mirroring source language features, lowered through transformation passes for Roslyn code generation
 
 ## Visitor/Rewriter Pattern Selection
 
