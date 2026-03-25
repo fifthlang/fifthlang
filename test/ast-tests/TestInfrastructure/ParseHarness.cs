@@ -115,14 +115,14 @@ public static class ParseHarness
                 {
                     codeCandidate = d.Message.Split(':')[0];
                 }
-                if (codeCandidate.StartsWith("TRPL"))
+                if (codeCandidate.StartsWith("TRPL") || codeCandidate.StartsWith("SPARQL"))
                 {
                     diagnostics.Add(new TestDiagnostic(codeCandidate, d.Level switch
                     {
                         compiler.DiagnosticLevel.Error => DiagnosticSeverity.Error,
                         compiler.DiagnosticLevel.Warning => DiagnosticSeverity.Warning,
                         _ => DiagnosticSeverity.Info
-                    }, d.Message, 0, 0, string.Empty));
+                    }, d.Message, d.Line ?? 0, d.Column ?? 0, string.Empty));
                 }
             }
         }

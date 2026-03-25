@@ -107,15 +107,15 @@ public static class SparqlDiagnosticExtensions
     /// Gets the severity level for a SPARQL diagnostic code.
     /// All SPARQL diagnostics are errors except SPARQL006 which is a warning.
     /// </summary>
-    public static DiagnosticSeverity GetSeverity(this string code)
+    public static compiler.DiagnosticLevel GetSeverity(this string code)
     {
         if (!code.IsSparqlDiagnostic())
-            return DiagnosticSeverity.Info;
+            return compiler.DiagnosticLevel.Info;
 
         return code switch
         {
-            SparqlDiagnostics.OversizedLiteral => DiagnosticSeverity.Warning,
-            _ => DiagnosticSeverity.Error
+            SparqlDiagnostics.OversizedLiteral => compiler.DiagnosticLevel.Warning,
+            _ => compiler.DiagnosticLevel.Error
         };
     }
 }

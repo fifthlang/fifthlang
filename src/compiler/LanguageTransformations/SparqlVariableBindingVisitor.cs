@@ -1,5 +1,3 @@
-using ast;
-using ast_generated;
 using ast_model.Symbols;
 using Antlr4.Runtime;
 using System.Text.RegularExpressions;
@@ -15,13 +13,16 @@ namespace Fifth.LangProcessingPhases;
 /// This implements User Story 2: Variable Binding via Parameters.
 /// Variables referenced in SPARQL text (e.g., "age" in "?s ex:age age") are bound as
 /// typed parameters using dotNetRDF's SparqlParameterizedString, preventing injection attacks.
-/// 
+///
 /// The visitor uses the SPARQL lexer to identify bare identifiers (not SPARQL keywords or variables)
 /// that could be Fifth variable references, then attempts to resolve them in the symbol table.
+///
+/// Diagnostics are routed into the main compiler diagnostic pipeline via the
+/// <c>List&lt;compiler.Diagnostic&gt;</c> passed to the constructor.
 /// </remarks>
 public class SparqlVariableBindingVisitor : DefaultRecursiveDescentVisitor
 {
-    private readonly List<Diagnostic> diagnostics = new();
+    private readonly List<compiler.Diagnostic> diagnostics;
     
     // SPARQL keywords that should not be treated as Fifth variable references
     private static readonly HashSet<string> SparqlKeywords = new(StringComparer.OrdinalIgnoreCase)
@@ -42,9 +43,22 @@ public class SparqlVariableBindingVisitor : DefaultRecursiveDescentVisitor
     };
 
     /// <summary>
+    /// Constructs a new <see cref="SparqlVariableBindingVisitor"/> that routes diagnostics
+    /// into the supplied compiler diagnostic list.
+    /// </summary>
+    /// <param name="diagnostics">
+    /// The shared compiler diagnostic list. When <c>null</c>, diagnostics are collected
+    /// into an internal list accessible via <see cref="Diagnostics"/>.
+    /// </param>
+    public SparqlVariableBindingVisitor(List<compiler.Diagnostic>? diagnostics = null)
+    {
+        this.diagnostics = diagnostics ?? new List<compiler.Diagnostic>();
+    }
+
+    /// <summary>
     /// Gets the list of diagnostics generated during variable binding resolution.
     /// </summary>
-    public IReadOnlyList<Diagnostic> Diagnostics => diagnostics.AsReadOnly();
+    public IReadOnlyList<compiler.Diagnostic> Diagnostics => diagnostics.AsReadOnly();
 
     /// <summary>
     /// Visits a SparqlLiteralExpression and resolves variable references within the SPARQL text.
@@ -95,9 +109,16 @@ public class SparqlVariableBindingVisitor : DefaultRecursiveDescentVisitor
                     Annotations = []
                 });
             }
-            // Note: We don't emit diagnostics for unresolved identifiers because they might be
-            // SPARQL prefixes, property names, or other valid SPARQL constructs.
-            // Only emit error if it looks like it should be a Fifth variable but isn't found.
+            else
+            {
+                // Only emit diagnostic for identifiers that look like explicit Fifth variable
+                // references (PNAME_NS tokens like "varName:"). PNAME_LN local parts (like the
+                // "age" in "ex:age") are likely SPARQL property names, not Fifth variables.
+                if (identifier.IsExplicitVariableReference)
+                {
+                    EmitUnknownVariableDiagnostic(identifier.Name, result);
+                }
+            }
         }
         
         return result with { Bindings = bindings };
@@ -160,7 +181,8 @@ public class SparqlVariableBindingVisitor : DefaultRecursiveDescentVisitor
                         {
                             Name = text,
                             Position = token.StartIndex,
-                            Length = text.Length
+                            Length = text.Length,
+                            IsExplicitVariableReference = true
                         });
                     }
                 }
@@ -240,15 +262,13 @@ public class SparqlVariableBindingVisitor : DefaultRecursiveDescentVisitor
     /// </summary>
     private void EmitUnknownVariableDiagnostic(string varName, SparqlLiteralExpression context)
     {
-        var diagnostic = new Diagnostic
-        {
-            Code = SparqlDiagnostics.UnknownVariable,
-            Message = SparqlDiagnostics.FormatUnknownVariable(varName),
-            Severity = DiagnosticSeverity.Error,
-            Filename = context.Location?.Filename ?? "",
-            Line = context.Location?.Line ?? 0,
-            Column = context.Location?.Column ?? 0
-        };
+        var diagnostic = new compiler.Diagnostic(
+            compiler.DiagnosticLevel.Error,
+            SparqlDiagnostics.FormatUnknownVariable(varName),
+            context.Location?.Filename,
+            SparqlDiagnostics.UnknownVariable,
+            Line: context.Location?.Line,
+            Column: context.Location?.Column);
 
         diagnostics.Add(diagnostic);
     }
@@ -262,27 +282,11 @@ internal record IdentifierInfo
     public required string Name { get; init; }
     public required int Position { get; init; }
     public required int Length { get; init; }
-}
-
-/// <summary>
-/// Represents a diagnostic message from the SPARQL variable binding process.
-/// </summary>
-public class Diagnostic
-{
-    public required string Code { get; init; }
-    public required string Message { get; init; }
-    public required DiagnosticSeverity Severity { get; init; }
-    public required string Filename { get; init; }
-    public required int Line { get; init; }
-    public required int Column { get; init; }
-}
-
-/// <summary>
-/// Severity levels for diagnostics.
-/// </summary>
-public enum DiagnosticSeverity
-{
-    Info,
-    Warning,
-    Error
+    /// <summary>
+    /// True when the identifier was extracted from a bare PNAME_NS token (e.g. "varName:"),
+    /// indicating the user explicitly intended a Fifth variable reference.
+    /// False for PNAME_LN local parts (e.g. the "age" in "ex:age") which may be
+    /// legitimate SPARQL property names.
+    /// </summary>
+    public bool IsExplicitVariableReference { get; init; }
 }
