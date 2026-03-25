@@ -96,9 +96,11 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Audit `ExpressionCloner.cs` and `DumpTreeVisitor.cs` — determine if they are used, document if so, or delete if dead.
 - **Rationale:** Reducing dead code improves maintainability (AS-007).
 - **Acceptance Criteria:**
-  - [ ] Each file either has a documented usage or is deleted.
-  - [ ] Solution builds and all tests pass.
-- **Impacted Files:** `src/compiler/LanguageTransformations/ExpressionCloner.cs`, `src/compiler/LanguageTransformations/DumpTreeVisitor.cs`
+  - [x] Each file either has a documented usage or is deleted.
+    - `ExpressionCloner.cs`: **Deleted** — standalone file no longer exists on disk. Expression cloning is handled by private inner classes in `AugmentedAssignmentLoweringRewriter` and `AstBuilderVisitor` where needed.
+    - `DumpTreeVisitor.cs`: **Documented** — active debugging utility used by `TreeDumpingTests.cs` and available as a commented-out diagnostic in `ParserManager.cs`. Documented in `src/ast_generator/README.md`.
+  - [x] Solution builds and all tests pass.
+- **Impacted Files:** `src/compiler/LanguageTransformations/ExpressionCloner.cs` (already deleted), `src/compiler/LanguageTransformations/DumpTreeVisitor.cs` (retained)
 - **Risk:** Low if deleted (no callers); verify with build.
 
 ---
