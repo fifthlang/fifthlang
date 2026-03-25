@@ -15,14 +15,16 @@ namespace compiler;
 public class Compiler
 {
     private readonly IProcessRunner _processRunner;
+    private readonly IBackendTranslator _translator;
 
     public Compiler() : this(new ProcessRunner())
     {
     }
 
-    public Compiler(IProcessRunner processRunner)
+    public Compiler(IProcessRunner processRunner, IBackendTranslator? translator = null)
     {
         _processRunner = processRunner;
+        _translator = translator ?? new LoweredAstToRoslynTranslator();
     }
 
     /// <summary>
@@ -468,7 +470,7 @@ Examples:
             }
 
             // Create the Roslyn translator
-            var translator = new LoweredAstToRoslynTranslator();
+            var translator = _translator;
 
             // Pass reference paths to the translator via options
             var translatorOptions = new TranslatorOptions
