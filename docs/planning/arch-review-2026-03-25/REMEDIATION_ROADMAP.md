@@ -66,10 +66,10 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Replace `SparqlVariableBindingVisitor.Diagnostic` local class with `compiler.Diagnostic` and route binding errors into the `List<compiler.Diagnostic>` parameter chain.
 - **Rationale:** SPARQL variable binding errors are currently silently discarded (AS-001, R2).
 - **Acceptance Criteria:**
-  - [ ] Local `Diagnostic` and `DiagnosticSeverity` types removed from `SparqlVariableBindingVisitor.cs`.
-  - [ ] `SparqlVariableBindingVisitor` constructor accepts a `List<compiler.Diagnostic>` and emits `compiler.Diagnostic` errors.
-  - [ ] Compilation of a Fifth program with an invalid SPARQL variable binding produces a `DiagnosticLevel.Error` in the result.
-  - [ ] New test: `SparqlVariableBindingTest_InvalidVariable_ProducesError` in `runtime-integration-tests` or `ast-tests`.
+  - [x] Local `Diagnostic` and `DiagnosticSeverity` types removed from `SparqlVariableBindingVisitor.cs`.
+  - [x] `SparqlVariableBindingVisitor` constructor accepts a `List<compiler.Diagnostic>` and emits `compiler.Diagnostic` errors.
+  - [x] Compilation of a Fifth program with an invalid SPARQL variable binding produces a `DiagnosticLevel.Error` in the result.
+  - [x] New test: `SparqlVariableBindingTest_InvalidVariable_ProducesError` in `runtime-integration-tests` or `ast-tests`.
 - **Impacted Files:** `src/compiler/LanguageTransformations/SparqlVariableBindingVisitor.cs`; `src/compiler/ParserManager.cs`
 - **Required Tests:** New test as above.
 - **Risk:** Low-medium (changes diagnostic routing; validate via existing SPARQL tests).

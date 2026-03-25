@@ -694,6 +694,14 @@ public class TreeLinkageVisitor : NullSafeRecursiveDescentVisitor
         return result;
     }
 
+    public override SparqlLiteralExpression VisitSparqlLiteralExpression(SparqlLiteralExpression ctx)
+    {
+        EnterNonTerminal(ctx);
+        var result = base.VisitSparqlLiteralExpression(ctx);
+        LeaveNonTerminal(ctx);
+        return result;
+    }
+
     public override TimeLiteralExp VisitTimeLiteralExp(TimeLiteralExp ctx)
     {
         EnterTerminal(ctx);

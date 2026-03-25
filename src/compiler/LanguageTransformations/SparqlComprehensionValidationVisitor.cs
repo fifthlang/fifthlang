@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using ast;
-using ast_generated;
 using ast_model.TypeSystem;
 
 namespace Fifth.LangProcessingPhases;
 
 /// <summary>
 /// Validation visitor for SPARQL comprehensions.
-/// 
+///
 /// Validates:
 /// 1. Generator type is list or tabular SELECT result
 /// 2. For SPARQL generators: query is SELECT (not ASK/CONSTRUCT/DESCRIBE)
@@ -16,79 +13,61 @@ namespace Fifth.LangProcessingPhases;
 /// 4. For SPARQL object projections: referenced properties exist in SELECT projection
 /// 5. Constraints are boolean expressions
 /// 6. Rejects ?variable syntax (must use x.property instead)
-/// 
+///
 /// Emits diagnostic codes LCOMP001-006 for validation failures.
+/// All diagnostics are emitted directly as <see cref="compiler.Diagnostic"/> into the
+/// shared compiler diagnostic list.
 /// </summary>
 public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisitor
 {
-    private readonly List<compiler.Diagnostic> compilerDiagnostics;
+    private readonly List<compiler.Diagnostic> diagnostics;
 
-    public IReadOnlyList<Diagnostic> Diagnostics { get; private set; } = new List<Diagnostic>();
-
-    public SparqlComprehensionValidationVisitor(List<compiler.Diagnostic>? compilerDiagnostics = null)
+    public SparqlComprehensionValidationVisitor(List<compiler.Diagnostic>? diagnostics = null)
     {
-        this.compilerDiagnostics = compilerDiagnostics ?? new List<compiler.Diagnostic>();
+        this.diagnostics = diagnostics ?? new List<compiler.Diagnostic>();
     }
+
+    /// <summary>
+    /// Gets the diagnostics emitted during validation.
+    /// </summary>
+    public IReadOnlyList<compiler.Diagnostic> Diagnostics => diagnostics.AsReadOnly();
 
     public override ListComprehension VisitListComprehension(ListComprehension ctx)
     {
-        // Visit children first to ensure types are inferred
         var result = base.VisitListComprehension(ctx);
 
-        var localDiagnostics = new List<Diagnostic>();
+        ValidateGeneratorType(result);
 
-        // Validate generator type (must be list or tabular SELECT result)
-        ValidateGeneratorType(result, localDiagnostics);
-
-        // If generator is SPARQL literal, validate SELECT form and object projection
         if (result.Source is SparqlLiteralExpression sparqlSource)
         {
-            ValidateSparqlComprehension(result, sparqlSource, localDiagnostics);
+            ValidateSparqlComprehension(result, sparqlSource);
         }
 
-        // Validate constraints are boolean
-        ValidateConstraints(result, localDiagnostics);
-
-        // Convert local diagnostics to compiler diagnostics
-        foreach (var diag in localDiagnostics)
-        {
-            var compilerDiag = new compiler.Diagnostic(
-                diag.Severity == DiagnosticSeverity.Error ? compiler.DiagnosticLevel.Error : compiler.DiagnosticLevel.Warning,
-                diag.Message,
-                diag.Filename,
-                diag.Code);
-            compilerDiagnostics.Add(compilerDiag);
-        }
-
-        Diagnostics = localDiagnostics.AsReadOnly();
+        ValidateConstraints(result);
 
         return result;
     }
 
     /// <summary>
     /// Validates that the generator (source) expression has a compatible type.
-    /// For general comprehensions: must be a list type.
-    /// For SPARQL comprehensions: type will be Result (tabular SELECT result).
     /// </summary>
-    private void ValidateGeneratorType(ListComprehension ctx, List<Diagnostic> diagnostics)
+    private void ValidateGeneratorType(ListComprehension ctx)
     {
         if (ctx.Source.Type == null)
         {
-            // Type not yet inferred - skip validation (will be caught by type inference pass)
             return;
         }
 
         var sourceType = ctx.Source.Type;
 
-        // Check if it's a list type
-        bool isListType = sourceType switch
+        var isListType = sourceType switch
         {
             FifthType.TType t => t.Name.ToString().StartsWith("List<") ||
                                   t.Name.ToString() == "List" ||
-                                  t.Name.ToString() == "Result", // Tabular SELECT result
-            FifthType.TListOf _ => true,
-            FifthType.TArrayOf _ => true,
-            FifthType.UnknownType _ => true, // Allow unknown types (generics etc) to pass validation
+                                  t.Name.ToString() == "Result",
+            FifthType.TListOf => true,
+            FifthType.TArrayOf => true,
+            FifthType.UnknownType => true,
             _ => false
         };
 
@@ -97,57 +76,45 @@ public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisit
             EmitDiagnostic(
                 compiler.ComprehensionDiagnostics.InvalidGeneratorType,
                 compiler.ComprehensionDiagnostics.FormatInvalidGeneratorType(sourceType.ToString()),
-                DiagnosticSeverity.Error,
-                ctx.Source,
-                diagnostics);
+                compiler.DiagnosticLevel.Error,
+                ctx.Source);
         }
     }
 
     /// <summary>
     /// Validates SPARQL-specific comprehension rules.
     /// </summary>
-    private void ValidateSparqlComprehension(ListComprehension ctx, SparqlLiteralExpression sparqlSource, List<Diagnostic> diagnostics)
+    private void ValidateSparqlComprehension(ListComprehension ctx, SparqlLiteralExpression sparqlSource)
     {
-        // Introspect the SPARQL query to get form and projected variables
         var introspection = compiler.LanguageTransformations.SparqlSelectIntrospection.IntrospectQuery(sparqlSource.SparqlText);
 
         if (!introspection.Success)
         {
-            // Query parsing failed - emit generic error
-            // Note: This might be a runtime-constructed query, so we're lenient here
             return;
         }
 
-        // Validate query form is SELECT
         if (introspection.QueryForm != "SELECT")
         {
             EmitDiagnostic(
                 compiler.ComprehensionDiagnostics.NonSelectQuery,
                 compiler.ComprehensionDiagnostics.FormatNonSelectQuery(introspection.QueryForm ?? "unknown"),
-                DiagnosticSeverity.Error,
-                sparqlSource,
-                diagnostics);
+                compiler.DiagnosticLevel.Error,
+                sparqlSource);
             return;
         }
 
-        // If projection is object instantiation, validate SPARQL variable bindings
         if (ctx.Projection is ObjectInitializerExp objProj)
         {
-            ValidateSparqlObjectProjection(objProj, introspection, ctx, diagnostics);
+            ValidateSparqlObjectProjection(objProj, introspection);
         }
     }
 
     /// <summary>
-    /// Validates SPARQL object projection:
-    /// - Property values must be property access on iteration variable (x.propertyName)
-    /// - Referenced properties must exist in SELECT projection
-    /// - Rejects ?variable syntax (must use x.property instead)
+    /// Validates SPARQL object projection bindings.
     /// </summary>
     private void ValidateSparqlObjectProjection(
         ObjectInitializerExp objProj,
-        compiler.LanguageTransformations.SparqlSelectIntrospection.IntrospectionResult introspection,
-        ListComprehension ctx,
-        List<Diagnostic> diagnostics)
+        compiler.LanguageTransformations.SparqlSelectIntrospection.IntrospectionResult introspection)
     {
         if (objProj.PropertyInitialisers == null)
         {
@@ -161,22 +128,18 @@ public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisit
                 continue;
             }
 
-            // Reject ?variable syntax (old syntax no longer supported)
-            if (propInit.RHS is VarRefExp varRef && varRef.VarName.StartsWith("?"))
+            if (propInit.RHS is VarRefExp varRef && varRef.VarName.StartsWith('?'))
             {
                 EmitDiagnostic(
                     compiler.ComprehensionDiagnostics.InvalidObjectProjectionBinding,
                     "SPARQL variable references using '?variable' syntax are not allowed. Use property access syntax instead (e.g., 'x.age' where x is the iteration variable).",
-                    DiagnosticSeverity.Error,
-                    varRef,
-                    diagnostics);
+                    compiler.DiagnosticLevel.Error,
+                    varRef);
                 continue;
             }
 
-            // Check if initializer is member access (e.g., x.age)
             if (propInit.RHS is MemberAccessExp memberAccess)
             {
-                // Extract property name from RHS (should be VarRefExp)
                 if (memberAccess.RHS is VarRefExp memberName)
                 {
                     var propertyName = memberName.VarName;
@@ -190,20 +153,18 @@ public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisit
                         EmitDiagnostic(
                             compiler.ComprehensionDiagnostics.UnknownProperty,
                             compiler.ComprehensionDiagnostics.FormatUnknownProperty(propertyName, availableVars),
-                            DiagnosticSeverity.Error,
-                            memberAccess,
-                            diagnostics);
+                            compiler.DiagnosticLevel.Error,
+                            memberAccess);
                     }
                 }
             }
-            // Allow other expressions for now (e.g., simple variable references, method calls for transformation)
         }
     }
 
     /// <summary>
     /// Validates that all where constraints are boolean expressions.
     /// </summary>
-    private void ValidateConstraints(ListComprehension ctx, List<Diagnostic> diagnostics)
+    private void ValidateConstraints(ListComprehension ctx)
     {
         if (ctx.Constraints == null || ctx.Constraints.Count == 0)
         {
@@ -214,12 +175,10 @@ public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisit
         {
             if (constraint.Type == null)
             {
-                // Type not yet inferred - skip validation
                 continue;
             }
 
-            // Check if constraint type is boolean
-            bool isBooleanType = constraint.Type switch
+            var isBooleanType = constraint.Type switch
             {
                 FifthType.TType t => t.Name.ToString() == "bool" || t.Name.ToString() == "Boolean",
                 FifthType.TDotnetType dt => dt.Name.ToString() == "bool" || dt.Name.ToString() == "Boolean" || dt.TheType == typeof(bool),
@@ -231,28 +190,20 @@ public class SparqlComprehensionValidationVisitor : DefaultRecursiveDescentVisit
                 EmitDiagnostic(
                     compiler.ComprehensionDiagnostics.NonBooleanConstraint,
                     compiler.ComprehensionDiagnostics.FormatNonBooleanConstraint(constraint.Type.ToString()),
-                    DiagnosticSeverity.Error,
-                    constraint,
-                    diagnostics);
+                    compiler.DiagnosticLevel.Error,
+                    constraint);
             }
         }
     }
 
-    /// <summary>
-    /// Emits a diagnostic message.
-    /// </summary>
-    private void EmitDiagnostic(string code, string message, DiagnosticSeverity severity, AstThing context, List<Diagnostic> diagnostics)
+    private void EmitDiagnostic(string code, string message, compiler.DiagnosticLevel level, AstThing context)
     {
-        var diagnostic = new Diagnostic
-        {
-            Code = code,
-            Message = message,
-            Severity = severity,
-            Filename = context.Location?.Filename ?? "",
-            Line = context.Location?.Line ?? 0,
-            Column = context.Location?.Column ?? 0
-        };
-
-        diagnostics.Add(diagnostic);
+        diagnostics.Add(new compiler.Diagnostic(
+            level,
+            message,
+            context.Location?.Filename,
+            code,
+            Line: context.Location?.Line,
+            Column: context.Location?.Column));
     }
 }

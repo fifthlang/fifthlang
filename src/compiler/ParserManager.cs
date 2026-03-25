@@ -254,6 +254,14 @@ public static class FifthParserManager
             ast = result.Node;
         }
 
+        // Resolve Fifth variable references within SPARQL literals.
+        // Must run BEFORE SparqlLiteralLowering (which destroys SparqlLiteralExpression nodes)
+        // but AFTER SymbolTableInitial (which populates variable declarations).
+        if (upTo >= AnalysisPhase.SparqlLiteralLowering)
+        {
+            ast = new Fifth.LangProcessingPhases.SparqlVariableBindingVisitor(diagnostics).Visit(ast);
+        }
+
         // Lower SPARQL literal expressions to Query.Parse() calls
         if (upTo >= AnalysisPhase.SparqlLiteralLowering)
         {
