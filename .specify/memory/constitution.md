@@ -176,7 +176,8 @@ Additional rule: Grammar compliance for example/source files
 
 - Definition: "Grammar-compliant" means the sample can be successfully parsed by the current `FifthParser.g4` and successfully transformed to the high-level AST by `AstBuilderVisitor` without syntax errors.
 
-- Enforcement (implemented): CI includes a step "Validate .5th samples (parser-check)" that runs the repo's example validator to ensure all `.5th` examples across `docs/`, `specs/`, `src/parser/grammar/test_samples/`, and `test/` parse with the current grammar. Locally, run `scripts/validate-examples.fish` (fish shell) to catch issues before pushing.
+- Enforcement (implemented): CI includes a step "Validate .5th samples (parser-check)" that runs the C# tool at `src/tools/validate-examples/` to ensure all `.5th` examples across `docs/`, `specs/`, `src/parser/grammar/test_samples/`, and `test/` parse with the current grammar. Locally, run `just validate-examples` to catch issues before pushing. The tool accepts `--include-negatives` to force-validate intentionally-invalid samples for debugging.
+   - Validate examples: `just validate-examples` (or `dotnet run --project src/tools/validate-examples/validate-examples.csproj`)
    - Parser-focused tests: `dotnet test test/syntax-parser-tests/ -v minimal`
    - Integration tests for affected areas as needed: `dotnet test test/runtime-integration-tests/runtime-integration-tests.csproj --filter "FullyQualifiedName~YourTestName" -v minimal`
 
@@ -478,7 +479,10 @@ This constitution supersedes ad-hoc practices for this repository. All PRs and r
 
 SpecKit is considered a first-class consumer. Specifications and tasks must be kept in sync with code and tests, and their automation must not be broken by non-deterministic outputs or undocumented changes.
 
-**Version**: 2.1.0 | **Ratified**: 2025-09-14 | **Last Amended**: 2026-03-25
+**Version**: 2.2.0 | **Ratified**: 2025-09-14 | **Last Amended**: 2026-03-25
+
+**Major Changes in v2.2.0:**
+- §IX: Replaced `scripts/validate-examples.fish` reference with the C# tool at `src/tools/validate-examples/` and `just validate-examples` recipe (REM-003)
 
 **Major Changes in v2.1.0:**
 - Removed all references to legacy IL pipeline (ILMetamodel.cs, il.builders.generated.cs, il.rewriter.generated.cs, code_generator)

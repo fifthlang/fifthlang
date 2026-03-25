@@ -33,7 +33,7 @@ ANTLR generation runs automatically during build via the `GenerateParser` target
 	- Ensure no ANTLR errors; warnings may be acceptable per constitution
 
 2) Example and docs compliance
-	- Run the example validator: `scripts/validate-examples.fish` (fish shell)
+	- Run the example validator: `just validate-examples` (or `dotnet run --project src/tools/validate-examples/validate-examples.csproj`)
 	- Fix any `.5th` samples that don’t parse; mark intentional negatives so the validator skips them
 
 3) Parser tests

@@ -8,7 +8,7 @@ inclusion: manual
 
 1. Build succeeds for the full solution (no cancellations): `dotnet build fifthlang.sln`
 2. All tests pass: `dotnet test fifthlang.sln`
-3. Grammar examples validate: `scripts/validate-examples.fish`
+3. Grammar examples validate: `just validate-examples`
 
 ## PR Requirements
 

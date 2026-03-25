@@ -151,6 +151,10 @@ uninstall-cli:
 	rm -f ~/bin/fifth || true
 	printf "Fifth language compiler symlink removed\n"
 
+# Validate all .5th example files parse with the current grammar
+validate-examples:
+	dotnet run --project src/tools/validate-examples/validate-examples.csproj
+
 # Help text is generated from comments above each recipe; use `just --summary` for a concise list
 help:
 	@just --list
