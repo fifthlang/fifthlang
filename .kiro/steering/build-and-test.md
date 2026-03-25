@@ -8,7 +8,7 @@ inclusion: auto
 
 - .NET 10.0 SDK (pinned via `global.json` to 10.0.100)
 - Java 17+ (for ANTLR grammar compilation)
-- ANTLR 4.8 jar included at `src/parser/tools/antlr-4.8-complete.jar`
+- ANTLR 4.13.1 runtime (NuGet), jar at `src/parser/tools/antlr-4.13.2-complete.jar`
 
 ## Essential Commands
 
@@ -38,7 +38,7 @@ java -version     # Should show Java 17+
 
 ## Build Order Dependencies
 
-ast-model → ast_generator → ast-generated → parser → code_generator → compiler → tests
+ast-model → ast_generator → ast-generated → parser → compiler → tests
 
 Always build the full solution rather than individual projects.
 

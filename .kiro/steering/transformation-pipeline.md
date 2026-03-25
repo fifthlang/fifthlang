@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: "src/compiler/LanguageTransformations/**,src/compiler/ParserManager.cs,src/code_generator/**"
+fileMatchPattern: "src/compiler/LanguageTransformations/**,src/compiler/ParserManager.cs"
 ---
 
 # Language Transformation Pipeline
@@ -37,6 +37,6 @@ The compiler applies these passes sequentially in `ParserManager.cs`:
 4. Add tests in `test/ast-tests/` or `test/runtime-integration-tests/`
 5. Build and run full test suite
 
-## Roslyn Migration Note
+## Code Generation
 
-The project is transitioning from legacy IL pipeline (AstToIlTransformationVisitor → ILEmissionVisitor → PEEmitter) to `LoweredAstToRoslynTranslator`. The legacy pipeline remains available behind a feature flag. Roslyn-generated PDBs must include full line-and-column sequence points for debugging fidelity.
+The compiler uses `LoweredAstToRoslynTranslator` to emit C# syntax trees from the lowered AST for Roslyn compilation and PE/PDB emission. Roslyn-generated PDBs must include full line-and-column sequence points for debugging fidelity.

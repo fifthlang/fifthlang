@@ -1,14 +1,13 @@
 # Fifth Language Engine
 
 ### I. Library-First, Contracts-First
-Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
-- AST metamodels in `src/ast-model/AstMetamodel.cs`
-- IL metamodels in `src/ast-model/ILMetamodel.cs`
+Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or "glue-only" libraries. Contracts are expressed through:
+- AST metamodel in `src/ast-model/AstMetamodel.cs`
 - Generated builders/visitors in `src/ast-generated/`
 - ANTLR grammar split between `src/parser/grammar/FifthParser.g4` and `src/parser/grammar/FifthLexer.g4`
 - Public CLIs (e.g., `ast_generator`, `compiler`) with text I/O Constitution
 
-This constitution governs how we build, test, version, and evolve the Fifth language projects in this repository, including the AST model, code generator, parser, compiler, and system libraries. It exists to create a predictable, testable, and observable development flow that GitHub SpecKit and automation can rely on.
+This constitution governs how we build, test, version, and evolve the Fifth language projects in this repository, including the AST model, parser, compiler, and system libraries. It exists to create a predictable, testable, and observable development flow that GitHub SpecKit and automation can rely on.
 
 This document is self-contained and has no external dependencies. All operational details, build commands, project structure, and workflows are defined herein.
 
@@ -23,14 +22,13 @@ The Fifth language compiler follows a multi-pass pipeline architecture that tran
 1. **Lexical Analysis** → **Parsing** → **Parse Tree**
 2. **Parse Tree** → **AST Building** → **High-Level AST**
 3. **High-Level AST** → **Language Transformations** → **Lowered AST**
-4. **Lowered AST** → **IL Transformation** → **IL-Level AST**
-5. **IL-Level AST** → **Code Generation** → **PE Assembly**
+4. **Lowered AST** → **Roslyn Code Generation** → **PE Assembly**
 
 ## Core Principles
 
 ### I. Library-First, Contracts-First
-Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or “glue-only” libraries. Contracts are expressed through:
-- AST metamodels in `src/ast-model/`
+Every feature starts as a focused library under `src/` with a clear, documented purpose and public contract. Libraries must be self-contained, independently buildable, and testable with TUnit. Avoid organizational or "glue-only" libraries. Contracts are expressed through:
+- AST metamodel in `src/ast-model/AstMetamodel.cs`
 - Generated builders/visitors in `src/ast-generated/`
 - ANTLR grammar in `src/parser/grammar/FifthParser.g4` and `src/parser/grammar/FifthLexer.g4` 
 - Public CLIs (e.g., `ast_generator`, `compiler`) with text I/O
@@ -42,8 +40,8 @@ Each executable surface must provide a CLI entry that communicates via text I/O:
 - Favor deterministic, scriptable commands to enable SpecKit orchestration
 
 ### III. Generator-as-Source-of-Truth (Do Not Hand-Edit Generated Code)
-The AST generator is authoritative for builders, visitors, IL builders, and type inference support. Never hand-edit files under `src/ast-generated/`. To change generated outputs:
-1. Update `src/ast-model/AstMetamodel.cs` for main AST types or `src/ast-model/ILMetamodel.cs` for IL AST types
+The AST generator is authoritative for builders, visitors, rewriters, and type inference support. Never hand-edit files under `src/ast-generated/`. To change generated outputs:
+1. Update `src/ast-model/AstMetamodel.cs`
 2. Optionally update templates under `src/ast_generator/Templates/` for code generation changes
 3. Regenerate via `just run-generator` (preferred) or `dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated`
 4. Build the full solution to validate
@@ -73,8 +71,8 @@ Any feature with only compilation tests or failing runtime tests is considered I
 ### V. Reproducible Builds & Toolchain Discipline
 Tooling is pinned and enforced for reproducibility:
 - .NET SDK 10.0.x per `global.json` (currently 10.0.100)
-- Java 17+ for ANTLR; ANTLR 4.8 runtime with the jar at `src/parser/tools/antlr-4.8-complete.jar`
-- Build order: ast-model → ast_generator → ast-generated → parser → code_generator → compiler → tests
+- Java 17+ for ANTLR; ANTLR 4.13.1 runtime (NuGet) with the jar at `src/parser/tools/antlr-4.13.2-complete.jar`
+- Build order: ast-model → ast_generator → ast-generated → parser → compiler → tests
 - Critical rule: NEVER CANCEL restore/build/test/generation tasks. Allow up to 1–2 minutes for completion as documented.
 
 ### VI. Simplicity, Minimal Surface, and Safety
@@ -102,22 +100,10 @@ Multiple passes through the AST apply increasingly sophisticated transformations
 9. **DestructuringLoweringRewriter**: Lowers destructuring to variable declarations with constraint collection
 10. **TypeAnnotationVisitor**: Performs type inference and annotation
 
-#### Phase 3: IL Transformation
-- **AstToIlTransformationVisitor**: Transforms high-level AST to IL-level AST
-- IL-level AST uses simpler, lower-level constructs suitable for code generation
-
-#### Phase 4: Code Generation
-#### Phase 3: IL Transformation (legacy)
-- **AstToIlTransformationVisitor**: Transforms high-level AST to IL-level AST
-- IL-level AST uses simpler, lower-level constructs suitable for code generation
-
-> Note (Roslyn migration): The project is transitioning from the legacy IL pipeline (AstToIlTransformationVisitor → ILEmissionVisitor → PEEmitter) to a Roslyn-based backend. During migration the legacy pipeline remains available behind a feature flag; the long-term goal is to remove IL-level lowering and PEEmitter code once equivalence is established and preservation candidates are handled.
-
-#### Phase 4: Code Generation (Roslyn-backed)
-- New component: `LoweredAstToRoslynTranslator` — accepts the Lowered AST and emits C# syntax trees for Roslyn compilation and PE/PDB emission.
-- Roslyn-based emission replaces direct IL emission for most constructs and produces Portable PDBs with #line mapping back to `.5th` sources.
+#### Phase 3: Code Generation (Roslyn)
+- `LoweredAstToRoslynTranslator` accepts the Lowered AST and emits C# syntax trees for Roslyn compilation and PE/PDB emission.
+- Roslyn-based emission produces Portable PDBs with #line mapping back to `.5th` sources.
 - Roslyn-generated PDBs MUST include full line-and-column sequence points for all emitted statements and expressions to preserve developer debugging experience. Implementations should use Roslyn's SequencePoint APIs / #line pragmas and EmbeddedText to preserve source fidelity.
-- Legacy emitters (ILEmissionVisitor/PEEmitter) will be deprecated and removed only after passing a documented canary and acceptance plan.
 
 ### VIII. AST Design & Transformation Strategy
 When designing language features and solving problems:
@@ -125,12 +111,10 @@ When designing language features and solving problems:
 **Prefer AST Transformations over Code Generation Complexity**
 - Implement syntactic sugar and high-level constructs in the main AST model
 - Use language transformation visitors to lower high-level constructs to simpler forms
-- Keep the IL AST model simple and close to actual IL instructions
-- Reserve IL-level transformations for optimizations and final code generation
+- Keep the lowered AST simple and close to what Roslyn code generation needs
 
-**Two-Level AST Design**
-- **Main AST** (`AstMetamodel.cs`): Rich, high-level constructs that mirror source language features
-- **IL AST** (`ILMetamodel.cs`): Simple, low-level constructs that map directly to IL instructions
+**AST Design**
+- **AST** (`AstMetamodel.cs`): Rich, high-level constructs that mirror source language features, lowered through transformation passes into forms suitable for Roslyn code generation
 
 **Transformation Guidelines**
 - Each transformation visitor should have a single, well-defined responsibility
@@ -213,15 +197,12 @@ Generated code changes follow metamodel versioning. Deprecations must be documen
 ```
 src/
 ├── ast-model/          # Core AST model definitions and type system
-│   ├── AstMetamodel.cs     # Main high-level AST definitions
-│   ├── ILMetamodel.cs      # IL-level AST definitions
+│   ├── AstMetamodel.cs     # AST definitions
 │   └── TypeSystem/         # Type system components
 ├── ast-generated/      # Auto-generated AST builders and visitors  
 │   ├── builders.generated.cs       # Builder pattern classes
 │   ├── visitors.generated.cs       # Visitor pattern classes
-│   ├── rewriter.generated.cs       # Rewriter pattern for lowering (NEW)
-│   ├── il.builders.generated.cs    # IL-specific builders
-│   ├── il.rewriter.generated.cs    # IL rewriter pattern (NEW)
+│   ├── rewriter.generated.cs       # Rewriter pattern for lowering
 │   └── typeinference.generated.cs  # Type inference support
 ├── ast_generator/      # Code generator that creates AST infrastructure
 │   ├── Program.cs              # CLI entry point
@@ -233,7 +214,7 @@ src/
 │   │   ├── FifthParser.g4      # Syntactic analysis grammar
 │   │   └── test_samples/*.5th  # Parser test samples
 │   ├── tools/
-│   │   └── antlr-4.8-complete.jar  # ANTLR tool
+│   │   └── antlr-4.13.2-complete.jar  # ANTLR tool
 │   └── AstBuilderVisitor.cs    # Parse tree to AST transformation
 ├── compiler/           # Main compiler with language transformations
 │   ├── Compiler.cs             # Main compilation orchestrator
@@ -244,11 +225,6 @@ src/
 │       ├── OverloadTransformingVisitor.cs
 │       ├── DestructuringVisitor.cs
 │       └── ... (other transformation passes)
-├── code_generator/     # IL code generator and emission pipeline
-│   ├── ILCodeGenerator.cs      # Orchestrates IL generation
-│   ├── AstToIlTransformationVisitor.cs  # AST → IL AST transformation
-│   ├── ILEmissionVisitor.cs    # IL AST → CIL instructions
-│   └── PEEmitter.cs            # PE assembly emission
 └── fifthlang.system/   # Built-in system functions
     ├── BuiltinFunctions.cs
     └── KnowledgeGraphs.cs
@@ -264,7 +240,7 @@ test/
 ### Prerequisites
 - **.NET 10.0 SDK** (global.json pins 10.0.100)
 - **Java 17+** (for ANTLR grammar compilation)
-- **ANTLR 4.8** (jar file included at `src/parser/tools/antlr-4.8-complete.jar`)
+- **ANTLR 4.13.1** runtime (NuGet), jar at `src/parser/tools/antlr-4.13.2-complete.jar`
 
 ### Verification Commands
 ```bash
@@ -309,9 +285,8 @@ dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-
 2. `ast_generator` (creates builders/visitors) 
 3. `ast-generated` (output of generator, depends on ast-model)
 4. `parser` (depends on ast-model, ast-generated, runs ANTLR)
-5. `code_generator` (legacy IL pipeline — will be phased out as Roslyn backend matures)
-6. `compiler` (depends on all above; after migration, compiler will integrate `LoweredAstToRoslynTranslator` and may depend less on legacy `code_generator` internals)
-7. `tests` (depends on all above)
+5. `compiler` (depends on all above)
+6. `tests` (depends on all above)
 
 Always build the full solution rather than individual projects to ensure proper dependency resolution.
 
@@ -359,13 +334,11 @@ myprint(int x) => std.print(x);
 
 ### Code Generation
 - All generated code resides in `src/ast-generated/`
-- The generator reads from `src/ast-model/AstMetamodel.cs` and `src/ast-model/ILMetamodel.cs`
+- The generator reads from `src/ast-model/AstMetamodel.cs`
 - Generated files include:
   - `builders.generated.cs` (Builder pattern classes)
   - `visitors.generated.cs` (Visitor pattern classes)
-  - `rewriter.generated.cs` (Rewriter pattern for lowering - NEW)
-  - `il.builders.generated.cs` (IL-specific builders)
-  - `il.rewriter.generated.cs` (IL rewriter pattern - NEW)
+  - `rewriter.generated.cs` (Rewriter pattern for lowering)
   - `typeinference.generated.cs` (Type inference support)
 - Update metamodels/templates only; regenerate instead of manual edits
 - PRs modifying generated folders must include the upstream metamodel/template changes and the regeneration command used
@@ -422,7 +395,7 @@ This should complete without errors.
 4. **Build timeouts** - Use longer timeout values, builds can legitimately take 1-2 minutes
 
 ### Key Files to Watch
-- Always check generated files in `src/ast-generated/` after modifying `src/ast-model/AstMetamodel.cs` or `src/ast-model/ILMetamodel.cs`
+- Always check generated files in `src/ast-generated/` after modifying `src/ast-model/AstMetamodel.cs`
 - Parser changes require attention to both grammar files and `src/parser/AstBuilderVisitor.cs`
 - Test failures in grammar parsing usually indicate issues in ANTLR grammar or visitor implementation
 - Language transformation changes require updates to the transformation pipeline in `ParserManager.cs`
@@ -432,7 +405,7 @@ This should complete without errors.
 ### Standard Developer Loop
 1. Define or refine the SpecKit task/spec
 2. TDD: add/adjust tests under the appropriate test project
-3. For AST changes: edit `AstMetamodel.cs` or `ILMetamodel.cs` → regenerate → build
+3. For AST changes: edit `AstMetamodel.cs` → regenerate → build
 4. For grammar changes: edit `FifthLexer.g4` or `FifthParser.g4` → update `AstBuilderVisitor.cs` → build
 5. For transformation changes: add/modify visitors in `LanguageTransformations/` → update pipeline in `ParserManager.cs`
 6. Build the full solution: `dotnet build fifthlang.sln`
@@ -481,14 +454,14 @@ After making any changes to the codebase:
 - Validate transformation pipeline integrity when language transformations change
 
 ### Artifacts & Interfaces
-- Executables: `src/ast_generator`, `src/compiler`, `src/code_generator`
+- Executables: `src/ast_generator`, `src/compiler`
 - Inputs: `.5th` samples under `test/` and `src/parser/grammar/test_samples/`
 - Outputs: stdout text, optional JSON streams for machine parsing
-- Metamodels: `src/ast-model/AstMetamodel.cs`, `src/ast-model/ILMetamodel.cs`
+- Metamodels: `src/ast-model/AstMetamodel.cs`
 - Grammars: `src/parser/grammar/FifthLexer.g4`, `src/parser/grammar/FifthParser.g4`
 
 ### Files to Watch
-- Metamodel: `src/ast-model/AstMetamodel.cs`, `src/ast-model/ILMetamodel.cs`
+- Metamodel: `src/ast-model/AstMetamodel.cs`
 - Templates: `src/ast_generator/Templates/`
 - Generated: `src/ast-generated/` (read-only by policy)
 - Grammars: `src/parser/grammar/FifthLexer.g4`, `src/parser/grammar/FifthParser.g4`
@@ -505,14 +478,21 @@ This constitution supersedes ad-hoc practices for this repository. All PRs and r
 
 SpecKit is considered a first-class consumer. Specifications and tasks must be kept in sync with code and tests, and their automation must not be broken by non-deterministic outputs or undocumented changes.
 
-**Version**: 2.0.0 | **Ratified**: 2025-09-14 | **Last Amended**: 2025-09-14
+**Version**: 2.1.0 | **Ratified**: 2025-09-14 | **Last Amended**: 2026-03-25
+
+**Major Changes in v2.1.0:**
+- Removed all references to legacy IL pipeline (ILMetamodel.cs, il.builders.generated.cs, il.rewriter.generated.cs, code_generator)
+- Updated Roslyn migration status: complete; legacy IL pipeline removed
+- Updated ANTLR version from 4.8 to 4.13.1 (runtime) / 4.13.2 (jar)
+- Simplified architecture to reflect Roslyn-only code generation pipeline
+- Consolidated duplicate §I block at file header
 
 **Major Changes in v2.0.0:**
 - Incorporated all valuable content from AGENTS.md to eliminate external dependencies
 - Updated parser/lexer references to reflect split grammar (FifthLexer.g4 + FifthParser.g4)
 - Added comprehensive description of multi-pass compiler pipeline
 - Detailed language transformations and their roles in AST lowering
-- Clarified two-level AST design (main AST vs IL AST)
+- Clarified AST design and Roslyn-only pipeline (legacy IL pipeline removed)
 - Updated testing framework references (TUnit instead of xUnit)
 - Enhanced project structure documentation
 - Added transformation strategy guidelines

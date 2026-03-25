@@ -14,9 +14,9 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Remove the 219-line legacy file that references non-existent `il_ast` namespace and confuses contributors.
 - **Rationale:** The file is inert (`.postpone` extension), git-tracked, and has no path back to compilation. Keeping it misleads contributors about the existence of an IL pipeline.
 - **Acceptance Criteria:**
-  - [ ] `src/compiler/FifthParserManager.cs.postpone` deleted from repository.
-  - [ ] Solution builds cleanly (`dotnet build fifthlang.sln`).
-  - [ ] All tests pass (`dotnet test fifthlang.sln`).
+  - [x] `src/compiler/FifthParserManager.cs.postpone` deleted from repository.
+  - [x] Solution builds cleanly (`dotnet build fifthlang.sln`).
+  - [x] All tests pass (`dotnet test fifthlang.sln`).
 - **Impacted Files:** `src/compiler/FifthParserManager.cs.postpone`
 - **Required Tests:** None (no code change).
 - **Risk:** None.
@@ -27,10 +27,10 @@ These items have minimal risk of breaking existing behaviour and deliver immedia
 - **Objective:** Remove all references to `ILMetamodel.cs`, `il.builders.generated.cs`, `il.rewriter.generated.cs`, and the "legacy IL pipeline behind a feature flag" from the constitution.
 - **Rationale:** These artifacts do not exist. The constitution is the authoritative governance document; inaccuracies undermine contributor trust and cause conformance failures.
 - **Acceptance Criteria:**
-  - [ ] `.specify/memory/constitution.md` §I, §VII, §VIII, build-order section updated to reflect Roslyn-only pipeline.
-  - [ ] All references to `ILMetamodel.cs`, `il.builders.generated.cs`, `il.rewriter.generated.cs` removed.
-  - [ ] Roslyn migration status updated from "in progress with feature flag" to "complete; legacy IL pipeline removed."
-  - [ ] ANTLR runtime version updated from `4.8` to `4.13.1` in constitution §V.
+  - [x] `.specify/memory/constitution.md` §I, §VII, §VIII, build-order section updated to reflect Roslyn-only pipeline.
+  - [x] All references to `ILMetamodel.cs`, `il.builders.generated.cs`, `il.rewriter.generated.cs` removed.
+  - [x] Roslyn migration status updated from "in progress with feature flag" to "complete; legacy IL pipeline removed."
+  - [x] ANTLR runtime version updated from `4.8` to `4.13.1` in constitution §V.
 - **Impacted Files:** `.specify/memory/constitution.md`
 - **Required Tests:** None (documentation change).
 - **Risk:** None.
