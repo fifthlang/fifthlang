@@ -2,6 +2,7 @@
 using ast;
 using compiler;
 using compiler.LangProcessingPhases;
+using compiler.Pipeline;
 using Fifth;
 
 namespace Fifth.LanguageServer.Parsing;
@@ -45,8 +46,10 @@ public sealed class ParsingService
             {
                 try
                 {
-                    var analyzed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, semanticDiagnostics);
-                    analyzedAst = analyzed as AssemblyDef;
+                    var pipeline = TransformationPipeline.CreateDefault();
+                    var result = pipeline.Execute(ast, PipelineOptions.Default);
+                    semanticDiagnostics.AddRange(result.Diagnostics);
+                    analyzedAst = result.Success ? result.TransformedAst as AssemblyDef : null;
                 }
                 catch (Exception ex)
                 {

@@ -19,7 +19,9 @@ public class AliasScopeTests
         var ast = FifthParserManager.ParseString(code);
         ast.Should().NotBeNull();
 
-        var processed = FifthParserManager.ApplyLanguageAnalysisPhases(ast);
+        var pipeline = compiler.Pipeline.TransformationPipeline.CreateDefault();
+        var result = pipeline.Execute(ast, compiler.Pipeline.PipelineOptions.Default);
+        var processed = result.TransformedAst;
         processed.Should().NotBeNull();
 
         var assembly = processed as AssemblyDef;

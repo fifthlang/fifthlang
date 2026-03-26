@@ -11,7 +11,7 @@ namespace syntax_parser_tests;
 public class TripleDiagnosticsTests
 {
     // Initial subset of reactivated tests now that triple grammar + AST mapping exist.
-    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.TripleDiagnostics));
+    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(PhaseName: "TripleDiagnostics"));
     private static string[] Codes(ParseResult r) => r.Diagnostics.Select(d => d.Code).ToArray();
 
     // Former tests (disabled):

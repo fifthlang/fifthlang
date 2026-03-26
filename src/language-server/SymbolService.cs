@@ -4,6 +4,7 @@ using ast_generated;
 using ast_model.Symbols;
 using ast_model.TypeSystem;
 using compiler;
+using compiler.Pipeline;
 using Fifth.LanguageServer.Parsing;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using LspRange = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
@@ -113,8 +114,9 @@ public sealed class SymbolService
                 if (ast is not null)
                 {
                     var diagnostics = new List<compiler.Diagnostic>();
-                    var analyzed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics);
-                    if (analyzed is AssemblyDef analyzedAssembly)
+                    var pipeline = TransformationPipeline.CreateDefault();
+                    var result = pipeline.Execute(ast, PipelineOptions.Default);
+                    if (result.Success && result.TransformedAst is AssemblyDef analyzedAssembly)
                     {
                         AddDefinitionsFromAst(analyzedAssembly, uri, definitions);
                         parsed = true;

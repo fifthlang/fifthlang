@@ -28,7 +28,7 @@ main(): int {
     <ex:s, ex:p, ex:o>;
     return 0; 
 }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.TripleDiagnostics));
+        var result = ParseHarness.ParseString(code, new ParseOptions("TripleDiagnostics"));
 
         result.Root.Should().NotBeNull();
         // This simpler triple should not have TRPL006
@@ -51,7 +51,7 @@ main(): int {
 }";
 
         var startTime = System.Diagnostics.Stopwatch.StartNew();
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         startTime.Stop();
 
         result.Root.Should().NotBeNull();
@@ -76,7 +76,7 @@ main(): int {{
 }}";
 
         var startTime = System.Diagnostics.Stopwatch.StartNew();
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         startTime.Stop();
 
         result.Root.Should().NotBeNull();
@@ -105,7 +105,7 @@ main(): int {
 }";
 
         var startTime = System.Diagnostics.Stopwatch.StartNew();
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         startTime.Stop();
 
         result.Root.Should().NotBeNull();

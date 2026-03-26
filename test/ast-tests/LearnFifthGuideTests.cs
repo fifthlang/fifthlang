@@ -59,7 +59,9 @@ public class LearnFifthGuideTests
         var ast = FifthParserManager.ParseString(source);
 
         // Act
-        var processed = FifthParserManager.ApplyLanguageAnalysisPhases(ast);
+        var pipeline = compiler.Pipeline.TransformationPipeline.CreateDefault();
+        var result = pipeline.Execute(ast, compiler.Pipeline.PipelineOptions.Default);
+        var processed = result.TransformedAst;
 
         // Assert
         processed.Should().NotBeNull("Language analysis phases should process the AST successfully");

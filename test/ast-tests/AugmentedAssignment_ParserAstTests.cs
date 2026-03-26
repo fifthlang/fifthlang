@@ -12,7 +12,7 @@ public class AugmentedAssignment_ParserAstTests
     public void PlusAssign_ShouldLowerInto_MergeCall()
     {
         var src = "main():int { g: graph = KG.CreateGraph(); home: graph = KG.CreateGraph(); home += g; return 0; }";
-        var parseResult = ParseHarness.ParseString(src, new ParseOptions(FifthParserManager.AnalysisPhase.TypeAnnotation));
+        var parseResult = ParseHarness.ParseString(src, new ParseOptions("TypeAnnotation"));
         parseResult.Diagnostics.Should().BeEmpty();
 
         var module = parseResult.Root!.Modules.Single();

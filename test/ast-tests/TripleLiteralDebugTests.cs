@@ -9,7 +9,7 @@ namespace ast_tests;
 // Temporary debug harness to see if VisitTripleLiteral is invoked and to capture diagnostics
 public class TripleLiteralDebugTests
 {
-    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.TreeLink));
+    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(PhaseName: "TreeLinkage"));
 
     [Fact]
     public void DBG_TripleLiteral_Minimal()

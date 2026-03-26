@@ -8,7 +8,7 @@ namespace syntax_parser_tests;
 
 public class TripleLiteralDisambiguationTests
 {
-    private ParseResult ParseWithTokens(string code) => ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None, CollectTokens: true));
+    private ParseResult ParseWithTokens(string code) => ParseHarness.ParseString(code, new ParseOptions(PhaseName: "", CollectTokens: true));
 
     // Temporarily disabled; triple literal malformed diagnostics deferred.
     //[Test]

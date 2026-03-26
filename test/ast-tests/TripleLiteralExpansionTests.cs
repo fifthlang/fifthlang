@@ -9,7 +9,7 @@ namespace ast_tests;
 
 public class TripleLiteralExpansionTests
 {
-    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.TripleExpansion));
+    private ParseResult ParseHarnessed(string code) => ParseHarness.ParseString(code, new ParseOptions(PhaseName: "TripleExpansion"));
 
     [Fact]
     public void T010_01_List_Object_Expands_To_Multiple_Triples()

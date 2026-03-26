@@ -259,7 +259,9 @@ Examples:
     {
         try
         {
-            var transformed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics, targetFramework: targetFramework);
+            var pipeline = Pipeline.TransformationPipeline.CreateDefault();
+            var result = pipeline.Execute(ast, Pipeline.PipelineOptions.Default, targetFramework);
+            diagnostics.AddRange(result.Diagnostics);
 
             if (emitNamespaceTiming)
             {
@@ -273,7 +275,7 @@ Examples:
             {
                 return null;
             }
-            return transformed;
+            return result.Success ? result.TransformedAst : null;
         }
         catch (System.Exception ex)
         {
