@@ -1,12 +1,9 @@
 <Project>
-  <!-- Import the standard .NET SDK props first — gives us TargetFramework,
-       OutputPath, NuGet restore, ProjectReference resolution, etc. -->
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <Import Project="SupportedTargetFrameworks.props" Condition="Exists('SupportedTargetFrameworks.props')" />
 
   <PropertyGroup>
-    <!-- Default properties for Fifth projects -->
     <TargetFramework Condition="'$(TargetFramework)' == ''">$(FifthDefaultTargetFramework)</TargetFramework>
     <OutputType Condition="'$(OutputType)' == ''">Exe</OutputType>
 
@@ -15,19 +12,18 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <!-- Prevent the SDK from resolving 150+ framework ref assemblies that
+         conflict with the Fifth compiler's own Roslyn reference resolution -->
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <UseAppHost>false</UseAppHost>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
 
     <!-- Fifth-specific properties -->
     <FifthSourceDirectory Condition="'$(FifthSourceDirectory)' == ''">$(MSBuildProjectDirectory)</FifthSourceDirectory>
   </PropertyGroup>
 
-  <!-- Define default Fifth source files -->
   <ItemGroup>
     <FifthSource Include="**\*.5th" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    <!-- Prevent the .NET SDK from looking for C# files -->
     <Compile Remove="@(Compile)" />
   </ItemGroup>
 

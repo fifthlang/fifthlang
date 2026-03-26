@@ -11,6 +11,34 @@
   <Target Name="CreateManifestResourceNames" />
   <Target Name="InitializeSourceControlInformation" />
 
+  <!-- The .NET SDK generates a runtimeconfig.json without the framework   -->
+  <!-- block because it can't resolve FrameworkReference for custom SDKs.  -->
+  <!-- Fix it up after the SDK's generation by injecting the framework.    -->
+  <Target Name="_FixFifthRuntimeConfig"
+          AfterTargets="Build"
+          Condition="'$(OutputType)' != 'Library'">
+    <PropertyGroup>
+      <_FifthRuntimeConfigPath>$(OutputPath)$(AssemblyName).runtimeconfig.json</_FifthRuntimeConfigPath>
+      <_FifthRuntimeConfigPath Condition="'$(AssemblyName)' == ''">$(OutputPath)$(MSBuildProjectName).runtimeconfig.json</_FifthRuntimeConfigPath>
+      <_FifthFrameworkVersion>$([System.Text.RegularExpressions.Regex]::Replace('$(TargetFramework)', '^net', '')).0</_FifthFrameworkVersion>
+    </PropertyGroup>
+    <PropertyGroup>
+      <_FifthRuntimeConfigContent>{
+  "runtimeOptions": {
+    "tfm": "$(TargetFramework)",
+    "framework": {
+      "name": "Microsoft.NETCore.App",
+      "version": "$(_FifthFrameworkVersion)"
+    }
+  }
+}</_FifthRuntimeConfigContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_FifthRuntimeConfigPath)"
+                     Lines="$(_FifthRuntimeConfigContent)"
+                     Overwrite="true" />
+    <Message Text="Generated Fifth runtimeconfig: $(_FifthRuntimeConfigPath)" Importance="normal" />
+  </Target>
+
   <PropertyGroup>
     <Language>Fifth</Language>
     <DefaultLanguageSourceExtension>.5th</DefaultLanguageSourceExtension>
@@ -39,8 +67,10 @@
       <_FifthSourceArg Condition="'$(_FifthSourceArg)' == ''">--source &quot;$(FifthSourceDirectory)&quot;</_FifthSourceArg>
     </PropertyGroup>
 
+    <!-- Only pass project references to the Fifth compiler, NOT framework references.
+         The Fifth compiler resolves framework assemblies internally via Roslyn. -->
     <ItemGroup>
-      <_FifthReference Include="@(ReferencePath)" Condition="'@(ReferencePath)' != ''" />
+      <_FifthReference Include="@(ReferencePath)" Condition="'%(ReferencePath.ReferenceSourceTarget)' == 'ProjectReference'" />
     </ItemGroup>
 
     <PropertyGroup>

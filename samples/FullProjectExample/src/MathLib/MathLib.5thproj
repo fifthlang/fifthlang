@@ -2,7 +2,6 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net10.0</TargetFramework>
-    <FifthCompilerCommand>fifthc</FifthCompilerCommand>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoreLib\CoreLib.5thproj" />
