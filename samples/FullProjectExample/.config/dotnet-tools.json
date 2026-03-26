@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "fifth.compiler.tool": {
-      "version": "0.10.0-preview3",
+      "version": "0.10.0-preview4",
       "commands": [
         "fifthc"
       ]

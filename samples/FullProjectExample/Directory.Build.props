@@ -1,7 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- Use the locally built compiler for development.
-         End users would set FifthCompilerCommand=fifthc instead. -->
-    <FifthCompilerPath>$(MSBuildThisFileDirectory)..\..\src\compiler\bin\Debug\net10.0\compiler.dll</FifthCompilerPath>
-  </PropertyGroup>
-</Project>
