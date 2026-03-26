@@ -15,7 +15,7 @@ public class TripleLiteralAstTests
     public void valid_triple_literal_ast_shape()
     {
         var src = @"alias ex as <http://example.org/>;\nmain(): int { <ex:s, ex:p, ex:o>; return 0; }";
-        var result = ParseHarness.ParseString(src, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(src, new ParseOptions());
         result.Root.Should().NotBeNull();
         var triples = test_infra.ParseHarness.FindTriples(result.Root!).ToList();
         triples.Should().HaveCount(1, "one triple literal expected");
@@ -32,7 +32,7 @@ public class TripleLiteralAstTests
     public void malformed_triple_too_few_components_captured()
     {
         var src = @"alias ex as <http://example.org/>;\nmain(): int { <ex:s, ex:p>; return 0; }";
-        var result = ParseHarness.ParseString(src, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(src, new ParseOptions());
         // We expect no well-formed Triple nodes, but a MalformedTripleExp expression present in the tree.
         test_infra.ParseHarness.FindTriples(result.Root).Should().BeEmpty();
         // Walk raw expressions to locate MalformedTripleExp
@@ -47,7 +47,7 @@ public class TripleLiteralAstTests
     public void malformed_triple_trailing_comma_captured()
     {
         var src = @"alias ex as <http://example.org/>;\nmain(): int { <ex:s, ex:p, ex:o,>; return 0; }";
-        var result = ParseHarness.ParseString(src, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(src, new ParseOptions());
         test_infra.ParseHarness.FindTriples(result.Root).Should().BeEmpty();
         var malformed = FindExpressions<MalformedTripleExp>(result.Root!).ToList();
         malformed.Should().HaveCount(1);
@@ -58,7 +58,7 @@ public class TripleLiteralAstTests
     public void malformed_triple_too_many_components_captured()
     {
         var src = @"alias ex as <http://example.org/>;\nmain(): int { <ex:s, ex:p, ex:o, ex:x>; return 0; }";
-        var result = ParseHarness.ParseString(src, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(src, new ParseOptions());
         test_infra.ParseHarness.FindTriples(result.Root).Should().BeEmpty();
         var malformed = FindExpressions<MalformedTripleExp>(result.Root!).ToList();
         malformed.Should().HaveCount(1);

@@ -95,7 +95,7 @@ public class StoreDecl_Property_Tests
     {
         // Arrange & Act: parse the generated store declaration
         var result = ParseHarness.ParseString(input.Code,
-            new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+            new ParseOptions(PhaseName: ""));
 
         // Assert: root should be non-null (parsed successfully)
         result.Root.Should().NotBeNull(

@@ -8,7 +8,7 @@ public class TripleOperatorDiagnosticsTests
 {
     private static ParseResult Parse(string code)
     {
-        var options = new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.TripleDiagnostics);
+        var options = new ParseOptions(PhaseName: "TripleDiagnostics");
         return ParseHarness.ParseString(code, options);
     }
 

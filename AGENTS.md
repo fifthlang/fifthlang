@@ -43,7 +43,7 @@ See the constitution (`/specs/.specify/memory/constitution.md`) for the complete
 - `src/ast-generated/` - **NEVER edit manually**; regenerate via `just run-generator`
 - `src/parser/grammar/` - `FifthLexer.g4` + `FifthParser.g4` (split grammar)
 - `src/compiler/LanguageTransformations/` - AST transformation passes
-- `test/` - TUnit tests with FluentAssertions
+- `test/` - xUnit tests with FluentAssertions
 
 ## Agent Workflow Guidelines
 

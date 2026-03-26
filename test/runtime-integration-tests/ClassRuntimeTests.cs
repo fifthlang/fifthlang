@@ -27,7 +27,9 @@ public class ClassRuntimeTests : RuntimeTestBase
         var ast = FifthParserManager.ParseString(classOnly);
         ast.Should().NotBeNull("class portion should parse without syntax errors");
 
-        var processed = FifthParserManager.ApplyLanguageAnalysisPhases(ast);
+        var pipeline = compiler.Pipeline.TransformationPipeline.CreateDefault();
+        var pipelineResult = pipeline.Execute(ast, compiler.Pipeline.PipelineOptions.Default);
+        var processed = pipelineResult.TransformedAst;
         processed.Should().NotBeNull("AST should be processable by language analysis phases");
 
         // Assert: aliasScope on the class is captured as 'x'

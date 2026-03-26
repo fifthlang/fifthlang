@@ -3,16 +3,27 @@ using System.Diagnostics;
 using Antlr4.Runtime;
 using compiler;
 using compiler.LangProcessingPhases;
+using compiler.Pipeline;
 using Fifth;
 using ast; // needed for AssemblyDef
 
 namespace test_infra;
 
+/// <summary>
+/// Options to control how far the harness processes the input and what auxiliary data it collects.
+/// </summary>
+/// <param name="PhaseName">Pipeline phase name to stop after (null = run all, empty string = skip phases entirely).</param>
+/// <param name="CollectTokens">If true, returns the full token stream for disambiguation assertions.</param>
+/// <param name="CollectTimings">If true, captures parse / AST build / phase timings.</param>
 public record ParseOptions(
-    FifthParserManager.AnalysisPhase Phase = FifthParserManager.AnalysisPhase.All,
+    string? PhaseName = null,
     bool CollectTokens = false,
     bool CollectTimings = false
-);
+)
+{
+    /// <summary>If true, skip all pipeline phases (raw AST only).</summary>
+    public bool SkipPhases => PhaseName is "";
+};
 
 public enum DiagnosticSeverity { Info, Warning, Error }
 
@@ -94,13 +105,20 @@ public static class ParseHarness
 
         AssemblyDef? processed = ast;
         TimeSpan? phasesTime = null;
-        if (ast != null && options.Phase != FifthParserManager.AnalysisPhase.None)
+        if (ast != null && !options.SkipPhases)
         {
             var swPhases = Stopwatch.StartNew();
             var compDiags = new List<compiler.Diagnostic>();
-            processed = FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics: compDiags, upTo: options.Phase) as AssemblyDef;
+            var pipeline = TransformationPipeline.CreateDefault();
+            var pipelineOptions = new PipelineOptions
+            {
+                StopAfter = options.PhaseName // null = run all phases
+            };
+            var result = pipeline.Execute(ast, pipelineOptions);
             swPhases.Stop();
             phasesTime = swPhases.Elapsed;
+            compDiags.AddRange(result.Diagnostics);
+            processed = result.Success ? result.TransformedAst as AssemblyDef : null;
 
             if (processed == null)
             {

@@ -17,7 +17,7 @@ public class ComprehensionDiagnosticsTests
     /// </summary>
     private ParseResult ParseHarnessed(string code)
     {
-        return ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.All));
+        return ParseHarness.ParseString(code, new ParseOptions());
     }
 
     [Fact]

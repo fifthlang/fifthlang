@@ -253,7 +253,9 @@ public class ConstructorFunctionalityTests
         // Act - Parse and apply analysis phases
         var ast = FifthParserManager.ParseString(source);
         var diagnostics = new List<compiler.Diagnostic>();
-        FifthParserManager.ApplyLanguageAnalysisPhases(ast, diagnostics, FifthParserManager.AnalysisPhase.ConstructorValidation);
+        var pipeline = compiler.Pipeline.TransformationPipeline.CreateDefault();
+        var result = pipeline.Execute(ast, new compiler.Pipeline.PipelineOptions { StopAfter = "ConstructorValidation" });
+        diagnostics.AddRange(result.Diagnostics);
 
         // Assert - Should have CTOR009 diagnostic
         diagnostics.Should().Contain(d => d.Code == "CTOR009",
@@ -281,7 +283,7 @@ public class ConstructorFunctionalityTests
             """;
 
         // Act - Run through ConstructorValidation phase
-        var result = ParseHarness.ParseString(source, new ParseOptions(FifthParserManager.AnalysisPhase.ConstructorValidation));
+        var result = ParseHarness.ParseString(source, new ParseOptions("ConstructorValidation"));
 
         // Assert - Should have CTOR010 diagnostic
         result.Diagnostics.Should().Contain(d => d.Code == "CTOR010",

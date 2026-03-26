@@ -34,7 +34,7 @@ public class ValidDeclaration_SyntaxTests
     public void SparqlStoreDeclaration_ShouldEmitDeprecationWarning()
     {
         var code = "home : store = sparql_store(<http://example.com/>);\nmain(): int { return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+        var result = ParseHarness.ParseString(code, new ParseOptions(PhaseName: ""));
 
         result.Root.Should().NotBeNull("sparql_store declaration should still parse successfully");
         result.Diagnostics.Should().Contain(d => d.Code == "STORE_DEPRECATED_001" && d.Severity == DiagnosticSeverity.Warning,
@@ -45,7 +45,7 @@ public class ValidDeclaration_SyntaxTests
     public void NewStoreFunc_ShouldNotEmitDeprecationWarning()
     {
         var code = "home : store = remote_store(<http://example.com/>);\nmain(): int { return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+        var result = ParseHarness.ParseString(code, new ParseOptions(PhaseName: ""));
 
         result.Root.Should().NotBeNull("remote_store declaration should parse successfully");
         result.Diagnostics.Should().NotContain(d => d.Code == "STORE_DEPRECATED_001",
@@ -90,7 +90,7 @@ public class ValidDeclaration_SyntaxTests
     public void DefaultStoreDecl_LocalStore_ShouldSucceed()
     {
         var code = "store default = local_store(\"/data/store\");\nmain(): int { return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+        var result = ParseHarness.ParseString(code, new ParseOptions(PhaseName: ""));
 
         result.Root.Should().NotBeNull("default store declaration with local_store should parse");
         result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty(
@@ -101,7 +101,7 @@ public class ValidDeclaration_SyntaxTests
     public void DefaultStoreDecl_RemoteStore_ShouldSucceed()
     {
         var code = "store default = remote_store(<http://example.com/>);\nmain(): int { return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+        var result = ParseHarness.ParseString(code, new ParseOptions(PhaseName: ""));
 
         result.Root.Should().NotBeNull("default store declaration with remote_store should parse");
         result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty(
@@ -112,7 +112,7 @@ public class ValidDeclaration_SyntaxTests
     public void DefaultStoreDecl_MemStore_ShouldSucceed()
     {
         var code = "store default = mem_store();\nmain(): int { return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(Phase: compiler.FifthParserManager.AnalysisPhase.None));
+        var result = ParseHarness.ParseString(code, new ParseOptions(PhaseName: ""));
 
         result.Root.Should().NotBeNull("default store declaration with mem_store should parse");
         result.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty(

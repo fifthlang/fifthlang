@@ -1,0 +1,332 @@
+# Implementation Plan: Composable Pipeline Architecture
+
+## Overview
+
+Replace the monolithic `FifthParserManager.ApplyLanguageAnalysisPhases` method with a composable `TransformationPipeline` architecture. Each compiler phase becomes an `ICompilerPhase` class, orchestrated by a pipeline that handles registration, dependency validation, execution, timing, and diagnostics. All code is C# in the existing `src/compiler` project.
+
+## Tasks
+
+- [x] 1. Create core pipeline types and interfaces
+  - [x] 1.1 Create `src/compiler/Pipeline/ICompilerPhase.cs` with the `ICompilerPhase` interface
+    - Define `Name`, `DependsOn`, `ProvidedCapabilities` properties and `Transform(AstThing, PhaseContext)` method
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+  - [x] 1.2 Create `src/compiler/Pipeline/PhaseResult.cs` record type
+    - Define `TransformedAst`, `Diagnostics`, `Success` fields and `Ok`/`Fail` factory methods
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+  - [x] 1.3 Create `src/compiler/Pipeline/PhaseContext.cs` class
+    - Define `Diagnostics`, `TargetFramework`, `SharedData`, `EnableCaching` members
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+  - [x] 1.4 Create `src/compiler/Pipeline/PipelineOptions.cs` record type
+    - Define `SkipPhases`, `StopAfter`, `StopOnError`, `EnableCaching`, `DumpAfter`, `DumpCallback` and static `Default` property
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
+  - [x] 1.5 Create `src/compiler/Pipeline/PipelineResult.cs` record type
+    - Define `TransformedAst`, `Diagnostics`, `Success`, `PhaseTimings` fields
+    - _Requirements: 4.4, 8.5_
+
+- [x] 2. Implement TransformationPipeline orchestrator
+  - [x] 2.1 Create `src/compiler/Pipeline/TransformationPipeline.cs`
+    - Implement `RegisterPhase` with dependency validation (throw `InvalidOperationException` on unsatisfied deps)
+    - Implement `Phases` property exposing `IReadOnlyList<ICompilerPhase>`
+    - Implement `GetCapabilitiesAfter(string phaseName)` query method
+    - _Requirements: 4.1, 4.2, 4.6, 7.1, 7.2, 7.3, 7.4, 15.1, 15.2, 15.4_
+  - [x] 2.2 Implement `Execute(AstThing ast, PipelineOptions? options, string? targetFramework)` method
+    - Create `PhaseContext`, iterate phases in registration order, handle `SkipPhases`, `StopAfter`, `StopOnError`
+    - Implement per-phase `Stopwatch` timing, populate `PipelineResult.PhaseTimings`
+    - Emit `[PHASE]` and `[PIPELINE]` timing lines to stderr when `DebugHelpers.DebugEnabled`
+    - Invoke `DumpCallback` for phases in `DumpAfter`
+    - Catch phase exceptions: log to stderr, add error diagnostic, respect `StopOnError`
+    - _Requirements: 4.3, 4.4, 5.2, 5.3, 5.4, 5.5, 8.1, 8.2, 8.3, 8.4, 8.5, 9.1, 9.2, 9.3, 9.4, 10.1, 10.2, 10.3, 13.1, 13.4, 18.1, 18.3_
+
+- [x] 3. Checkpoint — Ensure core types compile
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Implement concrete phase classes (first batch: phases 1–11)
+  - [x] 4.1 Create `src/compiler/Pipeline/Phases/TreeLinkagePhase.cs`
+    - Wrap `TreeLinkageVisitor` with specialised error handling (log to DebugLog + add diagnostic before re-throw)
+    - DependsOn: none. Provides: `"TreeStructure"`
+    - _Requirements: 6.1, 6.2, 6.3, 13.2_
+  - [x] 4.2 Create `src/compiler/Pipeline/Phases/BuiltinInjectorPhase.cs`
+    - Wrap `BuiltinInjectorVisitor` with standard `ExecutePhase`-style error handling
+    - DependsOn: `"TreeStructure"`. Provides: `"Builtins"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.3 Create `src/compiler/Pipeline/Phases/ClassCtorsPhase.cs` (compound)
+    - Run `ClassCtorInserter(context.Diagnostics)` then `TreeLinkageVisitor` re-link
+    - DependsOn: `"TreeStructure"`. Provides: `"ClassConstructors"`
+    - _Requirements: 6.1, 6.4, 14.1_
+  - [x] 4.4 Create `src/compiler/Pipeline/Phases/ConstructorValidationPhase.cs`
+    - Wrap `SemanticAnalysis.ConstructorValidator(context.Diagnostics)`
+    - DependsOn: `"ClassConstructors"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.5 Create `src/compiler/Pipeline/Phases/SymbolTableInitialPhase.cs`
+    - Wrap `SymbolTableBuilderVisitor`
+    - DependsOn: `"TreeStructure"`, `"Builtins"`. Provides: `"Symbols"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.6 Create `src/compiler/Pipeline/Phases/NamespaceImportResolverPhase.cs`
+    - Wrap `NamespaceImportResolverVisitor(context.Diagnostics)`
+    - DependsOn: `"Symbols"`. Provides: `"NamespaceImports"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.7 Create `src/compiler/Pipeline/Phases/ConstructorResolutionPhase.cs`
+    - Wrap `SemanticAnalysis.ConstructorResolver(context.Diagnostics)`
+    - DependsOn: `"Symbols"`. Provides: `"ResolvedConstructors"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.8 Create `src/compiler/Pipeline/Phases/DefiniteAssignmentPhase.cs`
+    - Wrap `SemanticAnalysis.DefiniteAssignmentAnalyzer`, merge `analyzer.Diagnostics` into context
+    - DependsOn: `"ResolvedConstructors"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.9 Create `src/compiler/Pipeline/Phases/BaseConstructorValidationPhase.cs`
+    - Wrap `SemanticAnalysis.BaseConstructorValidator`, merge `baseValidator.Diagnostics` into context
+    - DependsOn: `"ResolvedConstructors"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.10 Create `src/compiler/Pipeline/Phases/TypeParameterResolutionPhase.cs`
+    - Wrap `TypeParameterResolutionVisitor`
+    - DependsOn: `"Symbols"`. Provides: `"TypeParameters"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 4.11 Create `src/compiler/Pipeline/Phases/GenericTypeInferencePhase.cs`
+    - Wrap `GenericTypeInferenceVisitor`
+    - DependsOn: `"TypeParameters"`. Provides: `"GenericTypes"`
+    - _Requirements: 6.1, 6.2, 6.3_
+
+
+- [x] 5. Implement concrete phase classes (second batch: phases 12–24)
+  - [x] 5.1 Create `src/compiler/Pipeline/Phases/PropertyToFieldPhase.cs`
+    - Wrap `PropertyToFieldExpander` with specialised error handling (log to DebugLog, re-throw, NO diagnostic)
+    - DependsOn: `"TreeStructure"`. Provides: `"FieldExpansion"`
+    - _Requirements: 6.1, 6.2, 6.3, 13.3_
+  - [x] 5.2 Create `src/compiler/Pipeline/Phases/DestructurePatternFlattenPhase.cs` (compound)
+    - Run `DestructuringVisitor` then `DestructuringConstraintPropagator`
+    - DependsOn: `"FieldExpansion"`. Provides: `"Destructuring"`
+    - _Requirements: 6.1, 6.4, 14.2_
+  - [x] 5.3 Create `src/compiler/Pipeline/Phases/OverloadGatheringPhase.cs`
+    - Wrap `OverloadGatheringVisitor`
+    - DependsOn: `"Destructuring"`. Provides: `"OverloadGroups"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.4 Create `src/compiler/Pipeline/Phases/GuardValidationPhase.cs`
+    - Wrap `GuardCompletenessValidator`, merge `guardValidator.Diagnostics` into context, check for errors and return `PhaseResult.Fail` if any
+    - DependsOn: `"OverloadGroups"`. Provides: `"GuardChecks"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.5 Create `src/compiler/Pipeline/Phases/OverloadTransformPhase.cs`
+    - Wrap `OverloadTransformingVisitor`
+    - DependsOn: `"GuardChecks"`. Provides: `"OverloadTransforms"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.6 Create `src/compiler/Pipeline/Phases/DestructuringLoweringPhase.cs`
+    - Run `DestructuringVisitor` (property resolution) then `DestructuringLoweringRewriter`
+    - DependsOn: `"OverloadTransforms"`. Provides: `"DestructuringLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.7 Create `src/compiler/Pipeline/Phases/UnaryOperatorLoweringPhase.cs`
+    - Wrap `UnaryOperatorLoweringRewriter`
+    - DependsOn: `"DestructuringLowered"`. Provides: `"UnaryLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.8 Create `src/compiler/Pipeline/Phases/SparqlVariableBindingPhase.cs`
+    - Wrap `SparqlVariableBindingVisitor(context.Diagnostics)`
+    - DependsOn: `"Symbols"`. Provides: `"SparqlBindings"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.9 Create `src/compiler/Pipeline/Phases/SparqlLiteralLoweringPhase.cs`
+    - Wrap `SparqlLiteralLoweringRewriter`
+    - DependsOn: `"SparqlBindings"`. Provides: `"SparqlLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.10 Create `src/compiler/Pipeline/Phases/TriGLiteralLoweringPhase.cs`
+    - Wrap `TriGLiteralLoweringRewriter`
+    - DependsOn: `"SparqlLowered"`. Provides: `"TriGLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.11 Create `src/compiler/Pipeline/Phases/TreeRelinkPhase.cs`
+    - Wrap `TreeLinkageVisitor` (mid-pipeline re-link)
+    - DependsOn: `"TriGLowered"`. Provides: `"TreeRelinked"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.12 Create `src/compiler/Pipeline/Phases/TripleDiagnosticsPhase.cs`
+    - Wrap `TripleDiagnosticsVisitor(context.Diagnostics)`
+    - DependsOn: `"TreeRelinked"`. Provides: `"TripleDiags"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.13 Create `src/compiler/Pipeline/Phases/TripleExpansionPhase.cs`
+    - Wrap `TripleExpansionVisitor(context.Diagnostics)`
+    - DependsOn: `"TripleDiags"`. Provides: `"TripleExpanded"`
+    - _Requirements: 6.1, 6.2, 6.3_
+
+- [x] 6. Implement concrete phase classes (third batch: phases 25–38)
+  - [x] 6.1 Create `src/compiler/Pipeline/Phases/SymbolTableFinalPhase.cs`
+    - Wrap `SymbolTableBuilderVisitor` (final rebuild)
+    - DependsOn: `"TripleExpanded"`. Provides: `"SymbolsFinal"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.2 Create `src/compiler/Pipeline/Phases/NamespaceImportResolverFinalPhase.cs`
+    - Wrap `NamespaceImportResolverVisitor(null)` (null diagnostics for final pass)
+    - DependsOn: `"SymbolsFinal"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.3 Create `src/compiler/Pipeline/Phases/VarRefResolverPhase.cs`
+    - Wrap `VarRefResolverVisitor`
+    - DependsOn: `"SymbolsFinal"`. Provides: `"VarRefs"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.4 Create `src/compiler/Pipeline/Phases/TypeAnnotationPhase.cs` (compound)
+    - Encapsulate full compound logic: `TypeAnnotationVisitor`, symbol table rebuild, `AugmentedAssignmentLoweringRewriter`, type error collection, `TripleGraphAdditionLoweringRewriter` with re-link/re-annotation, second-pass type error collection
+    - Return `PhaseResult.Fail` on type errors at either checkpoint
+    - DependsOn: `"Symbols"`, `"VarRefs"`. Provides: `"Types"`
+    - _Requirements: 6.1, 6.4, 14.3_
+  - [x] 6.5 Create `src/compiler/Pipeline/Phases/ExternalCallValidationPhase.cs`
+    - Wrap `ExternalCallValidationVisitor(context.Diagnostics, context.TargetFramework)`, skip if diagnostics not being collected
+    - DependsOn: `"Types"`. Provides: none
+    - _Requirements: 6.1, 16.1, 16.3_
+  - [x] 6.6 Create `src/compiler/Pipeline/Phases/TryCatchFinallyValidationPhase.cs`
+    - Wrap `TryCatchFinallyValidationVisitor(context.Diagnostics)`, skip if diagnostics not being collected
+    - DependsOn: `"Types"`. Provides: none
+    - _Requirements: 6.1, 16.2, 16.3_
+  - [x] 6.7 Create `src/compiler/Pipeline/Phases/QueryApplicationTypeCheckPhase.cs`
+    - Wrap `QueryApplicationTypeCheckRewriter(context.Diagnostics)`, return `PhaseResult.Fail` on errors
+    - DependsOn: `"Types"`. Provides: `"QueryTypes"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.8 Create `src/compiler/Pipeline/Phases/QueryApplicationLoweringPhase.cs`
+    - Wrap `QueryApplicationLoweringRewriter`
+    - DependsOn: `"QueryTypes"`. Provides: `"QueryLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.9 Create `src/compiler/Pipeline/Phases/ListComprehensionValidationPhase.cs`
+    - Wrap `SparqlComprehensionValidationVisitor(context.Diagnostics)`, return `PhaseResult.Fail` on errors
+    - DependsOn: `"Types"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.10 Create `src/compiler/Pipeline/Phases/ListComprehensionLoweringPhase.cs`
+    - Wrap `ListComprehensionLoweringRewriter`
+    - DependsOn: `"Types"`. Provides: `"ComprehensionLowered"`
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.11 Create `src/compiler/Pipeline/Phases/LambdaValidationPhase.cs`
+    - Wrap `LambdaValidationVisitor(context.Diagnostics)`, return `PhaseResult.Fail` on errors
+    - DependsOn: `"Types"`. Provides: none
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 6.12 Create `src/compiler/Pipeline/Phases/LambdaClosureConversionPhase.cs` (compound)
+    - Run `LambdaCaptureValidationVisitor`, check errors, then `LambdaClosureConversionRewriter`, then `TreeLinkageVisitor` re-link
+    - DependsOn: `"Types"`. Provides: `"ClosureConverted"`
+    - _Requirements: 6.1, 6.4, 14.4_
+  - [x] 6.13 Create `src/compiler/Pipeline/Phases/DefunctionalisationPhase.cs` (compound)
+    - Run `DefunctionalisationRewriter`, then `TreeLinkageVisitor` re-link
+    - DependsOn: `"ClosureConverted"`. Provides: `"Defunctionalised"`
+    - _Requirements: 6.1, 6.4, 14.5_
+  - [x] 6.14 Create `src/compiler/Pipeline/Phases/TailCallOptimizationPhase.cs`
+    - Wrap `TailCallOptimizationRewriter` + re-link (currently disabled/commented out)
+    - DependsOn: `"Defunctionalised"`. Provides: none
+    - _Requirements: 6.1, 6.5_
+
+- [x] 7. Implement `CreateDefault()` factory method
+  - [x] 7.1 Add `CreateDefault()` to `TransformationPipeline`
+    - Register all 38 phases in the correct order matching the design's phase table
+    - Mark `TailCallOptimization` as skipped in default `PipelineOptions` or exclude from registration (matching current commented-out state)
+    - _Requirements: 4.5, 6.1, 6.5_
+
+- [x] 8. Checkpoint — Ensure all phases compile and `CreateDefault()` succeeds
+  - Ensure all tests pass, ask the user if questions arise.
+
+
+- [x] 9. Migrate all callers and delete legacy code
+  - [x] 9.1 Update `src/compiler/Compiler.cs` `TransformPhase` method
+    - Replace `FifthParserManager.ApplyLanguageAnalysisPhases` call with `TransformationPipeline.CreateDefault().Execute()`
+    - Map `PipelineResult` back to existing error handling pattern
+    - _Requirements: 12.1_
+  - [x] 9.2 Update `src/language-server/Parsing/ParsingService.cs`
+    - Replace `FifthParserManager.ApplyLanguageAnalysisPhases` call with pipeline API
+    - _Requirements: 12.2_
+  - [x] 9.3 Update `src/language-server/SymbolService.cs` `BuildWorkspaceIndex` method
+    - Replace `FifthParserManager.ApplyLanguageAnalysisPhases` call with pipeline API
+    - _Requirements: 12.3_
+  - [x] 9.4 Update `test/ast-tests/TestInfrastructure/ParseHarness.cs`
+    - Replace `FifthParserManager.ApplyLanguageAnalysisPhases` call with pipeline API
+    - Change `ParseOptions.Phase` from `AnalysisPhase` enum to `string?` phase name
+    - _Requirements: 12.4_
+  - [x] 9.5 Update `test/TestInfrastructure/ParseHarness.cs`
+    - Same migration as 9.4 for the shared test infrastructure copy
+    - _Requirements: 12.4_
+  - [x] 9.6 Migrate all remaining direct test calls to `ApplyLanguageAnalysisPhases`
+    - Search for all remaining references and update to pipeline API
+    - _Requirements: 12.5_
+  - [x] 9.7 Delete legacy code from `src/compiler/ParserManager.cs`
+    - Delete the `AnalysisPhase` enum
+    - Delete the `ApplyLanguageAnalysisPhases` method
+    - Delete the `ExecutePhase` helper method
+    - _Requirements: 12.6, 12.7, 12.8_
+
+- [x] 10. Checkpoint — Full regression gate
+  - Run `dotnet test fifthlang.sln` to verify all existing tests pass with the new pipeline.
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 11. Pipeline structure verification tests
+  - [x] 11.1 Add `test/ast-tests/Pipeline/TransformationPipelineTests.cs` with unit tests
+    - Test: default pipeline phase count matches expected 38
+    - Test: all phase names are unique (no duplicates)
+    - Test: all declared dependencies are satisfied by earlier phases
+    - Test: first phase is `TreeLinkage`, last is `TailCallOptimization`
+    - Test: `TailCallOptimization` is disabled/skipped in default config
+    - Test: `PipelineOptions.Default` has `StopOnError=true`, empty `SkipPhases`, null `StopAfter`
+    - Test: `PhaseResult.Ok` creates `Success=true`, `PhaseResult.Fail` creates `Success=false`
+    - Test: `RegisterPhase` throws `InvalidOperationException` on unsatisfied dependency
+    - Test: `RegisterPhase` succeeds for phase with empty `DependsOn`
+    - Test: `GetCapabilitiesAfter` returns cumulative capabilities
+    - Test: `Phases` property returns all registered phases in order
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 15.1, 15.2, 15.4_
+  - [x] 11.2 Write property test: Default pipeline structural integrity (Property 1)
+    - **Property 1: Default pipeline structural integrity**
+    - Verify unique names, satisfied deps, expected phase count on `CreateDefault()`
+    - **Validates: Requirements 1.2, 6.1, 7.1, 17.1, 17.2, 17.3, 17.4**
+  - [x] 11.3 Write property test: Dependency validation rejects unsatisfied dependencies (Property 2)
+    - **Property 2: Dependency validation rejects unsatisfied dependencies**
+    - Generate random phases with random `DependsOn` strings, verify `RegisterPhase` throws when deps unsatisfied
+    - **Validates: Requirements 4.2, 7.1, 7.2, 7.3, 7.4**
+
+- [x] 12. Pipeline execution behavior tests
+  - [x] 12.1 Write property test: Phase execution respects registration order (Property 3)
+    - **Property 3: Phase execution respects registration order**
+    - Register N mock phases, execute, verify invocation order matches registration
+    - **Validates: Requirements 4.3, 11.2**
+  - [x] 12.2 Write property test: SkipPhases excludes named phases (Property 4)
+    - **Property 4: SkipPhases excludes named phases from execution**
+    - Register N mock phases, generate random skip subsets, verify skipped phases don't execute
+    - **Validates: Requirements 5.2, 9.1**
+  - [x] 12.3 Write property test: StopAfter halts at named phase (Property 5)
+    - **Property 5: StopAfter halts execution at the named phase**
+    - Register N mock phases, pick random StopAfter, verify only phases up to that point execute
+    - **Validates: Requirements 5.3, 9.2**
+  - [x] 12.4 Write property test: StopOnError halts on failure (Property 6)
+    - **Property 6: StopOnError halts execution on phase failure**
+    - Register N mock phases, make random phase fail, verify subsequent phases don't execute
+    - **Validates: Requirements 5.4, 2.2, 2.3**
+  - [x] 12.5 Write property test: Diagnostics accumulation (Property 7)
+    - **Property 7: Diagnostics accumulation across phases**
+    - Register N mock phases each producing random diagnostics, verify union in result
+    - **Validates: Requirements 3.4, 4.4**
+  - [x] 12.6 Write property test: Options forwarding to PhaseContext (Property 8)
+    - **Property 8: Options forwarding to PhaseContext**
+    - Generate random `targetFramework` strings and `EnableCaching` bools, verify `PhaseContext` values
+    - **Validates: Requirements 3.5, 18.1, 18.3**
+  - [x] 12.7 Write property test: PhaseTimings populated (Property 9)
+    - **Property 9: PhaseTimings populated for all executed phases**
+    - Execute pipeline, verify timing entries exist for all executed phases with non-negative values
+    - **Validates: Requirements 8.1, 8.5**
+  - [x] 12.8 Write property test: DumpAfter invokes callback (Property 11)
+    - **Property 11: DumpAfter invokes callback with correct arguments**
+    - Register N phases, set random `DumpAfter` subset, verify callback invoked with correct args
+    - **Validates: Requirements 5.5, 10.1**
+  - [x] 12.9 Write property test: Phases property exposes all (Property 12)
+    - **Property 12: Phases property exposes all registered phases**
+    - Register N phases, verify `Phases.Count == N` and order matches
+    - **Validates: Requirements 4.6, 15.1, 15.2**
+  - [x] 12.10 Write property test: GetCapabilitiesAfter cumulative (Property 13)
+    - **Property 13: GetCapabilitiesAfter returns cumulative capabilities**
+    - Register phases with random capabilities, verify cumulative set at each point
+    - **Validates: Requirements 15.4**
+  - [x] 12.11 Write property test: Exception handling preserves context (Property 15)
+    - **Property 15: Exception handling preserves phase context**
+    - Register mock phase that throws, verify exception is catchable and phase name identifiable
+    - **Validates: Requirements 13.1**
+
+- [x] 13. Behavioral equivalence and regression tests
+  - [x] 13.1 Write property test: Pipeline behavioral equivalence (Property 14)
+    - **Property 14: Pipeline behavioral equivalence**
+    - Parse valid Fifth programs from the existing `.5th` test corpus, run both old monolithic method and new pipeline, compare AST and diagnostics for identity
+    - **Validates: Requirements 6.4, 14.1, 14.2, 14.3, 14.4, 14.5**
+
+- [x] 14. Final checkpoint — Full regression and new tests pass
+  - Run `dotnet test fifthlang.sln` to verify all existing tests and new pipeline tests pass.
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties from the design document (Properties 1–15)
+- Unit tests validate specific examples, edge cases, and structural invariants
+- The existing test suite (`dotnet test fifthlang.sln`) serves as the integration/regression gate — all existing tests must pass with the new pipeline
+- All new code is C# in the existing `src/compiler` project; no new projects needed
+- FsCheck is the recommended PBT library per the design document

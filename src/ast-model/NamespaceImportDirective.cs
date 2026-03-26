@@ -11,4 +11,5 @@ public static class ModuleAnnotationKeys
     public const string ImportDirectives = "ImportDirectives";
     public const string ModulePath = "ModulePath";
     public const string ResolvedImports = "ResolvedImports";
+    public const string ExternalReferences = "ExternalReferences";
 }

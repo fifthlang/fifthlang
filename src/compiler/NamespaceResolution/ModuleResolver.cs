@@ -57,6 +57,16 @@ public sealed class ModuleResolver
         var combinedAssembly = baseAssembly with { Modules = modules };
         var annotations = combinedAssembly.Annotations ?? new Dictionary<string, object>();
         annotations[ModuleMetadataKey] = metadata;
+
+        // Store external reference paths so the namespace resolver can register
+        // referenced assembly namespaces and suppress WNS0001 warnings.
+        if (options.References != null && options.References.Count > 0)
+        {
+            annotations[ModuleAnnotationKeys.ExternalReferences] = options.References
+                .Where(r => !string.IsNullOrWhiteSpace(r) && File.Exists(r))
+                .ToArray();
+        }
+
         if (!ReferenceEquals(annotations, combinedAssembly.Annotations))
         {
             combinedAssembly = combinedAssembly with { Annotations = annotations };

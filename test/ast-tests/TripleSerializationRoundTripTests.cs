@@ -22,7 +22,7 @@ public class TripleSerializationRoundTripTests
     {
         // Basic test: a simple triple can be parsed
         var code = @"alias ex as <http://example.org/>; main(): int { <ex:s, ex:p, ex:o>; return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -39,7 +39,7 @@ public class TripleSerializationRoundTripTests
     {
         // Test with string object (common case)
         var code = @"alias ex as <http://example.org/>; main(): int { <ex:s, ex:p, ""object value"">; return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -55,7 +55,7 @@ public class TripleSerializationRoundTripTests
         // FR-018A: String objects containing ',' should not break parsing
         // The comma is within the string literal, not part of triple delimiter
         var code = @"alias ex as <http://example.org/>; main(): int { <ex:s, ex:p, ""value, with, commas"">; return 0; }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -79,7 +79,7 @@ main(): int {
     <ex:s3, ex:p3, 42>;
     return 0; 
 }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);

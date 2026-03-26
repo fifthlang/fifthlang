@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "corelib": {
+        "type": "Project"
+      },
+      "mathlib": {
+        "type": "Project",
+        "dependencies": {
+          "CoreLib": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,12 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
+      "Microsoft.Net.Compilers.Toolset": {
+        "type": "Direct",
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "/F7wcMX7Al+nXbNII/6F4b33F3WCPL1I5VbY0+9QPiKdzlYPM0+R+nyYPBsxVZ4cwGXeU0yxrL0ITJWejsvN/Q=="
+      },
       "AngleSharp": {
         "type": "Transitive",
         "resolved": "1.4.0",
@@ -342,7 +348,7 @@
       "ast_generated": {
         "type": "Project",
         "dependencies": {
-          "ast_model": "[1.0.0, )"
+          "ast_model": "[0.10.0-preview2, )"
         }
       },
       "ast_model": {
@@ -355,13 +361,13 @@
       "Fifth.Compiler.Tool": {
         "type": "Project",
         "dependencies": {
-          "Fifth.System": "[1.0.0, )",
+          "Fifth.System": "[0.10.0-preview2, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "System.CommandLine": "[2.0.0-beta4.22272.1, )",
           "System.Reflection.MetadataLoadContext": "[10.0.0, )",
-          "ast_generated": "[1.0.0, )",
-          "ast_model": "[1.0.0, )",
-          "parser": "[1.0.0, )"
+          "ast_generated": "[0.10.0-preview2, )",
+          "ast_model": "[0.10.0-preview2, )",
+          "parser": "[0.10.0-preview2, )"
         }
       },
       "fifth.system": {
@@ -378,8 +384,8 @@
         "dependencies": {
           "Antlr4.Runtime.Standard": "[4.13.1, )",
           "FluentAssertions": "[6.12.2, )",
-          "ast_generated": "[1.0.0, )",
-          "ast_model": "[1.0.0, )",
+          "ast_generated": "[0.10.0-preview2, )",
+          "ast_model": "[0.10.0-preview2, )",
           "log4net": "[2.0.12, )"
         }
       }

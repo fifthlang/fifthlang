@@ -51,7 +51,7 @@ More docs [here](https://fifth-lang.org) including [installation](https://fifth-
 - Function overloading with parameter guards
 - List comprehensions with new `from`/`where` syntax: `[projection from var in source where constraints]`
 - Knowledge graph operations (TriG literals, SPARQL literals, graph operations)
-- Comprehensive test suite (TUnit + FluentAssertions)
+- Comprehensive test suite (xUnit + FluentAssertions)
 
 ### Planned Improvements
 See our [architectural roadmap](docs/Planning/architecture-review/NEXT-STEPS.md) for detailed plans. Key priorities:
@@ -244,6 +244,6 @@ test/
 └── kg-smoke-tests/      Knowledge graph feature tests
 ```
 
-Built with: C# 14, .NET 10.0, ANTLR 4.8, dotNetRDF, Roslyn, TUnit
+Built with: C# 14, .NET 10.0, ANTLR 4.8, dotNetRDF, Roslyn, xUnit
 
 Status: Active development | Experimental | Pre-release

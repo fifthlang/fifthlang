@@ -12,8 +12,7 @@ namespace ast_tests;
 public class SparqlVariableBindingDiagnosticsTests
 {
     private ParseResult ParseHarnessed(string code)
-        => ParseHarness.ParseString(code, new ParseOptions(
-            compiler.FifthParserManager.AnalysisPhase.All));
+        => ParseHarness.ParseString(code, new ParseOptions());
 
     /// <summary>
     /// A SPARQL literal that only references in-scope Fifth variables should produce
@@ -54,7 +53,7 @@ public class SparqlVariableBindingDiagnosticsTests
 
         // Parse up to just before SPARQL lowering to get the AST with SparqlLiteralExpression intact
         var result = ParseHarness.ParseString(code, new ParseOptions(
-            compiler.FifthParserManager.AnalysisPhase.UnaryOperatorLowering));
+            "UnaryOperatorLowering"));
 
         // Verify the AST contains a SparqlLiteralExpression
         var sparqlNodes = FindSparqlLiterals(result.Root!).ToList();

@@ -31,7 +31,7 @@ main(): int {
     <ex:s, ex:p, ex:o> + <ex:s, ex:p, ex:o> + <ex:s, ex:p, ex:o>;
     return 0; 
 }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -52,7 +52,7 @@ main(): int {{
     <{triple1}> + <{triple2}>;
     return 0; 
 }}";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -68,7 +68,7 @@ main(): int {
     <ex:s, ex:p, ex:o1> + <ex:s, ex:p, ex:o2> + <ex:s, ex:p, ex:o3>;
     return 0; 
 }";
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
@@ -97,8 +97,8 @@ main(): int {{
     return 0; 
 }}";
         
-        var result1 = ParseHarness.ParseString(codeOrder1, new ParseOptions(FifthParserManager.AnalysisPhase.All));
-        var result2 = ParseHarness.ParseString(codeOrder2, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result1 = ParseHarness.ParseString(codeOrder1, new ParseOptions());
+        var result2 = ParseHarness.ParseString(codeOrder2, new ParseOptions());
         
         result1.Root.Should().NotBeNull();
         result2.Root.Should().NotBeNull();
@@ -126,8 +126,8 @@ main(): int {
     return 0; 
 }";
         
-        var result1 = ParseHarness.ParseString(code1, new ParseOptions(FifthParserManager.AnalysisPhase.All));
-        var result2 = ParseHarness.ParseString(code2, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result1 = ParseHarness.ParseString(code1, new ParseOptions());
+        var result2 = ParseHarness.ParseString(code2, new ParseOptions());
         
         result1.Root.Should().NotBeNull();
         result2.Root.Should().NotBeNull();
@@ -153,8 +153,8 @@ main(): int {
     return 0; 
 }";
         
-        var result1 = ParseHarness.ParseString(code1, new ParseOptions(FifthParserManager.AnalysisPhase.All));
-        var result2 = ParseHarness.ParseString(code2, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result1 = ParseHarness.ParseString(code1, new ParseOptions());
+        var result2 = ParseHarness.ParseString(code2, new ParseOptions());
         
         result1.Root.Should().NotBeNull();
         result2.Root.Should().NotBeNull();
@@ -174,7 +174,7 @@ main(): int {
     return 0; 
 }";
         
-        var result = ParseHarness.ParseString(code, new ParseOptions(FifthParserManager.AnalysisPhase.All));
+        var result = ParseHarness.ParseString(code, new ParseOptions());
         
         result.Root.Should().NotBeNull();
         result.Diagnostics.Should().NotContain(d => d.Severity == test_infra.DiagnosticSeverity.Error);
