@@ -33,6 +33,11 @@ public class NamespaceImportResolverVisitor : DefaultRecursiveDescentVisitor
             updatedModules.Add(updated);
         }
 
+        // Register namespaces from external referenced assemblies so that
+        // `import CoreLib;` doesn't warn when CoreLib is a referenced .dll.
+        // The assembly file name (minus extension) is treated as the namespace.
+        RegisterExternalReferenceNamespaces(ctx, index);
+
         var importGraph = BuildImportGraph(updatedModules);
 
         foreach (var module in updatedModules)
@@ -64,6 +69,35 @@ public class NamespaceImportResolverVisitor : DefaultRecursiveDescentVisitor
         }
 
         return ctx.Modules.Select(ModuleMetadata.FromModule).ToList();
+    }
+
+    /// <summary>
+    /// Registers namespaces from externally referenced assemblies (passed via --reference)
+    /// so that import directives targeting them don't produce WNS0001 warnings.
+    /// The assembly file name (minus extension) is used as the namespace name,
+    /// matching the Fifth convention that assembly name == namespace.
+    /// </summary>
+    private static void RegisterExternalReferenceNamespaces(AssemblyDef ctx, NamespaceScopeIndex index)
+    {
+        if (ctx.Annotations == null)
+            return;
+
+        if (!ctx.Annotations.TryGetValue(ModuleAnnotationKeys.ExternalReferences, out var refsObj))
+            return;
+
+        if (refsObj is not string[] references)
+            return;
+
+        foreach (var refPath in references)
+        {
+            var namespaceName = System.IO.Path.GetFileNameWithoutExtension(refPath);
+            if (!string.IsNullOrWhiteSpace(namespaceName))
+            {
+                // Just ensure the scope exists — we don't need to populate symbols
+                // because the actual symbol resolution happens at the IL level via Roslyn.
+                index.GetOrCreate(namespaceName);
+            }
+        }
     }
 
     private static NamespaceImportGraph BuildImportGraph(IEnumerable<ModuleMetadata> modules)
