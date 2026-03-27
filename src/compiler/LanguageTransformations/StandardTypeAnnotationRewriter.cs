@@ -3,86 +3,93 @@ using ast_model.Symbols;
 
 namespace Fifth.LangProcessingPhases;
 
-public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : DefaultRecursiveDescentVisitor
+public class StandardTypeAnnotationRewriter(TypeAnnotationContext context) : TypeAnnotationRewriterStageBase(context)
 {
-    protected readonly TypeAnnotationContext Context = context;
-
-    public override AssemblyDef VisitAssemblyDef(AssemblyDef ctx)
+    public override RewriteResult VisitAssemblyDef(AssemblyDef ctx)
     {
-        var result = base.VisitAssemblyDef(ctx);
+        var baseResult = base.VisitAssemblyDef(ctx);
+        var result = (AssemblyDef)baseResult.Node;
         var voidType = new FifthType.TVoidType { Name = TypeName.From("void") };
-        return result with { Type = voidType };
+        return new RewriteResult(result with { Type = voidType }, baseResult.Prologue);
     }
 
-    public override Int32LiteralExp VisitInt32LiteralExp(Int32LiteralExp ctx)
+    public override RewriteResult VisitInt32LiteralExp(Int32LiteralExp ctx)
     {
-        var result = base.VisitInt32LiteralExp(ctx);
+        var baseResult = base.VisitInt32LiteralExp(ctx);
+        var result = (Int32LiteralExp)baseResult.Node;
         var intType = Context.GetLanguageFriendlyType(typeof(int)) ??
                       new FifthType.TDotnetType(typeof(int)) { Name = TypeName.From("int") };
         Context.OnTypeInferred(result, intType);
-        return result with { Type = intType };
+        return new RewriteResult(result with { Type = intType }, baseResult.Prologue);
     }
 
-    public override Int64LiteralExp VisitInt64LiteralExp(Int64LiteralExp ctx)
+    public override RewriteResult VisitInt64LiteralExp(Int64LiteralExp ctx)
     {
-        var result = base.VisitInt64LiteralExp(ctx);
+        var baseResult = base.VisitInt64LiteralExp(ctx);
+        var result = (Int64LiteralExp)baseResult.Node;
         var longType = Context.GetLanguageFriendlyType(typeof(long)) ??
                        new FifthType.TDotnetType(typeof(long)) { Name = TypeName.From("long") };
         Context.OnTypeInferred(result, longType);
-        return result with { Type = longType };
+        return new RewriteResult(result with { Type = longType }, baseResult.Prologue);
     }
 
-    public override Float8LiteralExp VisitFloat8LiteralExp(Float8LiteralExp ctx)
+    public override RewriteResult VisitFloat8LiteralExp(Float8LiteralExp ctx)
     {
-        var result = base.VisitFloat8LiteralExp(ctx);
+        var baseResult = base.VisitFloat8LiteralExp(ctx);
+        var result = (Float8LiteralExp)baseResult.Node;
         var doubleType = Context.GetLanguageFriendlyType(typeof(double)) ??
                          new FifthType.TDotnetType(typeof(double)) { Name = TypeName.From("double") };
         Context.OnTypeInferred(result, doubleType);
-        return result with { Type = doubleType };
+        return new RewriteResult(result with { Type = doubleType }, baseResult.Prologue);
     }
 
-    public override Float4LiteralExp VisitFloat4LiteralExp(Float4LiteralExp ctx)
+    public override RewriteResult VisitFloat4LiteralExp(Float4LiteralExp ctx)
     {
-        var result = base.VisitFloat4LiteralExp(ctx);
+        var baseResult = base.VisitFloat4LiteralExp(ctx);
+        var result = (Float4LiteralExp)baseResult.Node;
         var floatType = Context.GetLanguageFriendlyType(typeof(float)) ??
                         new FifthType.TDotnetType(typeof(float)) { Name = TypeName.From("float") };
         Context.OnTypeInferred(result, floatType);
-        return result with { Type = floatType };
+        return new RewriteResult(result with { Type = floatType }, baseResult.Prologue);
     }
 
-    public override BooleanLiteralExp VisitBooleanLiteralExp(BooleanLiteralExp ctx)
+    public override RewriteResult VisitBooleanLiteralExp(BooleanLiteralExp ctx)
     {
-        var result = base.VisitBooleanLiteralExp(ctx);
+        var baseResult = base.VisitBooleanLiteralExp(ctx);
+        var result = (BooleanLiteralExp)baseResult.Node;
         var boolType = Context.GetLanguageFriendlyType(typeof(bool)) ??
                        new FifthType.TDotnetType(typeof(bool)) { Name = TypeName.From("bool") };
         Context.OnTypeInferred(result, boolType);
-        return result with { Type = boolType };
+        return new RewriteResult(result with { Type = boolType }, baseResult.Prologue);
     }
 
-    public override StringLiteralExp VisitStringLiteralExp(StringLiteralExp ctx)
+    public override RewriteResult VisitStringLiteralExp(StringLiteralExp ctx)
     {
-        var result = base.VisitStringLiteralExp(ctx);
+        var baseResult = base.VisitStringLiteralExp(ctx);
+        var result = (StringLiteralExp)baseResult.Node;
         var stringType = Context.GetLanguageFriendlyType(typeof(string)) ??
                          new FifthType.TDotnetType(typeof(string)) { Name = TypeName.From("string") };
         Context.OnTypeInferred(result, stringType);
-        return result with { Type = stringType };
+        return new RewriteResult(result with { Type = stringType }, baseResult.Prologue);
     }
 
-    public override ListComprehension VisitListComprehension(ListComprehension ctx)
+    public override RewriteResult VisitListComprehension(ListComprehension ctx)
     {
-        var result = base.VisitListComprehension(ctx);
+        var baseResult = base.VisitListComprehension(ctx);
+        var result = (ListComprehension)baseResult.Node;
         var elementType = result.Projection?.Type ?? new FifthType.UnknownType { Name = TypeName.From("unknown") };
         var listTypeResult = new FifthType.TListOf(elementType)
         {
             Name = TypeName.From($"List<{TypeAnnotationContext.GetTypeName(elementType)}>")
         };
         Context.OnTypeInferred(result, listTypeResult);
-        return result with { Type = listTypeResult };
+        return new RewriteResult(result with { Type = listTypeResult }, baseResult.Prologue);
     }
 
-    public override ListLiteral VisitListLiteral(ListLiteral ctx)
+    public override RewriteResult VisitListLiteral(ListLiteral ctx)
     {
-        var result = base.VisitListLiteral(ctx);
+        var baseResult = base.VisitListLiteral(ctx);
+        var result = (ListLiteral)baseResult.Node;
         FifthType? elementType = null;
 
         if (result.ElementExpressions?.Count > 0)
@@ -111,12 +118,13 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
         };
 
         Context.OnTypeInferred(result, listTypeResult);
-        return result with { Type = listTypeResult };
+        return new RewriteResult(result with { Type = listTypeResult }, baseResult.Prologue);
     }
 
-    public override BinaryExp VisitBinaryExp(BinaryExp ctx)
+    public override RewriteResult VisitBinaryExp(BinaryExp ctx)
     {
-        var result = base.VisitBinaryExp(ctx);
+        var baseResult = base.VisitBinaryExp(ctx);
+        var result = (BinaryExp)baseResult.Node;
         var leftType = result.LHS?.Type;
         var rightType = result.RHS?.Type;
 
@@ -126,22 +134,25 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
             if (inferred != null)
             {
                 Context.OnTypeInferred(result, inferred);
-                return result with { Type = inferred };
+                return new RewriteResult(result with { Type = inferred }, baseResult.Prologue);
             }
         }
 
         Context.OnTypeNotFound(result);
-        return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+        return new RewriteResult(
+            result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+            baseResult.Prologue);
     }
 
-    public override FuncCallExp VisitFuncCallExp(FuncCallExp ctx)
+    public override RewriteResult VisitFuncCallExp(FuncCallExp ctx)
     {
-        var result = base.VisitFuncCallExp(ctx);
+        var baseResult = base.VisitFuncCallExp(ctx);
+        var result = (FuncCallExp)baseResult.Node;
 
         if (result.FunctionDef != null)
         {
             Context.OnTypeInferred(result, result.FunctionDef.ReturnType);
-            return result with { Type = result.FunctionDef.ReturnType };
+            return new RewriteResult(result with { Type = result.FunctionDef.ReturnType }, baseResult.Prologue);
         }
 
         if (result.Annotations.TryGetValue("FunctionName", out var funcNameObj) && funcNameObj is string funcName)
@@ -153,28 +164,31 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
                 if (resolvedThing is ParamDef paramDef && paramDef.Type is FifthType.TFunc paramFuncType)
                 {
                     Context.OnTypeInferred(result, paramFuncType.OutputType);
-                    return result with { Type = paramFuncType.OutputType };
+                    return new RewriteResult(result with { Type = paramFuncType.OutputType }, baseResult.Prologue);
                 }
 
                 if (resolvedThing is VariableDecl varDecl && varDecl.Type is FifthType.TFunc varFuncType)
                 {
                     Context.OnTypeInferred(result, varFuncType.OutputType);
-                    return result with { Type = varFuncType.OutputType };
+                    return new RewriteResult(result with { Type = varFuncType.OutputType }, baseResult.Prologue);
                 }
             }
         }
 
         Context.OnTypeNotFound(result);
-        return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+        return new RewriteResult(
+            result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+            baseResult.Prologue);
     }
 
-    public override MemberAccessExp VisitMemberAccessExp(MemberAccessExp ctx)
+    public override RewriteResult VisitMemberAccessExp(MemberAccessExp ctx)
     {
-        var result = base.VisitMemberAccessExp(ctx);
+        var baseResult = base.VisitMemberAccessExp(ctx);
+        var result = (MemberAccessExp)baseResult.Node;
 
         if (result.LHS?.Type == null)
         {
-            return result;
+            return baseResult;
         }
 
         var lhsType = result.LHS.Type;
@@ -188,7 +202,9 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
                 [lhsType],
                 TypeCheckingSeverity.Error));
 
-            return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+            return new RewriteResult(
+                result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+                baseResult.Prologue);
         }
 
         if (result.RHS is VarRefExp memberRef && lhsType is FifthType.TType userType)
@@ -207,17 +223,18 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
                 {
                     var memberType = Context.CreateFifthType(member.TypeName, member.CollectionType);
                     Context.OnTypeInferred(result, memberType);
-                    return result with { Type = memberType };
+                    return new RewriteResult(result with { Type = memberType }, baseResult.Prologue);
                 }
             }
         }
 
-        return result;
+        return baseResult;
     }
 
-    public override IndexerExpression VisitIndexerExpression(IndexerExpression ctx)
+    public override RewriteResult VisitIndexerExpression(IndexerExpression ctx)
     {
-        var result = base.VisitIndexerExpression(ctx);
+        var baseResult = base.VisitIndexerExpression(ctx);
+        var result = (IndexerExpression)baseResult.Node;
         if (result.IndexExpression?.Type != null)
         {
             var indexedType = result.IndexExpression.Type;
@@ -231,7 +248,7 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
             if (elementType != null)
             {
                 Context.OnTypeInferred(result, elementType);
-                return result with { Type = elementType };
+                return new RewriteResult(result with { Type = elementType }, baseResult.Prologue);
             }
 
             Context.Errors.Add(new TypeCheckingError(
@@ -244,71 +261,84 @@ public class StandardTypeAnnotationVisitor(TypeAnnotationContext context) : Defa
         }
 
         Context.OnTypeNotFound(result);
-        return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+        return new RewriteResult(
+            result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+            baseResult.Prologue);
     }
 
-    public override ModuleDef VisitModuleDef(ModuleDef ctx)
+    public override RewriteResult VisitModuleDef(ModuleDef ctx)
     {
         Context.CurrentModule = ctx;
-        var result = base.VisitModuleDef(ctx);
+        var baseResult = base.VisitModuleDef(ctx);
+        var result = (ModuleDef)baseResult.Node;
         Context.CurrentModule = result;
-        return result;
+        return baseResult;
     }
 
-    public override FunctionDef VisitFunctionDef(FunctionDef ctx)
+    public override RewriteResult VisitFunctionDef(FunctionDef ctx)
     {
-        var result = base.VisitFunctionDef(ctx);
+        var baseResult = base.VisitFunctionDef(ctx);
+        var result = (FunctionDef)baseResult.Node;
         Context.OnTypeInferred(result, result.ReturnType);
-        return result with { Type = result.ReturnType };
+        return new RewriteResult(result with { Type = result.ReturnType }, baseResult.Prologue);
     }
 
-    public override ParamDef VisitParamDef(ParamDef ctx)
+    public override RewriteResult VisitParamDef(ParamDef ctx)
     {
-        var result = base.VisitParamDef(ctx);
+        var baseResult = base.VisitParamDef(ctx);
+        var result = (ParamDef)baseResult.Node;
         var fifthType = Context.CreateFifthType(result.TypeName, result.CollectionType);
         Context.OnTypeInferred(result, fifthType);
-        return result with { Type = fifthType };
+        return new RewriteResult(result with { Type = fifthType }, baseResult.Prologue);
     }
 
-    public override VariableDecl VisitVariableDecl(VariableDecl ctx)
+    public override RewriteResult VisitVariableDecl(VariableDecl ctx)
     {
-        var result = base.VisitVariableDecl(ctx);
+        var baseResult = base.VisitVariableDecl(ctx);
+        var result = (VariableDecl)baseResult.Node;
         var fifthType = Context.CreateFifthType(result.TypeName, result.CollectionType);
         Context.OnTypeInferred(result, fifthType);
-        return result with { Type = fifthType };
+        return new RewriteResult(result with { Type = fifthType }, baseResult.Prologue);
     }
 
-    public override PropertyDef VisitPropertyDef(PropertyDef ctx)
+    public override RewriteResult VisitPropertyDef(PropertyDef ctx)
     {
-        var result = base.VisitPropertyDef(ctx);
+        var baseResult = base.VisitPropertyDef(ctx);
+        var result = (PropertyDef)baseResult.Node;
         var fifthType = Context.CreateFifthType(result.TypeName, result.CollectionType);
         Context.OnTypeInferred(result, fifthType);
-        return result with { Type = fifthType };
+        return new RewriteResult(result with { Type = fifthType }, baseResult.Prologue);
     }
 
-    public override VarRefExp VisitVarRefExp(VarRefExp ctx)
+    public override RewriteResult VisitVarRefExp(VarRefExp ctx)
     {
-        var result = base.VisitVarRefExp(ctx);
+        var baseResult = base.VisitVarRefExp(ctx);
+        var result = (VarRefExp)baseResult.Node;
         if (result.VariableDecl?.Type != null)
         {
             Context.OnTypeInferred(result, result.VariableDecl.Type);
-            return result with { Type = result.VariableDecl.Type };
+            return new RewriteResult(result with { Type = result.VariableDecl.Type }, baseResult.Prologue);
         }
 
         Context.OnTypeNotFound(result);
-        return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+        return new RewriteResult(
+            result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+            baseResult.Prologue);
     }
 
-    public override ObjectInitializerExp VisitObjectInitializerExp(ObjectInitializerExp ctx)
+    public override RewriteResult VisitObjectInitializerExp(ObjectInitializerExp ctx)
     {
-        var result = base.VisitObjectInitializerExp(ctx);
+        var baseResult = base.VisitObjectInitializerExp(ctx);
+        var result = (ObjectInitializerExp)baseResult.Node;
         if (result.TypeToInitialize != null)
         {
             Context.OnTypeInferred(result, result.TypeToInitialize);
-            return result with { Type = result.TypeToInitialize };
+            return new RewriteResult(result with { Type = result.TypeToInitialize }, baseResult.Prologue);
         }
 
         Context.OnTypeNotFound(result);
-        return result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } };
+        return new RewriteResult(
+            result with { Type = new FifthType.UnknownType { Name = TypeName.From("unknown") } },
+            baseResult.Prologue);
     }
 }
