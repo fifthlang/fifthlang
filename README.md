@@ -34,6 +34,7 @@ More docs [here](https://fifth-lang.org) including [installation](https://fifth-
 ### Knowledge Graph Primitives
 - Native RDF types: `graph`, `triple`, `store`, `query` are built-in language primitives
 - Built-in KG runtime: `Fifth.System.KG` provides graph creation, triple management, and store operations
+- Built-in high performance Triple Store (QuadStore)
 - Triple literals: `<subject, predicate, object>` syntax for inline RDF construction
 - TriG blocks: Multi-line graph literals with full TriG syntax support
 - SPARQL literals: Embed SPARQL queries directly in source code with `?<SELECT...>`
@@ -52,12 +53,12 @@ More docs [here](https://fifth-lang.org) including [installation](https://fifth-
 - List comprehensions with new `from`/`where` syntax: `[projection from var in source where constraints]`
 - Knowledge graph operations (TriG literals, SPARQL literals, graph operations)
 - Comprehensive test suite (xUnit + FluentAssertions)
+- Published MSBuild SDK and compiler support via Nuget
+- Direct Consumption of Query Results in List Comprehensions
 
 ### Planned Improvements
 See our [architectural roadmap](docs/Planning/architecture-review/NEXT-STEPS.md) for detailed plans. Key priorities:
 
-- Published MSBuild SDK and compiler support via Nuget
-- Direct Consumption of Query Results in List Comprehensions
 - Architectural Improvements to support modern compiler tool chains: auto-complete, LSP, go to definition &c
 - Parser error recovery: Better handling of syntax errors for IDE support
 - Incremental compilation: Faster rebuild times for large projects
