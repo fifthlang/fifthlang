@@ -1,4 +1,5 @@
 using ast;
+using ast_generated;
 using ast_model.Symbols;
 
 namespace Fifth.LangProcessingPhases;

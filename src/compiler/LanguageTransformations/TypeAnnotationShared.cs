@@ -254,7 +254,9 @@ public sealed class TypeAnnotationContext
     {
         return type switch
         {
-            FifthType.TDotnetType dotnetType => dotnetType.TheType?.Name ?? "unknown",
+            FifthType.TDotnetType dotnetType => !string.IsNullOrEmpty(dotnetType.Name.Value)
+                ? dotnetType.Name.Value
+                : dotnetType.TheType?.Name ?? "unknown",
             FifthType.TType ttype => ttype.Name.Value,
             FifthType.TVoidType => "void",
             _ => type.ToString() ?? "unknown"

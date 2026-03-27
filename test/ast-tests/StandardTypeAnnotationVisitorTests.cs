@@ -8,13 +8,13 @@ namespace ast_tests;
 public class StandardTypeAnnotationVisitorTests
 {
     private readonly TypeAnnotationContext _context = new();
-    private StandardTypeAnnotationVisitor CreateVisitor() => new(_context);
+    private StandardTypeAnnotationRewriter CreateVisitor() => new(_context);
 
     [Fact]
     public void VisitInt32LiteralExp_ShouldSetIntType()
     {
         var visitor = CreateVisitor();
-        var result = visitor.VisitInt32LiteralExp(new Int32LiteralExp { Value = 42 });
+        var result = (Int32LiteralExp)visitor.VisitInt32LiteralExp(new Int32LiteralExp { Value = 42 }).Node;
 
         result.Type.Should().BeOfType<FifthType.TDotnetType>();
         ((FifthType.TDotnetType)result.Type).TheType.Should().Be(typeof(int));
@@ -27,7 +27,7 @@ public class StandardTypeAnnotationVisitorTests
         var left = new Int32LiteralExp { Value = 5 };
         var right = new Int32LiteralExp { Value = 3 };
 
-        var result = visitor.VisitBinaryExp(new BinaryExp { LHS = left, Operator = Operator.ArithmeticAdd, RHS = right });
+        var result = (BinaryExp)visitor.VisitBinaryExp(new BinaryExp { LHS = left, Operator = Operator.ArithmeticAdd, RHS = right }).Node;
 
         result.Type.Should().BeOfType<FifthType.TDotnetType>();
         ((FifthType.TDotnetType)result.Type).TheType.Should().Be(typeof(int));

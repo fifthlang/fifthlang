@@ -324,67 +324,6 @@ public class TypeAnnotationVisitorTests : VisitorTestsBase
     }
 
     [Fact]
-    public void OnTypeInferred_ShouldNotThrow()
-    {
-        // Arrange
-        var node = new Int32LiteralExp { Value = 42 };
-        var type = new FifthType.TDotnetType(typeof(int)) { Name = TypeName.From("int") };
-
-        // Act & Assert
-        var act = () => _visitor.OnTypeInferred(node, type);
-        act.Should().NotThrow();
-    }
-
-    [Fact]
-    public void OnTypeMismatch_ShouldAddError()
-    {
-        // Arrange
-        var node = new Int32LiteralExp { Value = 42 };
-        var type1 = new FifthType.TDotnetType(typeof(int)) { Name = TypeName.From("int") };
-        var type2 = new FifthType.TDotnetType(typeof(string)) { Name = TypeName.From("string") };
-
-        // Act
-        _visitor.OnTypeMismatch(node, type1, type2);
-
-        // Assert
-        _visitor.Errors.Should().HaveCount(1);
-        var error = _visitor.Errors.First();
-        error.Message.Should().Contain("Type mismatch");
-        error.Message.Should().Contain("int");
-        error.Message.Should().Contain("string");
-        error.Types.Should().HaveCount(2);
-        error.Types.Should().Contain(type1);
-        error.Types.Should().Contain(type2);
-    }
-
-    [Fact]
-    public void OnTypeNotFound_ShouldAddError()
-    {
-        // Arrange
-        var node = new Int32LiteralExp { Value = 42 };
-
-        // Act
-        _visitor.OnTypeNotFound(node);
-
-        // Assert
-        _visitor.Errors.Should().HaveCount(1);
-        var error = _visitor.Errors.First();
-        error.Message.Should().Be("Unable to infer type");
-        error.Types.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void OnTypeNotRelevant_ShouldNotThrow()
-    {
-        // Arrange
-        var node = new Int32LiteralExp { Value = 42 };
-
-        // Act & Assert
-        var act = () => _visitor.OnTypeNotRelevant(node);
-        act.Should().NotThrow();
-    }
-
-    [Fact]
     public void Errors_InitiallyEmpty()
     {
         // Arrange

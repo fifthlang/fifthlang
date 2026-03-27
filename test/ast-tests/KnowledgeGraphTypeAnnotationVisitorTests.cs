@@ -8,18 +8,18 @@ namespace ast_tests;
 public class KnowledgeGraphTypeAnnotationVisitorTests
 {
     private readonly TypeAnnotationContext _context = new();
-    private KnowledgeGraphTypeAnnotationVisitor CreateVisitor() => new(_context);
+    private KnowledgeGraphTypeAnnotationRewriter CreateVisitor() => new(_context);
 
     [Fact]
     public void VisitSparqlLiteralExpression_ShouldSetQueryType()
     {
         var visitor = CreateVisitor();
-        var result = visitor.VisitSparqlLiteralExpression(new SparqlLiteralExpression
+        var result = (SparqlLiteralExpression)visitor.VisitSparqlLiteralExpression(new SparqlLiteralExpression
         {
             SparqlText = "SELECT * WHERE { ?s ?p ?o }",
             Bindings = [],
             Interpolations = []
-        });
+        }).Node;
 
         result.Type.Should().BeOfType<FifthType.TType>();
         result.Type.Name.Value.Should().Be("Query");
@@ -40,7 +40,7 @@ public class KnowledgeGraphTypeAnnotationVisitorTests
             }
         };
 
-        var result = visitor.VisitInterpolation(interpolation);
+        var result = (Interpolation)visitor.VisitInterpolation(interpolation).Node;
 
         result.ResultType.Should().NotBeNull();
         result.ResultType.Should().BeOfType<FifthType.TDotnetType>();
