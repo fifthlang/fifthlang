@@ -457,3 +457,4 @@ samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_g.bin
 samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_o.bin
 samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_p.bin
 samples/TaskListQuadStore/src/TaskApp/quadstore_data/column_s.bin
+*.lscache
