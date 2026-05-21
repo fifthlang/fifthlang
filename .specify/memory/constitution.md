@@ -1,4 +1,7 @@
 # Engineering Constitution
+## Agentic
+- AI-001 [MANDATORY]: Never leave temporary files in the repo after they are no longer in use.
+- AI-002 [MANDATORY]: When developing diagnostic, experimental or temporary test code, make sure it is created and run somewhere other than the source repo.  This prevents dead code being left lying around.
 ## Governance
 - ARCH-001 [MANDATORY]: Architecture guidance for the Fifth compiler must be concrete and measurable. Every rule in this document must include a compliance check an agent can perform.
 ## Dependency
@@ -46,7 +49,7 @@
 - ARCH-004: All AST node types, fields, and inheritance are defined in `src/ast-model/AstMetamodel.cs`. No hand-written class outside `ast-model` may subclass `AstThing` or introduce new AST node types.
   
   Verify: search `.cs` files outside `src/ast-model/` and `src/ast-generated/` for classes inheriting `AstThing`, `Expression`, `Statement`, or `TypeRef`. Any match is non-compliant.
-- TEST-012: Use this quick smoke test after AST builder changes:
+- FTR-07: Use this quick smoke test after AST builder changes:
   
   ```csharp
   using ast;
@@ -180,27 +183,27 @@
   ```
   
   This operation typically takes about 60 seconds. Do not cancel it. Use a timeout of at least 120 seconds when automation controls execution time.
-- TEST-007: The default regression command is:
+- FTR-02: The default regression command is:
   
   ```bash
   dotnet test fifthlang.sln
   ```
-- TEST-008: Use this quick smoke command while iterating:
+- FTR-03: Use this quick smoke command while iterating:
   
   ```bash
   dotnet test test/ast-tests/ast_tests.csproj
   ```
-- TEST-009: Use this focused parser command when grammar behavior changes:
+- FTR-04: Use this focused parser command when grammar behavior changes:
   
   ```bash
   dotnet test test/syntax-parser-tests/ -v minimal
   ```
-- TEST-010: Use filtered runtime integration tests for focused investigation:
+- FTR-05: Use filtered runtime integration tests for focused investigation:
   
   ```bash
   dotnet test test/runtime-integration-tests/runtime-integration-tests.csproj --filter "FullyQualifiedName~YourTestName" -v minimal
   ```
-- TEST-011: Validate knowledge-graph changes with:
+- FTR-06: Validate knowledge-graph changes with:
   
   ```bash
   dotnet test test/kg-smoke-tests/kg-smoke-tests.csproj
@@ -228,23 +231,48 @@
   ```
   
   Use them to iterate locally, but retain the full solution test run as the regression gate.
-- PR-002: Pull requests that change behavior must add or update tests, and all relevant suites must pass locally.
-- TEST-004 [MANDATORY]: Test code should use property-based testing (PBT) using FsCheck.xunit in preference to unit tests.
-- TEST-004a [MANDATORY]: Never just test single-point scenarios and  happy paths, instead use a property-based test that will test all positive, negative and edge cases.
-- TEST-005: Avoid testing internal implementation details and avoid depending on concrete implementations where looser behavioral validation is possible.
-- TEST-013 [MANDATORY]: Define properties as universal rules that must hold for all valid inputs, rather than relying on specific example cases.
-- TEST-014 [MANDATORY]: Design generators to produce diverse, realistic, and edge-case inputs across the full input space.
-- TEST-015 [MANDATORY]: Ensure failing cases can be minimized automatically through shrinking to aid debugging.
-- TEST-016 [MANDATORY]: Specify preconditions clearly or constrain generators so properties are only evaluated in valid domains.
-- TEST-017 [MANDATORY]: Keep tests deterministic and reproducible by controlling randomness and eliminating hidden state or side effects.
-- TEST-018 [MANDATORY]: Use strong oracles, models, or metamorphic relationships to validate correctness beyond simple assertions.
-  
+- PBT-01 [MANDATORY]: The standard property based testing (PBT) stack is:
+  - `FsCheck` for property based testing
+  - `FsCheck.XUnit` for property based testing integration into xunit
+- PBT-02 [MANDATORY]: Always default to Property Based Tests rather than Unit tests.
+- PBT-03 [MANDATORY]: Property Based Tests should be the default approach for testing that a SUT is broadly correct,
+- PBT-04 [MANDATORY]: Unit tests should be reserved for regression cases, to test a specific case that is known to have previously caused issues.
+- PBT-05 [MANDATORY]: Never just test single-point scenarios and  happy paths, instead use a Property Based Tests that will test all positive, negative and edge cases.
+- PBT-06 [MANDATORY]: Define properties as universal rules that must hold for all valid inputs, rather than relying on specific example cases.
+- PBT-07 [MANDATORY]: Design generators to produce diverse, realistic, and edge-case inputs across the full input space.
+- PBT-08 [MANDATORY]: Ensure failing cases can be minimized automatically through shrinking to aid debugging.
+- PBT-09 [MANDATORY]: Specify preconditions clearly or constrain generators so properties are only evaluated in valid domains.
+- PBT-10 [MANDATORY]: Keep tests deterministic and reproducible by controlling randomness and eliminating hidden state or side effects.
+- PBT-11 [MANDATORY]: Use strong oracles, models, or metamorphic relationships to validate correctness beyond simple assertions.
+
   - Every property must have an oracle: a mechanical way to decide pass/fail that is stronger than “doesn’t throw” or “looks plausible”.
   - Prefer a reference (spec) model oracle when you can: compute expected behaviour using a simpler, obviously-correct implementation and compare.
   - If you can’t compute the exact expected output, use a metamorphic oracle: apply a transformation to inputs and assert a predictable relationship between outputs.
   - Use multiple weak oracles together (invariants + metamorphic + cross-check) rather than one weak check.
   - Fail with evidence: when a property fails, ensure the counterexample is informative (shrinks well; includes classification/labels).
-- TEST-019 [MANDATORY]: When making significant changes to a pre-existing unit test, convert it to a Property based test that tests a whole class of invariants and pre and post conditions. 
+- PBT-12 [MANDATORY]: When making significant changes to a pre-existing unit test, convert it to a Property based test that tests a whole class of invariants and pre and post conditions. 
+- PR-002: Pull requests that change behavior must add or update tests, and all relevant suites must pass locally.
+- TDD-001 [MANDATORY]: You MUST practice test-first development.  Follow the process of "Red-Green-Refactor"
+
+  The Rules of TDD are:
+  - Start with a PBT test that fails.
+  - Make the smallest change needed to make that test pass.
+  - Keep each step tiny so you focus on one thing at a time.
+
+  Never get a failing test to pass by masking its failure.  Only a valid addition of functionality counts.
+- TDD-002 [MANDATORY]: Test code should be developed first, NEVER in retrospect.
+- TDD-003 [MANDATORY]: Observe a test failing first, before implementing the application code that makes it pass.
+- TDD-004 [MANDATORY]: When a test finally passes, refactor the new code to ensure it is clean and has no technical debt.
+- TR-002: Avoid testing internal implementation details and avoid depending on concrete implementations where looser behavioral validation is possible.
+- TR-003: Never mask failing tests with broad `try` or `catch` blocks or "success assertions".
+- UT-001: The standard unit testing stack for .NET is:
+
+  - `xUnit` as the test framework
+  - `FluentAssertions` for assertions
+- UT-002 [MANDATORY]: All unit tests should be in a dedicated Unit Testing project.  
+  NEVER put tests in the same project as the code being tested.
+- UT-003 [MANDATORY]: All tests projects should be located under a root folder called `tests/`.
+- UT-004 [MANDATORY]: Unit testing should only be used when capturing and testing specific cases that have previously failed under PBT.
 ## Verification
 - BUILD-007: Confirm the toolchain before debugging restore or build failures:
   
@@ -346,6 +374,23 @@
   - `xUnit` and `FluentAssertions` for testing
   - `dunet` for discriminated unions
   - `Vogen` for value-object generation
+## Completion
+- FTR-01: A feature is not complete until end-to-end tests prove that it:
+  
+  1. Uses actual Fifth language syntax including constructs such as TriG literals, SPARQL literals, and operators
+  2. Executes successfully at runtime rather than merely compiling
+  3. Produces results that are accessible and correct
+  4. Exercises the major code paths and result types involved
+  
+  Features with only compilation tests or with failing runtime tests are incomplete.
+- TR-001: A feature is not complete until integration tests prove it:
+
+  1. Runs as intended in situ
+  2. Executes successfully at runtime rather than merely compiling
+  3. Produces results that are accessible and correct
+  4. Exercises the major code paths and result types involved
+
+  Features with only compilation tests or with failing runtime tests are incomplete.
 ## Reference
 - GEN-008: Use `src/ast_generator/README.md` as the detailed reference for visitor and rewriter pattern selection.
 - OVR-004: Use these reference files according to their role:
@@ -475,22 +520,10 @@
       std.print("Hello " + name);
   }
   ```
-## Framework
-- TEST-001: The standard test stack is:
-  
-  - `xUnit` as the test framework
-  - `FluentAssertions` for assertions
-  - `test/ast-tests/`, `test/syntax-parser-tests/`, and `test/runtime-integration-tests/` as the primary test projects
-## Process
-- TEST-002 [MANDATORY]: Practice TDD by writing tests, seeing them fail, and then implementing the change. Never mask failing tests with broad `try` or `catch` blocks. Let failures surface so CI reflects the true repository state.
-## Completion
-- TEST-003: A feature is not complete until end-to-end tests prove that it:
-  
-  1. Uses actual Fifth language syntax including constructs such as TriG literals, SPARQL literals, and operators
-  2. Executes successfully at runtime rather than merely compiling
-  3. Produces results that are accessible and correct
-  4. Exercises the major code paths and result types involved
-  
-  Features with only compilation tests or with failing runtime tests are incomplete.
-## Fixtures
-- TEST-006: Tests that reference `.5th` sample files must declare `CopyToOutputDirectory` metadata in the owning test `.csproj`.
+## Testability
+- TD-001: Inject dependencies that can be mocked. 
+- TD-002: Prefer Interface registration in DI containers, rather than registering concrete types.
+- TD-003: When registering complex objects for injection elsewhere, create an Interface for the behaviour being injected so that the interface can be the point of dependency.
+## Mocking
+- TM-001: When Injecting complex objects into a system under test (SUT), use Mock object frameworks to control the dependencies so that only the SUT is being tested.
+- TM-002: Create Mock objects for the interface defining the behaviour of a dependency. Don't depend on concrete implementation details of your dependencies.

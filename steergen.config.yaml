@@ -1,6 +1,14 @@
-globalRoot: $HOME/steering/global
 projectRoot: docs/Steering
 generationRoot: .
+activeProfiles: []
+targets: []
 registeredTargets:
-  - speckit
-  - kiro
+- speckit
+- kiro
+templatePackVersion: 
+templatePack: 
+rulesPacks:
+- source: github:aabs/steering-rules-testing
+  ref: 
+  path: 
+  scope: 
