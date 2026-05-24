@@ -1,0 +1,55 @@
+---
+description: concurrency-and-throughput-dotnet-10
+inclusion: always
+---
+## Concurrency
+- CONC-01 [MANDATORY]: Measure throughput, latency, queue depth, allocation rate, and thread usage before changing concurrency design.
+- CONC-02 [MANDATORY]: Classify each hot operation explicitly as I/O-bound, CPU-bound, or coordination-bound before choosing a concurrency model.
+- CONC-03 [MANDATORY]: Use async and await for naturally asynchronous I/O-bound work.
+- CONC-04 [MANDATORY]: Do not block on Task, ValueTask, or async waits in throughput-sensitive code paths.
+- CONC-05 [MANDATORY]: Accept and propagate CancellationToken in long-running, queued, or potentially blocking operations.
+- CONC-06 [MANDATORY]: Treat cancellation as a normal control outcome, not as an unexpected fault.
+- CONC-07 [MANDATORY]: Apply explicit timeouts or deadlines to remote, queued, or potentially blocking work.
+- CONC-08 [MANDATORY]: Set an explicit concurrency limit for every fan-out, queue consumer pool, or parallel work stage.
+- CONC-09 [MANDATORY]: When consumers have finite capacity, use bounded queues or bounded channels rather than unbounded buffering.
+- CONC-10: Use Channel<T> for asynchronous producer-consumer pipelines that require explicit bounding or backpressure.
+- CONC-11 [MANDATORY]: Do not allow unbounded queue growth in steady-state production workloads.
+- CONC-12 [MANDATORY]: Reject, defer, shed, or throttle work when the system cannot process more safely.
+- CONC-13 [MANDATORY]: Every started Task must be awaited, observed, or deliberately detached with explicit error handling.
+- CONC-14 [MANDATORY]: Handle exceptions at the boundary that owns the concurrent operation or work queue.
+- CONC-15 [MANDATORY]: When running multiple tasks concurrently, define whether partial failure cancels siblings, waits for all, or collects all results.
+- CONC-16 [MANDATORY]: Do not create more concurrent work items than the stage can complete within its latency and memory budget.
+- CONC-17: Use Task.Run only to move CPU-bound work off a caller thread when that separation is required.
+- CONC-18 [MANDATORY]: Do not wrap naturally asynchronous I/O in Task.Run.
+- CONC-19 [MANDATORY]: Do not use Task.Wait, Result, or GetAwaiter().GetResult() in throughput-sensitive code paths.
+- CONC-20: Use Parallel.For, Parallel.ForEach, or equivalent data parallelism only for CPU-bound work with enough work per item to amortize scheduling overhead.
+- CONC-21 [MANDATORY]: Partition CPU-bound work explicitly so that independent units can run without shared mutable state.
+- CONC-22 [MANDATORY]: Prefer message passing, ownership transfer, or immutable data over shared mutable state.
+- CONC-23 [MANDATORY]: Choose the weakest synchronization mechanism that preserves correctness.
+- CONC-24 [MANDATORY]: Use Interlocked or other atomic primitives for simple counters, flags, and state transitions instead of coarse locks.
+- CONC-25 [MANDATORY]: Keep lock scope minimal and free of I/O, blocking waits, and long-running work.
+- CONC-26 [MANDATORY]: Do not await inside a monitor lock.
+- CONC-27 [MANDATORY]: Design lock acquisition order explicitly whenever more than one lock can be taken in the same workflow.
+- CONC-28 [MANDATORY]: Remove hot-path lock contention before increasing thread count or parallelism.
+- CONC-29 [MANDATORY]: Use concurrent collections for shared multi-threaded collection access instead of manually locking non-thread-safe collections.
+- CONC-30 [MANDATORY]: Do not mix external locking with concurrent collections unless the combined protocol is explicitly documented and tested.
+- CONC-31 [MANDATORY]: Give each pipeline stage one clear responsibility, one input contract, and one output contract.
+- CONC-32 [MANDATORY]: Do not assume completion order matches submission order unless the design enforces it.
+- CONC-33 [MANDATORY]: Queued or retryable work must be idempotent or duplicate-safe.
+- CONC-34 [MANDATORY]: Do not increase throughput by blind retry; classify failure and apply bounded retry only where safe.
+- CONC-35 [MANDATORY]: Do not create dedicated Thread instances for routine asynchronous or short-lived background work.
+- CONC-36: Use a dedicated thread only when a workload has a clear long-running affinity that is not appropriate for ThreadPool scheduling.
+- CONC-37 [MANDATORY]: Do not use Thread.Abort.
+- CONC-38 [MANDATORY]: Stop concurrent work cooperatively through CancellationToken or equivalent explicit control.
+- CONC-39: Do not change ThreadPool minimum or maximum thread settings unless measurement shows the default behavior is the bottleneck.
+- CONC-40: Change .NET threading runtime configuration such as CPU group settings only when the deployment environment and measurements justify it.
+- CONC-41 [MANDATORY]: Treat thread-pool starvation as a design bug to remove, not as a reason to add arbitrary threads.
+- CONC-42 [MANDATORY]: Keep the full call path asynchronous when the entry operation is asynchronous.
+- CONC-43 [MANDATORY]: Batch small independent units of work when per-item scheduling overhead materially limits throughput.
+- CONC-44 [MANDATORY]: Do not split work so finely that scheduling, synchronization, or queue overhead dominates useful work.
+- CONC-45 [MANDATORY]: Keep per-work-item memory bounded so that concurrency does not turn latency pressure into GC pressure.
+- CONC-46 [MANDATORY]: Complete or close producer-consumer pipelines explicitly so consumers can terminate deterministically.
+- CONC-47 [MANDATORY]: Record queue length, active work count, throughput, latency, failure rate, cancellation rate, and timeout rate for each concurrent stage.
+- CONC-48 [MANDATORY]: Use runtime metrics, tracing, and profiling to confirm whether bottlenecks are CPU saturation, blocking, contention, queueing, or allocation.
+- CONC-49 [MANDATORY]: Protect important concurrency and throughput characteristics with repeatable stress, soak, and benchmark tests.
+- CONC-50 [MANDATORY]: Prefer the simplest concurrency model that meets measured throughput and latency goals.

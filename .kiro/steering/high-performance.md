@@ -1,0 +1,55 @@
+---
+description: high-performance
+inclusion: always
+---
+## Performance
+- PERF-01 [MANDATORY]: Measure before and after every non-trivial performance optimization.
+- PERF-02 [MANDATORY]: Optimize only code paths that are proven hot or materially user-visible.
+- PERF-03 [MANDATORY]: Never trade away correctness, determinism, or observability for performance.
+- PERF-04 [MANDATORY]: Avoid unnecessary allocations in hot paths.
+- PERF-05 [MANDATORY]: Avoid hidden boxing in hot paths.
+- PERF-06 [MANDATORY]: Do not use allocation-heavy LINQ or iterator chains in hot paths when a simpler loop is materially cheaper.
+- PERF-07 [MANDATORY]: Minimize transient string creation in hot paths.
+- PERF-08 [MANDATORY]: Use span-based parsing and formatting APIs where they materially reduce copying or allocation.
+- PERF-09: Use Span<T> and ReadOnlySpan<T> only where they improve performance without making ownership or lifetime unsafe or unclear.
+- PERF-10: Use Memory<T> and ReadOnlyMemory<T> only where buffer lifetime must cross async or heap boundaries.
+- PERF-11 [MANDATORY]: Avoid copying large buffers or collections when a safe slice, view, or reference is sufficient.
+- PERF-12: Use stackalloc only for small, bounded, short-lived buffers.
+- PERF-13: Use ArrayPool<T> when frequent buffer allocation creates measurable GC pressure.
+- PERF-14: Use object pooling only for objects that are expensive to create or reset and are used predictably at high frequency.
+- PERF-15 [MANDATORY]: Always return rented or pooled resources promptly and exactly once.
+- PERF-16 [MANDATORY]: Do not expose pooled buffers or objects beyond the lifetime in which they are valid to use.
+- PERF-17 [MANDATORY]: Use async and await for naturally asynchronous I/O-bound operations.
+- PERF-18 [MANDATORY]: Do not block threads on asynchronous work in throughput-sensitive code paths.
+- PERF-19: Use ValueTask only when measurement shows that avoiding Task allocation is materially beneficial.
+- PERF-20 [MANDATORY]: Propagate CancellationToken in long-running or potentially blocking operations to avoid wasted work.
+- PERF-21 [MANDATORY]: Use structured logging and avoid expensive log message construction when the log level is disabled.
+- PERF-22 [MANDATORY]: Do not use exceptions for normal control flow in hot paths.
+- PERF-23 [MANDATORY]: Validate arguments and fail early before expensive work begins.
+- PERF-24 [MANDATORY]: Choose collection types based on required lookup, iteration, mutation, and allocation characteristics.
+- PERF-25 [MANDATORY]: Avoid multiple enumeration of the same sequence in hot paths.
+- PERF-26 [MANDATORY]: Prefer contiguous data access patterns when they materially improve cache locality.
+- PERF-27: Use structs only when value semantics and measured allocation or locality benefits justify them.
+- PERF-28: Use readonly struct for immutable value types that are frequently copied or passed by reference.
+- PERF-29 [MANDATORY]: Prefer immutability by default, but avoid defensive copying in hot paths unless correctness requires it.
+- PERF-30 [MANDATORY]: Prefer generic, type-safe code over object-based abstractions when object-based code would box or allocate materially more.
+- PERF-31 [MANDATORY]: Avoid unnecessary virtual dispatch in hot paths when a simpler and equally maintainable alternative exists.
+- PERF-32 [MANDATORY]: Avoid runtime reflection in hot paths.
+- PERF-33: Prefer source generation over runtime reflection or runtime code discovery where it materially improves startup or throughput.
+- PERF-34 [MANDATORY]: Choose serialization and deserialization paths that minimize allocation, copying, and intermediate materialization.
+- PERF-35 [MANDATORY]: Stream or pipe large payloads instead of fully materializing them when full buffering is unnecessary.
+- PERF-36 [MANDATORY]: Design hot-path code to reduce GC pressure rather than relying on forced collection.
+- PERF-37 [MANDATORY]: Do not call GC.Collect in production code as a performance strategy.
+- PERF-38 [MANDATORY]: Do not introduce parallelism unless the workload is safe, partitionable, and measurably faster under realistic contention.
+- PERF-39 [MANDATORY]: Avoid shared mutable state and lock contention in throughput-sensitive code.
+- PERF-40: Use SIMD, hardware intrinsics, or vectorized APIs only when measurement shows a clear benefit and portability remains acceptable.
+- PERF-41 [MANDATORY]: Keep hot loops simple, branch-light, and allocation-free where practical.
+- PERF-42 [MANDATORY]: Keep hot-path assumptions explicit and validate them outside the hot loop where possible.
+- PERF-43: Change tiered compilation, quick JIT, or compilation settings only when benchmark evidence justifies it.
+- PERF-44: Make libraries trimming-compatible when they are intended for trimmed deployments.
+- PERF-45: Use Native AOT only when startup time, memory footprint, deployment model, or scale characteristics justify its constraints.
+- PERF-46: Avoid dynamic code paths that prevent trimming or Native AOT where those deployment modes are required.
+- PERF-47 [MANDATORY]: Use profiling and production-safe telemetry to locate CPU, memory, allocation, and latency bottlenecks.
+- PERF-48 [MANDATORY]: Protect important performance characteristics with repeatable benchmarks or regression checks.
+- PERF-49 [MANDATORY]: Design APIs so efficient usage is the default and expensive usage is explicit.
+- PERF-50 [MANDATORY]: Prefer the simplest implementation that meets measured performance goals.

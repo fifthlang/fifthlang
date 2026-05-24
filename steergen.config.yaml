@@ -8,7 +8,31 @@ registeredTargets:
 templatePackVersion: 
 templatePack: 
 rulesPacks:
-- source: github:aabs/steering-rules-testing
-  ref: 
-  path: 
+- source: github:aabs/steering-rules
+  ref: HEAD
+  path: testing
+  pin:
+    tag: HEAD
+    commitSha: 57e0996dd198d15bb104907051c58c732f6283b0
+  scope: 
+- source: github:aabs/steering-rules
+  ref: HEAD
+  path: csharp-14
+  pin:
+    tag: HEAD
+    commitSha: 57e0996dd198d15bb104907051c58c732f6283b0
+  scope: 
+- source: github:aabs/steering-rules
+  ref: HEAD
+  path: dotnet-performance
+  pin:
+    tag: HEAD
+    commitSha: 57e0996dd198d15bb104907051c58c732f6283b0
+  scope: 
+- source: github:aabs/steering-rules
+  ref: HEAD
+  path: dotnet-concurrency
+  pin:
+    tag: HEAD
+    commitSha: 57e0996dd198d15bb104907051c58c732f6283b0
   scope: 

@@ -6,7 +6,6 @@ inclusion: always
 - PBT-01 [MANDATORY]: The standard property based testing (PBT) stack is:
 - `FsCheck` for property based testing
 - `FsCheck.XUnit` for property based testing integration into xunit
-- PBT-02 [MANDATORY]: Always default to Property Based Tests rather than Unit tests.
 - PBT-03 [MANDATORY]: Property Based Tests should be the default approach for testing that a SUT is broadly correct,
 - PBT-04 [MANDATORY]: Unit tests should be reserved for regression cases, to test a specific case that is known to have previously caused issues.
 - PBT-05 [MANDATORY]: Never just test single-point scenarios and  happy paths, instead use a Property Based Tests that will test all positive, negative and edge cases.
