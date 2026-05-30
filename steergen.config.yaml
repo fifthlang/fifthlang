@@ -8,5 +8,10 @@ registeredTargets:
 templatePackVersion:
 templatePack:
 rulesPacks:
+- source: github:fifthlang/fifthlang-steering-rules
 - source: github:aabs/steering-rules
   path: /testing
+- source: github:aabs/steering-rules
+  path: /dotnet-performance
+- source: github:aabs/steering-rules
+  path: /csharp-14
