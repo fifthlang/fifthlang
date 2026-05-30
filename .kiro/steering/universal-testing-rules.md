@@ -3,15 +3,10 @@ description: universal-testing-rules
 inclusion: always
 ---
 ## Completion
-- UTR-001: A feature is not complete until integration tests prove it:
-
-1. Runs as intended in situ
-2. Executes successfully at runtime rather than merely compiling
-3. Produces results that are accessible and correct
-4. Exercises the major code paths and result types involved
-
-Features with only compilation tests or with failing runtime tests are incomplete.
+- UTR-001: A feature shall be marked complete only when integration tests pass at runtime, verify in-situ behavior, verify accessible and correct results, and exercise major code paths and result types.
+- UTR-002: When only compilation checks exist, the feature shall be marked incomplete.
+- UTR-003: When any runtime test fails, the feature shall be marked incomplete.
 ## Testing
-- UTR-002: Avoid testing internal implementation details and avoid depending on concrete implementations where looser behavioral validation is possible.
-- UTR-003: Never mask failing tests with broad `try` or `catch` blocks or "success assertions".
-- UTR-004: Failing tests indentify outstanding work and should never be suppressed
+- UTR-004: When behavioral validation is possible, tests shall validate externally observable behavior and avoid internal-detail and concrete-implementation assertions.
+- UTR-005: Tests shall not mask failures with broad try/catch blocks or unconditional success assertions.
+- UTR-006: When a test fails, the team shall treat it as outstanding work and shall not suppress it.

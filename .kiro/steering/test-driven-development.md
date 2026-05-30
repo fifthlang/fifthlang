@@ -3,14 +3,12 @@ description: test-driven-development
 inclusion: always
 ---
 ## Testing
-- TDD-001 [MANDATORY]: You MUST practice test-first development.  Follow the process of "Red-Green-Refactor"
-
-The Rules of TDD are:
-- Start with a PBT test that fails.
-- Make the smallest change needed to make that test pass.
-- Keep each step tiny so you focus on one thing at a time.
-
-Never get a failing test to pass by masking its failure.  Only a valid addition of functionality counts.
-- TDD-002 [MANDATORY]: Test code should be developed first, NEVER in retrospect.
-- TDD-003 [MANDATORY]: Observe a test failing first, before implementing the application code that makes it pass.
-- TDD-004 [MANDATORY]: When a test finally passes, refactor the new code to ensure it is clean and has no technical debt.
+- TDD-001 [MANDATORY]: The development workflow shall follow test-first Red-Green-Refactor.
+- TDD-002 [MANDATORY]: Before writing production code for a behavior, the developer shall write the test code for that behavior.
+- TDD-003 [MANDATORY]: Before implementing code for a behavior, the developer shall execute the corresponding test and observe it fail.
+- TDD-004 [MANDATORY]: When the test passes, the developer shall refactor the changed code while preserving test pass status.
+- TDD-005 [MANDATORY]: At the start of each cycle, the developer shall create a failing property-based test.
+- TDD-006 [MANDATORY]: In the Green step, the developer shall make the smallest functional code change that makes the failing test pass.
+- TDD-007 [MANDATORY]: In each cycle, the developer shall limit changes to a single concern.
+- TDD-008 [MANDATORY]: When moving from red to green, the implementation shall not mask failures; it shall pass by adding valid functionality.
+- TDD-009 [MANDATORY]: After refactoring, the changed code shall satisfy the project cleanliness and technical-debt standards.

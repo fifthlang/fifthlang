@@ -3,88 +3,26 @@ description: build-and-test
 inclusion: always
 ---
 ## Prerequisites
-- BUILD-001 [MANDATORY]: The local environment must include:
-
-- .NET 10.0 SDK pinned by `global.json` to `10.0.100`
-- Java 17 or newer for ANTLR grammar compilation
-- The ANTLR runtime package and the jar at `src/parser/tools/antlr-4.13.2-complete.jar`
+- BUILD-001 [MANDATORY]: Use the pinned toolchain: .NET SDK `10.0.100` from `global.json`, Java 17+, and `src/parser/tools/antlr-4.13.2-complete.jar`. To comply, run `dotnet --version` and `java -version` before troubleshooting build failures.
 ## Commands
-- BUILD-002: Use the solution restore command as the standard restore entry point:
-
-```bash
-dotnet restore fifthlang.sln
-```
-
-This operation typically takes about 70 seconds. Do not cancel it. Use a timeout of at least 120 seconds when automation controls execution time.
-- BUILD-003: Use the solution build command as the standard build entry point:
-
-```bash
-dotnet build fifthlang.sln
-```
-
-This operation typically takes about 60 seconds. Do not cancel it. Use a timeout of at least 120 seconds when automation controls execution time.
+- BUILD-002: Use `dotnet restore fifthlang.sln` as the standard restore entry point. To comply, do not cancel restore; set automation timeout to at least 120 seconds.
+- BUILD-003: Use `dotnet build fifthlang.sln` as the standard build entry point. To comply, do not cancel build; set automation timeout to at least 120 seconds.
 ## Testing
-- BUILD-004: Use the solution test command as the default regression gate:
-
-```bash
-dotnet test fifthlang.sln
-```
-
-Do not cancel this run. Use a timeout of at least 5 minutes when automation controls execution time.
-- BUILD-005: Use this command for a quick smoke-test subset while iterating locally:
-
-```bash
-dotnet test test/ast-tests/ast_tests.csproj
-```
-- BUILD-014: These targeted commands are available for narrower local validation:
-
-```bash
-just test-ast
-just test-runtime
-just test-syntax
-just test-all-roslyn
-```
-
-Use them to iterate locally, but retain the full solution test run as the regression gate.
+- BUILD-004: Use `dotnet test fifthlang.sln` as the default regression gate. To comply, do not cancel test runs; set automation timeout to at least 5 minutes.
+- BUILD-005: Use `dotnet test test/ast-tests/ast_tests.csproj` only as a local smoke test. To comply, run full-solution tests before merging behavior changes.
+- BUILD-014: Use targeted `just` test commands for local iteration, not as the final gate. To comply, after `just test-ast`, `just test-runtime`, `just test-syntax`, or `just test-all-roslyn`, still run `dotnet test fifthlang.sln`.
 ## Generation
-- BUILD-006: After metamodel changes, regenerate AST output with:
-
-```bash
-dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated
-```
-- BUILD-011: AST code generation runs automatically before compilation via MSBuild targets. Manual generation is primarily for focused regeneration workflows.
+- BUILD-006: After metamodel changes, regenerate AST code with `dotnet run --project src/ast_generator/ast_generator.csproj -- --folder src/ast-generated`. To comply, include regeneration in the same change set as the metamodel update.
+- BUILD-011: Do not add manual AST generation to the normal workflow. To comply, use manual generation only for focused regeneration tasks.
 ## Verification
-- BUILD-007: Confirm the toolchain before debugging restore or build failures:
-
-```bash
-dotnet --version
-java -version
-```
-
-The .NET command should report `10.0.x`, and Java should report version 17 or newer.
+- BUILD-007: Validate tool versions before diagnosing restore or build errors. To comply, ensure `.NET` reports `10.0.x` and Java reports 17 or newer.
 ## Dependency
-- BUILD-008: The effective build order is:
-
-```text
-ast-model -> ast_generator -> ast-generated -> parser -> compiler -> tests
-```
-
-Always build the full solution rather than individual projects so dependency ordering is resolved correctly.
+- BUILD-008: Build through `fifthlang.sln` so dependency order is resolved correctly. To comply, avoid ad hoc partial builds when validating integration behavior.
 ## Workflow
-- BUILD-009: Do not cancel restore, build, test, or generation operations. The documented timings in this repository are normal and expected.
+- BUILD-009: Do not cancel restore, build, test, or generation commands because long runtimes are expected. To comply, wait for completion unless the command is clearly hung.
 ## Parser
-- BUILD-010: ANTLR grammar compilation happens automatically during the parser project build. Do not add redundant manual generation steps to the normal workflow.
+- BUILD-010: Do not add manual ANTLR generation to the normal workflow. To comply, rely on parser-project build targets for grammar compilation.
 ## Diagnostics
-- BUILD-012: The following warnings are expected and safe to ignore unless they change unexpectedly:
-
-- ANTLR `assoc` option warnings
-- C# nullable reference warnings
-- Switch exhaustiveness warnings
+- BUILD-012: Treat known baseline warnings as expected unless their pattern changes. To comply, ignore existing ANTLR `assoc`, nullable, and switch-exhaustiveness warnings unless new or altered.
 ## Validation
-- BUILD-013: After any change, validate in this order:
-
-1. `dotnet build fifthlang.sln`
-2. `dotnet test fifthlang.sln`
-3. Verify runtime behavior
-
-Compilation alone is not sufficient validation.
+- BUILD-013: Validate changes in order: build, full test, then runtime behavior. To comply, run `dotnet build fifthlang.sln`, `dotnet test fifthlang.sln`, then verify behavior manually or with integration tests.
