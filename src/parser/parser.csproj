@@ -65,7 +65,43 @@
     <Message Text="SPARQL Lexer Output: @(SparqlLexerOutput)" />
     <Message Text="SPARQL Parser Output: @(SparqlParserOutput)" />
     <Message Text="----------------------------------------" />
+    <!-- ANTLR writes files with the platform line separator (CRLF on Windows);
+         normalize to LF so output is identical on win/linux/macos and matches
+         the eol=lf rules in .gitattributes -->
+    <ItemGroup>
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/grammar/*.cs" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/grammar/*.tokens" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/grammar/*.interp" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/trig-grammar/*.cs" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/trig-grammar/*.tokens" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/trig-grammar/*.interp" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/sparql-grammar/*.cs" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/sparql-grammar/*.tokens" />
+      <AntlrGeneratedFiles Include="$(MSBuildThisFileDirectory)grammar/sparql-grammar/*.interp" />
+    </ItemGroup>
+    <NormalizeToLf Files="@(AntlrGeneratedFiles)" />
+    <Message Text="Normalized line endings to LF for ANTLR-generated files" />
   </Target>
+
+  <UsingTask TaskName="NormalizeToLf" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        foreach (var item in Files)
+        {
+            var path = item.ItemSpec;
+            var text = System.IO.File.ReadAllText(path);
+            var normalized = text.Replace("\r\n", "\n");
+            if (normalized != text)
+            {
+                System.IO.File.WriteAllText(path, normalized);
+            }
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
 
   <!-- Remove ANTLR transient artifacts on clean -->
   <Target Name="CleanAntlrArtifacts" BeforeTargets="Clean">
